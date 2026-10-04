@@ -669,6 +669,7 @@ chrome.commands.onCommand.addListener(async (commandName) => {
       // Execute command directly in the service worker.
       // There is no selection position here, so center the popup in the
       // current window to keep it on the display the user is working on.
+      // The size resolution must match the one in action/popup.ts.
       const position = await getCenteredOffsetInCurrentWindow({
         width: command.popupOption?.width ?? PopupOption.width,
         height: command.popupOption?.height ?? PopupOption.height,

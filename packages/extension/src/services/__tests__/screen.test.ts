@@ -45,9 +45,12 @@ describe("getScreenSize", () => {
     vi.clearAllMocks()
 
     mockGetInfo = vi.fn().mockResolvedValue([primaryDisplay, secondaryDisplay])
-    mockGetCurrent = vi
-      .fn()
-      .mockResolvedValue({ left: 100, top: 100 } as chrome.windows.Window)
+    mockGetCurrent = vi.fn().mockResolvedValue({
+      left: 100,
+      top: 100,
+      width: 800,
+      height: 600,
+    } as chrome.windows.Window)
 
     vi.stubGlobal("chrome", {
       system: {
@@ -67,18 +70,33 @@ describe("getScreenSize", () => {
     })
 
     it("GSS-01: ヒントなし - getCurrent() の結果からディスプレイを特定する", async () => {
-      // getCurrent returns position on primary display
+      // getCurrent returns position on the secondary display
       mockGetCurrent.mockResolvedValue({
-        left: 100,
+        left: 2000,
         top: 100,
+        width: 800,
+        height: 600,
       } as chrome.windows.Window)
 
       const result = await getScreenSize()
 
-      expect(result.left).toBe(0)
+      expect(result.left).toBe(1920)
       expect(result.top).toBe(0)
+      expect(result.width).toBe(2560)
+      expect(result.height).toBe(1440)
+    })
+
+    it("GSS-10: 現在ウィンドウのサイズが取得できない場合、プライマリを返す", async () => {
+      // Size is unknown, so the window's center can't be determined
+      mockGetCurrent.mockResolvedValue({
+        left: 2000,
+        top: 100,
+      } as chrome.windows.Window)
+
+      const result = await getScreenSize({ top: 10000, left: 10000 })
+
+      expect(result.left).toBe(0)
       expect(result.width).toBe(1920)
-      expect(result.height).toBe(1080)
     })
 
     it("GSS-02: ヒントあり（プライマリディスプレイ上の座標）- プライマリディスプレイを返す", async () => {

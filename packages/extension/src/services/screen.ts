@@ -42,6 +42,14 @@ export async function getWindowPosition(): Promise<WindowPosition> {
  * the given size within that window.
  * The result is meant to be added to getWindowPosition(), so the popup is
  * placed on the same display as the current window.
+ *
+ * Note: When the popup is larger than the window, the window's center is
+ * returned, so the popup's top-left is placed at the window's center and the
+ * popup may overflow the display. This relies on adjustWindowPosition() in
+ * openPopupWindow() re-centering the popup on that display.
+ * If the current window cannot be retrieved, { x: 0, y: 0 } is returned; in
+ * that case getWindowPosition() also returns (0, 0), so the popup ends up at
+ * the primary display's top-left.
  * @param size - Size of the popup to be opened
  * @returns Offset from the current window's top-left corner
  */
@@ -52,7 +60,7 @@ export async function getCenteredOffsetInCurrentWindow(size: {
   // If the popup is larger than the window, use the window's center instead
   // of its top-left corner; a maximized window's top-left can lie slightly
   // outside its display (e.g. -8px on Windows), which would select a wrong
-  // display. The popup is re-centered on the display by the caller anyway.
+  // display.
   const center = (windowLength: number, popupLength: number) =>
     Math.floor(
       windowLength > popupLength
@@ -66,8 +74,6 @@ export async function getCenteredOffsetInCurrentWindow(size: {
       y: center(w.height ?? 0, size.height),
     }
   } catch {
-    // Fall back to the window's top-left corner, which is still on the
-    // same display as the current window.
     return { x: 0, y: 0 }
   }
 }
@@ -105,10 +111,17 @@ export async function getScreenSize(hint?: {
         // can be slightly outside its display (e.g. -8px on Windows).
         try {
           const w = await chrome.windows.getCurrent()
-          if (w.left != null && w.top != null) {
+          // Skip when the size is unknown, since the center can't be
+          // determined; fall back to the primary display instead.
+          if (
+            w.left != null &&
+            w.top != null &&
+            w.width != null &&
+            w.height != null
+          ) {
             targetDisplay = findDisplay(
-              w.left + Math.floor((w.width ?? 0) / 2),
-              w.top + Math.floor((w.height ?? 0) / 2),
+              w.left + Math.floor(w.width / 2),
+              w.top + Math.floor(w.height / 2),
             )
           }
         } catch {

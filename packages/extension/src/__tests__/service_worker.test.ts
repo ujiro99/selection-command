@@ -111,6 +111,12 @@ describe("Service Worker Migration", () => {
     mockSettings.updateCommands.mockResolvedValue(true)
   })
 
+  afterEach(() => {
+    // Remove chrome.windows.getCurrent overridden in a test so it doesn't
+    // leak into other tests (it isn't defined in the global setup).
+    delete (chrome.windows as any).getCurrent
+  })
+
   it("MG-01-a: should call enhancedSettings.get() in addPageRule and open option page with addPageRule param when no matching rule exists", async () => {
     const initialSettings = createTestSettings()
     mockEnhancedSettings.get.mockResolvedValue(initialSettings as any)
