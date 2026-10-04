@@ -162,7 +162,7 @@ type OpenResult = {
  * @param {number} [offset=0] - Offset multiplier for multiple windows
  * @returns {{ top: number; left: number }} Adjusted position
  */
-const adjustWindowPosition = (
+export const adjustWindowPosition = (
   top: number,
   left: number,
   width: number | undefined,

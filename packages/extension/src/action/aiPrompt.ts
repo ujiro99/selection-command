@@ -22,7 +22,7 @@ import {
   PAGE_ACTION_TIMEOUT,
   SelectorType,
 } from "@/const"
-import { PopupOption } from "@/services/option/defaultSettings"
+import { resolvePopupSize } from "@/services/option/defaultSettings"
 import type {
   ExecuteCommandParams,
   PageActionStep,
@@ -553,8 +553,7 @@ export const AiPrompt = {
       steps,
       top: Math.floor(windowPosition.top + position.y),
       left: Math.floor(windowPosition.left + position.x),
-      height: command.popupOption?.height ?? PopupOption.height,
-      width: command.popupOption?.width ?? PopupOption.width,
+      ...resolvePopupSize(command.popupOption),
       selectedText: selectionText,
       srcUrl: pageUrl ?? "",
       openMode,

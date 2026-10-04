@@ -47,9 +47,12 @@ export async function getWindowPosition(): Promise<WindowPosition> {
  * returned, so the popup's top-left is placed at the window's center and the
  * popup may overflow the display. This relies on adjustWindowPosition() in
  * openPopupWindow() re-centering the popup on that display.
- * If the current window cannot be retrieved, { x: 0, y: 0 } is returned; in
- * that case getWindowPosition() also returns (0, 0), so the popup ends up at
- * the primary display's top-left.
+ * If the current window cannot be retrieved (getCurrent() throws),
+ * { x: 0, y: 0 } is returned; in that case getWindowPosition() also returns
+ * (0, 0), so the popup ends up at the primary display's top-left.
+ * If the window is retrieved but its size is unknown, { x: 0, y: 0 } is also
+ * returned, which places the popup at the window's top-left (i.e. still on
+ * the display of the current window).
  * @param size - Size of the popup to be opened
  * @returns Offset from the current window's top-left corner
  */

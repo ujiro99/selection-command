@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest"
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import { getScreenSize, getCenteredOffsetInCurrentWindow } from "../screen"
 
 // Mock isServiceWorker to control context
@@ -33,6 +33,10 @@ const makeDisplay = (
     activeState: "active",
     displayZoomFactor: 1,
   }) as unknown as chrome.system.display.DisplayUnitInfo
+
+afterEach(() => {
+  vi.unstubAllGlobals()
+})
 
 describe("getScreenSize", () => {
   const primaryDisplay = makeDisplay(0, 0, 1920, 1080, true)
@@ -268,6 +272,20 @@ describe("getCenteredOffsetInCurrentWindow", () => {
     })
 
     expect(result).toEqual({ x: 250, y: 200 })
+  })
+
+  it("GCO-04: ウィンドウのサイズが取得できない場合、{ x: 0, y: 0 }（ウィンドウ左上）を返す", async () => {
+    mockGetCurrent.mockResolvedValue({
+      left: 1920,
+      top: 0,
+    } as chrome.windows.Window)
+
+    const result = await getCenteredOffsetInCurrentWindow({
+      width: 600,
+      height: 700,
+    })
+
+    expect(result).toEqual({ x: 0, y: 0 })
   })
 
   it("GCO-03: getCurrent() が失敗した場合、{ x: 0, y: 0 } を返す", async () => {
