@@ -281,6 +281,11 @@ describe("Service Worker Migration", () => {
       { id: 1, url: "https://example.com", windowId: 1 },
     ])
 
+    // Mock the current window used to center the popup
+    ;(chrome.windows as any).getCurrent = vi
+      .fn()
+      .mockResolvedValue({ left: 1920, top: 0, width: 1600, height: 1000 })
+
     // Mock Storage.get for selection text
     const mockStorageGet = vi.fn().mockResolvedValue("test selection text")
     vi.doMock("@/services/storage", () => ({
@@ -355,7 +360,8 @@ describe("Service Worker Migration", () => {
           searchUrl: "https://example.com/search?q=%s",
           openMode: "tab",
         }),
-        position: { x: 10000, y: 10000 },
+        // Popup (400x300) centered in the current window (1600x1000)
+        position: { x: 600, y: 350 },
         selectionText: "test selection text",
         target: null,
         allowClipboardFallback: false,

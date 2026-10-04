@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
-import { getScreenSize } from "../screen"
+import { getScreenSize, getCenteredOffsetInCurrentWindow } from "../screen"
 
 // Mock isServiceWorker to control context
 vi.mock("@/lib/utils", () => ({
@@ -122,8 +122,15 @@ describe("getScreenSize", () => {
       expect(result.height).toBe(1440)
     })
 
-    it("GSS-05: ヒントがいずれのディスプレイにも含まれない場合、プライマリを返す", async () => {
-      // Position doesn't match any display
+    it("GSS-05: ヒントがいずれのディスプレイにも含まれず、現在ウィンドウも特定できない場合、プライマリを返す", async () => {
+      // Current window is also outside every display
+      mockGetCurrent.mockResolvedValue({
+        left: -5000,
+        top: -5000,
+        width: 800,
+        height: 600,
+      } as chrome.windows.Window)
+
       const result = await getScreenSize({ top: -100, left: -200 })
 
       // Should fall back to primary display
@@ -131,6 +138,48 @@ describe("getScreenSize", () => {
       expect(result.top).toBe(0)
       expect(result.width).toBe(1920)
       expect(result.height).toBe(1080)
+    })
+
+    it("GSS-07: ヒントが画面外の場合、現在ウィンドウのディスプレイを返す", async () => {
+      // Current window is on the secondary display
+      mockGetCurrent.mockResolvedValue({
+        left: 2000,
+        top: 100,
+        width: 1200,
+        height: 900,
+      } as chrome.windows.Window)
+
+      // Off-screen hint (e.g. window position + large offset)
+      const result = await getScreenSize({ top: 10100, left: 12000 })
+
+      expect(result.left).toBe(1920)
+      expect(result.top).toBe(0)
+      expect(result.width).toBe(2560)
+      expect(result.height).toBe(1440)
+    })
+
+    it("GSS-08: 最大化ウィンドウ（左上がディスプレイ外）でもウィンドウ中心でディスプレイを特定する", async () => {
+      // Maximized window on the secondary display (Windows adds -8px)
+      mockGetCurrent.mockResolvedValue({
+        left: 1912,
+        top: -8,
+        width: 2576,
+        height: 1456,
+      } as chrome.windows.Window)
+
+      const result = await getScreenSize()
+
+      expect(result.left).toBe(1920)
+      expect(result.width).toBe(2560)
+    })
+
+    it("GSS-09: ヒントが画面外で getCurrent() が失敗した場合、プライマリを返す", async () => {
+      mockGetCurrent.mockRejectedValue(new Error("No window"))
+
+      const result = await getScreenSize({ top: 10000, left: 10000 })
+
+      expect(result.left).toBe(0)
+      expect(result.width).toBe(1920)
     })
   })
 
@@ -155,5 +204,62 @@ describe("getScreenSize", () => {
       expect(result.width).toBe(1920)
       expect(result.height).toBe(1080)
     })
+  })
+})
+
+describe("getCenteredOffsetInCurrentWindow", () => {
+  let mockGetCurrent: ReturnType<typeof vi.fn>
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockGetCurrent = vi.fn()
+    vi.stubGlobal("chrome", {
+      windows: {
+        getCurrent: mockGetCurrent,
+      },
+    })
+  })
+
+  it("GCO-01: ポップアップをウィンドウ中央に配置するオフセットを返す", async () => {
+    mockGetCurrent.mockResolvedValue({
+      left: 1920,
+      top: 0,
+      width: 1600,
+      height: 1000,
+    } as chrome.windows.Window)
+
+    const result = await getCenteredOffsetInCurrentWindow({
+      width: 600,
+      height: 700,
+    })
+
+    expect(result).toEqual({ x: 500, y: 150 })
+  })
+
+  it("GCO-02: ポップアップがウィンドウより大きい場合、ウィンドウ中心を返す", async () => {
+    mockGetCurrent.mockResolvedValue({
+      left: 1920,
+      top: 0,
+      width: 500,
+      height: 400,
+    } as chrome.windows.Window)
+
+    const result = await getCenteredOffsetInCurrentWindow({
+      width: 600,
+      height: 700,
+    })
+
+    expect(result).toEqual({ x: 250, y: 200 })
+  })
+
+  it("GCO-03: getCurrent() が失敗した場合、{ x: 0, y: 0 } を返す", async () => {
+    mockGetCurrent.mockRejectedValue(new Error("No window"))
+
+    const result = await getCenteredOffsetInCurrentWindow({
+      width: 600,
+      height: 700,
+    })
+
+    expect(result).toEqual({ x: 0, y: 0 })
   })
 })

@@ -38,6 +38,8 @@ import * as HubServiceWorker from "@/services/hub/serviceWorker"
 import { ensureOnboardingAssignment } from "@/services/experiments"
 import * as IconColorServiceWorker from "@/services/iconColor/serviceWorker"
 import { getSidePanelEvent } from "@/services/sidePanelSupport"
+import { getCenteredOffsetInCurrentWindow } from "@/services/screen"
+import { PopupOption } from "@/services/option/defaultSettings"
 
 import { importIf } from "@import-if"
 importIf("production", "./lib/sentry/initialize")
@@ -664,10 +666,16 @@ chrome.commands.onCommand.addListener(async (commandName) => {
     }
 
     if (!enableSendTab || ret instanceof Error) {
-      // Execute command directly in the service worker
+      // Execute command directly in the service worker.
+      // There is no selection position here, so center the popup in the
+      // current window to keep it on the display the user is working on.
+      const position = await getCenteredOffsetInCurrentWindow({
+        width: command.popupOption?.width ?? PopupOption.width,
+        height: command.popupOption?.height ?? PopupOption.height,
+      })
       await execute({
         command,
-        position: { x: 10000, y: 10000 },
+        position,
         selectionText,
         target: null,
         allowClipboardFallback,
