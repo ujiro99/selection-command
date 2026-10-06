@@ -30,7 +30,9 @@ vi.mock("@/services/analytics", () => ({
   ANALYTICS_EVENTS: {
     OPEN_DIALOG: "open_dialog",
     COMMAND_SHARE: "command_share",
+    HUB_LINK_CLICK: "hub_link_click",
   },
+  HUB_LINK_ROUTE: { SHARE_TOAST: "share-toast" },
   sendEvent: vi.fn(),
 }))
 
@@ -157,6 +159,11 @@ describe("showHubShareToast", () => {
     expect(mockSendEvent).not.toHaveBeenCalledWith(
       "command_share",
       expect.anything(),
+      expect.anything(),
+    )
+    expect(mockSendEvent).toHaveBeenCalledWith(
+      "hub_link_click",
+      { event_label: "share-toast" },
       expect.anything(),
     )
     expect(mockToastDismiss).toHaveBeenCalledWith("toast-1")

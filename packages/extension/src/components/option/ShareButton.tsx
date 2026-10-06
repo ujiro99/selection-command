@@ -9,7 +9,11 @@ import {
   isHubShareable,
   isHubRegistered,
 } from "@/services/hubShare"
-import { sendEvent, ANALYTICS_EVENTS } from "@/services/analytics"
+import {
+  sendEvent,
+  ANALYTICS_EVENTS,
+  HUB_LINK_ROUTE,
+} from "@/services/analytics"
 import { NEW_HUB_URL, SCREEN } from "@/const"
 import type { SelectionCommand } from "@/types"
 import { TEST_IDS } from "@/testIds"
@@ -38,6 +42,11 @@ export const ShareButton = ({
       const locale = getHubLocale()
       const url = `${NEW_HUB_URL}/${locale}/dashboard/mycommands?id=${encodeURIComponent(command.id)}`
       chrome.tabs.create({ url })
+      sendEvent(
+        ANALYTICS_EVENTS.HUB_LINK_CLICK,
+        { event_label: HUB_LINK_ROUTE.SHARE_BUTTON },
+        SCREEN.OPTION,
+      )
       return
     }
 
@@ -66,6 +75,11 @@ export const ShareButton = ({
     // the share analytics event for this case.
     const registered = await isHubRegistered()
     if (!registered) {
+      sendEvent(
+        ANALYTICS_EVENTS.HUB_LINK_CLICK,
+        { event_label: HUB_LINK_ROUTE.SHARE_BUTTON },
+        SCREEN.OPTION,
+      )
       setStatus("idle")
       return
     }

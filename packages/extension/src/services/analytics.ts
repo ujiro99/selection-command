@@ -27,6 +27,9 @@ export const ANALYTICS_EVENTS = {
   INSTALLED: "installed",
   OPTION_SCREEN_OPENED: "option_screen_opened",
   HUB_SCREEN_OPENED: "hub_screen_opened",
+  // Sent when a user is sent from the extension to the Hub. `event_label`
+  // identifies the route (see HUB_LINK_ROUTE).
+  HUB_LINK_CLICK: "hub_link_click",
   COMMAND_CREATE_SEARCH: "command_create_search",
   COMMAND_CREATE_AIPROMPT: "command_create_aiprompt",
   COMMAND_CREATE_OTHER: "command_create_other",
@@ -70,6 +73,15 @@ export const ANALYTICS_EVENTS = {
   INSTALL_INIT_ERROR: "install_init_error",
   // No "uninstall": the service worker is gone by then, so the Hub sends it
   // from the uninstall URL instead (selection-command-hub#275).
+} as const
+
+// Routes from the extension to the Hub, used as `event_label` of HUB_LINK_CLICK.
+export const HUB_LINK_ROUTE = {
+  BANNER: "banner",
+  LOGIN: "login",
+  COMMAND_TYPE_DIALOG: "command-type-dialog",
+  SHARE_BUTTON: "share-button",
+  SHARE_TOAST: "share-toast",
 } as const
 
 export type AnalyticsEventName =

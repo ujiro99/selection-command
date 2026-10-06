@@ -2,7 +2,11 @@ import { toast } from "sonner"
 import { Share } from "lucide-react"
 import { t } from "@/services/i18n"
 import { cn } from "@/lib/utils"
-import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
+import {
+  ANALYTICS_EVENTS,
+  HUB_LINK_ROUTE,
+  sendEvent,
+} from "@/services/analytics"
 import { SCREEN } from "@/const"
 import { shareCommandToHub, isHubRegistered } from "@/services/hubShare"
 import type { SelectionCommand } from "@/types"
@@ -79,7 +83,13 @@ function showHubShareToastNow(
               // services/hub/serviceWorker.ts); nothing is actually shared yet,
               // so skip the share analytics event for this case.
               const registered = await isHubRegistered()
-              if (registered) {
+              if (!registered) {
+                sendEvent(
+                  ANALYTICS_EVENTS.HUB_LINK_CLICK,
+                  { event_label: HUB_LINK_ROUTE.SHARE_TOAST },
+                  SCREEN.OPTION,
+                )
+              } else {
                 sendEvent(
                   ANALYTICS_EVENTS.COMMAND_SHARE,
                   {
