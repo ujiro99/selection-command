@@ -891,12 +891,12 @@ describe("PageActionDispatcher", () => {
       expect(clearInput).toHaveBeenCalledWith(mockElement)
     })
 
-    it("PDI-clear-unsupported: Should warn and not clear other non-editable elements", async () => {
+    it("PDI-clear-unsupported: Should fail without typing when the element cannot be cleared", async () => {
       mockDocument.querySelector.mockReturnValue(mockElements.div)
       mockIsEditable.mockReturnValue(false)
       vi.mocked(clearInput).mockClear()
 
-      await PageActionDispatcher.input({
+      const result = await PageActionDispatcher.input({
         type: PAGE_ACTION_EVENT.input,
         selector: ".div",
         selectorType: SelectorType.css,
@@ -908,8 +908,9 @@ describe("PageActionDispatcher", () => {
         clipboardText: "",
       } as any)
 
+      expect(result).toEqual([false, "Cannot clear the input: Div"])
       expect(clearInput).not.toHaveBeenCalled()
-      expect(mockConsole.warn).toHaveBeenCalled()
+      expect(mockUserInstance.type).not.toHaveBeenCalled()
     })
   })
 

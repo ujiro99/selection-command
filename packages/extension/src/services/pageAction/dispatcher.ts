@@ -150,9 +150,8 @@ export const PageActionDispatcher = {
             ) {
               clearInput(element)
             } else {
-              console.warn(
-                `clearBefore is not supported for this element: ${selector}`,
-              )
+              // Fail rather than send the new text appended to a stale input.
+              return [false, `Cannot clear the input: ${param.label}`]
             }
           }
           await user.type(element, value, { skipClick: true })

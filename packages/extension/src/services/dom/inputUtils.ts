@@ -128,16 +128,17 @@ export const isTextControl = (
   el instanceof HTMLTextAreaElement || el instanceof HTMLInputElement
 
 /**
- * Text entered in the input, excluding placeholders.
  * Placeholders drawn with CSS (Quill's `.ql-blank::before`, ProseMirror's
  * `[data-placeholder]::before`, ...) are not part of textContent anyway;
  * placeholder nodes that some editors render inside the editable element
- * are non-editable or hidden from assistive technology, so they are removed
- * before reading the text.
+ * are non-editable or hidden from assistive technology.
  */
 const PLACEHOLDER_SELECTOR = "[contenteditable='false'], [aria-hidden='true']"
 
-/** Text nodes of a contenteditable, excluding placeholder nodes. */
+/**
+ * Text nodes of a contenteditable that hold the entered text, excluding
+ * placeholder nodes.
+ */
 export const enteredTextNodes = (el: Element): Text[] => {
   const nodes: Text[] = []
   const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT)
