@@ -1,10 +1,20 @@
-import { describe, it, expect } from "vitest"
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import { OPEN_MODE } from "@/const"
+import { Storage } from "@/services/storage"
 import {
   ANALYTICS_EVENTS,
   getCommandCreateEvent,
   getHubAddEvent,
+  getOrCreateClientId,
+  getBrowserEnvironmentParams,
+  toErrorMessageParam,
 } from "@/services/analytics"
+
+vi.mock("@/services/storage", () => ({
+  Storage: { get: vi.fn(), set: vi.fn() },
+  LOCAL_STORAGE_KEY: { CLIENT_ID: "clientId", HUB_USER: "hubUser" },
+  SESSION_STORAGE_KEY: { SESSION_DATA: "sessionData" },
+}))
 
 describe("getCommandCreateEvent", () => {
   it.each([
@@ -60,5 +70,95 @@ describe("getHubAddEvent", () => {
     [OPEN_MODE.ADD_PAGE_RULE, ANALYTICS_EVENTS.HUB_ADD_OTHER],
   ] as const)("maps openMode %s to %s", (openMode, expected) => {
     expect(getHubAddEvent(openMode)).toBe(expected)
+  })
+})
+
+describe("getOrCreateClientId", () => {
+  beforeEach(() => {
+    vi.mocked(Storage.get).mockReset()
+    vi.mocked(Storage.set).mockReset()
+  })
+
+  it("returns the stored client_id without generating a new one", async () => {
+    vi.mocked(Storage.get).mockResolvedValue("stored-id")
+
+    await expect(getOrCreateClientId()).resolves.toBe("stored-id")
+    expect(Storage.set).not.toHaveBeenCalled()
+  })
+
+  it("generates a single client_id for concurrent callers", async () => {
+    vi.mocked(Storage.get).mockResolvedValue("")
+
+    const ids = await Promise.all([
+      getOrCreateClientId(),
+      getOrCreateClientId(),
+      getOrCreateClientId(),
+    ])
+
+    expect(new Set(ids).size).toBe(1)
+    expect(Storage.set).toHaveBeenCalledTimes(1)
+    expect(Storage.set).toHaveBeenCalledWith("clientId", ids[0])
+  })
+
+  it("retries after a failed attempt instead of caching the failure", async () => {
+    vi.mocked(Storage.get)
+      .mockRejectedValueOnce(new Error("storage error"))
+      .mockResolvedValueOnce("stored-id")
+
+    await expect(getOrCreateClientId()).rejects.toThrow("storage error")
+    await expect(getOrCreateClientId()).resolves.toBe("stored-id")
+  })
+})
+
+describe("getBrowserEnvironmentParams", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  it("reports brands without GREASE entries and the webdriver flag", () => {
+    vi.stubGlobal("navigator", {
+      webdriver: true,
+      userAgentData: {
+        brands: [
+          { brand: "Not A(Brand", version: "8" },
+          { brand: "Chromium", version: "141" },
+          { brand: "Opera", version: "136" },
+        ],
+      },
+    })
+
+    expect(getBrowserEnvironmentParams()).toEqual({
+      browser_brands: "Chromium/141,Opera/136",
+      is_webdriver: "true",
+    })
+  })
+
+  it("falls back to unknown when the browser does not expose them", () => {
+    vi.stubGlobal("navigator", {})
+
+    expect(getBrowserEnvironmentParams()).toEqual({
+      browser_brands: "unknown",
+      is_webdriver: "unknown",
+    })
+  })
+})
+
+describe("toErrorMessageParam", () => {
+  it("uses the message of an Error", () => {
+    expect(toErrorMessageParam(new Error("boom"))).toBe("boom")
+  })
+
+  it("masks URLs such as page addresses and extension paths", () => {
+    expect(
+      toErrorMessageParam(
+        new Error(
+          "Failed at chrome-extension://abcdef/src/app.js and https://example.com/a?b=c",
+        ),
+      ),
+    ).toBe("Failed at <url> and <url>")
+  })
+
+  it("truncates to the GA4 parameter length limit", () => {
+    expect(toErrorMessageParam("x".repeat(150))).toHaveLength(100)
   })
 })
