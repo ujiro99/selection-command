@@ -55,6 +55,11 @@ export const ANALYTICS_EVENTS = {
   ONBOARDING_COMMAND_EXECUTE: "onboarding_command_execute",
   ONBOARDING_VALUE_REACHED: "onboarding_value_reached",
   ONBOARDING_COMPLETE: "onboarding_complete",
+  // Diagnostics for the menu's icon color lookup in the service worker, which
+  // the menu waits for before it renders (#482). Sent only when the lookup
+  // fails or is slow, at most once per page, to keep the volume low.
+  ICON_COLOR_RESOLVE_FAILED: "icon_color_resolve_failed",
+  ICON_COLOR_RESOLVE_SLOW: "icon_color_resolve_slow",
   // No "uninstall": the service worker is gone by then, so the Hub sends it
   // from the uninstall URL instead (selection-command-hub#275).
 } as const
