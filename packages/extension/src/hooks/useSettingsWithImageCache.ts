@@ -125,7 +125,7 @@ function usePreservedIconColors(queries: IconColorQuery[]): boolean[] | null {
     const resolve = async () => {
       const unknown = queries.filter((q) => !answerCache.has(queryKey(q)))
       if (unknown.length > 0) {
-        const startedAt = Date.now()
+        const startedAt = performance.now()
         try {
           const results = await Ipc.send<IconColorQuery[], boolean[]>(
             ServiceWorkerCommand.resolveIconColors,
@@ -133,20 +133,21 @@ function usePreservedIconColors(queries: IconColorQuery[]): boolean[] | null {
             { timeoutMs: ICON_COLOR_TIMEOUT_MS },
           )
           if (!Array.isArray(results)) {
+            // Keep values out of the message: it is sent to analytics.
             throw new InvalidIconColorResponseError(
-              `Unexpected icon color response: ${results}`,
+              "Unexpected icon color response",
             )
           }
           if (results.length !== unknown.length) {
             throw new InvalidIconColorResponseError(
-              `Unexpected icon color response length: expected ${unknown.length}, got ${results.length}`,
+              "Unexpected icon color response length",
             )
           }
           unknown.forEach((q, i) => rememberAnswer(queryKey(q), results[i]))
-          const elapsed = Date.now() - startedAt
+          const elapsed = performance.now() - startedAt
           if (elapsed >= ICON_COLOR_SLOW_THRESHOLD_MS) {
             reportOnce(ANALYTICS_EVENTS.ICON_COLOR_RESOLVE_SLOW, {
-              elapsed_ms: elapsed,
+              elapsed_ms: Math.round(elapsed),
               query_count: unknown.length,
             })
           }
@@ -158,7 +159,7 @@ function usePreservedIconColors(queries: IconColorQuery[]): boolean[] | null {
             reason: failureReason(e),
             // GA4 truncates parameter values at 100 characters.
             error: String(e instanceof Error ? e.message : e).slice(0, 100),
-            elapsed_ms: Date.now() - startedAt,
+            elapsed_ms: Math.round(performance.now() - startedAt),
             query_count: unknown.length,
           })
         }

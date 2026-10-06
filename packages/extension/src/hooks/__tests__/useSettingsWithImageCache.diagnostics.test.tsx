@@ -105,9 +105,11 @@ describe("useSettingsWithImageCache diagnostics", () => {
 
   it("USD-03: 異常系: タイムアウトしたら既定の色で表示し、reason=timeout を送信する", async () => {
     // Arrange
-    const { render, send, sendEvent, IpcTimeoutError, ANALYTICS_EVENTS } =
+    const { render, send, sendEvent, IpcTimeoutError, ANALYTICS_EVENTS, hook } =
       await load()
-    send.mockRejectedValue(new IpcTimeoutError("resolveIconColors", 2000))
+    send.mockRejectedValue(
+      new IpcTimeoutError("resolveIconColors", hook.ICON_COLOR_TIMEOUT_MS),
+    )
 
     // Act
     const { result } = await render()
@@ -171,10 +173,13 @@ describe("useSettingsWithImageCache diagnostics", () => {
   it("USD-07: 境界値: 応答がしきい値以上に遅ければ icon_color_resolve_slow を送信する", async () => {
     // Arrange
     const { render, send, sendEvent, ANALYTICS_EVENTS, hook } = await load()
-    const now = vi.spyOn(Date, "now")
-    now.mockReturnValueOnce(0)
-    now.mockReturnValue(hook.ICON_COLOR_SLOW_THRESHOLD_MS)
-    send.mockResolvedValue([false])
+    // The clock moves only while the service worker "answers".
+    let clock = 0
+    vi.spyOn(performance, "now").mockImplementation(() => clock)
+    send.mockImplementation(async () => {
+      clock += hook.ICON_COLOR_SLOW_THRESHOLD_MS
+      return [false]
+    })
 
     // Act
     await render()
@@ -189,10 +194,13 @@ describe("useSettingsWithImageCache diagnostics", () => {
   it("USD-08: 境界値: 応答がしきい値未満なら icon_color_resolve_slow を送信しない", async () => {
     // Arrange
     const { render, send, sendEvent, hook } = await load()
-    const now = vi.spyOn(Date, "now")
-    now.mockReturnValueOnce(0)
-    now.mockReturnValue(hook.ICON_COLOR_SLOW_THRESHOLD_MS - 1)
-    send.mockResolvedValue([false])
+    // The clock moves only while the service worker "answers".
+    let clock = 0
+    vi.spyOn(performance, "now").mockImplementation(() => clock)
+    send.mockImplementation(async () => {
+      clock += hook.ICON_COLOR_SLOW_THRESHOLD_MS - 1
+      return [false]
+    })
 
     // Act
     await render()
