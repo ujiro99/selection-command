@@ -57,6 +57,8 @@ export namespace PageAction {
     selector: string
     selectorType: SelectorType
     value: string
+    /** Clear the text already in the element before inputting. */
+    clearBefore?: boolean
   }
 
   export type InputExec = Input & {

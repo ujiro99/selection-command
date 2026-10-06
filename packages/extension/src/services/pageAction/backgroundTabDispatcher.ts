@@ -1,4 +1,4 @@
-import { inputContentEditable } from "@/services/dom"
+import { inputContentEditable, clearInput } from "@/services/dom"
 import { isMac, isEmpty } from "@/lib/utils"
 import { PageAction, ActionReturn } from "./dispatcher"
 import { queryElement } from "./queryElement"
@@ -201,7 +201,7 @@ export const BackgroundTabPageActionDispatcher = {
           element instanceof HTMLInputElement ||
           element instanceof HTMLTextAreaElement
         ) {
-          element.value = element.value + value
+          element.value = param.clearBefore ? value : element.value + value
           // Move cursor to the end of the input
           element.selectionStart = element.value.length
           element.selectionEnd = element.value.length
@@ -211,6 +211,7 @@ export const BackgroundTabPageActionDispatcher = {
           element.dispatchEvent(inputEvent)
           element.dispatchEvent(changeEvent)
         } else if (element.isContentEditable) {
+          if (param.clearBefore) clearInput(element)
           await inputContentEditable(element, value, 1, null)
         }
       }

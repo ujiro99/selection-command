@@ -372,6 +372,8 @@ const buildDomInputSteps = (
         selector: inputSelector,
         selectorType: SelectorType.css,
         value: promptValue,
+        // Some services restore an unsent prompt from the previous session.
+        clearBefore: true,
       },
       { delayMs: 200 },
     ),

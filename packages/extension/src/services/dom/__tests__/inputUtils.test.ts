@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach, beforeEach } from "vitest"
-import { inputContentEditable } from "../inputUtils"
+import { inputContentEditable, clearInput } from "../inputUtils"
 
 /**
  * Helper: create a contenteditable div with selection set inside it.
@@ -182,5 +182,36 @@ describe("inputContentEditable", () => {
     const result = await inputContentEditable(div, "hello", 0, null)
     expect(result).toBe(true)
     expect(div.textContent).toBe("hello")
+  })
+})
+
+describe("clearInput", () => {
+  afterEach(() => {
+    document.body.innerHTML = ""
+  })
+
+  it("empties a textarea and notifies listeners", () => {
+    const textarea = document.createElement("textarea")
+    textarea.value = "restored prompt"
+    document.body.appendChild(textarea)
+    const onInput = vi.fn()
+    textarea.addEventListener("input", onInput)
+
+    clearInput(textarea)
+
+    expect(textarea.value).toBe("")
+    expect(onInput).toHaveBeenCalledTimes(1)
+  })
+
+  it("empties entered text of a contenteditable but keeps placeholders", () => {
+    const div = document.createElement("div")
+    div.innerHTML =
+      '<p>restored prompt</p><span contenteditable="false">Ask anything</span>'
+    document.body.appendChild(div)
+
+    clearInput(div)
+
+    expect(div.querySelector("p")?.textContent).toBe("")
+    expect(div.querySelector("span")?.textContent).toBe("Ask anything")
   })
 })
