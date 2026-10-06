@@ -11,6 +11,10 @@ import type { SettingsType, Command, Caches } from "@/types"
 // Mock dependencies
 vi.mock("../../services/settings/enhancedSettings")
 vi.mock("../../services/settings/settingsCache")
+vi.mock("@/services/analytics", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/services/analytics")>()),
+  sendEvent: vi.fn(),
+}))
 
 // The recoloring decision is answered by the service worker; stand in for it
 // with the real check so the hook is exercised end to end.
