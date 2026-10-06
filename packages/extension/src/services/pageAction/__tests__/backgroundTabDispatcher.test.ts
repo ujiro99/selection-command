@@ -11,6 +11,7 @@ vi.mock("@/services/dom", () => ({
   getElementByXPath: vi.fn(),
   isValidXPath: vi.fn(),
   inputContentEditable: vi.fn(),
+  clearInput: vi.fn(),
 }))
 
 vi.mock("@/lib/utils", () => ({
@@ -49,6 +50,7 @@ vi.mock("@/const", async () => {
 })
 
 // Import modules after mocking
+import { clearInput } from "@/services/dom"
 import { BackgroundTabPageActionDispatcher } from "../backgroundTabDispatcher"
 import {
   getElementByXPath,
@@ -1035,6 +1037,51 @@ describe("backgroundTabDispatcher", () => {
   })
 
   describe("BackgroundTabPageActionDispatcher.input", () => {
+    it("BDI-clear: Should clear an input before typing when clearBefore is set", async () => {
+      const mockElement = mockElements.input
+      mockElement.value = "restored"
+      mockDocument.querySelector.mockReturnValue(mockElement)
+      vi.mocked(clearInput).mockImplementation((el: any) => {
+        el.value = ""
+      })
+
+      const result = await BackgroundTabPageActionDispatcher.input({
+        type: PAGE_ACTION_EVENT.input,
+        selector: ".input-field",
+        selectorType: SelectorType.css,
+        label: "Input Field",
+        value: "test text",
+        clearBefore: true,
+        srcUrl: "",
+        selectedText: "",
+        clipboardText: "",
+      } as any)
+
+      expect(result).toEqual([true])
+      expect(clearInput).toHaveBeenCalledWith(mockElement)
+      expect(mockElement.value).toBe("test text")
+    })
+
+    it("BDI-no-clear: Should not clear when clearBefore is not set", async () => {
+      const mockElement = mockElements.input
+      mockElement.value = "existing"
+      mockDocument.querySelector.mockReturnValue(mockElement)
+      vi.mocked(clearInput).mockClear()
+
+      await BackgroundTabPageActionDispatcher.input({
+        type: PAGE_ACTION_EVENT.input,
+        selector: ".input-field",
+        selectorType: SelectorType.css,
+        label: "Input Field",
+        value: "test text",
+        srcUrl: "",
+        selectedText: "",
+        clipboardText: "",
+      } as any)
+
+      expect(clearInput).not.toHaveBeenCalled()
+    })
+
     it("BDI-01: Should input text into HTMLInputElement", async () => {
       const mockElement = mockElements.input
       mockElement.value = "existing"

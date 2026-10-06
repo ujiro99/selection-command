@@ -736,10 +736,4 @@ function getPath(elm: Element, uniqueElement?: Element): string[] {
   return path
 }
 
-export {
-  inputContentEditable,
-  clearInput,
-  isTextControl,
-  enteredTextNodes,
-  setTextControlValue,
-} from "./inputUtils"
+export { inputContentEditable, clearInput } from "./inputUtils"

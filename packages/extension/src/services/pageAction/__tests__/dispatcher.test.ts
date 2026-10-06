@@ -13,7 +13,6 @@ vi.mock("@/services/dom", () => ({
   isEditable: vi.fn(),
   inputContentEditable: vi.fn(),
   clearInput: vi.fn(),
-  isTextControl: vi.fn(),
 }))
 
 vi.mock("@/lib/utils", () => ({
@@ -869,6 +868,48 @@ describe("PageActionDispatcher", () => {
       } as any)
 
       expect(clearInput).not.toHaveBeenCalled()
+    })
+
+    it("PDI-clear-input: Should clear an input element before typing when clearBefore is set", async () => {
+      const mockElement = mockElements.input
+      mockDocument.querySelector.mockReturnValue(mockElement)
+      mockIsEditable.mockReturnValue(false)
+      vi.mocked(clearInput).mockClear()
+
+      await PageActionDispatcher.input({
+        type: PAGE_ACTION_EVENT.input,
+        selector: ".textarea",
+        selectorType: SelectorType.css,
+        label: "Textarea",
+        value: "hello",
+        clearBefore: true,
+        srcUrl: "",
+        selectedText: "",
+        clipboardText: "",
+      } as any)
+
+      expect(clearInput).toHaveBeenCalledWith(mockElement)
+    })
+
+    it("PDI-clear-unsupported: Should warn and not clear other non-editable elements", async () => {
+      mockDocument.querySelector.mockReturnValue(mockElements.div)
+      mockIsEditable.mockReturnValue(false)
+      vi.mocked(clearInput).mockClear()
+
+      await PageActionDispatcher.input({
+        type: PAGE_ACTION_EVENT.input,
+        selector: ".div",
+        selectorType: SelectorType.css,
+        label: "Div",
+        value: "hello",
+        clearBefore: true,
+        srcUrl: "",
+        selectedText: "",
+        clipboardText: "",
+      } as any)
+
+      expect(clearInput).not.toHaveBeenCalled()
+      expect(mockConsole.warn).toHaveBeenCalled()
     })
   })
 

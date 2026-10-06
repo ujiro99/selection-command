@@ -4,13 +4,13 @@
  * check (see runner.ts).
  */
 import { sleep } from "@/lib/utils"
+import { inputContentEditable } from "@/services/dom"
 import {
-  inputContentEditable,
   clearInput,
   isTextControl,
   enteredTextNodes,
   setTextControlValue,
-} from "@/services/dom"
+} from "@/services/dom/inputUtils"
 import type { AiService } from "@/types"
 import { PAGE_STATE, SNAPSHOT_TEXT_LENGTH, takePageSnapshot } from "./pageState"
 import { hasAnyMatch, matchEach } from "./selectorMatch"

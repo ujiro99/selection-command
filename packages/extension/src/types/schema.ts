@@ -199,6 +199,7 @@ const PageActionInputSchema = z.object({
   selector: z.string(),
   selectorType: z.nativeEnum(SelectorType),
   value: z.string(),
+  clearBefore: z.boolean().optional(),
 })
 
 const PageActionKeyboardSchema = z.object({

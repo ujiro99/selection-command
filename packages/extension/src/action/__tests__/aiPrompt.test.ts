@@ -142,6 +142,28 @@ describe("AiPrompt.execute", () => {
       )
     })
 
+    it("AP-01f: the input step clears the previous input first", async () => {
+      vi.mocked(findAiService).mockResolvedValue(makeDomService())
+
+      await AiPrompt.execute({
+        selectionText: "hello world",
+        command: {
+          ...baseCommand,
+          aiPromptOption: {
+            ...baseCommand.aiPromptOption,
+            serviceId: "gemini",
+          },
+        } as any,
+        position: { x: 100, y: 100 },
+      })
+
+      const sentArgs = vi.mocked(Ipc.send).mock.calls[0][1] as any
+      const inputStep = sentArgs.steps.find(
+        (s: any) => s.param.type === PAGE_ACTION_EVENT.input,
+      )
+      expect(inputStep.param.clearBefore).toBe(true)
+    })
+
     it("AP-01e: the submit step waits for clickability with an explicit, doubled timeout", async () => {
       vi.mocked(findAiService).mockResolvedValue(makeDomService())
 

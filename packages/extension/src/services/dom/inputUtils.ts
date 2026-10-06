@@ -172,10 +172,11 @@ export const setTextControlValue = (
 }
 
 /**
- * Remove the text entered in an input. execCommand("delete") on a selection is ignored by
- * Lexical, so the text nodes are emptied directly and the editor is notified
- * with an input event; editors sync their state from the DOM on it (verified
- * on Perplexity). Placeholder nodes are left untouched.
+ * Remove the text entered in an input.
+ * execCommand("delete") on a selection is ignored by Lexical, so the text
+ * nodes are emptied directly and the editor is notified with an input event;
+ * editors sync their state from the DOM on it (verified on Perplexity).
+ * Placeholder nodes are left untouched.
  */
 export const clearInput = (el: Element) => {
   if (isTextControl(el)) {

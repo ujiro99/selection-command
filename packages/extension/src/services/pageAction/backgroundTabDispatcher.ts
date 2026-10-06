@@ -201,7 +201,8 @@ export const BackgroundTabPageActionDispatcher = {
           element instanceof HTMLInputElement ||
           element instanceof HTMLTextAreaElement
         ) {
-          element.value = param.clearBefore ? value : element.value + value
+          if (param.clearBefore) clearInput(element)
+          element.value = element.value + value
           // Move cursor to the end of the input
           element.selectionStart = element.value.length
           element.selectionEnd = element.value.length

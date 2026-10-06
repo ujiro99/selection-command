@@ -214,4 +214,29 @@ describe("clearInput", () => {
     expect(div.querySelector("p")?.textContent).toBe("")
     expect(div.querySelector("span")?.textContent).toBe("Ask anything")
   })
+
+  it("empties an input element", () => {
+    const input = document.createElement("input")
+    input.value = "restored prompt"
+    document.body.appendChild(input)
+
+    clearInput(input)
+
+    expect(input.value).toBe("")
+  })
+
+  it("empties every paragraph and skips aria-hidden placeholders", () => {
+    const div = document.createElement("div")
+    div.innerHTML =
+      '<p>first</p><p>second</p><span aria-hidden="true">Ask anything</span>'
+    document.body.appendChild(div)
+
+    clearInput(div)
+
+    const texts = Array.from(div.querySelectorAll("p")).map(
+      (p) => p.textContent,
+    )
+    expect(texts).toEqual(["", ""])
+    expect(div.querySelector("span")?.textContent).toBe("Ask anything")
+  })
 })
