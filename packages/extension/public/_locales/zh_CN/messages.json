@@ -1329,6 +1329,24 @@
   "review_request_later": {
     "message": "稍后"
   },
+  "commandUpdate_confirm_title": {
+    "message": "要更新此命令吗？"
+  },
+  "commandUpdate_confirm_message": {
+    "message": "“$title$”已在此浏览器中编辑。更新后，您的编辑内容将被 Hub 上的最新版本覆盖。\n文件夹和快捷键设置将保留。",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "Google Search"
+      }
+    }
+  },
+  "commandUpdate_confirm_overwrite": {
+    "message": "覆盖并更新"
+  },
+  "commandUpdate_confirm_cancel": {
+    "message": "取消"
+  },
   "developersupport_title": {
     "message": "支持开发者"
   },

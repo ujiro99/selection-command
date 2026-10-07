@@ -1332,6 +1332,24 @@
   "review_request_later": {
     "message": "Kemudian"
   },
+  "commandUpdate_confirm_title": {
+    "message": "Kemas kini arahan ini?"
+  },
+  "commandUpdate_confirm_message": {
+    "message": "\"$title$\" telah disunting dalam pelayar ini. Mengemas kini akan menggantikan suntingan anda dengan versi terkini daripada Hub.\nTetapan folder dan pintasan anda akan dikekalkan.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "Google Search"
+      }
+    }
+  },
+  "commandUpdate_confirm_overwrite": {
+    "message": "Tulis ganti dan kemas kini"
+  },
+  "commandUpdate_confirm_cancel": {
+    "message": "Batal"
+  },
   "developersupport_title": {
     "message": "Sokong Pembangun"
   },

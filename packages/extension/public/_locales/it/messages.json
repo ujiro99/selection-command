@@ -1329,6 +1329,24 @@
   "review_request_later": {
     "message": "Dopo"
   },
+  "commandUpdate_confirm_title": {
+    "message": "Aggiornare questo comando?"
+  },
+  "commandUpdate_confirm_message": {
+    "message": "\"$title$\" è stato modificato in questo browser. L'aggiornamento sostituirà le tue modifiche con la versione più recente dell'Hub.\nLe impostazioni di cartella e scorciatoie verranno mantenute.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "Google Search"
+      }
+    }
+  },
+  "commandUpdate_confirm_overwrite": {
+    "message": "Sovrascrivi e aggiorna"
+  },
+  "commandUpdate_confirm_cancel": {
+    "message": "Annulla"
+  },
   "developersupport_title": {
     "message": "Supporta lo sviluppatore"
   },

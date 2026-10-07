@@ -91,11 +91,17 @@ export enum TabCommand {
   closeMenu = "closeMenu",
   showReviewRequest = "showReviewRequest",
   showToast = "showToast",
+  confirmCommandUpdate = "confirmCommandUpdate",
   // PageAction
   sendWindowSize = "sendWindowSize",
   execPageAction = "execPageAction",
   // Developer tools
   checkAiSelectors = "checkAiSelectors",
+}
+
+/** Asks the user whether to overwrite a locally edited command. */
+export type ConfirmCommandUpdateProps = {
+  title: string
 }
 
 export type ClickElementProps = {

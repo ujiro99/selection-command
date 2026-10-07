@@ -1332,6 +1332,24 @@
   "review_request_later": {
     "message": "Nanti"
   },
+  "commandUpdate_confirm_title": {
+    "message": "Perbarui perintah ini?"
+  },
+  "commandUpdate_confirm_message": {
+    "message": "\"$title$\" telah diedit di browser ini. Memperbarui akan mengganti hasil edit Anda dengan versi terbaru dari Hub.\nPengaturan folder dan pintasan Anda akan tetap disimpan.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "Google Search"
+      }
+    }
+  },
+  "commandUpdate_confirm_overwrite": {
+    "message": "Timpa dan perbarui"
+  },
+  "commandUpdate_confirm_cancel": {
+    "message": "Batal"
+  },
   "developersupport_title": {
     "message": "Dukung Pengembang"
   },

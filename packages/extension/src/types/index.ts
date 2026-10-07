@@ -49,6 +49,10 @@ export type SearchCommand = {
   excludeFromGlobalIconColor?: boolean
   sourceType?: COMMAND_SOURCE_TYPE
   sourceId?: string
+  /** When the content shared through the Hub was last changed (ISO 8601). */
+  contentUpdatedAt?: string
+  /** Fingerprint of the content last received from / sent to the Hub. */
+  contentHash?: string
   openMode: OPEN_MODE
   openModeSecondary?: OPEN_MODE
   searchUrl?: string

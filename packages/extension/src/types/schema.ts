@@ -29,6 +29,9 @@ const commandSourceSchema = {
   sourceType: z.nativeEnum(COMMAND_SOURCE_TYPE).optional(),
   sourceId: z.string().optional(),
   excludeFromGlobalIconColor: z.boolean().optional(),
+  // Hub content tracking; kept as-is so edits in the dialog do not drop them.
+  contentUpdatedAt: z.string().optional(),
+  contentHash: z.string().optional(),
 }
 
 const searchSchema = z.object({
