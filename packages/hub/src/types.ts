@@ -20,7 +20,6 @@ type BaseCommand = {
   iconUrl: string
   tags: Tag[]
   addedAt: string
-  revision?: number
 }
 
 export type SearchCommand = BaseCommand & {
@@ -39,7 +38,7 @@ export type CommandInJson = Omit<SelectionCommand, "tags"> & {
 
 export type CommandInMessage = Omit<
   SelectionCommand,
-  "id" | "description" | "tags" | "addedAt" | "revision"
+  "id" | "description" | "tags" | "addedAt"
 >
 
 export type Analytics = {

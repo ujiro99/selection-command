@@ -399,7 +399,6 @@ describe("UUID Service", () => {
             height: 700,
             width: 600,
           },
-          revision: 0,
         } as CommandContent
 
         const uuid = await cmd2uuid(commandInHub)

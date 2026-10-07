@@ -43,7 +43,6 @@ export type SelectionCommand =
 export type SearchCommand = {
   id: string
   title: string
-  revision?: number
   iconUrl: string
   /** When true, excludes this command's icon from being recolored by the global icon color setting. */
   excludeFromGlobalIconColor?: boolean

@@ -37,7 +37,6 @@ const commandSourceSchema = {
 const searchSchema = z.object({
   openMode: z.enum(SEARCH_OPEN_MODE),
   id: z.string(),
-  revision: z.number().optional(),
   title: z.string().min(3, { message: t("Option_zod_string_min", ["3"]) }),
   iconUrl: z
     .string()
@@ -74,7 +73,6 @@ export const isSearchType = (data: unknown): data is SearchType => {
 const apiSchema = z.object({
   openMode: z.literal(OPEN_MODE.API),
   id: z.string(),
-  revision: z.number().optional(),
   title: z.string().min(3, { message: t("Option_zod_string_min", ["3"]) }),
   iconUrl: z
     .string()
@@ -99,7 +97,6 @@ const apiSchema = z.object({
 const linkPopupSchema = z.object({
   openMode: z.enum([OPEN_MODE.LINK_POPUP]),
   id: z.string(),
-  revision: z.number().optional(),
   parentFolderId: z.string().optional(),
   ...commandSourceSchema,
   title: z
@@ -122,7 +119,6 @@ const linkPopupSchema = z.object({
 const copySchema = z.object({
   openMode: z.enum([OPEN_MODE.COPY]),
   id: z.string(),
-  revision: z.number().optional(),
   parentFolderId: z.string().optional(),
   ...commandSourceSchema,
   title: z
@@ -142,7 +138,6 @@ const copySchema = z.object({
 const textStyleSchema = z.object({
   openMode: z.enum([OPEN_MODE.GET_TEXT_STYLES]),
   id: z.string(),
-  revision: z.number().optional(),
   parentFolderId: z.string().optional(),
   ...commandSourceSchema,
   title: z
@@ -311,7 +306,6 @@ export const PageActionOption = z
 const pageActionSchema = z.object({
   openMode: z.enum([OPEN_MODE.PAGE_ACTION]),
   id: z.string(),
-  revision: z.number().optional(),
   parentFolderId: z.string().optional(),
   ...commandSourceSchema,
   title: z.string().min(3, { message: t("Option_zod_string_min", ["3"]) }),
@@ -359,7 +353,6 @@ export const AiPromptOptionSchema = z
 const aiPromptSchema = z.object({
   openMode: z.enum([OPEN_MODE.AI_PROMPT]),
   id: z.string(),
-  revision: z.number().optional(),
   parentFolderId: z.string().optional(),
   ...commandSourceSchema,
   title: z.string().min(3, { message: t("Option_zod_string_min", ["3"]) }),
