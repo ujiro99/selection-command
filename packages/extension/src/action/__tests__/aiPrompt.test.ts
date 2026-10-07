@@ -49,6 +49,10 @@ vi.mock("@/services/i18n", () => ({
 
 vi.mock("@/services/option/defaultSettings", () => ({
   PopupOption: { width: 800, height: 600 },
+  resolvePopupSize: (popupOption?: { width?: number; height?: number }) => ({
+    width: popupOption?.width ?? 800,
+    height: popupOption?.height ?? 600,
+  }),
 }))
 
 // Minimal AiService fixtures

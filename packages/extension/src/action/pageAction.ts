@@ -8,7 +8,7 @@ import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { getWindowPosition } from "@/services/screen"
 import { isValidString, isPageActionCommand } from "@/lib/utils"
 import { PAGE_ACTION_OPEN_MODE, PAGE_ACTION_EVENT } from "@/const"
-import { PopupOption } from "@/services/option/defaultSettings"
+import { resolvePopupSize } from "@/services/option/defaultSettings"
 import type { ExecuteCommandParams, UrlParam } from "@/types"
 import type { OpenAndRunProps } from "@/services/pageAction/serviceWorker"
 import { INSERT, templateReferencesInsert } from "@/services/pageAction"
@@ -110,8 +110,7 @@ export const PageAction = {
       steps: command.pageActionOption.steps,
       top: Math.floor(windowPosition.top + position.y),
       left: Math.floor(windowPosition.left + position.x),
-      height: command.popupOption?.height ?? PopupOption.height,
-      width: command.popupOption?.width ?? PopupOption.width,
+      ...resolvePopupSize(command.popupOption),
       selectedText: selectionText,
       srcUrl: pageUrl ?? "",
       openMode,

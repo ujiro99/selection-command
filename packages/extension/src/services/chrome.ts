@@ -792,3 +792,8 @@ export const updateSidePanelUrl = async (
     throw error
   }
 }
+
+/** Test-only exports. Do not use in production code. */
+export const __test = {
+  adjustWindowPosition,
+}

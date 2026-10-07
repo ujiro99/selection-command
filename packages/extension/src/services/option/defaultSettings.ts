@@ -206,6 +206,19 @@ export const PopupOption = {
   height: 700,
 }
 
+/**
+ * Resolve the popup window size of a command, falling back to the default.
+ * @param popupOption - Popup option of the command
+ * @returns Popup window size
+ */
+export const resolvePopupSize = (popupOption?: {
+  width?: number
+  height?: number
+}): { width: number; height: number } => ({
+  width: popupOption?.width ?? PopupOption.width,
+  height: popupOption?.height ?? PopupOption.height,
+})
+
 // Onboarding's Step2 AiPrompt command (see src/components/onboarding/).
 // Kept as a normal, permanent default command per locale rather than being
 // injected/removed around the onboarding flow. Per-locale title/prompt text
