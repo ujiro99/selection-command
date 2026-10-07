@@ -1,7 +1,9 @@
 import { describe, it, expect } from "vitest"
-import { adjustWindowPosition } from "@/services/chrome"
+import { __test } from "@/services/chrome"
 import { POPUP_OFFSET } from "@/const"
 import type { ScreenSize } from "@/services/screen"
+
+const { adjustWindowPosition } = __test
 
 // Secondary display located to the right of a 1920px primary display
 const secondary: ScreenSize = {

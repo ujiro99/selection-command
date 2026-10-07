@@ -162,7 +162,7 @@ type OpenResult = {
  * @param {number} [offset=0] - Offset multiplier for multiple windows
  * @returns {{ top: number; left: number }} Adjusted position
  */
-export const adjustWindowPosition = (
+const adjustWindowPosition = (
   top: number,
   left: number,
   width: number | undefined,
@@ -791,4 +791,9 @@ export const updateSidePanelUrl = async (
     console.error("[updateSidePanelUrl] Failed:", error)
     throw error
   }
+}
+
+/** Test-only exports. Do not use in production code. */
+export const __test = {
+  adjustWindowPosition,
 }
