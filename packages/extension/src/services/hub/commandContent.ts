@@ -147,19 +147,26 @@ const TYPE_SPECIFIC_FIELDS = [
 /**
  * Replaces the content of an installed command with the content from the Hub
  * while keeping local settings.
+ *
+ * The source info is replaced too: after the overwrite the command is the
+ * Hub's version again, not a local edit (e.g. selfUpdated -> hubCommunity).
+ * It is kept only when the Hub did not send a valid one.
  */
 export function applyHubContent(
   current: SelectionCommand,
-  content: HubContent,
-  contentUpdatedAt: string | undefined,
+  incoming: SelectionCommand,
 ): SelectionCommand {
   const next = { ...current } as Record<string, unknown>
   // Drop the old type-specific data so a type change does not leave stale fields.
   for (const key of TYPE_SPECIFIC_FIELDS) delete next[key]
-  Object.assign(next, content)
+  Object.assign(next, pickHubContent(incoming))
   if (next.openMode !== OPEN_MODE.WINDOW) delete next.windowState
+  if (incoming.sourceType) {
+    next.sourceType = incoming.sourceType
+    next.sourceId = incoming.sourceId
+  }
   const merged = next as SelectionCommand
-  merged.contentUpdatedAt = contentUpdatedAt
+  merged.contentUpdatedAt = incoming.contentUpdatedAt
   merged.contentHash = calcContentHash(merged)
   return merged
 }

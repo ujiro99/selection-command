@@ -32,7 +32,6 @@ import {
   calcContentHash,
   isLocallyModified,
   parseContentUpdatedAt,
-  pickHubContent,
   stampForHub,
   type HubContentStamp,
 } from "@/services/hub/commandContent"
@@ -440,7 +439,8 @@ export async function handleAddCommand(
 
 /**
  * Replaces the content of an installed command with the latest one from the
- * Hub. Local settings (folder, popup size, shortcuts, etc.) are kept. If the
+ * Hub. Local settings (folder, popup size, shortcuts, etc.) are kept, while
+ * the source info is reset to the one sent by the Hub. If the
  * command was edited locally, the user is asked to confirm the overwrite in
  * the Hub tab first.
  */
@@ -488,11 +488,7 @@ export async function handleUpdateCommand(
       }
     }
 
-    const updated = applyHubContent(
-      current,
-      pickHubContent(incoming),
-      incoming.contentUpdatedAt,
-    )
+    const updated = applyHubContent(current, incoming)
     await Storage.updateCommands([updated])
     console.debug("[handleUpdateCommand] Updated command id:", updated.id)
     sendResponse({ result: true })

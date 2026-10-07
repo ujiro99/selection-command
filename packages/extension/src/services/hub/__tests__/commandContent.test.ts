@@ -146,12 +146,20 @@ describe("stampForHub", () => {
 })
 
 describe("applyHubContent", () => {
+  const local = {
+    ...base,
+    sourceType: "selfUpdated",
+    sourceId: "self-updated-id",
+  } as unknown as SelectionCommand
+
   it("CC-15: replaces content and keeps local settings", () => {
-    const next = applyHubContent(
-      base,
-      { title: "New", iconUrl: "https://new.png", openMode: "window" },
-      "2026-05-01T00:00:00.000Z",
-    )
+    const next = applyHubContent(local, {
+      id: "cmd-1",
+      title: "New",
+      iconUrl: "https://new.png",
+      openMode: "window",
+      contentUpdatedAt: "2026-05-01T00:00:00.000Z",
+    } as unknown as SelectionCommand)
     expect(next).toMatchObject({
       id: "cmd-1",
       title: "New",
@@ -168,14 +176,34 @@ describe("applyHubContent", () => {
   })
 
   it("CC-16: drops windowState when the new open mode is not window", () => {
-    const next = applyHubContent(base, { openMode: "tab" }, undefined)
+    const next = applyHubContent(local, {
+      openMode: "tab",
+    } as unknown as SelectionCommand)
     expect(next).not.toHaveProperty("windowState")
     expect(next.contentUpdatedAt).toBeUndefined()
   })
 
   it("CC-17: does not mutate the current command", () => {
-    const current = { ...base }
-    applyHubContent(current, { title: "New" }, undefined)
-    expect(current).toEqual(base)
+    const current = { ...local }
+    applyHubContent(current, { title: "New" } as unknown as SelectionCommand)
+    expect(current).toEqual(local)
+  })
+
+  it("CC-18: resets the source info to the one sent by the Hub", () => {
+    const next = applyHubContent(local, {
+      title: "New",
+      sourceType: "hubCommunity",
+      sourceId: "hub-public-id",
+    } as unknown as SelectionCommand)
+    expect(next.sourceType).toBe("hubCommunity")
+    expect(next.sourceId).toBe("hub-public-id")
+  })
+
+  it("CC-19: keeps the source info when the Hub sends none", () => {
+    const next = applyHubContent(local, {
+      title: "New",
+    } as unknown as SelectionCommand)
+    expect(next.sourceType).toBe("selfUpdated")
+    expect(next.sourceId).toBe("self-updated-id")
   })
 })

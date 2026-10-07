@@ -457,6 +457,22 @@ describe("handleUpdateCommand", () => {
     expect(sendResponse).toHaveBeenCalledWith({ result: true })
   })
 
+  it("UC-02b: resets selfUpdated source info to the Hub's on overwrite", async () => {
+    vi.mocked(Storage.getCommands).mockResolvedValue([
+      {
+        ...installed,
+        title: "My edit",
+        sourceType: "selfUpdated",
+        sourceId: "self-updated-id",
+      },
+    ] as any)
+    await handleUpdateCommand(JSON.stringify(incoming), hubSender, vi.fn())
+
+    const updated = vi.mocked(Storage.updateCommands).mock.calls[0][0][0]
+    expect(updated.sourceType).toBe("hubCommunity")
+    expect(updated.sourceId).toBe("src-1")
+  })
+
   it("UC-03: treats a command without fingerprint as edited", async () => {
     const { contentHash: _hash, ...noHash } = installed
     vi.mocked(Storage.getCommands).mockResolvedValue([noHash] as any)
