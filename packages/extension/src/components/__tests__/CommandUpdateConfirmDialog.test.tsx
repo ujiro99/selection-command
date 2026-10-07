@@ -15,13 +15,17 @@ type Listener = (
 ) => boolean
 
 function renderAndGetListener(): Listener {
+  return renderDialog().listener
+}
+
+function renderDialog() {
   const addListener = vi.spyOn(Ipc, "addListener")
-  render(<CommandUpdateConfirmDialog />)
+  const view = render(<CommandUpdateConfirmDialog />)
   const call = addListener.mock.calls.find(
     ([command]) => command === TabCommand.confirmCommandUpdate,
   )
   if (!call) throw new Error("listener not registered")
-  return call[1] as Listener
+  return { listener: call[1] as Listener, ...view }
 }
 
 function openDialog(listener: Listener, title = "My Command") {
@@ -80,6 +84,16 @@ describe("CommandUpdateConfirmDialog", () => {
     })
 
     expect(response).toHaveBeenCalledWith(false)
+  })
+
+  it("CUD-06: responds false to a pending request on unmount", () => {
+    const { listener, unmount } = renderDialog()
+    const { response } = openDialog(listener)
+
+    unmount()
+
+    expect(response).toHaveBeenCalledWith(false)
+    expect(response).toHaveBeenCalledTimes(1)
   })
 
   it("CUD-05: a newer request cancels the unanswered one", () => {

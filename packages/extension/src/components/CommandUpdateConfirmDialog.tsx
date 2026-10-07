@@ -13,7 +13,8 @@ import { Ipc, TabCommand } from "@/services/ipc"
 import type { ConfirmCommandUpdateProps } from "@/services/ipc"
 import { t } from "@/services/i18n"
 
-type Response = (confirmed: boolean) => void
+// Named to avoid shadowing the global Fetch API `Response`.
+type ConfirmResponse = (confirmed: boolean) => void
 
 /**
  * Confirms overwriting a locally edited command with the latest content from
@@ -22,7 +23,7 @@ type Response = (confirmed: boolean) => void
  */
 export function CommandUpdateConfirmDialog(): JSX.Element {
   const [request, setRequest] = useState<ConfirmCommandUpdateProps | null>(null)
-  const responseRef = useRef<Response | null>(null)
+  const responseRef = useRef<ConfirmResponse | null>(null)
 
   const reply = (confirmed: boolean) => {
     responseRef.current?.(confirmed)
@@ -34,7 +35,7 @@ export function CommandUpdateConfirmDialog(): JSX.Element {
     const handleConfirm = (
       param: ConfirmCommandUpdateProps,
       _sender: chrome.runtime.MessageSender,
-      response: Response,
+      response: ConfirmResponse,
     ) => {
       // A newer request replaces an unanswered one.
       responseRef.current?.(false)
@@ -49,6 +50,9 @@ export function CommandUpdateConfirmDialog(): JSX.Element {
     )
     return () => {
       Ipc.removeListener(TabCommand.confirmCommandUpdate)
+      // Answer a pending request so the service worker does not wait on it.
+      responseRef.current?.(false)
+      responseRef.current = null
     }
   }, [])
 

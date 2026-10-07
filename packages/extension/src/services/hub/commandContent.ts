@@ -119,6 +119,11 @@ export function nextContentUpdatedAt(prev?: string, now = Date.now()): string {
  * Stamps a command that is about to be sent to the Hub (share / edit).
  * Returns the command to send (without the local-only fingerprint) and the
  * stamp to save locally.
+ *
+ * The fingerprint is taken from the content being sent, and the stamp is
+ * saved after the Hub accepts it. If the user edits the command locally in
+ * between, the saved fingerprint no longer matches the local content, so the
+ * command counts as edited (safe side) even though contentUpdatedAt advanced.
  */
 export function stampForHub<T extends SelectionCommand>(
   cmd: T,
@@ -135,14 +140,17 @@ export function stampForHub<T extends SelectionCommand>(
   }
 }
 
-/** Fields that only make sense for some command types. */
-const TYPE_SPECIFIC_FIELDS = [
-  "openModeSecondary",
-  "spaceEncoding",
-  "searchUrl",
-  "aiPromptOption",
-  "pageActionOption",
-] as const
+/** Fields that every command has; the rest only make sense for some types. */
+const COMMON_CONTENT_FIELDS: readonly HubContentField[] = [
+  "title",
+  "iconUrl",
+  "openMode",
+]
+
+/** Derived from HUB_CONTENT_FIELDS so a new content field is not missed. */
+const TYPE_SPECIFIC_FIELDS = HUB_CONTENT_FIELDS.filter(
+  (key) => !COMMON_CONTENT_FIELDS.includes(key),
+)
 
 /**
  * Replaces the content of an installed command with the content from the Hub

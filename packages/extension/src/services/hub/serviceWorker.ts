@@ -336,7 +336,11 @@ export const editCommandToHub = (
  * Builds a command from the JSON sent by the Hub (AddCommand / UpdateCommand).
  * Returns null if the payload is not a supported command type.
  */
-function buildCommandFromHub(parsed: Record<string, unknown>) {
+function buildCommandFromHub(value: unknown) {
+  if (value == null || typeof value !== "object" || Array.isArray(value)) {
+    return null
+  }
+  const parsed = value as Record<string, unknown>
   const isSearch = isSearchCommand(parsed)
   const isPageAction = isPageActionCommand(parsed)
   const isAiPrompt = isAiPromptCommand(parsed)
@@ -440,9 +444,9 @@ export async function handleAddCommand(
 /**
  * Replaces the content of an installed command with the latest one from the
  * Hub. Local settings (folder, popup size, shortcuts, etc.) are kept, while
- * the source info is reset to the one sent by the Hub. If the
- * command was edited locally, the user is asked to confirm the overwrite in
- * the Hub tab first.
+ * the source info is reset to the one sent by the Hub. If the command was
+ * edited locally, the user is asked to confirm the overwrite in the Hub tab
+ * first.
  */
 export async function handleUpdateCommand(
   command: string,
@@ -458,9 +462,11 @@ export async function handleUpdateCommand(
       return
     }
 
-    const commands = await Storage.getCommands()
-    const current = commands.find((c) => c.id === incoming.id) as
-      SelectionCommand | undefined
+    const findCommand = async () =>
+      (await Storage.getCommands()).find((c) => c.id === incoming.id) as
+        SelectionCommand | undefined
+
+    let current = await findCommand()
     if (!current) {
       sendResponse({ result: false, error: "Command not found" })
       return
@@ -484,6 +490,14 @@ export async function handleUpdateCommand(
       if (confirmed !== true) {
         // The tab could not show the dialog; never overwrite without consent.
         sendResponse({ result: false, error: "Failed to confirm overwrite" })
+        return
+      }
+      // Reload: the command may have changed while the dialog was open (e.g.
+      // folder or popup size edited in the options page). Applying the update
+      // to the stale copy would silently roll those changes back.
+      current = await findCommand()
+      if (!current) {
+        sendResponse({ result: false, error: "Command not found" })
         return
       }
     }

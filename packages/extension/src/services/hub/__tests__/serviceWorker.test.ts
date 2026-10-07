@@ -319,6 +319,18 @@ describe("handleAddCommand", () => {
     expect(saved.contentUpdatedAt).toBeUndefined()
   })
 
+  it("AC-10: responds with error when the JSON is not an object", async () => {
+    for (const json of ["null", "123", '"text"', "[]"]) {
+      const sendResponse = vi.fn()
+      await handleAddCommand(json, sendResponse)
+      expect(sendResponse).toHaveBeenCalledWith({
+        result: false,
+        error: "Invalid command format",
+      })
+    }
+    expect(Settings.addCommands).not.toHaveBeenCalled()
+  })
+
   it("AC-07: normalizes unknown sourceType to undefined", async () => {
     const cmd = JSON.stringify({
       id: "cmd-x",
@@ -471,6 +483,55 @@ describe("handleUpdateCommand", () => {
     const updated = vi.mocked(Storage.updateCommands).mock.calls[0][0][0]
     expect(updated.sourceType).toBe("hubCommunity")
     expect(updated.sourceId).toBe("src-1")
+  })
+
+  it("UC-02c: applies the update to the command as reloaded after the dialog", async () => {
+    const edited = { ...installed, title: "My edit" }
+    // The folder is changed in the options page while the dialog is open.
+    vi.mocked(Storage.getCommands)
+      .mockResolvedValueOnce([edited] as any)
+      .mockResolvedValueOnce([{ ...edited, parentFolderId: "folder-2" }] as any)
+    const sendResponse = vi.fn()
+    await handleUpdateCommand(JSON.stringify(incoming), hubSender, sendResponse)
+
+    const updated = vi.mocked(Storage.updateCommands).mock.calls[0][0][0]
+    expect(updated.parentFolderId).toBe("folder-2")
+    expect(updated.title).toBe("Search v2")
+    expect(sendResponse).toHaveBeenCalledWith({ result: true })
+  })
+
+  it("UC-02d: fails when the command is removed while the dialog is open", async () => {
+    const edited = { ...installed, title: "My edit" }
+    vi.mocked(Storage.getCommands)
+      .mockResolvedValueOnce([edited] as any)
+      .mockResolvedValueOnce([] as any)
+    const sendResponse = vi.fn()
+    await handleUpdateCommand(JSON.stringify(incoming), hubSender, sendResponse)
+
+    expect(Storage.updateCommands).not.toHaveBeenCalled()
+    expect(sendResponse).toHaveBeenCalledWith({
+      result: false,
+      error: "Command not found",
+    })
+  })
+
+  it("UC-02e: fails without asking when edited locally and the sender has no tab", async () => {
+    vi.mocked(Storage.getCommands).mockResolvedValue([
+      { ...installed, title: "My edit" },
+    ] as any)
+    const sendResponse = vi.fn()
+    await handleUpdateCommand(
+      JSON.stringify(incoming),
+      { origin: HUB_ORIGIN } as chrome.runtime.MessageSender,
+      sendResponse,
+    )
+
+    expect(sendTabSpy).not.toHaveBeenCalled()
+    expect(Storage.updateCommands).not.toHaveBeenCalled()
+    expect(sendResponse).toHaveBeenCalledWith({
+      result: false,
+      error: "Invalid sender tab",
+    })
   })
 
   it("UC-03: treats a command without fingerprint as edited", async () => {
