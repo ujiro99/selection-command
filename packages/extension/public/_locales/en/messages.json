@@ -1424,12 +1424,12 @@
     "description": "Button shown on every onboarding step to end the onboarding early."
   },
   "onboarding_welcomeMessage": {
-    "message": "Welcome!",
-    "description": "Onboarding variant B welcome overlay, shown for a moment before the first step."
+    "message": "Thanks for installing",
+    "description": "Onboarding welcome overlay heading, shown for a moment before the first step. Thanks the user for installing."
   },
   "onboarding_welcomeIntroduction": {
-    "message": "First, let's explore three useful ways to use it.",
-    "description": "Introduces the three usage examples that follow the onboarding welcome message."
+    "message": "Get started with 3 key features.",
+    "description": "Shown under the onboarding welcome heading. Invites the user to try the three popular features (search, AI prompt, link preview) in the hands-on steps that follow."
   },
   "onboarding_welcomeContinue": {
     "message": "Click to continue",

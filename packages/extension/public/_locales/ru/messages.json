@@ -1402,10 +1402,10 @@
     "message": "Пропустить"
   },
   "onboarding_welcomeMessage": {
-    "message": "Добро пожаловать!"
+    "message": "Спасибо за установку"
   },
   "onboarding_welcomeIntroduction": {
-    "message": "Для начала познакомимся с тремя полезными способами использования."
+    "message": "Давайте сразу попробуем три популярные функции!"
   },
   "onboarding_welcomeContinue": {
     "message": "Нажмите, чтобы продолжить"
