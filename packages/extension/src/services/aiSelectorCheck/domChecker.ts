@@ -4,7 +4,13 @@
  * check (see runner.ts).
  */
 import { sleep } from "@/lib/utils"
-import { inputContentEditable } from "@/services/dom"
+import {
+  inputContentEditable,
+  clearInput,
+  isTextControl,
+  enteredTextNodes,
+  setTextControlValue,
+} from "@/services/dom"
 import type { AiService } from "@/types"
 import { PAGE_STATE, SNAPSHOT_TEXT_LENGTH, takePageSnapshot } from "./pageState"
 import { hasAnyMatch, matchEach } from "./selectorMatch"
@@ -49,32 +55,6 @@ const waitForAny = async (
   }
 }
 
-const isTextControl = (
-  el: Element,
-): el is HTMLTextAreaElement | HTMLInputElement =>
-  el instanceof HTMLTextAreaElement || el instanceof HTMLInputElement
-
-/**
- * Text entered in the input, excluding placeholders.
- * Placeholders drawn with CSS (Quill's `.ql-blank::before`, ProseMirror's
- * `[data-placeholder]::before`, ...) are not part of textContent anyway;
- * placeholder nodes that some editors render inside the editable element
- * are non-editable or hidden from assistive technology, so they are removed
- * before reading the text.
- */
-const PLACEHOLDER_SELECTOR = "[contenteditable='false'], [aria-hidden='true']"
-
-/** Text nodes of a contenteditable, excluding placeholder nodes. */
-const enteredTextNodes = (el: Element): Text[] => {
-  const nodes: Text[] = []
-  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT)
-  for (let n = walker.nextNode(); n; n = walker.nextNode()) {
-    const placeholder = n.parentElement?.closest(PLACEHOLDER_SELECTOR)
-    if (!placeholder || !el.contains(placeholder)) nodes.push(n as Text)
-  }
-  return nodes
-}
-
 const enteredText = (el: Element): string =>
   isTextControl(el)
     ? el.value
@@ -83,29 +63,6 @@ const enteredText = (el: Element): string =>
         .join("")
 
 const isEmptyInput = (el: Element): boolean => enteredText(el).trim() === ""
-
-/**
- * Set the value through the prototype setter, which frameworks that track
- * the instance property (React) notice, then notify them with an input
- * event. Doesn't depend on focus, so it works in background tabs too.
- */
-const setTextControlValue = (
-  el: HTMLTextAreaElement | HTMLInputElement,
-  value: string,
-) => {
-  const proto =
-    el instanceof HTMLTextAreaElement
-      ? HTMLTextAreaElement.prototype
-      : HTMLInputElement.prototype
-  Object.getOwnPropertyDescriptor(proto, "value")?.set?.call(el, value)
-  el.dispatchEvent(
-    new InputEvent("input", {
-      inputType: value ? "insertText" : "deleteContentBackward",
-      data: value || null,
-      bubbles: true,
-    }),
-  )
-}
 
 /** Put the caret into the editor unless the selection already is there. */
 const ensureCaretIn = (el: HTMLElement) => {
@@ -158,26 +115,6 @@ const typeDummyText = async (el: Element): Promise<boolean> => {
   return inputContentEditable(el, DUMMY_TEXT, 0, null)
 }
 
-/**
- * Remove the dummy text. execCommand("delete") on a selection is ignored by
- * Lexical, so the text nodes are emptied directly and the editor is notified
- * with an input event; editors sync their state from the DOM on it (verified
- * on Perplexity). Placeholder nodes are left untouched.
- */
-const clearDummyText = (el: Element) => {
-  if (isTextControl(el)) {
-    setTextControlValue(el, "")
-    return
-  }
-  for (const node of enteredTextNodes(el)) node.data = ""
-  el.dispatchEvent(
-    new InputEvent("input", {
-      inputType: "deleteContentBackward",
-      bubbles: true,
-    }),
-  )
-}
-
 /** The dummy text could not be typed, so the "after input" state is unknown. */
 class DummyTextError extends Error {
   constructor() {
@@ -218,7 +155,7 @@ const withDummyText = async <T>(
     return await fn()
   } finally {
     // Only called for an empty input, so anything in it now is ours.
-    if (!isEmptyInput(el)) clearDummyText(el)
+    if (!isEmptyInput(el)) clearInput(el)
   }
 }
 

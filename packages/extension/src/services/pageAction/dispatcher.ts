@@ -1,5 +1,5 @@
 import userEvent from "@testing-library/user-event"
-import { isEditable, inputContentEditable } from "@/services/dom"
+import { isEditable, inputContentEditable, clearInput } from "@/services/dom"
 import { safeInterpolate, isMac, isEmpty } from "@/lib/utils"
 import { INSERT, InsertSymbol } from "@/services/pageAction"
 import { waitForElement, resolveClickCondition } from "./elementWait"
@@ -135,12 +135,22 @@ export const PageActionDispatcher = {
         }
 
         if (isEditable(element)) {
+          // Discard text restored from a previous session (e.g. ChatGPT).
+          if (param.clearBefore) clearInput(element)
           await inputContentEditable(element, value, 10, null)
         } else {
           value = value.replace(/{/g, "{{") // escape
+          const isTextControl =
+            element instanceof HTMLInputElement ||
+            element instanceof HTMLTextAreaElement
+          if (param.clearBefore && !isTextControl) {
+            // Fail rather than send the new text appended to a stale input.
+            return [false, `Cannot clear the input: ${param.label}`]
+          }
           // Ensure focus before typing, since preceding click may have been
           // removed by recording optimization in serviceWorker.ts.
           element.focus()
+          if (param.clearBefore) clearInput(element)
           await user.type(element, value, { skipClick: true })
         }
       }

@@ -1,4 +1,8 @@
-import { inputContentEditable } from "@/services/dom"
+import {
+  inputContentEditable,
+  clearInput,
+  setTextControlValue,
+} from "@/services/dom"
 import { isMac, isEmpty } from "@/lib/utils"
 import { PageAction, ActionReturn } from "./dispatcher"
 import { queryElement } from "./queryElement"
@@ -201,16 +205,16 @@ export const BackgroundTabPageActionDispatcher = {
           element instanceof HTMLInputElement ||
           element instanceof HTMLTextAreaElement
         ) {
-          element.value = element.value + value
+          if (param.clearBefore) clearInput(element)
+          // Set via the prototype setter so that React-managed inputs notice
+          // the change; it also dispatches the input event.
+          setTextControlValue(element, element.value + value)
           // Move cursor to the end of the input
           element.selectionStart = element.value.length
           element.selectionEnd = element.value.length
-          // Dispatch input and change events
-          const inputEvent = new Event("input", { bubbles: true })
-          const changeEvent = new Event("change", { bubbles: true })
-          element.dispatchEvent(inputEvent)
-          element.dispatchEvent(changeEvent)
+          element.dispatchEvent(new Event("change", { bubbles: true }))
         } else if (element.isContentEditable) {
+          if (param.clearBefore) clearInput(element)
           await inputContentEditable(element, value, 1, null)
         }
       }

@@ -57,6 +57,12 @@ export namespace PageAction {
     selector: string
     selectorType: SelectorType
     value: string
+    /**
+     * Clear the text already in the element before inputting.
+     * Internal flag set by aiPrompt only; intentionally not exposed in the
+     * page action editor UI.
+     */
+    clearBefore?: boolean
   }
 
   export type InputExec = Input & {
