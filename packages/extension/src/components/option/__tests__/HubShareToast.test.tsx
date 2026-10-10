@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import userEvent from "@testing-library/user-event"
 import { toast } from "sonner"
 import { showHubShareToast } from "../HubShareToast"
-import { sendEvent } from "@/services/analytics"
+import { sendEvent, sendHubLinkClick } from "@/services/analytics"
 import { shareCommandToHub, isHubRegistered } from "@/services/hubShare"
 import { OPEN_MODE } from "@/const"
 import type { SearchCommand } from "@/types"
@@ -30,10 +30,10 @@ vi.mock("@/services/analytics", () => ({
   ANALYTICS_EVENTS: {
     OPEN_DIALOG: "open_dialog",
     COMMAND_SHARE: "command_share",
-    HUB_LINK_CLICK: "hub_link_click",
   },
   HUB_LINK_ROUTE: { SHARE_TOAST: "share-toast" },
   sendEvent: vi.fn(),
+  sendHubLinkClick: vi.fn(),
 }))
 
 vi.mock("@/services/hubShare", () => ({
@@ -44,6 +44,7 @@ vi.mock("@/services/hubShare", () => ({
 const mockToastCustom = vi.mocked(toast.custom)
 const mockToastDismiss = vi.mocked(toast.dismiss)
 const mockSendEvent = vi.mocked(sendEvent)
+const mockSendHubLinkClick = vi.mocked(sendHubLinkClick)
 const mockShareCommandToHub = vi.mocked(shareCommandToHub)
 const mockIsHubRegistered = vi.mocked(isHubRegistered)
 
@@ -140,11 +141,12 @@ describe("showHubShareToast", () => {
       { event_label: "hub-share-toast" },
       expect.anything(),
     )
+    expect(mockSendHubLinkClick).not.toHaveBeenCalled()
     expect(mockToastDismiss).toHaveBeenCalledWith("toast-1")
     expect(onShown).toHaveBeenCalledOnce()
   })
 
-  it("HST-07: clicking 'Share' as an unregistered user skips the analytics event", async () => {
+  it("HST-07: clicking 'Share' as an unregistered user sends hub_link_click instead of the share event", async () => {
     mockIsHubRegistered.mockResolvedValue(false)
     const onShown = vi.fn()
     showHubShareToast(command, onShown)
@@ -161,11 +163,8 @@ describe("showHubShareToast", () => {
       expect.anything(),
       expect.anything(),
     )
-    expect(mockSendEvent).toHaveBeenCalledWith(
-      "hub_link_click",
-      { event_label: "share-toast" },
-      expect.anything(),
-    )
+    expect(mockSendHubLinkClick).toHaveBeenCalledOnce()
+    expect(mockSendHubLinkClick).toHaveBeenCalledWith("share-toast")
     expect(mockToastDismiss).toHaveBeenCalledWith("toast-1")
     expect(onShown).toHaveBeenCalledOnce()
   })

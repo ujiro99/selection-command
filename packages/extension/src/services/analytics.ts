@@ -84,6 +84,8 @@ export const HUB_LINK_ROUTE = {
   SHARE_TOAST: "share-toast",
 } as const
 
+export type HubLinkRoute = (typeof HUB_LINK_ROUTE)[keyof typeof HUB_LINK_ROUTE]
+
 export type AnalyticsEventName =
   (typeof ANALYTICS_EVENTS)[keyof typeof ANALYTICS_EVENTS]
 
@@ -181,6 +183,16 @@ export async function sendEvent(
   } catch (e) {
     console.warn(e)
   }
+}
+
+// Sends HUB_LINK_CLICK for the given route. Every route to the Hub lives on
+// the options page, so the screen is fixed here.
+export function sendHubLinkClick(route: HubLinkRoute) {
+  return sendEvent(
+    ANALYTICS_EVENTS.HUB_LINK_CLICK,
+    { event_label: route },
+    SCREEN.OPTION,
+  )
 }
 
 // Reads CLIENT_ID and HUB_USER in a single chrome.storage.local.get call

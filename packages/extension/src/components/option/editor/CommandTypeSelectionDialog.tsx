@@ -11,12 +11,8 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 
-import { NEW_HUB_URL, SCREEN } from "@/const"
-import {
-  sendEvent,
-  ANALYTICS_EVENTS,
-  HUB_LINK_ROUTE,
-} from "@/services/analytics"
+import { NEW_HUB_URL } from "@/const"
+import { sendHubLinkClick, HUB_LINK_ROUTE } from "@/services/analytics"
 import { useHubUser } from "@/hooks/option/useHubUser"
 import { getHubLocale } from "@/services/hubShare"
 import { UTM_SOURCE, UTM_MEDIUM, withUtmParams } from "@shared"
@@ -71,11 +67,7 @@ export const CommandTypeSelectionDialog = ({
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() =>
-                  sendEvent(
-                    ANALYTICS_EVENTS.HUB_LINK_CLICK,
-                    { event_label: HUB_LINK_ROUTE.COMMAND_TYPE_DIALOG },
-                    SCREEN.OPTION,
-                  )
+                  sendHubLinkClick(HUB_LINK_ROUTE.COMMAND_TYPE_DIALOG)
                 }
                 className="inline-block rounded-lg border px-3 pt-2 pb-1 transition hover:shadow-md hover:bg-gray-50 hover:border-gray-300"
               >

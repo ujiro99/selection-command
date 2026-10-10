@@ -6,6 +6,7 @@ import {
   ANALYTICS_EVENTS,
   HUB_LINK_ROUTE,
   sendEvent,
+  sendHubLinkClick,
 } from "@/services/analytics"
 import { SCREEN } from "@/const"
 import { shareCommandToHub, isHubRegistered } from "@/services/hubShare"
@@ -83,13 +84,7 @@ function showHubShareToastNow(
               // services/hub/serviceWorker.ts); nothing is actually shared yet,
               // so skip the share analytics event for this case.
               const registered = await isHubRegistered()
-              if (!registered) {
-                sendEvent(
-                  ANALYTICS_EVENTS.HUB_LINK_CLICK,
-                  { event_label: HUB_LINK_ROUTE.SHARE_TOAST },
-                  SCREEN.OPTION,
-                )
-              } else {
+              if (registered) {
                 sendEvent(
                   ANALYTICS_EVENTS.COMMAND_SHARE,
                   {
@@ -97,6 +92,8 @@ function showHubShareToastNow(
                   },
                   SCREEN.OPTION,
                 )
+              } else {
+                sendHubLinkClick(HUB_LINK_ROUTE.SHARE_TOAST)
               }
 
               toast.dismiss(toastId)
