@@ -2,7 +2,7 @@ import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
 import { isValidString } from "@/lib/utils"
 import { getWindowPosition } from "@/services/screen"
 import { POPUP_TYPE, SPACE_ENCODING } from "@/const"
-import { PopupOption } from "@/services/option/defaultSettings"
+import { resolvePopupSize } from "@/services/option/defaultSettings"
 import type { OpenPopupProps } from "@/services/chrome"
 import type { ExecuteCommandParams } from "@/types"
 
@@ -36,8 +36,7 @@ export const Window = {
       },
       top: Math.floor(windowPosition.top + position.y),
       left: Math.floor(windowPosition.left + position.x),
-      height: command.popupOption?.height ?? PopupOption.height,
-      width: command.popupOption?.width ?? PopupOption.width,
+      ...resolvePopupSize(command.popupOption),
       type: POPUP_TYPE.NORMAL,
       windowState: command.windowState,
     })

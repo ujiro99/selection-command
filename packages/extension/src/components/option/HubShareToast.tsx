@@ -2,7 +2,12 @@ import { toast } from "sonner"
 import { Share } from "lucide-react"
 import { t } from "@/services/i18n"
 import { cn } from "@/lib/utils"
-import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
+import {
+  ANALYTICS_EVENTS,
+  HUB_LINK_ROUTE,
+  sendEvent,
+  sendHubLinkClick,
+} from "@/services/analytics"
 import { SCREEN } from "@/const"
 import { shareCommandToHub, isHubRegistered } from "@/services/hubShare"
 import type { SelectionCommand } from "@/types"
@@ -87,6 +92,8 @@ function showHubShareToastNow(
                   },
                   SCREEN.OPTION,
                 )
+              } else {
+                sendHubLinkClick(HUB_LINK_ROUTE.SHARE_TOAST)
               }
 
               toast.dismiss(toastId)

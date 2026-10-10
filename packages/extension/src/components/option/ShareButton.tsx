@@ -9,7 +9,12 @@ import {
   isHubShareable,
   isHubRegistered,
 } from "@/services/hubShare"
-import { sendEvent, ANALYTICS_EVENTS } from "@/services/analytics"
+import {
+  sendEvent,
+  sendHubLinkClick,
+  ANALYTICS_EVENTS,
+  HUB_LINK_ROUTE,
+} from "@/services/analytics"
 import { NEW_HUB_URL, SCREEN } from "@/const"
 import type { SelectionCommand } from "@/types"
 import { TEST_IDS } from "@/testIds"
@@ -38,6 +43,7 @@ export const ShareButton = ({
       const locale = getHubLocale()
       const url = `${NEW_HUB_URL}/${locale}/dashboard/mycommands?id=${encodeURIComponent(command.id)}`
       chrome.tabs.create({ url })
+      sendHubLinkClick(HUB_LINK_ROUTE.SHARE_BUTTON)
       return
     }
 
@@ -66,6 +72,10 @@ export const ShareButton = ({
     // the share analytics event for this case.
     const registered = await isHubRegistered()
     if (!registered) {
+      // The sign-up tab is opened by the service worker, so its opening is
+      // not confirmed here: this counts the intent to go to the Hub (the
+      // share request was dispatched), not a verified navigation.
+      sendHubLinkClick(HUB_LINK_ROUTE.SHARE_BUTTON)
       setStatus("idle")
       return
     }

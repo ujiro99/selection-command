@@ -121,3 +121,85 @@ async function typeShiftEnter(node: Node): Promise<void> {
   })
   node.dispatchEvent(inputEvent)
 }
+
+export const isTextControl = (
+  el: Element,
+): el is HTMLTextAreaElement | HTMLInputElement =>
+  el instanceof HTMLTextAreaElement || el instanceof HTMLInputElement
+
+/**
+ * Placeholders drawn with CSS (Quill's `.ql-blank::before`, ProseMirror's
+ * `[data-placeholder]::before`, ...) are not part of textContent anyway;
+ * placeholder nodes that some editors render inside the editable element
+ * are non-editable or hidden from assistive technology.
+ */
+const PLACEHOLDER_SELECTOR = "[contenteditable='false'], [aria-hidden='true']"
+
+/**
+ * Text nodes of a contenteditable that hold the entered text, excluding
+ * placeholder nodes.
+ */
+export const enteredTextNodes = (el: Element): Text[] => {
+  const nodes: Text[] = []
+  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT)
+  for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+    const placeholder = n.parentElement?.closest(PLACEHOLDER_SELECTOR)
+    if (!placeholder || !el.contains(placeholder)) nodes.push(n as Text)
+  }
+  return nodes
+}
+
+/**
+ * Set the value through the prototype setter, which frameworks that track
+ * the instance property (React) notice, then notify them with an input
+ * event. Doesn't depend on focus, so it works in background tabs too.
+ */
+export const setTextControlValue = (
+  el: HTMLTextAreaElement | HTMLInputElement,
+  value: string,
+) => {
+  const proto =
+    el instanceof HTMLTextAreaElement
+      ? HTMLTextAreaElement.prototype
+      : HTMLInputElement.prototype
+  Object.getOwnPropertyDescriptor(proto, "value")?.set?.call(el, value)
+  el.dispatchEvent(
+    new InputEvent("input", {
+      inputType: value ? "insertText" : "deleteContentBackward",
+      data: value || null,
+      bubbles: true,
+    }),
+  )
+}
+
+/** Whether the node is a placeholder or holds one, so it must be kept. */
+const holdsPlaceholder = (node: Node): boolean =>
+  node instanceof Element &&
+  (node.matches(PLACEHOLDER_SELECTOR) ||
+    node.querySelector(PLACEHOLDER_SELECTOR) != null)
+
+/**
+ * Remove the text entered in an input.
+ * execCommand("delete") on a selection is ignored by Lexical, so the text
+ * nodes are emptied directly and the editor is notified with an input event;
+ * editors sync their state from the DOM on it (verified on Perplexity).
+ * The emptied blocks (p, li, ...) are removed as well, otherwise a multi-line
+ * text leaves blank lines / list items behind; the editor rebuilds its empty
+ * block by itself. Placeholder nodes are left untouched.
+ */
+export const clearInput = (el: Element) => {
+  if (isTextControl(el)) {
+    setTextControlValue(el, "")
+    return
+  }
+  for (const node of enteredTextNodes(el)) node.data = ""
+  for (const child of Array.from(el.childNodes)) {
+    if (!holdsPlaceholder(child)) child.remove()
+  }
+  el.dispatchEvent(
+    new InputEvent("input", {
+      inputType: "deleteContentBackward",
+      bubbles: true,
+    }),
+  )
+}
