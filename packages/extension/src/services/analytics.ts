@@ -27,6 +27,9 @@ export const ANALYTICS_EVENTS = {
   INSTALLED: "installed",
   OPTION_SCREEN_OPENED: "option_screen_opened",
   HUB_SCREEN_OPENED: "hub_screen_opened",
+  // Sent when a user is sent from the extension to the Hub. `event_label`
+  // identifies the route (see HUB_LINK_ROUTE).
+  HUB_LINK_CLICK: "hub_link_click",
   COMMAND_CREATE_SEARCH: "command_create_search",
   COMMAND_CREATE_AIPROMPT: "command_create_aiprompt",
   COMMAND_CREATE_OTHER: "command_create_other",
@@ -55,9 +58,33 @@ export const ANALYTICS_EVENTS = {
   ONBOARDING_COMMAND_EXECUTE: "onboarding_command_execute",
   ONBOARDING_VALUE_REACHED: "onboarding_value_reached",
   ONBOARDING_COMPLETE: "onboarding_complete",
+  // Diagnostics for the menu's icon color lookup in the service worker, which
+  // the menu waits for before it renders (#482). Sent only when the lookup
+  // fails or is slow, at most once per page, to keep the volume low.
+  ICON_COLOR_RESOLVE_FAILED: "icon_color_resolve_failed",
+  ICON_COLOR_RESOLVE_SLOW: "icon_color_resolve_slow",
+  // Diagnostics for installs that never report onboarding_start (#479):
+  // whether the tab was created, whether the page script ran at all, and
+  // whether rendering failed.
+  // TODO(#479): Remove these once the cause has been identified.
+  ONBOARDING_TAB_OPENED: "onboarding_tab_opened",
+  ONBOARDING_PAGE_LOADED: "onboarding_page_loaded",
+  ONBOARDING_RENDER_ERROR: "onboarding_render_error",
+  INSTALL_INIT_ERROR: "install_init_error",
   // No "uninstall": the service worker is gone by then, so the Hub sends it
   // from the uninstall URL instead (selection-command-hub#275).
 } as const
+
+// Routes from the extension to the Hub, used as `event_label` of HUB_LINK_CLICK.
+export const HUB_LINK_ROUTE = {
+  BANNER: "banner",
+  LOGIN: "login",
+  COMMAND_TYPE_DIALOG: "command-type-dialog",
+  SHARE_BUTTON: "share-button",
+  SHARE_TOAST: "share-toast",
+} as const
+
+export type HubLinkRoute = (typeof HUB_LINK_ROUTE)[keyof typeof HUB_LINK_ROUTE]
 
 export type AnalyticsEventName =
   (typeof ANALYTICS_EVENTS)[keyof typeof ANALYTICS_EVENTS]
@@ -158,6 +185,16 @@ export async function sendEvent(
   }
 }
 
+// Sends HUB_LINK_CLICK for the given route. Every route to the Hub lives on
+// the options page, so the screen is fixed here.
+export function sendHubLinkClick(route: HubLinkRoute) {
+  return sendEvent(
+    ANALYTICS_EVENTS.HUB_LINK_CLICK,
+    { event_label: route },
+    SCREEN.OPTION,
+  )
+}
+
 // Reads CLIENT_ID and HUB_USER in a single chrome.storage.local.get call
 // instead of two separate round trips, generating a client_id on first use.
 async function getClientIdAndUserId(): Promise<{
@@ -168,22 +205,88 @@ async function getClientIdAndUserId(): Promise<{
     LOCAL_STORAGE_KEY.CLIENT_ID,
     LOCAL_STORAGE_KEY.HUB_USER,
   ])
-  let clientId = result[LOCAL_STORAGE_KEY.CLIENT_ID] as string | undefined
-  if (!clientId) {
-    clientId = crypto.randomUUID()
-    await Storage.set(LOCAL_STORAGE_KEY.CLIENT_ID, clientId)
-  }
+  const clientId =
+    (result[LOCAL_STORAGE_KEY.CLIENT_ID] as string | undefined) ||
+    (await getOrCreateClientId())
   const hubUser = result[LOCAL_STORAGE_KEY.HUB_USER] as HubUser | null
   return { clientId, userId: hubUser?.id || undefined }
 }
 
-export async function getOrCreateClientId() {
-  let clientId = await Storage.get(LOCAL_STORAGE_KEY.CLIENT_ID)
-  if (!clientId) {
-    clientId = crypto.randomUUID()
-    await Storage.set(LOCAL_STORAGE_KEY.CLIENT_ID, clientId)
+// In-flight creation shared by concurrent callers in this context.
+let pendingClientId: Promise<string> | null = null
+
+/**
+ * Read the client_id, generating and persisting one if none exists yet.
+ *
+ * The read-then-write is not atomic, so concurrent callers could each
+ * generate a different id and split one install into two GA4 clients
+ * (#479). Concurrent calls within a context therefore share one in-flight
+ * promise, and the service worker settles the id on install before any
+ * other context (e.g. the onboarding page) can run.
+ */
+export function getOrCreateClientId(): Promise<string> {
+  if (!pendingClientId) {
+    pendingClientId = (async () => {
+      let clientId = await Storage.get<string>(LOCAL_STORAGE_KEY.CLIENT_ID)
+      if (!clientId) {
+        clientId = crypto.randomUUID()
+        await Storage.set(LOCAL_STORAGE_KEY.CLIENT_ID, clientId)
+      }
+      return clientId
+    })().finally(() => {
+      pendingClientId = null
+    })
   }
-  return clientId
+  return pendingClientId
+}
+
+// GA4 caps event parameter values at 100 characters.
+const MAX_PARAM_LENGTH = 100
+
+const truncateParam = (value: string): string =>
+  value.slice(0, MAX_PARAM_LENGTH)
+
+// Matches URLs of any scheme (https:, chrome-extension:, file:, ...).
+const URL_PATTERN = /\b[a-z][a-z0-9+.-]*:\/\/\S+/gi
+
+/**
+ * Format a caught error as a GA4 event parameter value. URLs are masked so
+ * that page addresses, local file paths and the extension id do not leave
+ * the browser.
+ */
+export const toErrorMessageParam = (error: unknown): string =>
+  truncateParam(
+    (error instanceof Error ? error.message : String(error)).replace(
+      URL_PATTERN,
+      "<url>",
+    ),
+  )
+
+type NavigatorWithUAData = Navigator & {
+  userAgentData?: { brands?: { brand: string; version: string }[] }
+}
+
+/**
+ * Browser details that Measurement Protocol does not collect on its own
+ * (device/browser are "(not set)" in GA4), used to tell Chromium-based
+ * browsers and automated environments apart. Works in both window and
+ * service worker contexts.
+ */
+export function getBrowserEnvironmentParams(): {
+  browser_brands: string
+  is_webdriver: string
+} {
+  const nav = globalThis.navigator as NavigatorWithUAData | undefined
+  const brands = (nav?.userAgentData?.brands ?? [])
+    // Skip GREASE entries such as "Not A(Brand" or "Not)A;Brand". Their
+    // spelling varies by version; a missed one only adds noise to the value.
+    .filter(({ brand }) => !/not.a.brand/i.test(brand))
+    .map(({ brand, version }) => `${brand}/${version}`)
+    .join(",")
+  return {
+    browser_brands: truncateParam(brands || "unknown"),
+    is_webdriver: String(nav?.webdriver ?? "unknown"),
+  }
 }
 
 async function getOrCreateSessionId() {

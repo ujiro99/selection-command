@@ -6,11 +6,12 @@ import {
   COMMAND_SOURCE_TYPE,
   SCREEN,
 } from "@/const"
-import type { Sender } from "@/services/ipc"
+import { Ipc, TabCommand } from "@/services/ipc"
+import type { Sender, ConfirmCommandUpdateProps } from "@/services/ipc"
 import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
 import type { SubmitCommandInput } from "@/services/hubShare"
 import { isHubRegistered } from "@/services/hubShare"
-import type { HubUser, CommandFromHub } from "@/types"
+import type { HubUser, CommandFromHub, SelectionCommand } from "@/types"
 import { Settings } from "@/services/settings/settings"
 import {
   ANALYTICS_EVENTS,
@@ -25,6 +26,15 @@ import {
   isPageActionCommand,
   isAiPromptCommand,
 } from "@/lib/utils"
+import { toSyncInstalledCommand } from "@/services/hub/installedCommands"
+import {
+  applyHubContent,
+  calcContentHash,
+  isLocallyModified,
+  parseContentUpdatedAt,
+  stampForHub,
+  type HubContentStamp,
+} from "@/services/hub/commandContent"
 
 const chromeStorageAdapter: SupportedStorage = {
   getItem: async (key: string) => {
@@ -60,12 +70,26 @@ function getSupabase() {
 }
 
 const RETRY_INTERVAL_MS = 200
-const MAX_RETRIES = 20 // 2 seconds
+const MAX_RETRIES = 20 // 4 seconds
 const EDIT_CONNECT_TIMEOUT_MS = 10_000
 const EDIT_COMMAND_ACK_TIMEOUT_MS = 10_000
 const PUSH_EDIT_CONNECT_TIMEOUT_MS = 10_000
 
 const hubOrigin = new URL(NEW_HUB_URL).origin
+
+/**
+ * Saves the content stamp of a command that was sent to the Hub, so that the
+ * local command matches what the Hub now distributes.
+ */
+async function saveHubContentStamp(
+  id: string,
+  stamp: HubContentStamp,
+): Promise<void> {
+  const commands = await Storage.getCommands()
+  const current = commands.find((c) => c.id === id)
+  if (!current) return
+  await Storage.updateCommands([{ ...current, ...stamp }])
+}
 
 export const shareCommandToHub = (
   param: SubmitCommandInput,
@@ -96,7 +120,9 @@ export const shareCommandToHub = (
         return
       }
 
-      let currentParam = param
+      // The extension decides contentUpdatedAt when it sends content to the Hub.
+      const { command: stampedParam, stamp } = stampForHub(param)
+      let currentParam = stampedParam
       let idRegenerateCount = 0
       const MAX_ID_REGENERATE = 3
 
@@ -160,6 +186,12 @@ export const shareCommandToHub = (
 
           if (type === "share-command-submitted") {
             port.onMessage.removeListener(onMessage)
+            saveHubContentStamp(currentParam.id, stamp).catch((err) => {
+              console.error(
+                "[shareCommandToHub] Failed to save content stamp:",
+                err,
+              )
+            })
             Storage.set(LOCAL_STORAGE_KEY.HUB_SHARED_AT, Date.now()).catch(
               (err) => {
                 console.error(
@@ -260,7 +292,11 @@ export const editCommandToHub = (
     return true
   }
 
-  session.hubEditPort.postMessage({ type: "edit-command", command: param })
+  const { command: stampedParam, stamp } = stampForHub(param)
+  session.hubEditPort.postMessage({
+    type: "edit-command",
+    command: stampedParam,
+  })
 
   session.pendingResponse = response
   session.ackListener = function onMsg(msg: unknown) {
@@ -271,7 +307,8 @@ export const editCommandToHub = (
     _editSession = undefined
 
     const { editTabId, hubTabId } = session
-    const { locale: _locale, targetUrl: _targetUrl, ...commandToStore } = param
+    const { locale: _locale, targetUrl: _targetUrl, ...rest } = param
+    const commandToStore = { ...rest, ...stamp }
 
     Storage.updateCommands([commandToStore])
       .then(() => response(true))
@@ -295,73 +332,92 @@ export const editCommandToHub = (
   return true
 }
 
-export async function handleAddCommand(
-  command: string,
-  sendResponse: (response?: unknown) => void,
-): Promise<void> {
-  try {
-    const parsed = JSON.parse(command)
-    const isSearch = isSearchCommand(parsed)
-    const isPageAction = isPageActionCommand(parsed)
-    const isAiPrompt = isAiPromptCommand(parsed)
-    console.debug("[handleAddCommand] Parsed:", {
-      isSearch,
-      isPageAction,
-      isAiPrompt,
-      id: parsed?.id,
-    })
+/**
+ * Builds a command from the JSON sent by the Hub (AddCommand / UpdateCommand).
+ * Returns null if the payload is not a supported command type.
+ */
+function buildCommandFromHub(value: unknown) {
+  if (value == null || typeof value !== "object" || Array.isArray(value)) {
+    return null
+  }
+  const parsed = value as Record<string, unknown>
+  const isSearch = isSearchCommand(parsed)
+  const isPageAction = isPageActionCommand(parsed)
+  const isAiPrompt = isAiPromptCommand(parsed)
+  console.debug("[buildCommandFromHub] Parsed:", {
+    isSearch,
+    isPageAction,
+    isAiPrompt,
+    id: parsed?.id,
+  })
 
-    const sourceType = (parsed as { sourceType?: unknown }).sourceType
-    const sourceId = (parsed as { sourceId?: unknown }).sourceId
-    const normalizedSourceType = Object.values(COMMAND_SOURCE_TYPE).includes(
-      sourceType as COMMAND_SOURCE_TYPE,
-    )
-      ? (sourceType as COMMAND_SOURCE_TYPE)
-      : undefined
-    const sourceInfo = {
-      sourceType: normalizedSourceType,
-      sourceId: typeof sourceId === "string" ? sourceId : undefined,
-    }
+  const sourceType = parsed.sourceType
+  const sourceId = parsed.sourceId
+  const normalizedSourceType = Object.values(COMMAND_SOURCE_TYPE).includes(
+    sourceType as COMMAND_SOURCE_TYPE,
+  )
+    ? (sourceType as COMMAND_SOURCE_TYPE)
+    : undefined
+  const sourceInfo = {
+    sourceType: normalizedSourceType,
+    sourceId: typeof sourceId === "string" ? sourceId : undefined,
+  }
 
-    const cmd = isSearch
+  const cmd = isSearch
+    ? {
+        id: parsed.id,
+        title: parsed.title,
+        searchUrl: parsed.searchUrl,
+        iconUrl: parsed.iconUrl,
+        ...sourceInfo,
+        openMode: parsed.openMode,
+        openModeSecondary: parsed.openModeSecondary,
+        spaceEncoding: parsed.spaceEncoding,
+        popupOption: PopupOption,
+      }
+    : isAiPrompt
       ? {
           id: parsed.id,
           title: parsed.title,
-          searchUrl: parsed.searchUrl,
           iconUrl: parsed.iconUrl,
           ...sourceInfo,
           openMode: parsed.openMode,
-          openModeSecondary: parsed.openModeSecondary,
-          spaceEncoding: parsed.spaceEncoding,
+          aiPromptOption: parsed.aiPromptOption,
           popupOption: PopupOption,
         }
-      : isAiPrompt
+      : isPageAction
         ? {
             id: parsed.id,
             title: parsed.title,
             iconUrl: parsed.iconUrl,
             ...sourceInfo,
             openMode: parsed.openMode,
-            aiPromptOption: parsed.aiPromptOption,
+            pageActionOption: parsed.pageActionOption,
             popupOption: PopupOption,
           }
-        : isPageAction
-          ? {
-              id: parsed.id,
-              title: parsed.title,
-              iconUrl: parsed.iconUrl,
-              ...sourceInfo,
-              openMode: parsed.openMode,
-              pageActionOption: parsed.pageActionOption,
-              popupOption: PopupOption,
-            }
-          : null
+        : null
+  if (!cmd) return null
 
-    if (!cmd) {
+  return {
+    ...cmd,
+    contentUpdatedAt: parseContentUpdatedAt(parsed.contentUpdatedAt),
+  } as SelectionCommand
+}
+
+export async function handleAddCommand(
+  command: string,
+  sendResponse: (response?: unknown) => void,
+): Promise<void> {
+  try {
+    const parsed = JSON.parse(command)
+    const built = buildCommandFromHub(parsed)
+    if (!built) {
       console.error("[handleAddCommand] invalid command", command)
       sendResponse({ result: false, error: "Invalid command format" })
       return
     }
+    // Remember the received content to detect local edits on a later update.
+    const cmd = { ...built, contentHash: calcContentHash(built) }
 
     await Settings.addCommands([cmd])
     console.debug("[handleAddCommand] Saved command id:", cmd.id)
@@ -369,8 +425,8 @@ export async function handleAddCommand(
       getHubAddEvent(cmd.openMode),
       {
         event_label: cmd.openMode,
-        source_type: sourceInfo.sourceType,
-        source_id: sourceInfo.sourceId,
+        source_type: cmd.sourceType,
+        source_id: cmd.sourceId,
       },
       SCREEN.COMMAND_HUB,
     )
@@ -378,6 +434,80 @@ export async function handleAddCommand(
     sendResponse({ result: true, install_id: clientId })
   } catch (err) {
     console.error("[handleAddCommand] Failed:", err)
+    sendResponse({
+      result: false,
+      error: (err as Error)?.message ?? "Unknown error",
+    })
+  }
+}
+
+/**
+ * Replaces the content of an installed command with the latest one from the
+ * Hub. Local settings (folder, popup size, shortcuts, etc.) are kept, while
+ * the source info is reset to the one sent by the Hub. If the command was
+ * edited locally, the user is asked to confirm the overwrite in the Hub tab
+ * first.
+ */
+export async function handleUpdateCommand(
+  command: string,
+  sender: chrome.runtime.MessageSender,
+  sendResponse: (response?: unknown) => void,
+): Promise<void> {
+  try {
+    const parsed = JSON.parse(command)
+    const incoming = buildCommandFromHub(parsed)
+    if (!incoming) {
+      console.error("[handleUpdateCommand] invalid command", command)
+      sendResponse({ result: false, error: "Invalid command format" })
+      return
+    }
+
+    const findCommand = async () =>
+      (await Storage.getCommands()).find((c) => c.id === incoming.id) as
+        SelectionCommand | undefined
+
+    let current = await findCommand()
+    if (!current) {
+      sendResponse({ result: false, error: "Command not found" })
+      return
+    }
+
+    if (isLocallyModified(current)) {
+      const tabId = sender.tab?.id
+      if (tabId == null) {
+        sendResponse({ result: false, error: "Invalid sender tab" })
+        return
+      }
+      const confirmed = await Ipc.sendTab<ConfirmCommandUpdateProps, unknown>(
+        tabId,
+        TabCommand.confirmCommandUpdate,
+        { title: current.title },
+      )
+      if (confirmed === false) {
+        sendResponse({ result: false, cancelled: true })
+        return
+      }
+      if (confirmed !== true) {
+        // The tab could not show the dialog; never overwrite without consent.
+        sendResponse({ result: false, error: "Failed to confirm overwrite" })
+        return
+      }
+      // Reload: the command may have changed while the dialog was open (e.g.
+      // folder or popup size edited in the options page). Applying the update
+      // to the stale copy would silently roll those changes back.
+      current = await findCommand()
+      if (!current) {
+        sendResponse({ result: false, error: "Command not found" })
+        return
+      }
+    }
+
+    const updated = applyHubContent(current, incoming)
+    await Storage.updateCommands([updated])
+    console.debug("[handleUpdateCommand] Updated command id:", updated.id)
+    sendResponse({ result: true })
+  } catch (err) {
+    console.error("[handleUpdateCommand] Failed:", err)
     sendResponse({
       result: false,
       error: (err as Error)?.message ?? "Unknown error",
@@ -500,13 +630,10 @@ export async function handleRequestInstalledCommand(
 ): Promise<void> {
   try {
     const commands = await Storage.getCommands()
-    sendResponse({
-      action: "SyncInstalledCommand",
-      installedIds: commands.map((c) => c.id),
-    })
+    sendResponse(toSyncInstalledCommand(commands))
   } catch (err) {
     console.error("[handleRequestInstalledCommand] Failed:", err)
-    sendResponse({ action: "SyncInstalledCommand", installedIds: [] })
+    sendResponse(toSyncInstalledCommand([]))
   }
 }
 
@@ -597,6 +724,14 @@ function onMessageExternal(
     return true
   }
 
+  if (action === "UpdateCommand" && typeof command === "string") {
+    handleUpdateCommand(command, sender, sendResponse).catch((err) => {
+      console.error("[onMessageExternal] UpdateCommand failed:", err)
+      sendResponse({ result: false, error: err?.message ?? "Unknown error" })
+    })
+    return true
+  }
+
   if (action === "DeleteCommand" && typeof id === "string") {
     handleDeleteCommand(id, sendResponse).catch((err) => {
       console.error("[onMessageExternal] DeleteCommand failed:", err)
@@ -612,7 +747,7 @@ function onMessageExternal(
   if (action === "RequestInstalledCommand") {
     handleRequestInstalledCommand(sendResponse).catch((err) => {
       console.error("[onMessageExternal] RequestInstalledCommand failed:", err)
-      sendResponse({ action: "SyncInstalledCommand", installedIds: [] })
+      sendResponse(toSyncInstalledCommand([]))
     })
     return true
   }
@@ -656,35 +791,57 @@ export const pushEditToHub = (
   let tabId: number | undefined
   let connectTimeout: ReturnType<typeof setTimeout> | undefined
   let onPortConnect: ((port: chrome.runtime.Port) => void) | undefined
+  let connected = false
+  // Cleanup functions of the ports that are still being retried.
+  const portCleanups = new Set<() => void>()
+  const { command: stampedParam, stamp } = stampForHub(param)
 
-  const cleanup = () => {
+  const stopListening = () => {
     if (connectTimeout) clearTimeout(connectTimeout)
     if (onPortConnect)
       chrome.runtime.onConnectExternal.removeListener(onPortConnect)
   }
 
+  const cleanup = () => {
+    stopListening()
+    Array.from(portCleanups).forEach((cleanupPort) => cleanupPort())
+  }
+
   const push = async () => {
     try {
+      // The Hub may open more than one hub-edit port and immediately drop some
+      // of them (e.g. when its connecting effect runs twice), so keep accepting
+      // ports until one of them acknowledges instead of binding to the first.
       onPortConnect = function portConnect(port: chrome.runtime.Port) {
         if (port.name !== "hub-edit") return
         if (port.sender?.tab?.id !== tabId) return
         if (port.sender?.origin !== hubOrigin) return
 
-        cleanup()
-
+        connected = true
         let retries = 0
 
         const cleanupPort = () => {
           clearInterval(timer)
           port.onMessage.removeListener(onAck)
+          port.onDisconnect.removeListener(cleanupPort)
+          portCleanups.delete(cleanupPort)
         }
 
         const onAck = (msg: unknown) => {
           if ((msg as { type?: string })?.type === "edit-command-ack") {
-            cleanupPort()
+            cleanup()
+            saveHubContentStamp(param.id, stamp).catch((err) => {
+              console.error(
+                "[pushEditToHub] Failed to save content stamp:",
+                err,
+              )
+            })
           }
         }
         port.onMessage.addListener(onAck)
+        // Stop posting to a port the Hub has closed; posting to it would throw.
+        port.onDisconnect.addListener(cleanupPort)
+        portCleanups.add(cleanupPort)
 
         // Post the command repeatedly until ack is received or max retries exceeded
         const timer = setInterval(() => {
@@ -696,14 +853,17 @@ export const pushEditToHub = (
             )
             return
           }
-          port.postMessage({ type: "edit-command", command: param })
+          port.postMessage({ type: "edit-command", command: stampedParam })
         }, RETRY_INTERVAL_MS)
       }
 
       chrome.runtime.onConnectExternal.addListener(onPortConnect)
       connectTimeout = setTimeout(() => {
-        cleanup()
-        console.error("[pushEditToHub] Hub did not connect in time.")
+        // Stop accepting new ports; ports already connected keep retrying.
+        stopListening()
+        if (!connected) {
+          console.error("[pushEditToHub] Hub did not connect in time.")
+        }
       }, PUSH_EDIT_CONNECT_TIMEOUT_MS)
 
       const tab = await new Promise<chrome.tabs.Tab>((resolve) =>

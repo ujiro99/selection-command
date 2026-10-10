@@ -33,11 +33,15 @@ import {
   ANALYTICS_EVENTS,
   sendEvent,
   getOrCreateClientId,
+  getBrowserEnvironmentParams,
+  toErrorMessageParam,
 } from "@/services/analytics"
 import * as HubServiceWorker from "@/services/hub/serviceWorker"
 import { ensureOnboardingAssignment } from "@/services/experiments"
 import * as IconColorServiceWorker from "@/services/iconColor/serviceWorker"
 import { getSidePanelEvent } from "@/services/sidePanelSupport"
+import { getCenteredOffsetInCurrentWindow } from "@/services/screen"
+import { resolvePopupSize } from "@/services/option/defaultSettings"
 
 import { importIf } from "@import-if"
 importIf("production", "./lib/sentry/initialize")
@@ -479,12 +483,72 @@ if (isDebug) {
   })
 }
 
-chrome.runtime.onInstalled.addListener(async (details) => {
+// Number of open browser windows, or -1 if it cannot be determined. A tab
+// cannot be created while no window is open (#479).
+const getWindowCount = async (): Promise<number> => {
   try {
-    // Initialize default settings on install
-    if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
+    return (await chrome.windows.getAll()).length
+  } catch {
+    return -1
+  }
+}
+
+// Open the onboarding page and report the result, so installs that never
+// send onboarding_start can be told apart from ones whose tab was never
+// created (#479).
+const openOnboardingTab = async () => {
+  try {
+    await chrome.tabs.create({ url: ONBOARDING_PAGE_PATH })
+    sendEvent(
+      ANALYTICS_EVENTS.ONBOARDING_TAB_OPENED,
+      { success: "true" },
+      SCREEN.SERVICE_WORKER,
+    )
+  } catch (error) {
+    console.error("Failed to open onboarding tab:", error)
+    sendEvent(
+      ANALYTICS_EVENTS.ONBOARDING_TAB_OPENED,
+      { success: "false", error_message: toErrorMessageParam(error) },
+      SCREEN.SERVICE_WORKER,
+    )
+  }
+}
+
+chrome.runtime.onInstalled.addListener(async (details) => {
+  const isInstall = details.reason === chrome.runtime.OnInstalledReason.INSTALL
+  // Last step reached, reported as install_init_error if the initialization
+  // throws on install. Steps that catch their own errors (client_id,
+  // onboarding assignment and tab, uninstall URL, backups) never surface
+  // here, so everything after the context menu is reported as "post_init".
+  let stage = "settings_reset"
+  try {
+    if (isInstall) {
+      // Settle the client_id before anything can report an event. Otherwise
+      // this worker and the onboarding page may each generate their own id
+      // and split one install into two GA4 clients (#479).
+      let clientIdReady = true
+      try {
+        await getOrCreateClientId()
+      } catch (error) {
+        clientIdReady = false
+        console.error("Failed to create client_id:", error)
+      }
+
+      // Counted alongside the settings reset so it does not delay the tab.
+      const windowCount = getWindowCount()
+
+      // Initialize default settings on install
       await Settings.reset()
-      sendEvent(ANALYTICS_EVENTS.INSTALLED, {}, SCREEN.SERVICE_WORKER)
+      sendEvent(
+        ANALYTICS_EVENTS.INSTALLED,
+        {
+          ...getBrowserEnvironmentParams(),
+          window_count: await windowCount,
+          // "false" means the onboarding page may report under another id.
+          client_id_ready: String(clientIdReady),
+        },
+        SCREEN.SERVICE_WORKER,
+      )
       // Assign the onboarding A/B variant before the tab is created, so the
       // page can render its first frame from storage without fetching the
       // remote config itself. A failure here must never block onboarding -
@@ -494,11 +558,13 @@ chrome.runtime.onInstalled.addListener(async (details) => {
       } catch (error) {
         console.error("Failed to assign onboarding variant:", error)
       }
-      chrome.tabs.create({ url: ONBOARDING_PAGE_PATH })
+      await openOnboardingTab()
     }
 
+    stage = "context_menu"
     await ContextMenu.init()
 
+    stage = "post_init"
     chrome.storage.session.setAccessLevel({
       accessLevel: "TRUSTED_AND_UNTRUSTED_CONTEXTS",
     })
@@ -530,6 +596,13 @@ chrome.runtime.onInstalled.addListener(async (details) => {
     await checkAndPerformWeeklyBackup()
   } catch (error) {
     console.error("Error during onInstalled initialization:", error)
+    if (isInstall) {
+      sendEvent(
+        ANALYTICS_EVENTS.INSTALL_INIT_ERROR,
+        { stage, error_message: toErrorMessageParam(error) },
+        SCREEN.SERVICE_WORKER,
+      )
+    }
   }
 })
 
@@ -664,10 +737,15 @@ chrome.commands.onCommand.addListener(async (commandName) => {
     }
 
     if (!enableSendTab || ret instanceof Error) {
-      // Execute command directly in the service worker
+      // Execute command directly in the service worker.
+      // There is no selection position here, so center the popup in the
+      // current window to keep it on the display the user is working on.
+      const position = await getCenteredOffsetInCurrentWindow(
+        resolvePopupSize(command.popupOption),
+      )
       await execute({
         command,
-        position: { x: 10000, y: 10000 },
+        position,
         selectionText,
         target: null,
         allowClipboardFallback,

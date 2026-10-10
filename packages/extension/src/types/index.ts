@@ -43,12 +43,15 @@ export type SelectionCommand =
 export type SearchCommand = {
   id: string
   title: string
-  revision?: number
   iconUrl: string
   /** When true, excludes this command's icon from being recolored by the global icon color setting. */
   excludeFromGlobalIconColor?: boolean
   sourceType?: COMMAND_SOURCE_TYPE
   sourceId?: string
+  /** When the content shared through the Hub was last changed (ISO 8601). */
+  contentUpdatedAt?: string
+  /** Fingerprint of the content last received from / sent to the Hub. */
+  contentHash?: string
   openMode: OPEN_MODE
   openModeSecondary?: OPEN_MODE
   searchUrl?: string

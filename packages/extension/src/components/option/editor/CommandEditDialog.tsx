@@ -335,7 +335,6 @@ const CommandEditDialogInner = ({
   const processFormData = (data: CommandSchemaType): CommandSchemaType => {
     const d = { ...data }
     if (isEmpty(d.id)) d.id = generateId()
-    if (d.revision == null) d.revision = 0
     if (d.parentFolderId === ROOT_FOLDER) {
       d.parentFolderId = undefined
     }

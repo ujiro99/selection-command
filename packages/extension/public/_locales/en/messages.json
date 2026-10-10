@@ -1347,6 +1347,24 @@
   "review_request_later": {
     "message": "Later"
   },
+  "commandUpdate_confirm_title": {
+    "message": "Update this command?"
+  },
+  "commandUpdate_confirm_message": {
+    "message": "\"$title$\" has been edited in this browser. Updating replaces your edits with the latest version from the Hub.\nYour folder and shortcut settings will be kept.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "Google Search"
+      }
+    }
+  },
+  "commandUpdate_confirm_overwrite": {
+    "message": "Overwrite and update"
+  },
+  "commandUpdate_confirm_cancel": {
+    "message": "Cancel"
+  },
   "developersupport_title": {
     "message": "Support Developer"
   },

@@ -98,6 +98,30 @@ describe("excludeFromGlobalIconColor in schemas", () => {
   })
 })
 
+describe("Hub content tracking in schemas", () => {
+  it("SC-18: keeps contentUpdatedAt and contentHash so edits do not drop them", () => {
+    const cmd = {
+      id: "test-cmd",
+      openMode: OPEN_MODE.POPUP,
+      title: "Test Search",
+      iconUrl: "https://example.com/icon.png",
+      searchUrl: "https://example.com/search?q=%s",
+      openModeSecondary: OPEN_MODE.TAB,
+      spaceEncoding: SPACE_ENCODING.PLUS,
+      contentUpdatedAt: "2026-01-01T00:00:00.000Z",
+      contentHash: "abc123",
+    }
+    const res = commandSchema.safeParse(cmd)
+    expect(res.success).toBe(true)
+    if (res.success) {
+      expect(res.data).toMatchObject({
+        contentUpdatedAt: "2026-01-01T00:00:00.000Z",
+        contentHash: "abc123",
+      })
+    }
+  })
+})
+
 describe("PageActionOption in schemas", () => {
   const basePageActionCmd = {
     id: "test-pa-cmd",

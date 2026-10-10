@@ -1326,6 +1326,24 @@
   "review_request_later": {
     "message": "後で"
   },
+  "commandUpdate_confirm_title": {
+    "message": "コマンドを更新しますか？"
+  },
+  "commandUpdate_confirm_message": {
+    "message": "「$title$」はこのブラウザで編集されています。更新すると、編集した内容は Hub の最新版で上書きされます。\nフォルダやショートカットの設定はそのまま残ります。",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "Google Search"
+      }
+    }
+  },
+  "commandUpdate_confirm_overwrite": {
+    "message": "上書きして更新"
+  },
+  "commandUpdate_confirm_cancel": {
+    "message": "キャンセル"
+  },
   "developersupport_title": {
     "message": "開発者を応援"
   },

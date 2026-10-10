@@ -3,6 +3,8 @@ import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { Settings } from "@/services/settings/settings"
 import { ServiceWorkerCommand } from "@/services/ipc"
 import { NEW_HUB_URL, VERSION } from "@/const"
+// Imported before any vi.doMock, so this is the real event name table.
+import { ANALYTICS_EVENTS } from "@/services/analytics"
 
 // Replace chrome.sidePanel to emulate browsers with/without the API.
 const setSidePanel = (value: unknown) => {
@@ -109,6 +111,12 @@ describe("Service Worker Migration", () => {
 
     mockSettings.set.mockResolvedValue(true)
     mockSettings.updateCommands.mockResolvedValue(true)
+  })
+
+  afterEach(() => {
+    // Remove chrome.windows.getCurrent overridden in a test so it doesn't
+    // leak into other tests (it isn't defined in the global setup).
+    delete (chrome.windows as any).getCurrent
   })
 
   it("MG-01-a: should call enhancedSettings.get() in addPageRule and open option page with addPageRule param when no matching rule exists", async () => {
@@ -281,6 +289,11 @@ describe("Service Worker Migration", () => {
       { id: 1, url: "https://example.com", windowId: 1 },
     ])
 
+    // Mock the current window used to center the popup
+    ;(chrome.windows as any).getCurrent = vi
+      .fn()
+      .mockResolvedValue({ left: 1920, top: 0, width: 1600, height: 1000 })
+
     // Mock Storage.get for selection text
     const mockStorageGet = vi.fn().mockResolvedValue("test selection text")
     vi.doMock("@/services/storage", () => ({
@@ -355,7 +368,8 @@ describe("Service Worker Migration", () => {
           searchUrl: "https://example.com/search?q=%s",
           openMode: "tab",
         }),
-        position: { x: 10000, y: 10000 },
+        // Popup (400x300) centered in the current window (1600x1000)
+        position: { x: 600, y: 350 },
         selectionText: "test selection text",
         target: null,
         allowClipboardFallback: false,
@@ -574,15 +588,27 @@ describe("Popup Auto-Close Delay", () => {
   })
 })
 
+const mockGetBrowserEnvironmentParams = () => ({
+  browser_brands: "Chromium/141",
+  is_webdriver: "false",
+})
+
 describe("onInstalled: installed analytics event", () => {
   beforeEach(() => {
     vi.clearAllMocks()
   })
 
+  afterEach(() => {
+    // clearAllMocks keeps implementations, which would leak between tests.
+    vi.mocked(chrome.tabs.create).mockReset()
+  })
+
   it("IN-01: sends the installed event when reason is install", async () => {
     const mockSendEvent = vi.fn()
     vi.doMock("@/services/analytics", () => ({
-      ANALYTICS_EVENTS: { INSTALLED: "installed" },
+      ANALYTICS_EVENTS,
+      getBrowserEnvironmentParams: mockGetBrowserEnvironmentParams,
+      toErrorMessageParam: (error: unknown) => String(error),
       sendEvent: mockSendEvent,
       getOrCreateClientId: vi.fn().mockResolvedValue("test-client-id"),
     }))
@@ -599,13 +625,25 @@ describe("onInstalled: installed analytics event", () => {
       reason: chrome.runtime.OnInstalledReason.INSTALL,
     })
 
-    expect(mockSendEvent).toHaveBeenCalledWith("installed", {}, "ServiceWorker")
+    expect(mockSendEvent).toHaveBeenCalledWith(
+      "installed",
+      {
+        browser_brands: "Chromium/141",
+        is_webdriver: "false",
+        // chrome.windows.getAll is not mocked, so the count is unknown.
+        window_count: -1,
+        client_id_ready: "true",
+      },
+      "ServiceWorker",
+    )
   })
 
   it("IN-02: does not send the installed event when reason is update", async () => {
     const mockSendEvent = vi.fn()
     vi.doMock("@/services/analytics", () => ({
-      ANALYTICS_EVENTS: { INSTALLED: "installed" },
+      ANALYTICS_EVENTS,
+      getBrowserEnvironmentParams: mockGetBrowserEnvironmentParams,
+      toErrorMessageParam: (error: unknown) => String(error),
       sendEvent: mockSendEvent,
       getOrCreateClientId: vi.fn().mockResolvedValue("test-client-id"),
     }))
@@ -630,7 +668,9 @@ describe("onInstalled: installed analytics event", () => {
 
   it("IN-03: opens the onboarding page tab when reason is install", async () => {
     vi.doMock("@/services/analytics", () => ({
-      ANALYTICS_EVENTS: { INSTALLED: "installed" },
+      ANALYTICS_EVENTS,
+      getBrowserEnvironmentParams: mockGetBrowserEnvironmentParams,
+      toErrorMessageParam: (error: unknown) => String(error),
       sendEvent: vi.fn(),
       getOrCreateClientId: vi.fn().mockResolvedValue("test-client-id"),
     }))
@@ -653,7 +693,9 @@ describe("onInstalled: installed analytics event", () => {
 
   it("IN-04: does not open the onboarding page tab when reason is update", async () => {
     vi.doMock("@/services/analytics", () => ({
-      ANALYTICS_EVENTS: { INSTALLED: "installed" },
+      ANALYTICS_EVENTS,
+      getBrowserEnvironmentParams: mockGetBrowserEnvironmentParams,
+      toErrorMessageParam: (error: unknown) => String(error),
       sendEvent: vi.fn(),
       getOrCreateClientId: vi.fn().mockResolvedValue("test-client-id"),
     }))
@@ -675,6 +717,151 @@ describe("onInstalled: installed analytics event", () => {
   })
 })
 
+describe("onInstalled: onboarding diagnostics (#479)", () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  afterEach(() => {
+    // clearAllMocks keeps implementations, which would leak between tests.
+    vi.mocked(chrome.tabs.create).mockReset()
+  })
+
+  // Load service_worker with the given analytics mocks and run its
+  // onInstalled listener for a fresh install.
+  const runInstall = async (
+    mocks: {
+      sendEvent?: ReturnType<typeof vi.fn>
+      getOrCreateClientId?: ReturnType<typeof vi.fn>
+    },
+    beforeImport?: () => Promise<void>,
+  ) => {
+    vi.doMock("@/services/analytics", () => ({
+      ANALYTICS_EVENTS,
+      getBrowserEnvironmentParams: mockGetBrowserEnvironmentParams,
+      toErrorMessageParam: (error: unknown) =>
+        error instanceof Error ? error.message : String(error),
+      sendEvent: mocks.sendEvent ?? vi.fn(),
+      getOrCreateClientId:
+        mocks.getOrCreateClientId ??
+        vi.fn().mockResolvedValue("test-client-id"),
+    }))
+    vi.resetModules()
+    await beforeImport?.()
+    await import("../service_worker")
+
+    const listenerCalls = (chrome.runtime.onInstalled.addListener as any).mock
+      .calls
+    const onInstalledListener = listenerCalls[listenerCalls.length - 1][0]
+    await onInstalledListener({
+      reason: chrome.runtime.OnInstalledReason.INSTALL,
+    })
+  }
+
+  it("IN-05: settles the client_id before sending events or opening the onboarding tab", async () => {
+    const order: string[] = []
+    const getOrCreateClientId = vi.fn(async () => {
+      order.push("client_id")
+      return "test-client-id"
+    })
+    const sendEvent = vi.fn((name: string) => {
+      order.push(name)
+    })
+    vi.mocked(chrome.tabs.create).mockImplementation((async () => {
+      order.push("tabs.create")
+    }) as any)
+
+    await runInstall({ sendEvent, getOrCreateClientId })
+
+    expect(order.indexOf("client_id")).toBe(0)
+    expect(order.indexOf("installed")).toBeGreaterThan(0)
+    expect(order.indexOf("tabs.create")).toBeGreaterThan(0)
+  })
+
+  it("IN-06: reports a successful onboarding tab creation", async () => {
+    const sendEvent = vi.fn()
+    vi.mocked(chrome.tabs.create).mockResolvedValue({} as any)
+
+    await runInstall({ sendEvent })
+
+    expect(sendEvent).toHaveBeenCalledWith(
+      "onboarding_tab_opened",
+      { success: "true" },
+      "ServiceWorker",
+    )
+  })
+
+  it("IN-07: reports a failed onboarding tab creation without failing the initialization", async () => {
+    const consoleErrorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {})
+    const sendEvent = vi.fn()
+    vi.mocked(chrome.tabs.create).mockRejectedValue(new Error("No window"))
+
+    await runInstall({ sendEvent })
+
+    expect(sendEvent).toHaveBeenCalledWith(
+      "onboarding_tab_opened",
+      { success: "false", error_message: "No window" },
+      "ServiceWorker",
+    )
+    expect(sendEvent).not.toHaveBeenCalledWith(
+      "install_init_error",
+      expect.anything(),
+      expect.anything(),
+    )
+
+    consoleErrorSpy.mockRestore()
+  })
+
+  it("IN-08: reports the failed stage when the install initialization throws", async () => {
+    const consoleErrorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {})
+    const sendEvent = vi.fn()
+
+    await runInstall({ sendEvent }, async () => {
+      const { Settings: FreshSettings } =
+        await import("@/services/settings/settings")
+      vi.mocked(FreshSettings.reset).mockRejectedValueOnce(
+        new Error("Sync quota exceeded"),
+      )
+    })
+
+    expect(sendEvent).toHaveBeenCalledWith(
+      "install_init_error",
+      { stage: "settings_reset", error_message: "Sync quota exceeded" },
+      "ServiceWorker",
+    )
+    expect(chrome.tabs.create).not.toHaveBeenCalled()
+
+    consoleErrorSpy.mockRestore()
+  })
+
+  it("IN-09: flags the installed event when the client_id could not be settled", async () => {
+    const consoleErrorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {})
+    const sendEvent = vi.fn()
+    const getOrCreateClientId = vi
+      .fn()
+      .mockRejectedValueOnce(new Error("storage error"))
+      .mockResolvedValue("test-client-id")
+
+    await runInstall({ sendEvent, getOrCreateClientId })
+
+    expect(sendEvent).toHaveBeenCalledWith(
+      "installed",
+      expect.objectContaining({ client_id_ready: "false" }),
+      "ServiceWorker",
+    )
+    // The failure is handled in place and the onboarding tab still opens.
+    expect(chrome.tabs.create).toHaveBeenCalled()
+
+    consoleErrorSpy.mockRestore()
+  })
+})
+
 describe("Uninstall URL (onInstalled)", () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -683,7 +870,9 @@ describe("Uninstall URL (onInstalled)", () => {
   it("UN-01: should set uninstall URL with client_id and version on install", async () => {
     const mockGetOrCreateClientId = vi.fn().mockResolvedValue("test-client-id")
     vi.doMock("@/services/analytics", () => ({
-      ANALYTICS_EVENTS: { INSTALLED: "installed" },
+      ANALYTICS_EVENTS,
+      getBrowserEnvironmentParams: mockGetBrowserEnvironmentParams,
+      toErrorMessageParam: (error: unknown) => String(error),
       sendEvent: vi.fn(),
       getOrCreateClientId: mockGetOrCreateClientId,
     }))
@@ -715,7 +904,9 @@ describe("Uninstall URL (onInstalled)", () => {
       .fn()
       .mockRejectedValue(new Error("Quota exceeded"))
     vi.doMock("@/services/analytics", () => ({
-      ANALYTICS_EVENTS: { INSTALLED: "installed" },
+      ANALYTICS_EVENTS,
+      getBrowserEnvironmentParams: mockGetBrowserEnvironmentParams,
+      toErrorMessageParam: (error: unknown) => String(error),
       sendEvent: vi.fn(),
       getOrCreateClientId: mockGetOrCreateClientId,
     }))

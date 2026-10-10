@@ -1329,6 +1329,24 @@
   "review_request_later": {
     "message": "Luego"
   },
+  "commandUpdate_confirm_title": {
+    "message": "¿Actualizar este comando?"
+  },
+  "commandUpdate_confirm_message": {
+    "message": "«$title$» se ha editado en este navegador. Al actualizar, tus cambios se sustituirán por la versión más reciente del Hub.\nSe conservarán la carpeta y los atajos de teclado.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "Google Search"
+      }
+    }
+  },
+  "commandUpdate_confirm_overwrite": {
+    "message": "Sobrescribir y actualizar"
+  },
+  "commandUpdate_confirm_cancel": {
+    "message": "Cancelar"
+  },
   "developersupport_title": {
     "message": "Apoyar al desarrollador"
   },

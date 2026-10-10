@@ -10,6 +10,39 @@ const CONNECTION_TIMEOUT = 3000
 const CONNECTION_CHECK_INTERVAL = 50
 export const CONNECTION_APP = "app"
 
+export type IpcSendOptions = {
+  /**
+   * Rejects with IpcTimeoutError when no response arrives within this many
+   * milliseconds. Without it, a message the receiver never answers (e.g. a
+   * listener that keeps the channel open) leaves the caller waiting forever.
+   */
+  timeoutMs?: number
+}
+
+/** Thrown by Ipc.send when the response does not arrive in time. */
+export class IpcTimeoutError extends Error {
+  constructor(command: string, timeoutMs: number) {
+    super(`IPC response timed out after ${timeoutMs}ms: ${command}`)
+    this.name = "IpcTimeoutError"
+  }
+}
+
+const withTimeout = <R>(
+  command: string,
+  request: Promise<R>,
+  timeoutMs?: number,
+): Promise<R> => {
+  if (timeoutMs == null) return request
+  let timer: ReturnType<typeof setTimeout> | undefined
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(
+      () => reject(new IpcTimeoutError(command, timeoutMs)),
+      timeoutMs,
+    )
+  })
+  return Promise.race([request, timeout]).finally(() => clearTimeout(timer))
+}
+
 export enum ServiceWorkerCommand {
   connected = "connected",
   openPopup = "openPopup",
@@ -58,11 +91,17 @@ export enum TabCommand {
   closeMenu = "closeMenu",
   showReviewRequest = "showReviewRequest",
   showToast = "showToast",
+  confirmCommandUpdate = "confirmCommandUpdate",
   // PageAction
   sendWindowSize = "sendWindowSize",
   execPageAction = "execPageAction",
   // Developer tools
   checkAiSelectors = "checkAiSelectors",
+}
+
+/** Asks the user whether to overwrite a locally edited command. */
+export type ConfirmCommandUpdateProps = {
+  title: string
 }
 
 export type ClickElementProps = {
@@ -195,13 +234,16 @@ export const Ipc = {
     })
   },
 
-  async send<M = any, R = any>(command: IpcCommand, param?: M): Promise<R> {
+  async send<M = any, R = any>(
+    command: IpcCommand,
+    param?: M,
+    options?: IpcSendOptions,
+  ): Promise<R> {
     try {
-      if (isServiceWorker()) {
-        return this.callListener<M, R>(command, param)
-      }
-      const ret = await chrome.runtime.sendMessage({ command, param })
-      return ret as R
+      const request = isServiceWorker()
+        ? this.callListener<M, R>(command, param)
+        : (chrome.runtime.sendMessage({ command, param }) as Promise<R>)
+      return await withTimeout(command, request, options?.timeoutMs)
     } catch (error) {
       console.error(`Failed to send message: ${command}`, error)
       return Promise.reject(error)

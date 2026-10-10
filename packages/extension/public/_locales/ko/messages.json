@@ -1329,6 +1329,24 @@
   "review_request_later": {
     "message": "나중에"
   },
+  "commandUpdate_confirm_title": {
+    "message": "이 명령을 업데이트할까요?"
+  },
+  "commandUpdate_confirm_message": {
+    "message": "\"$title$\"은(는) 이 브라우저에서 편집되었습니다. 업데이트하면 편집한 내용이 Hub의 최신 버전으로 덮어써집니다.\n폴더와 단축키 설정은 그대로 유지됩니다.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "Google Search"
+      }
+    }
+  },
+  "commandUpdate_confirm_overwrite": {
+    "message": "덮어쓰고 업데이트"
+  },
+  "commandUpdate_confirm_cancel": {
+    "message": "취소"
+  },
   "developersupport_title": {
     "message": "개발자 후원"
   },
