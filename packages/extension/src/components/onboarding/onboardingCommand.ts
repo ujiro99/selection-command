@@ -31,7 +31,6 @@ export function createOnboardingAiPromptCommand(
 ): AiPromptCommand {
   return {
     id: ONBOARDING_AI_PROMPT_COMMAND_ID,
-    revision: 0,
     title,
     iconUrl: ONBOARDING_AI_PROMPT_ICON_URL,
     openMode: OPEN_MODE.AI_PROMPT,

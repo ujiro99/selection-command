@@ -1329,6 +1329,24 @@
   "review_request_later": {
     "message": "Später"
   },
+  "commandUpdate_confirm_title": {
+    "message": "Diesen Befehl aktualisieren?"
+  },
+  "commandUpdate_confirm_message": {
+    "message": "„$title$“ wurde in diesem Browser bearbeitet. Beim Aktualisieren werden Ihre Änderungen durch die neueste Version aus dem Hub ersetzt.\nIhre Ordner- und Tastenkürzel-Einstellungen bleiben erhalten.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "Google Search"
+      }
+    }
+  },
+  "commandUpdate_confirm_overwrite": {
+    "message": "Überschreiben und aktualisieren"
+  },
+  "commandUpdate_confirm_cancel": {
+    "message": "Abbrechen"
+  },
   "developersupport_title": {
     "message": "Entwickler unterstützen"
   },

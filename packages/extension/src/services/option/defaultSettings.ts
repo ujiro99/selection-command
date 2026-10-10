@@ -244,7 +244,6 @@ const CMD_ONBOARDING_AI_IT = ONBOARDING_AI_COMMANDS.it
 export const DefaultCommands = [
   {
     id: "$$drag-1",
-    revision: 0,
     title: "Link Preview",
     searchUrl: "",
     openMode: DRAG_OPEN_MODE.PREVIEW_POPUP,
@@ -255,7 +254,6 @@ export const DefaultCommands = [
   },
   {
     id: "0cb9dbbc-c0cf-53c6-93e5-016363705216",
-    revision: 0,
     iconUrl: "https://www.google.com/favicon.ico",
     openMode: OPEN_MODE.POPUP,
     openModeSecondary: OPEN_MODE.TAB,
@@ -270,7 +268,6 @@ export const DefaultCommands = [
   CMD_ONBOARDING_AI_EN,
   {
     id: "26c47b36-c3c8-528c-9ad2-c972dfc6f4df",
-    revision: 0,
     iconUrl: "https://www.google.com/favicon.ico",
     openMode: OPEN_MODE.POPUP,
     openModeSecondary: OPEN_MODE.TAB,
@@ -285,7 +282,6 @@ export const DefaultCommands = [
   },
   {
     id: "c0d05ae1-f007-5bd0-8fa6-e3bc0b79ca97",
-    revision: 0,
     iconUrl: "https://www.amazon.com/favicon.ico",
     openMode: OPEN_MODE.TAB,
     openModeSecondary: OPEN_MODE.TAB,
@@ -300,7 +296,6 @@ export const DefaultCommands = [
   },
   {
     id: "2b6fee1e-6500-5421-af79-6fa53ddc25c1",
-    revision: 0,
     iconUrl: "https://www.youtube.com/s/desktop/f574e7a2/img/favicon_32x32.png",
     openMode: OPEN_MODE.TAB,
     openModeSecondary: OPEN_MODE.TAB,
@@ -315,7 +310,6 @@ export const DefaultCommands = [
   },
   {
     id: "fb9cb6ad-76e3-5aa8-82a7-ade233edcec0",
-    revision: 0,
     iconUrl:
       "https://assets.nflxext.com/ffe/siteui/common/icons/nficon2016.ico",
     openMode: OPEN_MODE.TAB,
@@ -331,7 +325,6 @@ export const DefaultCommands = [
   },
   {
     id: "30797fb1-5bc7-585a-ba53-fa5420e417d9",
-    revision: 0,
     iconUrl: "https://s.pinimg.com/webapp/favicon-22eb868c.png",
     openMode: OPEN_MODE.TAB,
     openModeSecondary: OPEN_MODE.TAB,
@@ -346,7 +339,6 @@ export const DefaultCommands = [
   },
   {
     id: "dd05d527-92db-5102-9a88-4a5b31fa7512",
-    revision: 0,
     iconUrl:
       "https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png",
     openMode: OPEN_MODE.TAB,
@@ -362,7 +354,6 @@ export const DefaultCommands = [
   },
   {
     id: "69179b92-b6f1-5265-b4e4-e4d8443eabac",
-    revision: 0,
     title: "Page Summary",
     iconUrl: GEMINI_ICON_URL,
     openMode: OPEN_MODE.AI_PROMPT,
@@ -379,7 +370,6 @@ export const DefaultCommands = [
   },
   {
     id: "4d0666a4-3c4f-5ebc-8da4-36fc876e9dd9",
-    revision: 0,
     title: "YouTube Summary",
     iconUrl: GEMINI_ICON_URL,
     openMode: OPEN_MODE.AI_PROMPT,
@@ -397,7 +387,6 @@ export const DefaultCommands = [
   },
   {
     id: "9ce6febc-3d60-5e34-bc1e-0499bde34f77",
-    revision: 0,
     title: "Translation",
     iconUrl: GEMINI_ICON_URL,
     openMode: OPEN_MODE.AI_PROMPT,
@@ -415,7 +404,6 @@ export const DefaultCommands = [
   },
   {
     id: "a26b4c84-b56a-5e56-bf7d-2dde3998a756",
-    revision: 0,
     title: "Gemini",
     iconUrl: GEMINI_ICON_URL,
     openMode: OPEN_MODE.AI_PROMPT,
@@ -512,7 +500,6 @@ const CMD_COMMAND_SEARCH_IT = createCommandSearchCommand(
 // Common commands shared across locales
 const CMD_LINK_PREVIEW = {
   id: "$$drag-1",
-  revision: 0,
   title: "Link Preview",
   openMode: DRAG_OPEN_MODE.PREVIEW_POPUP,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
@@ -520,7 +507,6 @@ const CMD_LINK_PREVIEW = {
 
 const CMD_GOOGLE = {
   id: "0cb9dbbc-c0cf-53c6-93e5-016363705216",
-  revision: 0,
   iconUrl: "https://www.google.com/favicon.ico",
   openMode: OPEN_MODE.POPUP,
   openModeSecondary: OPEN_MODE.TAB,
@@ -532,7 +518,6 @@ const CMD_GOOGLE = {
 
 const CMD_GOOGLE_IMAGE = {
   id: "26c47b36-c3c8-528c-9ad2-c972dfc6f4df",
-  revision: 0,
   iconUrl: "https://www.google.com/favicon.ico",
   openMode: OPEN_MODE.POPUP,
   openModeSecondary: OPEN_MODE.TAB,
@@ -545,7 +530,6 @@ const CMD_GOOGLE_IMAGE = {
 
 const CMD_GEMINI_JA = {
   id: "1d320825-1e78-5f98-b73c-1bb48412e98c",
-  revision: 0,
   title: "Gemini - 日本語",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -560,7 +544,6 @@ const CMD_GEMINI_JA = {
 
 const CMD_YOUTUBE = {
   id: "2b6fee1e-6500-5421-af79-6fa53ddc25c1",
-  revision: 0,
   iconUrl: "https://www.youtube.com/s/desktop/f574e7a2/img/favicon_32x32.png",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
@@ -573,7 +556,6 @@ const CMD_YOUTUBE = {
 
 const CMD_NETFLIX = {
   id: "fb9cb6ad-76e3-5aa8-82a7-ade233edcec0",
-  revision: 0,
   iconUrl: "https://assets.nflxext.com/ffe/siteui/common/icons/nficon2016.ico",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
@@ -586,7 +568,6 @@ const CMD_NETFLIX = {
 
 const CMD_DRIVE = {
   id: "dd05d527-92db-5102-9a88-4a5b31fa7512",
-  revision: 0,
   iconUrl: "https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
@@ -599,7 +580,6 @@ const CMD_DRIVE = {
 
 const CMD_EN_TO_JA = {
   id: "9a3fca67-e618-5dd3-9ecd-9eb2d088041a",
-  revision: 0,
   iconUrl: "https://ssl.gstatic.com/translate/favicon.ico",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
@@ -613,7 +593,6 @@ const CMD_EN_TO_JA = {
 
 const CMD_CHARACTER_COUNTER = {
   id: "03646140-c83f-5ee6-87ba-8feb12030af0",
-  revision: 0,
   title: "Character Counter",
   iconUrl: "https://web-toolbox.dev/favicon.svg",
   parentFolderId: FOLDER_ACTION,
@@ -675,7 +654,6 @@ const CMD_CHARACTER_COUNTER = {
 // ja: Japan
 const CMD_YAHOO_JAPAN = {
   id: "2bcb5d3a-15b6-5e3f-b59d-94b0fdc68ea9",
-  revision: 0,
   iconUrl: "https://s.yimg.jp/c/icon/s/bsc/2.0/favicon.ico",
   openMode: OPEN_MODE.POPUP,
   openModeSecondary: OPEN_MODE.TAB,
@@ -688,7 +666,6 @@ const CMD_YAHOO_JAPAN = {
 
 const CMD_AMAZON_JP = {
   id: "9d61d45c-36ab-5ebf-ad42-d3f3a42810bf",
-  revision: 0,
   iconUrl: "https://www.amazon.co.jp/favicon.ico",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
@@ -702,7 +679,6 @@ const CMD_AMAZON_JP = {
 // zh_CN: China
 const CMD_BAIDU = {
   id: "f004f082-f4e5-5ba7-af0a-2db1f8a55d37",
-  revision: 0,
   iconUrl: "https://www.baidu.com/favicon.ico",
   openMode: OPEN_MODE.POPUP,
   openModeSecondary: OPEN_MODE.TAB,
@@ -714,7 +690,6 @@ const CMD_BAIDU = {
 
 const CMD_BILIBILI = {
   id: "b2f4c26c-ae12-5261-b7ed-5c24b2b9fb56",
-  revision: 0,
   iconUrl: "https://www.bilibili.com/favicon.ico",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
@@ -727,7 +702,6 @@ const CMD_BILIBILI = {
 
 const CMD_JD = {
   id: "8ce5625c-e9f9-5b13-93ba-23ac954fe6ba",
-  revision: 0,
   iconUrl: "https://www.jd.com/favicon.ico",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
@@ -740,7 +714,6 @@ const CMD_JD = {
 
 const CMD_ZHIHU = {
   id: "0458f7cd-4e84-5b9e-a3ee-fd35d3f84a41",
-  revision: 0,
   iconUrl: "https://static.zhihu.com/static/favicon.ico",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
@@ -753,7 +726,6 @@ const CMD_ZHIHU = {
 
 const CMD_GEMINI_ZH = {
   id: "7a97ca1a-00da-536c-a77f-09b6ca2840b6",
-  revision: 0,
   title: "Gemini - 中文",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -769,7 +741,6 @@ const CMD_GEMINI_ZH = {
 // ko: Korea
 const CMD_NAVER = {
   id: "31887e39-e3fa-5799-9094-0ac03dd30508",
-  revision: 0,
   iconUrl: "https://www.naver.com/favicon.ico",
   openMode: OPEN_MODE.POPUP,
   openModeSecondary: OPEN_MODE.TAB,
@@ -782,7 +753,6 @@ const CMD_NAVER = {
 
 const CMD_COUPANG = {
   id: "6b2d5167-1253-5a14-8b72-0b9679c38474",
-  revision: 0,
   iconUrl: "https://www.coupang.com/favicon.ico",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
@@ -795,7 +765,6 @@ const CMD_COUPANG = {
 
 const CMD_GEMINI_KO = {
   id: "02cff7da-117c-589d-9b32-0c3946180257",
-  revision: 0,
   title: "Gemini - 한국어",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -811,7 +780,6 @@ const CMD_GEMINI_KO = {
 // ru: Russia
 const CMD_YANDEX = {
   id: "7b8ef164-c070-5112-820e-f4d1b6a22ff3",
-  revision: 0,
   iconUrl: "https://yandex.ru/favicon.ico",
   openMode: OPEN_MODE.POPUP,
   openModeSecondary: OPEN_MODE.TAB,
@@ -823,7 +791,6 @@ const CMD_YANDEX = {
 
 const CMD_VK = {
   id: "9897e8ae-2940-5eea-b4ac-8a55648d3dff",
-  revision: 0,
   iconUrl: "https://vk.com/favicon.ico",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
@@ -836,7 +803,6 @@ const CMD_VK = {
 
 const CMD_OZON = {
   id: "c9524f7d-1ae0-5600-a455-9b29e8286a33",
-  revision: 0,
   iconUrl: "https://www.ozon.ru/favicon.ico",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
@@ -849,7 +815,6 @@ const CMD_OZON = {
 
 const CMD_GEMINI_RU = {
   id: "ae036565-4b06-5820-8132-d05f21327c2e",
-  revision: 0,
   title: "Gemini - Русский",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -864,7 +829,6 @@ const CMD_GEMINI_RU = {
 
 const CMD_WILDBERRIES = {
   id: "95146f74-3436-54b8-9019-0facc146d9ac",
-  revision: 0,
   iconUrl: "https://www.wildberries.ru/favicon.ico",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
@@ -878,7 +842,6 @@ const CMD_WILDBERRIES = {
 // de: Germany
 const CMD_AMAZON_DE = {
   id: "e7f7a81e-fc01-55f7-b692-139d3183d27c",
-  revision: 0,
   iconUrl: "https://www.amazon.de/favicon.ico",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
@@ -891,7 +854,6 @@ const CMD_AMAZON_DE = {
 
 const CMD_EBAY_DE = {
   id: "6cbac506-1ef4-514e-a830-66e182fc9903",
-  revision: 0,
   iconUrl: "https://www.ebay.de/favicon.ico",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
@@ -904,7 +866,6 @@ const CMD_EBAY_DE = {
 
 const CMD_GEMINI_DE = {
   id: "de4e4860-e81b-5d39-bbf5-b85516d99bdf",
-  revision: 0,
   title: "Gemini - Deutsch",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -920,7 +881,6 @@ const CMD_GEMINI_DE = {
 // fr: France
 const CMD_AMAZON_FR = {
   id: "4d48cb20-92be-5745-affc-5efa8946884f",
-  revision: 0,
   iconUrl: "https://www.amazon.fr/favicon.ico",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
@@ -933,7 +893,6 @@ const CMD_AMAZON_FR = {
 
 const CMD_LEBONCOIN = {
   id: "6f046a4c-1567-5b90-bef5-9ed79dfad6d7",
-  revision: 0,
   iconUrl: "https://www.leboncoin.fr/_next/static/media/favicon.6fd07af6.svg",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
@@ -946,7 +905,6 @@ const CMD_LEBONCOIN = {
 
 const CMD_GEMINI_FR = {
   id: "db893fd8-80f3-5f15-9d76-dcd0e202c8c9",
-  revision: 0,
   title: "Gemini - Français",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -962,7 +920,6 @@ const CMD_GEMINI_FR = {
 // es: Spanish
 const CMD_AMAZON_ES = {
   id: "f78091a8-142b-586c-b29c-63fad083cba1",
-  revision: 0,
   iconUrl: "https://www.amazon.es/favicon.ico",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
@@ -975,7 +932,6 @@ const CMD_AMAZON_ES = {
 
 const CMD_EBAY_ES = {
   id: "57cc9467-178b-5a83-81ce-0d913a662637",
-  revision: 0,
   iconUrl: "https://www.ebay.es/favicon.ico",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
@@ -988,7 +944,6 @@ const CMD_EBAY_ES = {
 
 const CMD_EL_CORTE_INGLES = {
   id: "8e6d9feb-c7fc-5a9b-b441-1cdba5ffbd10",
-  revision: 0,
   iconUrl:
     "https://cdn.grupoelcorteingles.es/statics/front-msh3-eci-es/assets//stylesheets/favicons/vuestore/favicon.ico?_MTI6MDMtMDI6MjQ6MDA",
   openMode: OPEN_MODE.TAB,
@@ -1002,7 +957,6 @@ const CMD_EL_CORTE_INGLES = {
 
 const CMD_ALIEXPRESS_ES = {
   id: "3f5ed184-2a50-5f78-98e2-f4d7312141b4",
-  revision: 0,
   iconUrl: "https://ae01.alicdn.com/kf/S05616f829f70427eb3389e1489f66613F.ico",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
@@ -1015,7 +969,6 @@ const CMD_ALIEXPRESS_ES = {
 
 const CMD_GEMINI_ES = {
   id: "0e1b2488-fa94-5873-ac84-e0b5fd322a9e",
-  revision: 0,
   title: "Gemini - Español",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1031,7 +984,6 @@ const CMD_GEMINI_ES = {
 // pt-BR: Brazil
 const CMD_AMAZON_BR = {
   id: "57f5d511-5102-5e15-8b5e-c54e1d29e65e",
-  revision: 0,
   iconUrl: "https://www.amazon.com.br/favicon.ico",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
@@ -1044,7 +996,6 @@ const CMD_AMAZON_BR = {
 
 const CMD_MERCADO_LIVRE_BR = {
   id: "322a91ca-efc6-5a8d-9e00-3538b819665b",
-  revision: 0,
   iconUrl:
     "https://http2.mlstatic.com/frontend-assets/ml-web-navigation/ui-navigation/6.6.92/mercadolibre/favicon.svg",
   openMode: OPEN_MODE.TAB,
@@ -1058,7 +1009,6 @@ const CMD_MERCADO_LIVRE_BR = {
 
 const CMD_GEMINI_PT = {
   id: "81ce215c-fabc-576f-a079-311e093c87b1",
-  revision: 0,
   title: "Gemini - Português",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1074,7 +1024,6 @@ const CMD_GEMINI_PT = {
 // pt-PT: Portugal
 const CMD_OLX_PT = {
   id: "bec3f4b8-0929-53bb-adcb-cd68795cf360",
-  revision: 0,
   iconUrl: "https://www.olx.pt/favicon.ico",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
@@ -1088,7 +1037,6 @@ const CMD_OLX_PT = {
 // hi: India
 const CMD_AMAZON_IN = {
   id: "2dcbe879-de97-5099-b647-c70f56272b67",
-  revision: 0,
   iconUrl: "https://www.amazon.in/favicon.ico",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
@@ -1101,7 +1049,6 @@ const CMD_AMAZON_IN = {
 
 const CMD_FLIPKART = {
   id: "2483f07e-b860-5687-8db8-907c87020bc6",
-  revision: 0,
   iconUrl:
     "https://static-assets-web.flixcart.com/www/promos/new/20150528-140547-favicon-retina.ico",
   openMode: OPEN_MODE.TAB,
@@ -1115,7 +1062,6 @@ const CMD_FLIPKART = {
 
 const CMD_GEMINI_HI = {
   id: "e2315dec-3b61-5857-ac49-e4dc1cbf23ab",
-  revision: 0,
   title: "Gemini - हिन्दी",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1131,7 +1077,6 @@ const CMD_GEMINI_HI = {
 // id: Indonesia
 const CMD_TOKOPEDIA = {
   id: "e09dbc37-f018-5444-8b0c-c10158a049b3",
-  revision: 0,
   iconUrl:
     "https://p16-images-comn-sg.tokopedia-static.net/tos-alisg-i-zr7vqa5nfb-sg/assets-tokopedia-lite/prod/icon144.png~tplv-zr7vqa5nfb-image.image",
   openMode: OPEN_MODE.TAB,
@@ -1145,7 +1090,6 @@ const CMD_TOKOPEDIA = {
 
 const CMD_SHOPEE_ID = {
   id: "be521b5f-2d9c-5312-9001-6c1c83a79fa6",
-  revision: 0,
   iconUrl: "https://shopee.co.id/favicon.ico",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
@@ -1158,7 +1102,6 @@ const CMD_SHOPEE_ID = {
 
 const CMD_GEMINI_ID = {
   id: "4875bd38-150f-5fb5-899d-0ff59e918588",
-  revision: 0,
   title: "Gemini - Indonesia",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1174,7 +1117,6 @@ const CMD_GEMINI_ID = {
 // ms: Malaysia
 const CMD_SHOPEE_MY = {
   id: "d583ed37-a972-5f96-a927-ecbfaac9519f",
-  revision: 0,
   iconUrl: "https://shopee.com.my/favicon.ico",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
@@ -1187,7 +1129,6 @@ const CMD_SHOPEE_MY = {
 
 const CMD_LAZADA_MY = {
   id: "aefb2b74-0803-5a63-9abd-253c4bae3888",
-  revision: 0,
   iconUrl: "https://www.lazada.com.my/favicon.ico",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
@@ -1200,7 +1141,6 @@ const CMD_LAZADA_MY = {
 
 const CMD_GEMINI_MS = {
   id: "ba62af6d-e6ab-5573-aa86-f193f7cd5cdf",
-  revision: 0,
   title: "Gemini - Melayu",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1216,7 +1156,6 @@ const CMD_GEMINI_MS = {
 // it: Italy
 const CMD_AMAZON_IT = {
   id: "630aeda8-3baa-5a8d-a9ef-1a6d80dc48bc",
-  revision: 0,
   iconUrl: "https://www.amazon.it/favicon.ico",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
@@ -1229,7 +1168,6 @@ const CMD_AMAZON_IT = {
 
 const CMD_EBAY_IT = {
   id: "5db2eb4a-8169-5141-8332-32440097a0f5",
-  revision: 0,
   iconUrl: "https://www.ebay.it/favicon.ico",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
@@ -1242,7 +1180,6 @@ const CMD_EBAY_IT = {
 
 const CMD_ZALANDO_IT = {
   id: "433426f0-7817-58aa-bc21-4b030e6918f8",
-  revision: 0,
   iconUrl: "https://www.zalando.it/favicon.ico",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
@@ -1255,7 +1192,6 @@ const CMD_ZALANDO_IT = {
 
 const CMD_GEMINI_IT = {
   id: "9b6c7262-5fea-5fba-b682-12502b7f8c21",
-  revision: 0,
   title: "Gemini - Italiano",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1272,7 +1208,6 @@ const CMD_GEMINI_IT = {
 
 const CMD_PAGE_SUMMARY_JA = {
   id: "afe67f66-fc8d-555f-9e51-2d1491906faf",
-  revision: 0,
   title: "ページの概要生成",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1287,7 +1222,6 @@ const CMD_PAGE_SUMMARY_JA = {
 
 const CMD_PAGE_SUMMARY_ZH = {
   id: "2ae69b7e-be6e-515d-af88-996a26ab4509",
-  revision: 0,
   title: "页面摘要",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1302,7 +1236,6 @@ const CMD_PAGE_SUMMARY_ZH = {
 
 const CMD_PAGE_SUMMARY_KO = {
   id: "9edd9c6c-f4e1-5afe-8e8c-50d5ad7d32df",
-  revision: 0,
   title: "페이지 요약",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1317,7 +1250,6 @@ const CMD_PAGE_SUMMARY_KO = {
 
 const CMD_PAGE_SUMMARY_RU = {
   id: "f0d38781-227b-5993-b32f-2d1fc2a5fb48",
-  revision: 0,
   title: "Краткое содержание страницы",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1333,7 +1265,6 @@ const CMD_PAGE_SUMMARY_RU = {
 
 const CMD_PAGE_SUMMARY_DE = {
   id: "aa8412b2-c5c0-5642-b978-c94dfb465aa5",
-  revision: 0,
   title: "Seitenzusammenfassung",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1349,7 +1280,6 @@ const CMD_PAGE_SUMMARY_DE = {
 
 const CMD_PAGE_SUMMARY_FR = {
   id: "b681aae6-7bee-5ef0-9602-e282eb6e8380",
-  revision: 0,
   title: "Résumé de la page",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1365,7 +1295,6 @@ const CMD_PAGE_SUMMARY_FR = {
 
 const CMD_PAGE_SUMMARY_ES = {
   id: "f84d29d0-9b1f-503e-ba17-3115c0299b37",
-  revision: 0,
   title: "Resumen de página",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1381,7 +1310,6 @@ const CMD_PAGE_SUMMARY_ES = {
 
 const CMD_PAGE_SUMMARY_PT = {
   id: "27e66097-ee7a-5bc9-9b93-38bd7d78a003",
-  revision: 0,
   title: "Resumo da página",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1397,7 +1325,6 @@ const CMD_PAGE_SUMMARY_PT = {
 
 const CMD_PAGE_SUMMARY_HI = {
   id: "03c3a86d-d80f-5092-b62a-bd8f8d9416e1",
-  revision: 0,
   title: "पृष्ठ सारांश",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1413,7 +1340,6 @@ const CMD_PAGE_SUMMARY_HI = {
 
 const CMD_PAGE_SUMMARY_ID = {
   id: "d7e7b5e3-d502-5ee1-b27a-8b144ceef395",
-  revision: 0,
   title: "Ringkasan halaman",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1429,7 +1355,6 @@ const CMD_PAGE_SUMMARY_ID = {
 
 const CMD_PAGE_SUMMARY_MS = {
   id: "d73e6c46-5c98-563d-b572-b0f44f274ee1",
-  revision: 0,
   title: "Ringkasan halaman",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1445,7 +1370,6 @@ const CMD_PAGE_SUMMARY_MS = {
 
 const CMD_PAGE_SUMMARY_IT = {
   id: "3f883a69-d5af-516c-8d2e-85470b83dae3",
-  revision: 0,
   title: "Riepilogo pagina",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1463,7 +1387,6 @@ const CMD_PAGE_SUMMARY_IT = {
 
 const CMD_YOUTUBE_SUMMARY_JA = {
   id: "7afd0cb7-45a4-5943-a00d-b04d12317eb1",
-  revision: 0,
   title: "YouTubeの概要生成",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1478,7 +1401,6 @@ const CMD_YOUTUBE_SUMMARY_JA = {
 
 const CMD_YOUTUBE_SUMMARY_ZH = {
   id: "35f2e8fc-653b-54bc-b7a5-e0a60c76af7c",
-  revision: 0,
   title: "YouTube摘要",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1493,7 +1415,6 @@ const CMD_YOUTUBE_SUMMARY_ZH = {
 
 const CMD_YOUTUBE_SUMMARY_KO = {
   id: "07a072a4-c1f0-5e5a-9259-2a8467f52388",
-  revision: 0,
   title: "YouTube 요약",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1508,7 +1429,6 @@ const CMD_YOUTUBE_SUMMARY_KO = {
 
 const CMD_YOUTUBE_SUMMARY_RU = {
   id: "9f67ba1e-a8b0-5271-89a4-501a3d20bd08",
-  revision: 0,
   title: "Краткое содержание YouTube",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1524,7 +1444,6 @@ const CMD_YOUTUBE_SUMMARY_RU = {
 
 const CMD_YOUTUBE_SUMMARY_DE = {
   id: "075aaa5d-fb7c-5d41-b252-0be55dda3462",
-  revision: 0,
   title: "YouTube-Zusammenfassung",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1540,7 +1459,6 @@ const CMD_YOUTUBE_SUMMARY_DE = {
 
 const CMD_YOUTUBE_SUMMARY_FR = {
   id: "8aa29111-e8f0-5374-8e6d-b2e410dfdca8",
-  revision: 0,
   title: "Résumé YouTube",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1556,7 +1474,6 @@ const CMD_YOUTUBE_SUMMARY_FR = {
 
 const CMD_YOUTUBE_SUMMARY_ES = {
   id: "e1edae1f-e78c-5052-adfd-c39863ea613c",
-  revision: 0,
   title: "Resumen de YouTube",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1572,7 +1489,6 @@ const CMD_YOUTUBE_SUMMARY_ES = {
 
 const CMD_YOUTUBE_SUMMARY_PT = {
   id: "2e21b51f-86a0-51ed-9231-116adb093b46",
-  revision: 0,
   title: "Resumo do YouTube",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1588,7 +1504,6 @@ const CMD_YOUTUBE_SUMMARY_PT = {
 
 const CMD_YOUTUBE_SUMMARY_HI = {
   id: "1497d212-d290-5a11-9913-e15d9e68df7d",
-  revision: 0,
   title: "YouTube सारांश",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1604,7 +1519,6 @@ const CMD_YOUTUBE_SUMMARY_HI = {
 
 const CMD_YOUTUBE_SUMMARY_ID = {
   id: "89a86b00-c71c-5505-9b95-a50723090a34",
-  revision: 0,
   title: "Ringkasan YouTube",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1620,7 +1534,6 @@ const CMD_YOUTUBE_SUMMARY_ID = {
 
 const CMD_YOUTUBE_SUMMARY_MS = {
   id: "6cd49bd1-0d99-5bb9-9af5-93ceddbdc7e7",
-  revision: 0,
   title: "Ringkasan YouTube",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1636,7 +1549,6 @@ const CMD_YOUTUBE_SUMMARY_MS = {
 
 const CMD_YOUTUBE_SUMMARY_IT = {
   id: "9b53d9b0-6515-512c-a3a3-4ec03b4e25c8",
-  revision: 0,
   title: "Riepilogo YouTube",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1654,7 +1566,6 @@ const CMD_YOUTUBE_SUMMARY_IT = {
 
 const CMD_TRANSLATE_JA = {
   id: "a8d027bf-7926-56c4-ad4d-610ef10c22b3",
-  revision: 0,
   title: "選択テキストの相互翻訳",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1670,7 +1581,6 @@ const CMD_TRANSLATE_JA = {
 
 const CMD_TRANSLATE_ZH = {
   id: "e58f08e6-930d-5bff-a8d4-fd5247b30e57",
-  revision: 0,
   title: "文本互译",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1685,7 +1595,6 @@ const CMD_TRANSLATE_ZH = {
 
 const CMD_TRANSLATE_KO = {
   id: "96648587-9316-51d0-99cc-57344f83832c",
-  revision: 0,
   title: "텍스트 번역",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1701,7 +1610,6 @@ const CMD_TRANSLATE_KO = {
 
 const CMD_TRANSLATE_RU = {
   id: "73e7dfc0-6aa1-5102-9a00-bfcc612a8fdc",
-  revision: 0,
   title: "Перевод текста",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1717,7 +1625,6 @@ const CMD_TRANSLATE_RU = {
 
 const CMD_TRANSLATE_DE = {
   id: "247a65b1-7b38-5489-b6b2-27530a4d0e5b",
-  revision: 0,
   title: "Textübersetzung",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1733,7 +1640,6 @@ const CMD_TRANSLATE_DE = {
 
 const CMD_TRANSLATE_FR = {
   id: "bd1c80ea-2362-5140-a93b-c2020012a61c",
-  revision: 0,
   title: "Traduction de texte",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1749,7 +1655,6 @@ const CMD_TRANSLATE_FR = {
 
 const CMD_TRANSLATE_ES = {
   id: "484fdcfc-5a74-51aa-8e84-885226911983",
-  revision: 0,
   title: "Traducción de texto",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1765,7 +1670,6 @@ const CMD_TRANSLATE_ES = {
 
 const CMD_TRANSLATE_PT = {
   id: "a470aca5-81bd-5c3b-bb66-a763d5d1030a",
-  revision: 0,
   title: "Tradução de texto",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1781,7 +1685,6 @@ const CMD_TRANSLATE_PT = {
 
 const CMD_TRANSLATE_HI = {
   id: "08f5b563-871b-57f7-9e2c-e7b86a99f0ec",
-  revision: 0,
   title: "पाठ अनुवाद",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1797,7 +1700,6 @@ const CMD_TRANSLATE_HI = {
 
 const CMD_TRANSLATE_ID = {
   id: "981877d3-8d5c-5a0c-9f9d-d2308ab4b11e",
-  revision: 0,
   title: "Terjemahan teks",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1813,7 +1715,6 @@ const CMD_TRANSLATE_ID = {
 
 const CMD_TRANSLATE_MS = {
   id: "d5ad304a-41f2-5afd-b46d-7662a81fc194",
-  revision: 0,
   title: "Terjemahan teks",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,
@@ -1829,7 +1730,6 @@ const CMD_TRANSLATE_MS = {
 
 const CMD_TRANSLATE_IT = {
   id: "cea27aac-3a5b-5010-9dcc-335d13f65958",
-  revision: 0,
   title: "Traduzione testo",
   iconUrl: GEMINI_ICON_URL,
   openMode: OPEN_MODE.AI_PROMPT,

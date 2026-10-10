@@ -1329,6 +1329,24 @@
   "review_request_later": {
     "message": "बाद में"
   },
+  "commandUpdate_confirm_title": {
+    "message": "क्या इस कमांड को अपडेट करें?"
+  },
+  "commandUpdate_confirm_message": {
+    "message": "\"$title$\" को इस ब्राउज़र में संपादित किया गया है। अपडेट करने पर आपके बदलाव Hub के नवीनतम संस्करण से बदल दिए जाएंगे।\nआपके फ़ोल्डर और शॉर्टकट सेटिंग्स बनी रहेंगी।",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "Google Search"
+      }
+    }
+  },
+  "commandUpdate_confirm_overwrite": {
+    "message": "अधिलेखित करें और अपडेट करें"
+  },
+  "commandUpdate_confirm_cancel": {
+    "message": "रद्द करें"
+  },
   "developersupport_title": {
     "message": "डेवलपर का समर्थन करें"
   },

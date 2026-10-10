@@ -1332,6 +1332,24 @@
   "review_request_later": {
     "message": "Mais tarde"
   },
+  "commandUpdate_confirm_title": {
+    "message": "Atualizar este comando?"
+  },
+  "commandUpdate_confirm_message": {
+    "message": "\"$title$\" foi editado neste navegador. Ao atualizar, as suas edições serão substituídas pela versão mais recente do Hub.\nAs definições de pasta e atalhos serão mantidas.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "Google Search"
+      }
+    }
+  },
+  "commandUpdate_confirm_overwrite": {
+    "message": "Substituir e atualizar"
+  },
+  "commandUpdate_confirm_cancel": {
+    "message": "Cancelar"
+  },
   "developersupport_title": {
     "message": "Apoiar o programador"
   },

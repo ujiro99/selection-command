@@ -1329,6 +1329,24 @@
   "review_request_later": {
     "message": "Позже"
   },
+  "commandUpdate_confirm_title": {
+    "message": "Обновить эту команду?"
+  },
+  "commandUpdate_confirm_message": {
+    "message": "«$title$» была изменена в этом браузере. При обновлении ваши изменения будут заменены последней версией из Hub.\nНастройки папки и сочетаний клавиш сохранятся.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "Google Search"
+      }
+    }
+  },
+  "commandUpdate_confirm_overwrite": {
+    "message": "Перезаписать и обновить"
+  },
+  "commandUpdate_confirm_cancel": {
+    "message": "Отмена"
+  },
   "developersupport_title": {
     "message": "Поддержать разработчика"
   },

@@ -1329,6 +1329,24 @@
   "review_request_later": {
     "message": "Plus tard"
   },
+  "commandUpdate_confirm_title": {
+    "message": "Mettre à jour cette commande ?"
+  },
+  "commandUpdate_confirm_message": {
+    "message": "« $title$ » a été modifiée dans ce navigateur. La mise à jour remplacera vos modifications par la dernière version du Hub.\nVos réglages de dossier et de raccourcis seront conservés.",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "Google Search"
+      }
+    }
+  },
+  "commandUpdate_confirm_overwrite": {
+    "message": "Écraser et mettre à jour"
+  },
+  "commandUpdate_confirm_cancel": {
+    "message": "Annuler"
+  },
   "developersupport_title": {
     "message": "Soutenir le développeur"
   },

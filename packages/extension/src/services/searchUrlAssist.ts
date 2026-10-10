@@ -35,7 +35,6 @@ export const createSearchUrlAssistAction = (service: AiService) => {
   return {
     title: "Search Assist AI",
     id: "0bf16427-ff9d-456c-b505-67b468c781a7",
-    revision: 0,
     iconUrl:
       "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
     openMode: OPEN_MODE.PAGE_ACTION,

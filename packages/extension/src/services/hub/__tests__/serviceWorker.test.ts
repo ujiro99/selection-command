@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest"
+import { describe, it, expect, vi, beforeEach, type MockInstance } from "vitest"
 import {
   shareCommandToHub,
   editCommandToHub,
@@ -8,6 +8,7 @@ import {
   handleDeleteCommand,
   handleEditCommand,
   handleRequestInstalledCommand,
+  handleUpdateCommand,
   handleSetSession,
   handleClearSession,
   pushEditToHub,
@@ -15,6 +16,8 @@ import {
 import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
 import { Settings } from "@/services/settings/settings"
 import { sendEvent, getOrCreateClientId } from "@/services/analytics"
+import { Ipc, TabCommand } from "@/services/ipc"
+import { calcContentHash } from "@/services/hub/commandContent"
 
 vi.mock("@/services/storage", () => ({
   Storage: {
@@ -292,6 +295,42 @@ describe("handleAddCommand", () => {
     })
   })
 
+  it("AC-08: stores contentUpdatedAt and the content fingerprint", async () => {
+    const cmd = JSON.stringify({
+      ...JSON.parse(searchCommandJson),
+      contentUpdatedAt: "2026-01-02T03:04:05.000Z",
+    })
+    const sendResponse = vi.fn()
+    await handleAddCommand(cmd, sendResponse)
+
+    const saved = vi.mocked(Settings.addCommands).mock.calls[0][0][0]
+    expect(saved.contentUpdatedAt).toBe("2026-01-02T03:04:05.000Z")
+    expect(saved.contentHash).toBe(calcContentHash(saved))
+  })
+
+  it("AC-09: ignores an unparsable contentUpdatedAt", async () => {
+    const cmd = JSON.stringify({
+      ...JSON.parse(searchCommandJson),
+      contentUpdatedAt: "not-a-date",
+    })
+    await handleAddCommand(cmd, vi.fn())
+
+    const saved = vi.mocked(Settings.addCommands).mock.calls[0][0][0]
+    expect(saved.contentUpdatedAt).toBeUndefined()
+  })
+
+  it("AC-10: responds with error when the JSON is not an object", async () => {
+    for (const json of ["null", "123", '"text"', "[]"]) {
+      const sendResponse = vi.fn()
+      await handleAddCommand(json, sendResponse)
+      expect(sendResponse).toHaveBeenCalledWith({
+        result: false,
+        error: "Invalid command format",
+      })
+    }
+    expect(Settings.addCommands).not.toHaveBeenCalled()
+  })
+
   it("AC-07: normalizes unknown sourceType to undefined", async () => {
     const cmd = JSON.stringify({
       id: "cmd-x",
@@ -347,6 +386,247 @@ describe("onMessageExternal - AddCommand routing", () => {
 // ---------------------------------------------------------------------------
 // handleDeleteCommand (unit)
 // ---------------------------------------------------------------------------
+
+describe("handleUpdateCommand", () => {
+  const hubSender = {
+    origin: HUB_ORIGIN,
+    tab: { id: 10 } as chrome.tabs.Tab,
+  } as chrome.runtime.MessageSender
+
+  const incoming = {
+    id: "cmd-1",
+    title: "Search v2",
+    searchUrl: "https://google.com/v2?q=%s",
+    iconUrl: "https://icon/v2.png",
+    openMode: "tab",
+    openModeSecondary: "popup",
+    spaceEncoding: "plus",
+    contentUpdatedAt: "2026-02-01T00:00:00.000Z",
+    sourceType: "hubCommunity",
+    sourceId: "src-1",
+  }
+
+  // An installed command whose fingerprint matches its content (not edited).
+  const installedBase = {
+    id: "cmd-1",
+    title: "Search",
+    searchUrl: "https://google.com?q=%s",
+    iconUrl: "https://icon/v1.png",
+    openMode: "tab",
+    openModeSecondary: "popup",
+    spaceEncoding: "plus",
+    contentUpdatedAt: "2026-01-01T00:00:00.000Z",
+    sourceType: "hubCommunity",
+    sourceId: "src-1",
+    parentFolderId: "folder-1",
+    popupOption: { width: 300, height: 400 },
+    excludeFromGlobalIconColor: true,
+  }
+  const installed = {
+    ...installedBase,
+    contentHash: calcContentHash(installedBase),
+  }
+
+  let sendTabSpy: MockInstance<typeof Ipc.sendTab>
+  beforeEach(() => {
+    sendTabSpy = vi.spyOn(Ipc, "sendTab").mockResolvedValue(true)
+  })
+
+  it("UC-01: replaces content and keeps local settings when not edited", async () => {
+    vi.mocked(Storage.getCommands).mockResolvedValue([installed] as any)
+    const sendResponse = vi.fn()
+    await handleUpdateCommand(JSON.stringify(incoming), hubSender, sendResponse)
+
+    expect(sendTabSpy).not.toHaveBeenCalled()
+    const updated = vi.mocked(Storage.updateCommands).mock.calls[0][0][0]
+    expect(updated).toMatchObject({
+      id: "cmd-1",
+      title: "Search v2",
+      searchUrl: "https://google.com/v2?q=%s",
+      iconUrl: "https://icon/v2.png",
+      contentUpdatedAt: "2026-02-01T00:00:00.000Z",
+      parentFolderId: "folder-1",
+      popupOption: { width: 300, height: 400 },
+      excludeFromGlobalIconColor: true,
+    })
+    expect(updated.contentHash).toBe(calcContentHash(updated))
+    expect(sendResponse).toHaveBeenCalledWith({ result: true })
+  })
+
+  it("UC-02: asks for confirmation when edited locally, then overwrites", async () => {
+    vi.mocked(Storage.getCommands).mockResolvedValue([
+      { ...installed, title: "My edit" },
+    ] as any)
+    const sendResponse = vi.fn()
+    await handleUpdateCommand(JSON.stringify(incoming), hubSender, sendResponse)
+
+    expect(sendTabSpy).toHaveBeenCalledWith(
+      10,
+      TabCommand.confirmCommandUpdate,
+      { title: "My edit" },
+    )
+    expect(Storage.updateCommands).toHaveBeenCalled()
+    expect(sendResponse).toHaveBeenCalledWith({ result: true })
+  })
+
+  it("UC-02b: resets selfUpdated source info to the Hub's on overwrite", async () => {
+    vi.mocked(Storage.getCommands).mockResolvedValue([
+      {
+        ...installed,
+        title: "My edit",
+        sourceType: "selfUpdated",
+        sourceId: "self-updated-id",
+      },
+    ] as any)
+    await handleUpdateCommand(JSON.stringify(incoming), hubSender, vi.fn())
+
+    const updated = vi.mocked(Storage.updateCommands).mock.calls[0][0][0]
+    expect(updated.sourceType).toBe("hubCommunity")
+    expect(updated.sourceId).toBe("src-1")
+  })
+
+  it("UC-02c: applies the update to the command as reloaded after the dialog", async () => {
+    const edited = { ...installed, title: "My edit" }
+    // The folder is changed in the options page while the dialog is open.
+    vi.mocked(Storage.getCommands)
+      .mockResolvedValueOnce([edited] as any)
+      .mockResolvedValueOnce([{ ...edited, parentFolderId: "folder-2" }] as any)
+    const sendResponse = vi.fn()
+    await handleUpdateCommand(JSON.stringify(incoming), hubSender, sendResponse)
+
+    const updated = vi.mocked(Storage.updateCommands).mock.calls[0][0][0]
+    expect(updated.parentFolderId).toBe("folder-2")
+    expect(updated.title).toBe("Search v2")
+    expect(sendResponse).toHaveBeenCalledWith({ result: true })
+  })
+
+  it("UC-02d: fails when the command is removed while the dialog is open", async () => {
+    const edited = { ...installed, title: "My edit" }
+    vi.mocked(Storage.getCommands)
+      .mockResolvedValueOnce([edited] as any)
+      .mockResolvedValueOnce([] as any)
+    const sendResponse = vi.fn()
+    await handleUpdateCommand(JSON.stringify(incoming), hubSender, sendResponse)
+
+    expect(Storage.updateCommands).not.toHaveBeenCalled()
+    expect(sendResponse).toHaveBeenCalledWith({
+      result: false,
+      error: "Command not found",
+    })
+  })
+
+  it("UC-02e: fails without asking when edited locally and the sender has no tab", async () => {
+    vi.mocked(Storage.getCommands).mockResolvedValue([
+      { ...installed, title: "My edit" },
+    ] as any)
+    const sendResponse = vi.fn()
+    await handleUpdateCommand(
+      JSON.stringify(incoming),
+      { origin: HUB_ORIGIN } as chrome.runtime.MessageSender,
+      sendResponse,
+    )
+
+    expect(sendTabSpy).not.toHaveBeenCalled()
+    expect(Storage.updateCommands).not.toHaveBeenCalled()
+    expect(sendResponse).toHaveBeenCalledWith({
+      result: false,
+      error: "Invalid sender tab",
+    })
+  })
+
+  it("UC-03: treats a command without fingerprint as edited", async () => {
+    const { contentHash: _hash, ...noHash } = installed
+    vi.mocked(Storage.getCommands).mockResolvedValue([noHash] as any)
+    await handleUpdateCommand(JSON.stringify(incoming), hubSender, vi.fn())
+
+    expect(sendTabSpy).toHaveBeenCalled()
+  })
+
+  it("UC-04: responds cancelled and keeps the command when the user cancels", async () => {
+    sendTabSpy.mockResolvedValue(false)
+    vi.mocked(Storage.getCommands).mockResolvedValue([
+      { ...installed, title: "My edit" },
+    ] as any)
+    const sendResponse = vi.fn()
+    await handleUpdateCommand(JSON.stringify(incoming), hubSender, sendResponse)
+
+    expect(Storage.updateCommands).not.toHaveBeenCalled()
+    expect(sendResponse).toHaveBeenCalledWith({
+      result: false,
+      cancelled: true,
+    })
+  })
+
+  it("UC-05: fails without overwriting when the dialog cannot be shown", async () => {
+    sendTabSpy.mockResolvedValue(undefined)
+    vi.mocked(Storage.getCommands).mockResolvedValue([
+      { ...installed, title: "My edit" },
+    ] as any)
+    const sendResponse = vi.fn()
+    await handleUpdateCommand(JSON.stringify(incoming), hubSender, sendResponse)
+
+    expect(Storage.updateCommands).not.toHaveBeenCalled()
+    expect(sendResponse).toHaveBeenCalledWith({
+      result: false,
+      error: expect.any(String),
+    })
+  })
+
+  it("UC-06: responds with error when the command is not installed", async () => {
+    vi.mocked(Storage.getCommands).mockResolvedValue([] as any)
+    const sendResponse = vi.fn()
+    await handleUpdateCommand(JSON.stringify(incoming), hubSender, sendResponse)
+
+    expect(sendResponse).toHaveBeenCalledWith({
+      result: false,
+      error: "Command not found",
+    })
+  })
+
+  it("UC-07: responds with error for an unsupported command type", async () => {
+    const sendResponse = vi.fn()
+    await handleUpdateCommand(invalidCommandJson, hubSender, sendResponse)
+
+    expect(Storage.updateCommands).not.toHaveBeenCalled()
+    expect(sendResponse).toHaveBeenCalledWith({
+      result: false,
+      error: "Invalid command format",
+    })
+  })
+
+  it("UC-08: drops fields of the old type when the type changes", async () => {
+    vi.mocked(Storage.getCommands).mockResolvedValue([installed] as any)
+    const toAiPrompt = {
+      id: "cmd-1",
+      title: "Now AI",
+      iconUrl: "",
+      openMode: "aiPrompt",
+      aiPromptOption: { serviceId: "chatgpt", prompt: "p", openMode: "tab" },
+    }
+    await handleUpdateCommand(JSON.stringify(toAiPrompt), hubSender, vi.fn())
+
+    const updated = vi.mocked(Storage.updateCommands).mock.calls[0][0][0]
+    expect(updated.openMode).toBe("aiPrompt")
+    expect(updated).not.toHaveProperty("searchUrl")
+    expect(updated).not.toHaveProperty("spaceEncoding")
+    expect(updated.parentFolderId).toBe("folder-1")
+  })
+
+  it("UC-R-01: routes UpdateCommand and returns true", async () => {
+    vi.mocked(Storage.getCommands).mockResolvedValue([installed] as any)
+    const listener = getRegisteredListener()
+    const sendResponse = vi.fn()
+    const result = listener(
+      { action: "UpdateCommand", command: JSON.stringify(incoming) },
+      hubSender,
+      sendResponse,
+    )
+    expect(result).toBe(true)
+    await vi.waitFor(() =>
+      expect(sendResponse).toHaveBeenCalledWith({ result: true }),
+    )
+  })
+})
 
 describe("handleDeleteCommand", () => {
   const mockCommands = [
@@ -645,13 +925,21 @@ describe("editCommandToHub", () => {
 
     expect(port.postMessage).toHaveBeenCalledWith({
       type: "edit-command",
-      command: editParam,
+      command: { ...editParam, contentUpdatedAt: expect.any(String) },
     })
+    const sent = vi.mocked(port.postMessage).mock.calls[0][0].command
 
     onAckMessage?.({ type: "edit-command-ack" })
 
+    // The same contentUpdatedAt sent to the Hub is stored locally.
     expect(Storage.updateCommands).toHaveBeenCalledWith([
-      { id: "cmd-1", title: "Updated", openMode: "tab" },
+      {
+        id: "cmd-1",
+        title: "Updated",
+        openMode: "tab",
+        contentUpdatedAt: sent.contentUpdatedAt,
+        contentHash: expect.any(String),
+      },
     ])
     expect(port.onMessage.removeListener).toHaveBeenCalled()
     await vi.waitFor(() => {
@@ -704,18 +992,35 @@ describe("handleRequestInstalledCommand", () => {
 
     expect(sendResponse).toHaveBeenCalledWith({
       action: "SyncInstalledCommand",
-      installedIds: ["a", "b"],
+      installedCommands: [{ id: "a" }, { id: "b" }],
     })
   })
 
-  it("RI-02: responds with empty installedIds when getCommands rejects", async () => {
+  it("RI-03: includes contentUpdatedAt only for commands that have it", async () => {
+    vi.mocked(Storage.getCommands).mockResolvedValue([
+      { id: "a", contentUpdatedAt: "2026-01-01T00:00:00.000Z" },
+      { id: "b" },
+    ] as any)
+    const sendResponse = vi.fn()
+    await handleRequestInstalledCommand(sendResponse)
+
+    expect(sendResponse).toHaveBeenCalledWith({
+      action: "SyncInstalledCommand",
+      installedCommands: [
+        { id: "a", contentUpdatedAt: "2026-01-01T00:00:00.000Z" },
+        { id: "b" },
+      ],
+    })
+  })
+
+  it("RI-02: responds with empty installedCommands when getCommands rejects", async () => {
     vi.mocked(Storage.getCommands).mockRejectedValue(new Error("storage error"))
     const sendResponse = vi.fn()
     await handleRequestInstalledCommand(sendResponse)
 
     expect(sendResponse).toHaveBeenCalledWith({
       action: "SyncInstalledCommand",
-      installedIds: [],
+      installedCommands: [],
     })
   })
 })
@@ -741,7 +1046,7 @@ describe("onMessageExternal - RequestInstalledCommand routing", () => {
     await vi.waitFor(() =>
       expect(sendResponse).toHaveBeenCalledWith({
         action: "SyncInstalledCommand",
-        installedIds: ["a", "b"],
+        installedCommands: [{ id: "a" }, { id: "b" }],
       }),
     )
   })
@@ -1081,7 +1386,7 @@ describe("shareCommandToHub", () => {
 
     expect(mockPort.postMessage).toHaveBeenCalledWith({
       type: "share-command",
-      command: param,
+      command: { ...param, contentUpdatedAt: expect.any(String) },
     })
     expect(chrome.runtime.onConnectExternal.removeListener).toHaveBeenCalled()
 
@@ -1143,6 +1448,57 @@ describe("shareCommandToHub", () => {
         LOCAL_STORAGE_KEY.HUB_SHARED_AT,
         expect.any(Number),
       ),
+    )
+
+    vi.useRealTimers()
+  })
+
+  it("SH-08b: share-command-submitted saves the sent contentUpdatedAt locally", async () => {
+    vi.useFakeTimers()
+    vi.mocked(chrome.tabs.create).mockImplementation((_opts, cb) => {
+      cb?.({ id: 42 } as chrome.tabs.Tab)
+      return Promise.resolve({ id: 42 } as chrome.tabs.Tab)
+    })
+    vi.mocked(Storage.getCommands).mockResolvedValue([
+      { id: "cmd-1", title: "Local" },
+    ] as any)
+    shareCommandToHub(param, sender, vi.fn())
+    await Promise.resolve()
+    await Promise.resolve()
+    await Promise.resolve()
+
+    const portConnectListener = vi.mocked(
+      chrome.runtime.onConnectExternal.addListener,
+    ).mock.calls[0][0]
+    let capturedOnMessage: ((msg: unknown) => void) | undefined
+    const mockPort = {
+      name: "hub-share",
+      sender: { tab: { id: 42 } },
+      postMessage: vi.fn(),
+      onMessage: {
+        addListener: vi.fn((fn) => {
+          capturedOnMessage = fn
+        }),
+        removeListener: vi.fn(),
+      },
+    }
+    portConnectListener(mockPort as any)
+    vi.advanceTimersByTime(200)
+    const sent = vi.mocked(mockPort.postMessage).mock.calls[0][0].command
+
+    capturedOnMessage?.({ type: "share-command-ack" })
+    expect(Storage.updateCommands).not.toHaveBeenCalled()
+
+    capturedOnMessage?.({ type: "share-command-submitted", commandId: "cmd-1" })
+    await vi.waitFor(() =>
+      expect(Storage.updateCommands).toHaveBeenCalledWith([
+        {
+          id: "cmd-1",
+          title: "Local",
+          contentUpdatedAt: sent.contentUpdatedAt,
+          contentHash: calcContentHash(param),
+        },
+      ]),
     )
 
     vi.useRealTimers()
@@ -1403,21 +1759,42 @@ describe("pushEditToHub", () => {
         }),
         removeListener: vi.fn(),
       },
+      onDisconnect: { addListener: vi.fn(), removeListener: vi.fn() },
     }
     portConnectListener(mockPort as any)
 
-    expect(chrome.runtime.onConnectExternal.removeListener).toHaveBeenCalled()
+    // Keeps accepting ports until one of them acknowledges.
+    expect(
+      chrome.runtime.onConnectExternal.removeListener,
+    ).not.toHaveBeenCalled()
 
     // Advance timer to trigger first retry send
     vi.advanceTimersByTime(200)
 
     expect(mockPort.postMessage).toHaveBeenCalledWith({
       type: "edit-command",
-      command: param,
+      command: { ...param, contentUpdatedAt: expect.any(String) },
     })
+    const sent = vi.mocked(mockPort.postMessage).mock.calls[0][0].command
 
+    vi.mocked(Storage.getCommands).mockResolvedValue([
+      { id: "cmd-1", title: "Local" },
+    ] as any)
     capturedOnAck?.({ type: "edit-command-ack" })
     expect(mockPort.onMessage.removeListener).toHaveBeenCalled()
+    expect(chrome.runtime.onConnectExternal.removeListener).toHaveBeenCalled()
+
+    // The stamp sent to the Hub is saved on the local command.
+    await vi.waitFor(() =>
+      expect(Storage.updateCommands).toHaveBeenCalledWith([
+        {
+          id: "cmd-1",
+          title: "Local",
+          contentUpdatedAt: sent.contentUpdatedAt,
+          contentHash: expect.any(String),
+        },
+      ]),
+    )
 
     vi.useRealTimers()
   })
@@ -1436,5 +1813,99 @@ describe("pushEditToHub", () => {
     vi.advanceTimersByTime(10_001)
     expect(chrome.runtime.onConnectExternal.removeListener).toHaveBeenCalled()
     vi.useRealTimers()
+  })
+
+  // Builds a hub-edit port mock whose listeners can be fired from the test.
+  const createHubEditPort = () => {
+    const messageListeners = new Set<(msg: unknown) => void>()
+    const disconnectListeners = new Set<() => void>()
+    return {
+      name: "hub-edit",
+      sender: { tab: { id: 42 }, origin: HUB_ORIGIN },
+      postMessage: vi.fn(),
+      onMessage: {
+        addListener: vi.fn((fn) => messageListeners.add(fn)),
+        removeListener: vi.fn((fn) => messageListeners.delete(fn)),
+      },
+      onDisconnect: {
+        addListener: vi.fn((fn) => disconnectListeners.add(fn)),
+        removeListener: vi.fn((fn) => disconnectListeners.delete(fn)),
+      },
+      emitMessage: (msg: unknown) =>
+        Array.from(messageListeners).forEach((fn) => fn(msg)),
+      emitDisconnect: () =>
+        Array.from(disconnectListeners).forEach((fn) => fn()),
+    }
+  }
+
+  const startPush = async () => {
+    vi.mocked(chrome.tabs.create).mockImplementation((_opts, cb) => {
+      cb?.({ id: 42 } as chrome.tabs.Tab)
+      return Promise.resolve({ id: 42 } as chrome.tabs.Tab)
+    })
+    pushEditToHub(param, sender, vi.fn())
+    await Promise.resolve()
+    return vi.mocked(chrome.runtime.onConnectExternal.addListener).mock
+      .calls[0][0]
+  }
+
+  it("PE-09: sends edit-command to the second port when the first one is disconnected", async () => {
+    vi.useFakeTimers()
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
+    const portConnectListener = await startPush()
+
+    // The Hub connects twice and drops the first port right away
+    // (its connecting effect runs twice under React StrictMode).
+    const firstPort = createHubEditPort()
+    const secondPort = createHubEditPort()
+    portConnectListener(firstPort as any)
+    portConnectListener(secondPort as any)
+    firstPort.emitDisconnect()
+
+    vi.advanceTimersByTime(200)
+    expect(firstPort.postMessage).not.toHaveBeenCalled()
+    expect(secondPort.postMessage).toHaveBeenCalledWith({
+      type: "edit-command",
+      command: { ...param, contentUpdatedAt: expect.any(String) },
+    })
+
+    vi.mocked(Storage.getCommands).mockResolvedValue([
+      { id: "cmd-1", title: "Local" },
+    ] as any)
+    secondPort.emitMessage({ type: "edit-command-ack" })
+    expect(chrome.runtime.onConnectExternal.removeListener).toHaveBeenCalled()
+
+    // No more retries and no timeout error after the ack.
+    vi.advanceTimersByTime(10_001)
+    expect(secondPort.postMessage).toHaveBeenCalledTimes(1)
+    expect(errorSpy).not.toHaveBeenCalled()
+
+    vi.useRealTimers()
+    await vi.waitFor(() => expect(Storage.updateCommands).toHaveBeenCalled())
+    errorSpy.mockRestore()
+  })
+
+  it("PE-10: stops retrying and logs error when no ack is received", async () => {
+    vi.useFakeTimers()
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
+    const portConnectListener = await startPush()
+
+    const port = createHubEditPort()
+    portConnectListener(port as any)
+
+    vi.advanceTimersByTime(200 * 21)
+    expect(port.postMessage).toHaveBeenCalledTimes(20)
+    expect(errorSpy).toHaveBeenCalledWith(
+      "[pushEditToHub] Hub did not respond to edit-command in time.",
+    )
+
+    vi.advanceTimersByTime(10_001)
+    expect(port.postMessage).toHaveBeenCalledTimes(20)
+    expect(errorSpy).not.toHaveBeenCalledWith(
+      "[pushEditToHub] Hub did not connect in time.",
+    )
+
+    vi.useRealTimers()
+    errorSpy.mockRestore()
   })
 })
