@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils"
 import { NEW_HUB_URL } from "@/const"
 import { useHubUser } from "@/hooks/option/useHubUser"
 import { getHubLocale } from "@/services/hubShare"
+import { sendHubLinkClick, HUB_LINK_ROUTE } from "@/services/analytics"
 import { UTM_SOURCE, UTM_MEDIUM, withUtmParams } from "@shared"
 
 const UTM_PARAMS = { source: UTM_SOURCE.OPTION_PAGE, medium: UTM_MEDIUM.BANNER }
@@ -24,7 +25,12 @@ export function HubBanner() {
       <p className={css2.menuLabel}>
         <span>Sharing Commands</span>
       </p>
-      <a href={hubBannerLink} target="_blank" rel="noopener noreferrer">
+      <a
+        href={hubBannerLink}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() => sendHubLinkClick(HUB_LINK_ROUTE.BANNER)}
+      >
         <img
           className={cn(css2.banner, "shadow-xl rounded-md px-4 pt-2 pb-1")}
           src="/SelectionCommandHub.png"

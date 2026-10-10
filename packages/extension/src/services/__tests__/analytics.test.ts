@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
-import { OPEN_MODE } from "@/const"
+import { OPEN_MODE, SCREEN } from "@/const"
 import { Storage } from "@/services/storage"
 import {
   ANALYTICS_EVENTS,
@@ -8,6 +8,8 @@ import {
   getOrCreateClientId,
   getBrowserEnvironmentParams,
   toErrorMessageParam,
+  sendHubLinkClick,
+  HUB_LINK_ROUTE,
 } from "@/services/analytics"
 
 vi.mock("@/services/storage", () => ({
@@ -161,4 +163,27 @@ describe("toErrorMessageParam", () => {
   it("truncates to the GA4 parameter length limit", () => {
     expect(toErrorMessageParam("x".repeat(150))).toHaveLength(100)
   })
+})
+
+describe("sendHubLinkClick", () => {
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
+  // Sending is disabled in tests (no measurement id), so the event is
+  // observed through the debug log sendEvent emits before that guard.
+  it.each(Object.values(HUB_LINK_ROUTE))(
+    "sends hub_link_click for the %s route on the option screen",
+    async (route) => {
+      const debug = vi.spyOn(console, "debug").mockImplementation(() => {})
+
+      await sendHubLinkClick(route)
+
+      expect(debug).toHaveBeenCalledWith(
+        expect.stringContaining(ANALYTICS_EVENTS.HUB_LINK_CLICK),
+        { event_label: route },
+        SCREEN.OPTION,
+      )
+    },
+  )
 })
