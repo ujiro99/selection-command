@@ -740,4 +740,6 @@ export {
   inputContentEditable,
   clearInput,
   setTextControlValue,
+  isTextControl,
+  enteredTextNodes,
 } from "./inputUtils"

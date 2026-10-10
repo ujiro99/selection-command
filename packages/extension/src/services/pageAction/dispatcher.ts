@@ -140,20 +140,17 @@ export const PageActionDispatcher = {
           await inputContentEditable(element, value, 10, null)
         } else {
           value = value.replace(/{/g, "{{") // escape
+          const isTextControl =
+            element instanceof HTMLInputElement ||
+            element instanceof HTMLTextAreaElement
+          if (param.clearBefore && !isTextControl) {
+            // Fail rather than send the new text appended to a stale input.
+            return [false, `Cannot clear the input: ${param.label}`]
+          }
           // Ensure focus before typing, since preceding click may have been
           // removed by recording optimization in serviceWorker.ts.
           element.focus()
-          if (param.clearBefore) {
-            if (
-              element instanceof HTMLInputElement ||
-              element instanceof HTMLTextAreaElement
-            ) {
-              clearInput(element)
-            } else {
-              // Fail rather than send the new text appended to a stale input.
-              return [false, `Cannot clear the input: ${param.label}`]
-            }
-          }
+          if (param.clearBefore) clearInput(element)
           await user.type(element, value, { skipClick: true })
         }
       }

@@ -254,6 +254,23 @@ describe("clearInput", () => {
     expect(div.childNodes).toHaveLength(0)
   })
 
+  it("leaves the caret inside the input so that the next text is typed into it", async () => {
+    const div = createEditableDiv()
+    div.innerHTML = "<p>first</p><p>second</p>"
+    // Caret inside a block that is about to be removed.
+    const range = document.createRange()
+    range.selectNodeContents(div.querySelector("p:last-child")!)
+    range.collapse(false)
+    const selection = window.getSelection()!
+    selection.removeAllRanges()
+    selection.addRange(range)
+
+    clearInput(div)
+    await inputContentEditable(div, "new prompt", 0)
+
+    expect(div.textContent).toBe("new prompt")
+  })
+
   it("keeps a block that holds a placeholder but empties its text", () => {
     const div = document.createElement("div")
     div.innerHTML =
@@ -288,6 +305,8 @@ describe("setTextControlValue", () => {
     setTextControlValue(textarea, "hello")
 
     expect(instanceSetter).not.toHaveBeenCalled()
+    // Drop the shadowing instance property to read the value that the
+    // prototype setter actually stored.
     delete (textarea as any).value
     expect(textarea.value).toBe("hello")
     expect(events).toHaveLength(1)
