@@ -992,7 +992,6 @@ describe("handleRequestInstalledCommand", () => {
 
     expect(sendResponse).toHaveBeenCalledWith({
       action: "SyncInstalledCommand",
-      installedIds: ["a", "b"],
       installedCommands: [{ id: "a" }, { id: "b" }],
     })
   })
@@ -1007,7 +1006,6 @@ describe("handleRequestInstalledCommand", () => {
 
     expect(sendResponse).toHaveBeenCalledWith({
       action: "SyncInstalledCommand",
-      installedIds: ["a", "b"],
       installedCommands: [
         { id: "a", contentUpdatedAt: "2026-01-01T00:00:00.000Z" },
         { id: "b" },
@@ -1015,14 +1013,13 @@ describe("handleRequestInstalledCommand", () => {
     })
   })
 
-  it("RI-02: responds with empty installedIds when getCommands rejects", async () => {
+  it("RI-02: responds with empty installedCommands when getCommands rejects", async () => {
     vi.mocked(Storage.getCommands).mockRejectedValue(new Error("storage error"))
     const sendResponse = vi.fn()
     await handleRequestInstalledCommand(sendResponse)
 
     expect(sendResponse).toHaveBeenCalledWith({
       action: "SyncInstalledCommand",
-      installedIds: [],
       installedCommands: [],
     })
   })
@@ -1049,7 +1046,6 @@ describe("onMessageExternal - RequestInstalledCommand routing", () => {
     await vi.waitFor(() =>
       expect(sendResponse).toHaveBeenCalledWith({
         action: "SyncInstalledCommand",
-        installedIds: ["a", "b"],
         installedCommands: [{ id: "a" }, { id: "b" }],
       }),
     )

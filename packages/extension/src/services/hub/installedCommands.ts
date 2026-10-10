@@ -8,8 +8,6 @@ export type InstalledCommand = {
 
 export type SyncInstalledCommand = {
   action: "SyncInstalledCommand"
-  /** Kept for compatibility with Hub versions that only read IDs. */
-  installedIds: string[]
   installedCommands: InstalledCommand[]
 }
 
@@ -19,7 +17,6 @@ export function toSyncInstalledCommand(
 ): SyncInstalledCommand {
   return {
     action: "SyncInstalledCommand",
-    installedIds: commands.map((c) => c.id),
     installedCommands: commands.map((c) =>
       c.contentUpdatedAt
         ? { id: c.id, contentUpdatedAt: c.contentUpdatedAt }

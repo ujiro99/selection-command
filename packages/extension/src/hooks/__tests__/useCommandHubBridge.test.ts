@@ -30,7 +30,6 @@ describe("useCommandHubBridge", () => {
     expect(postMessage).toHaveBeenCalledWith(
       {
         action: "SyncInstalledCommand",
-        installedIds: ["a", "b"],
         installedCommands: [
           { id: "a", contentUpdatedAt: "2026-01-01T00:00:00.000Z" },
           { id: "b" },
