@@ -5,13 +5,13 @@ import {
 } from "@/services/experiments"
 import type { ExperimentVariant } from "@/services/experiments"
 
-// development or e2e build-only escape hatch (`?variant=B`), mirroring
+// development or e2e build-only escape hatch (`?variant=C`), mirroring
 // useOnboardingState's `?step=/?phase=` override so screenshot and manual QA
 // tooling can land on either arm of the experiment on demand.
 function readVariantOverride(): ExperimentVariant | null {
   if (!["e2e", "development"].includes(import.meta.env.MODE)) return null
   const param = new URLSearchParams(window.location.search).get("variant")
-  if (param !== "A" && param !== "B") return null
+  if (param !== "A" && param !== "C") return null
   return overrideOnboardingAssignment(param).variant
 }
 

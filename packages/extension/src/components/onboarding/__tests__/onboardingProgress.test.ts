@@ -29,7 +29,7 @@ describe("getProgress", () => {
     )
   })
 
-  it("returns null while variant B's welcome overlay is up", () => {
+  it("returns null while variant C's welcome overlay is up", () => {
     expect(getProgress(OnboardingStep.SEARCH, StepPhase.WELCOME)).toBeNull()
   })
 
@@ -43,7 +43,7 @@ describe("getProgress", () => {
 })
 
 describe("showsSkip", () => {
-  it("is false while variant B's welcome overlay is up", () => {
+  it("is false while variant C's welcome overlay is up", () => {
     // The overlay hides the button visually - leaving it rendered would
     // only make it reachable by keyboard.
     expect(showsSkip(OnboardingStep.SEARCH, StepPhase.WELCOME)).toBe(false)

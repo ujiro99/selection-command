@@ -43,7 +43,8 @@ This file provides guidance to AI Agent when working with code in this repositor
        "<experiment_id>": { "enabled": true, "allocation": 0.5 }
      }
      ```
-     `allocation` は variant B に割り当てるユーザーの比率（0..1）
+     `allocation` は treatment 側の variant（現在の `onboarding_v3` では variant C）に
+     割り当てるユーザーの比率（0..1）
    - Extension 側には hub 障害時用のフォールバック値が
      `packages/extension/src/services/experiments/experimentConfig.ts` の
      `DEFAULT_CONFIGS` に定義されている。配分比率を恒久的に変更する場合は、

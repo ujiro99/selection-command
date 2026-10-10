@@ -15,7 +15,7 @@ type Props = {
   onDone: () => void
 }
 
-// Variant B's opening beat, replacing variant A's INTRO step: the brand mark
+// Variant C's opening beat, replacing variant A's INTRO step: the brand mark
 // and a short greeting, then straight into the first step. Rendered as an
 // opaque full-screen overlay so the layout chrome (progress pills, Skip)
 // stays hidden until the greeting is done, matching how INTRO looks in

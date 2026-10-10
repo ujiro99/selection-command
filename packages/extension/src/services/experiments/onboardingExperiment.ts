@@ -7,7 +7,7 @@ import type {
 } from "./types"
 
 /** Experiment id reported to GA4 as `experiment_id`. */
-export const ONBOARDING_EXPERIMENT_ID = "onboarding_v2"
+export const ONBOARDING_EXPERIMENT_ID = "onboarding_v3"
 
 /**
  * Last resolved assignment, kept in module memory so analytics helpers can
@@ -24,7 +24,7 @@ export const getOnboardingVariantSync = (): ExperimentVariant | null =>
 
 /**
  * dev/e2e only: force a variant for the rest of this page's lifetime without
- * fetching or persisting anything, so `?variant=B` can be used to review a
+ * fetching or persisting anything, so `?variant=C` can be used to review a
  * screen directly. See useOnboardingVariant().
  */
 export const overrideOnboardingAssignment = (
@@ -32,7 +32,7 @@ export const overrideOnboardingAssignment = (
 ): ExperimentAssignment => {
   cachedAssignment = {
     variant,
-    allocation: variant === "B" ? 1 : 0,
+    allocation: variant === "C" ? 1 : 0,
     configSource: "fallback",
     assignedAt: Date.now(),
   }
@@ -71,7 +71,7 @@ export const ensureOnboardingAssignment =
       ONBOARDING_EXPERIMENT_ID,
     )
     const variant: ExperimentVariant =
-      config.enabled && Math.random() < config.allocation ? "B" : "A"
+      config.enabled && Math.random() < config.allocation ? "C" : "A"
     const assignment: ExperimentAssignment = {
       variant,
       allocation: config.allocation,

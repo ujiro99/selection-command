@@ -1,7 +1,10 @@
 import { sendEvent, ANALYTICS_EVENTS } from "@/services/analytics"
 import { SCREEN } from "@/const"
 import { OnboardingStep } from "@/types/onboarding"
-import { getOnboardingVariantSync } from "@/services/experiments"
+import {
+  getOnboardingVariantSync,
+  ONBOARDING_EXPERIMENT_ID,
+} from "@/services/experiments"
 
 // Stable string labels for GA4's `step` param, so recorded events keep their
 // meaning even if OnboardingStep's numeric enum values ever change.
@@ -22,8 +25,9 @@ export const UNKNOWN_VARIANT = "unknown"
 // Thin wrapper so step components never call sendEvent directly - keeps the
 // SCREEN.ONBOARDING tag and event names centralized in one place. Also
 // normalizes a `step` param (passed as the OnboardingStep enum) to its
-// stable string label, and tags every onboarding_* event with the A/B
-// variant so the whole funnel can be compared arm by arm.
+// stable string label, and tags every onboarding_* event with the experiment
+// id and the A/B variant so the whole funnel can be compared arm by arm
+// without mixing in the arms of an earlier experiment.
 export function sendOnboardingEvent(
   name: (typeof ANALYTICS_EVENTS)[keyof typeof ANALYTICS_EVENTS],
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -37,6 +41,7 @@ export function sendOnboardingEvent(
     name,
     {
       ...normalizedParams,
+      experiment_id: ONBOARDING_EXPERIMENT_ID,
       variant: getOnboardingVariantSync() ?? UNKNOWN_VARIANT,
     },
     SCREEN.ONBOARDING,

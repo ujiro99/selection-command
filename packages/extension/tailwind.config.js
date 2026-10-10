@@ -47,7 +47,7 @@ module.exports = {
           from: { opacity: "0", transform: "translateY(10px)" },
           to: { opacity: "1", transform: "translateY(0)" },
         },
-        // Linear-style enter/exit used by the variant B welcome overlay:
+        // Linear-style enter/exit used by the variant C welcome overlay:
         // content resolves out of a blur instead of just sliding up.
         "onboarding-blur-in": {
           from: {
