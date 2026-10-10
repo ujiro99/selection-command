@@ -1763,10 +1763,14 @@ describe("pushEditToHub", () => {
         }),
         removeListener: vi.fn(),
       },
+      onDisconnect: { addListener: vi.fn(), removeListener: vi.fn() },
     }
     portConnectListener(mockPort as any)
 
-    expect(chrome.runtime.onConnectExternal.removeListener).toHaveBeenCalled()
+    // Keeps accepting ports until one of them acknowledges.
+    expect(
+      chrome.runtime.onConnectExternal.removeListener,
+    ).not.toHaveBeenCalled()
 
     // Advance timer to trigger first retry send
     vi.advanceTimersByTime(200)
@@ -1782,6 +1786,7 @@ describe("pushEditToHub", () => {
     ] as any)
     capturedOnAck?.({ type: "edit-command-ack" })
     expect(mockPort.onMessage.removeListener).toHaveBeenCalled()
+    expect(chrome.runtime.onConnectExternal.removeListener).toHaveBeenCalled()
 
     // The stamp sent to the Hub is saved on the local command.
     await vi.waitFor(() =>
@@ -1812,5 +1817,99 @@ describe("pushEditToHub", () => {
     vi.advanceTimersByTime(10_001)
     expect(chrome.runtime.onConnectExternal.removeListener).toHaveBeenCalled()
     vi.useRealTimers()
+  })
+
+  // Builds a hub-edit port mock whose listeners can be fired from the test.
+  const createHubEditPort = () => {
+    const messageListeners = new Set<(msg: unknown) => void>()
+    const disconnectListeners = new Set<() => void>()
+    return {
+      name: "hub-edit",
+      sender: { tab: { id: 42 }, origin: HUB_ORIGIN },
+      postMessage: vi.fn(),
+      onMessage: {
+        addListener: vi.fn((fn) => messageListeners.add(fn)),
+        removeListener: vi.fn((fn) => messageListeners.delete(fn)),
+      },
+      onDisconnect: {
+        addListener: vi.fn((fn) => disconnectListeners.add(fn)),
+        removeListener: vi.fn((fn) => disconnectListeners.delete(fn)),
+      },
+      emitMessage: (msg: unknown) =>
+        Array.from(messageListeners).forEach((fn) => fn(msg)),
+      emitDisconnect: () =>
+        Array.from(disconnectListeners).forEach((fn) => fn()),
+    }
+  }
+
+  const startPush = async () => {
+    vi.mocked(chrome.tabs.create).mockImplementation((_opts, cb) => {
+      cb?.({ id: 42 } as chrome.tabs.Tab)
+      return Promise.resolve({ id: 42 } as chrome.tabs.Tab)
+    })
+    pushEditToHub(param, sender, vi.fn())
+    await Promise.resolve()
+    return vi.mocked(chrome.runtime.onConnectExternal.addListener).mock
+      .calls[0][0]
+  }
+
+  it("PE-09: sends edit-command to the second port when the first one is disconnected", async () => {
+    vi.useFakeTimers()
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
+    const portConnectListener = await startPush()
+
+    // The Hub connects twice and drops the first port right away
+    // (its connecting effect runs twice under React StrictMode).
+    const firstPort = createHubEditPort()
+    const secondPort = createHubEditPort()
+    portConnectListener(firstPort as any)
+    portConnectListener(secondPort as any)
+    firstPort.emitDisconnect()
+
+    vi.advanceTimersByTime(200)
+    expect(firstPort.postMessage).not.toHaveBeenCalled()
+    expect(secondPort.postMessage).toHaveBeenCalledWith({
+      type: "edit-command",
+      command: { ...param, contentUpdatedAt: expect.any(String) },
+    })
+
+    vi.mocked(Storage.getCommands).mockResolvedValue([
+      { id: "cmd-1", title: "Local" },
+    ] as any)
+    secondPort.emitMessage({ type: "edit-command-ack" })
+    expect(chrome.runtime.onConnectExternal.removeListener).toHaveBeenCalled()
+
+    // No more retries and no timeout error after the ack.
+    vi.advanceTimersByTime(10_001)
+    expect(secondPort.postMessage).toHaveBeenCalledTimes(1)
+    expect(errorSpy).not.toHaveBeenCalled()
+
+    vi.useRealTimers()
+    await vi.waitFor(() => expect(Storage.updateCommands).toHaveBeenCalled())
+    errorSpy.mockRestore()
+  })
+
+  it("PE-10: stops retrying and logs error when no ack is received", async () => {
+    vi.useFakeTimers()
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
+    const portConnectListener = await startPush()
+
+    const port = createHubEditPort()
+    portConnectListener(port as any)
+
+    vi.advanceTimersByTime(200 * 21)
+    expect(port.postMessage).toHaveBeenCalledTimes(20)
+    expect(errorSpy).toHaveBeenCalledWith(
+      "[pushEditToHub] Hub did not respond to edit-command in time.",
+    )
+
+    vi.advanceTimersByTime(10_001)
+    expect(port.postMessage).toHaveBeenCalledTimes(20)
+    expect(errorSpy).not.toHaveBeenCalledWith(
+      "[pushEditToHub] Hub did not connect in time.",
+    )
+
+    vi.useRealTimers()
+    errorSpy.mockRestore()
   })
 })

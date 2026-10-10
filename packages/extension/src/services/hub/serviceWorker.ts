@@ -70,7 +70,7 @@ function getSupabase() {
 }
 
 const RETRY_INTERVAL_MS = 200
-const MAX_RETRIES = 20 // 2 seconds
+const MAX_RETRIES = 20 // 4 seconds
 const EDIT_CONNECT_TIMEOUT_MS = 10_000
 const EDIT_COMMAND_ACK_TIMEOUT_MS = 10_000
 const PUSH_EDIT_CONNECT_TIMEOUT_MS = 10_000
@@ -791,33 +791,45 @@ export const pushEditToHub = (
   let tabId: number | undefined
   let connectTimeout: ReturnType<typeof setTimeout> | undefined
   let onPortConnect: ((port: chrome.runtime.Port) => void) | undefined
+  let connected = false
+  // Cleanup functions of the ports that are still being retried.
+  const portCleanups = new Set<() => void>()
   const { command: stampedParam, stamp } = stampForHub(param)
 
-  const cleanup = () => {
+  const stopListening = () => {
     if (connectTimeout) clearTimeout(connectTimeout)
     if (onPortConnect)
       chrome.runtime.onConnectExternal.removeListener(onPortConnect)
   }
 
+  const cleanup = () => {
+    stopListening()
+    Array.from(portCleanups).forEach((cleanupPort) => cleanupPort())
+  }
+
   const push = async () => {
     try {
+      // The Hub may open more than one hub-edit port and immediately drop some
+      // of them (e.g. when its connecting effect runs twice), so keep accepting
+      // ports until one of them acknowledges instead of binding to the first.
       onPortConnect = function portConnect(port: chrome.runtime.Port) {
         if (port.name !== "hub-edit") return
         if (port.sender?.tab?.id !== tabId) return
         if (port.sender?.origin !== hubOrigin) return
 
-        cleanup()
-
+        connected = true
         let retries = 0
 
         const cleanupPort = () => {
           clearInterval(timer)
           port.onMessage.removeListener(onAck)
+          port.onDisconnect.removeListener(cleanupPort)
+          portCleanups.delete(cleanupPort)
         }
 
         const onAck = (msg: unknown) => {
           if ((msg as { type?: string })?.type === "edit-command-ack") {
-            cleanupPort()
+            cleanup()
             saveHubContentStamp(param.id, stamp).catch((err) => {
               console.error(
                 "[pushEditToHub] Failed to save content stamp:",
@@ -827,6 +839,9 @@ export const pushEditToHub = (
           }
         }
         port.onMessage.addListener(onAck)
+        // Stop posting to a port the Hub has closed; posting to it would throw.
+        port.onDisconnect.addListener(cleanupPort)
+        portCleanups.add(cleanupPort)
 
         // Post the command repeatedly until ack is received or max retries exceeded
         const timer = setInterval(() => {
@@ -844,8 +859,11 @@ export const pushEditToHub = (
 
       chrome.runtime.onConnectExternal.addListener(onPortConnect)
       connectTimeout = setTimeout(() => {
-        cleanup()
-        console.error("[pushEditToHub] Hub did not connect in time.")
+        // Stop accepting new ports; ports already connected keep retrying.
+        stopListening()
+        if (!connected) {
+          console.error("[pushEditToHub] Hub did not connect in time.")
+        }
       }, PUSH_EDIT_CONNECT_TIMEOUT_MS)
 
       const tab = await new Promise<chrome.tabs.Tab>((resolve) =>
