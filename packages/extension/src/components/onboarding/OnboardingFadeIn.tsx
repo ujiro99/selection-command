@@ -3,7 +3,7 @@ import clsx from "clsx"
 
 // `rise` is the default onboarding entrance (fade + slight upward slide).
 // `blur` additionally resolves the content out of a blur, used by variant
-// B's welcome overlay for a softer, Linear-style transition.
+// C's welcome overlay for a softer, Linear-style transition.
 export type FadeInEffect = "rise" | "blur"
 
 type Props = {

@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import { render, screen, act } from "@testing-library/react"
-import { OnboardingWelcome } from "../OnboardingWelcome"
+import { OnboardingWelcome, WELCOME_DURATION_MS } from "../OnboardingWelcome"
 
-// Keep in sync with OnboardingWelcome's own timings.
-const WELCOME_MS = 2000
+const WELCOME_MS = WELCOME_DURATION_MS
+// Keep in sync with OnboardingWelcome's exit animation duration.
 const EXIT_MS = 320
 
 describe("OnboardingWelcome", () => {
