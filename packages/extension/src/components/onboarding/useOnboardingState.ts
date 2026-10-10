@@ -6,10 +6,7 @@ import { Settings } from "@/services/settings/settings"
 import { getCurrentLocale } from "@/services/i18n"
 import { VERSION } from "@/const"
 import { closeOnboardingTab } from "./onboardingWindow"
-import {
-  ONBOARDING_EXPERIMENT_ID,
-  getOnboardingAssignmentSync,
-} from "@/services/experiments"
+import { getOnboardingAssignmentSync } from "@/services/experiments"
 import type { ExperimentVariant } from "@/services/experiments"
 
 export type UseOnboardingState = ReturnType<typeof useOnboardingState>
@@ -40,13 +37,13 @@ function readStepAndPhaseOverride(): {
 }
 
 // Where the flow opens, per A/B variant: the control keeps the INTRO step,
-// while variant B drops it and starts on the first real step behind a short
+// while variant C drops it and starts on the first real step behind a short
 // welcome overlay (see OnboardingWelcome).
 function initialStepAndPhase(variant: ExperimentVariant): {
   step: OnboardingStep
   phase: StepPhase
 } {
-  return variant === "B"
+  return variant === "C"
     ? { step: OnboardingStep.SEARCH, phase: StepPhase.WELCOME }
     : { step: OnboardingStep.INTRO, phase: StepPhase.EXPLAIN }
 }
@@ -78,7 +75,6 @@ export function useOnboardingState(variant: ExperimentVariant) {
     sendOnboardingEvent(ANALYTICS_EVENTS.ONBOARDING_START, {
       locale: getCurrentLocale(),
       extension_version: VERSION,
-      experiment_id: ONBOARDING_EXPERIMENT_ID,
       // Lets a hub outage (which forces the build-time allocation) be
       // separated out when the results are analyzed.
       config_source: getOnboardingAssignmentSync()?.configSource ?? "unknown",

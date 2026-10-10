@@ -1405,10 +1405,10 @@
     "message": "Ignorar"
   },
   "onboarding_welcomeMessage": {
-    "message": "Bem-vindo!"
+    "message": "Obrigado por instalar"
   },
   "onboarding_welcomeIntroduction": {
-    "message": "Primeiro, conheça três formas úteis de o utilizar."
+    "message": "Vamos já experimentar três funcionalidades populares!"
   },
   "onboarding_welcomeContinue": {
     "message": "Clique para continuar"

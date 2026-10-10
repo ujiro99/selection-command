@@ -1399,10 +1399,10 @@
     "message": "スキップ"
   },
   "onboarding_welcomeMessage": {
-    "message": "ようこそ！"
+    "message": "インストールありがとうございます"
   },
   "onboarding_welcomeIntroduction": {
-    "message": "まずは、3つの便利な使い方をご紹介します"
+    "message": "さっそく、3つの人気機能を使ってみましょう！"
   },
   "onboarding_welcomeContinue": {
     "message": "クリックして続ける"

@@ -1402,10 +1402,10 @@
     "message": "Passer"
   },
   "onboarding_welcomeMessage": {
-    "message": "Bienvenue !"
+    "message": "Merci pour l'installation"
   },
   "onboarding_welcomeIntroduction": {
-    "message": "Commençons par découvrir trois façons pratiques de l’utiliser."
+    "message": "Essayons sans attendre trois fonctionnalités populaires !"
   },
   "onboarding_welcomeContinue": {
     "message": "Cliquez pour continuer"

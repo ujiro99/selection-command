@@ -1402,10 +1402,10 @@
     "message": "跳过"
   },
   "onboarding_welcomeMessage": {
-    "message": "欢迎！"
+    "message": "感谢您的安装"
   },
   "onboarding_welcomeIntroduction": {
-    "message": "首先，为您介绍三种实用的使用方法。"
+    "message": "马上来体验三个热门功能吧！"
   },
   "onboarding_welcomeContinue": {
     "message": "点击继续"

@@ -36,7 +36,7 @@ describe("ensureOnboardingAssignment", () => {
     vi.restoreAllMocks()
   })
 
-  it("assigns variant B when the random draw lands below the allocation", async () => {
+  it("assigns variant C when the random draw lands below the allocation", async () => {
     fetchExperimentConfig.mockResolvedValue({
       config: { enabled: true, allocation: 0.5 },
       source: "remote",
@@ -45,10 +45,10 @@ describe("ensureOnboardingAssignment", () => {
 
     const assignment = await ensureOnboardingAssignment()
 
-    expect(assignment.variant).toBe("B")
+    expect(assignment.variant).toBe("C")
     expect(assignment.configSource).toBe("remote")
-    expect(getOnboardingVariantSync()).toBe("B")
-    expect((await readStored())[ONBOARDING_EXPERIMENT_ID].variant).toBe("B")
+    expect(getOnboardingVariantSync()).toBe("C")
+    expect((await readStored())[ONBOARDING_EXPERIMENT_ID].variant).toBe("C")
   })
 
   it("assigns the control when the draw lands above the allocation", async () => {
@@ -80,7 +80,7 @@ describe("ensureOnboardingAssignment", () => {
 
     const assignment = await ensureOnboardingAssignment()
 
-    expect(assignment.variant).toBe("B")
+    expect(assignment.variant).toBe("C")
     expect(assignment.configSource).toBe("fallback")
   })
 
@@ -112,7 +112,7 @@ describe("ensureOnboardingAssignment", () => {
     })
     await Storage.set<Experiments>(LOCAL_STORAGE_KEY.EXPERIMENTS, {
       other_experiment: {
-        variant: "B",
+        variant: "C",
         allocation: 1,
         configSource: "remote",
         assignedAt: 1,
@@ -122,7 +122,7 @@ describe("ensureOnboardingAssignment", () => {
     await ensureOnboardingAssignment()
 
     const stored = await readStored()
-    expect(stored.other_experiment.variant).toBe("B")
-    expect(stored[ONBOARDING_EXPERIMENT_ID].variant).toBe("B")
+    expect(stored.other_experiment.variant).toBe("C")
+    expect(stored[ONBOARDING_EXPERIMENT_ID].variant).toBe("C")
   })
 })

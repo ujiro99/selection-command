@@ -12,9 +12,9 @@ export enum OnboardingStep {
 // them to come back from the popup/tab it opened, then showing the value
 // message. Not every step uses every phase (e.g. INTRO/CUSTOMIZE/COMPLETE
 // only ever use EXPLAIN, and WELCOME only ever precedes SEARCH's EXPLAIN in
-// variant B).
+// variant C).
 export enum StepPhase {
-  // Variant B only: the welcome overlay shown before the first step's
+  // Variant C only: the welcome overlay shown before the first step's
   // explanation (variant A shows the INTRO step instead).
   WELCOME = "welcome",
   EXPLAIN = "explain",

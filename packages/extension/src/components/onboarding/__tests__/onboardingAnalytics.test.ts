@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest"
 import { OnboardingStep } from "@/types/onboarding"
 import { SCREEN } from "@/const"
 import {
+  ONBOARDING_EXPERIMENT_ID,
   overrideOnboardingAssignment,
   resetOnboardingAssignmentCache,
 } from "@/services/experiments"
@@ -32,7 +33,11 @@ describe("sendOnboardingEvent", () => {
 
     expect(sendEvent).toHaveBeenCalledWith(
       ANALYTICS_EVENTS.ONBOARDING_VALUE_REACHED,
-      { step: "ai_prompt", variant: UNKNOWN_VARIANT },
+      {
+        step: "ai_prompt",
+        experiment_id: ONBOARDING_EXPERIMENT_ID,
+        variant: UNKNOWN_VARIANT,
+      },
       SCREEN.ONBOARDING,
     )
   })
@@ -44,13 +49,17 @@ describe("sendOnboardingEvent", () => {
 
     expect(sendEvent).toHaveBeenCalledWith(
       ANALYTICS_EVENTS.ONBOARDING_START,
-      { locale: "en", variant: UNKNOWN_VARIANT },
+      {
+        locale: "en",
+        experiment_id: ONBOARDING_EXPERIMENT_ID,
+        variant: UNKNOWN_VARIANT,
+      },
       SCREEN.ONBOARDING,
     )
   })
 
-  it("tags the event with the assigned A/B variant", () => {
-    overrideOnboardingAssignment("B")
+  it("tags the event with the experiment id and the assigned A/B variant", () => {
+    overrideOnboardingAssignment("C")
 
     sendOnboardingEvent(ANALYTICS_EVENTS.ONBOARDING_SKIP, {
       step: OnboardingStep.SEARCH,
@@ -58,7 +67,7 @@ describe("sendOnboardingEvent", () => {
 
     expect(sendEvent).toHaveBeenCalledWith(
       ANALYTICS_EVENTS.ONBOARDING_SKIP,
-      { step: "search", variant: "B" },
+      { step: "search", experiment_id: "onboarding_v3", variant: "C" },
       SCREEN.ONBOARDING,
     )
   })
@@ -70,7 +79,11 @@ describe("sendOnboardingEvent", () => {
 
     expect(sendEvent).toHaveBeenCalledWith(
       ANALYTICS_EVENTS.ONBOARDING_COMPLETE,
-      { completion_time_sec: 12.3, variant: "unknown" },
+      {
+        completion_time_sec: 12.3,
+        experiment_id: ONBOARDING_EXPERIMENT_ID,
+        variant: "unknown",
+      },
       SCREEN.ONBOARDING,
     )
   })

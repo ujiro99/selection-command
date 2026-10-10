@@ -1,14 +1,17 @@
 /**
  * Variant a user is assigned to for an A/B test.
  * "A" is always the control (the behavior that shipped before the test).
+ * The treatment letter is bumped for every new pattern under test ("B" was
+ * onboarding_v2's treatment, "C" is onboarding_v3's), so a GA4 `variant`
+ * value never means two different patterns.
  */
-export type ExperimentVariant = "A" | "B"
+export type ExperimentVariant = "A" | "C"
 
 /** Remote configuration of a single experiment, served by the hub. */
 export type ExperimentConfig = {
   /** Kill switch: when false, everyone is assigned to the control. */
   enabled: boolean
-  /** Ratio of users assigned to variant B, clamped to 0..1. */
+  /** Ratio of users assigned to the treatment variant, clamped to 0..1. */
   allocation: number
 }
 
