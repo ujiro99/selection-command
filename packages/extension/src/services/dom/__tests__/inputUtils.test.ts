@@ -1,5 +1,9 @@
 import { describe, it, expect, vi, afterEach, beforeEach } from "vitest"
-import { inputContentEditable, clearInput } from "../inputUtils"
+import {
+  inputContentEditable,
+  clearInput,
+  setTextControlValue,
+} from "../inputUtils"
 
 /**
  * Helper: create a contenteditable div with selection set inside it.
@@ -211,7 +215,7 @@ describe("clearInput", () => {
 
     clearInput(div)
 
-    expect(div.querySelector("p")?.textContent).toBe("")
+    expect(div.querySelector("p")).toBeNull()
     expect(div.querySelector("span")?.textContent).toBe("Ask anything")
   })
 
@@ -225,18 +229,84 @@ describe("clearInput", () => {
     expect(input.value).toBe("")
   })
 
-  it("empties every paragraph and skips aria-hidden placeholders", () => {
+  it("removes every emptied paragraph and skips aria-hidden placeholders", () => {
     const div = document.createElement("div")
     div.innerHTML =
-      '<p>first</p><p>second</p><span aria-hidden="true">Ask anything</span>'
+      '<p>first</p><p><br></p><p>second</p><span aria-hidden="true">Ask anything</span>'
+    document.body.appendChild(div)
+    const onInput = vi.fn()
+    div.addEventListener("input", onInput)
+
+    clearInput(div)
+
+    expect(div.querySelectorAll("p")).toHaveLength(0)
+    expect(div.querySelector("span")?.textContent).toBe("Ask anything")
+    expect(onInput).toHaveBeenCalledTimes(1)
+  })
+
+  it("removes emptied list items", () => {
+    const div = document.createElement("div")
+    div.innerHTML = "<p>intro</p><ul><li><p>one</p></li><li><p>two</p></li></ul>"
     document.body.appendChild(div)
 
     clearInput(div)
 
-    const texts = Array.from(div.querySelectorAll("p")).map(
-      (p) => p.textContent,
-    )
-    expect(texts).toEqual(["", ""])
-    expect(div.querySelector("span")?.textContent).toBe("Ask anything")
+    expect(div.childNodes).toHaveLength(0)
+  })
+
+  it("keeps a block that holds a placeholder but empties its text", () => {
+    const div = document.createElement("div")
+    div.innerHTML =
+      '<p>typed<span contenteditable="false">Ask anything</span></p><p>second</p>'
+    document.body.appendChild(div)
+
+    clearInput(div)
+
+    expect(div.querySelectorAll("p")).toHaveLength(1)
+    expect(div.textContent).toBe("Ask anything")
+  })
+})
+
+describe("setTextControlValue", () => {
+  afterEach(() => {
+    document.body.innerHTML = ""
+  })
+
+  it("sets the value through the prototype setter and dispatches an input event", () => {
+    const textarea = document.createElement("textarea")
+    document.body.appendChild(textarea)
+    // Shadow the instance property like React's value tracker does.
+    const instanceSetter = vi.fn()
+    Object.defineProperty(textarea, "value", {
+      configurable: true,
+      get: () => "tracked",
+      set: instanceSetter,
+    })
+    const events: InputEvent[] = []
+    textarea.addEventListener("input", (e) => events.push(e as InputEvent))
+
+    setTextControlValue(textarea, "hello")
+
+    expect(instanceSetter).not.toHaveBeenCalled()
+    delete (textarea as any).value
+    expect(textarea.value).toBe("hello")
+    expect(events).toHaveLength(1)
+    expect(events[0].inputType).toBe("insertText")
+    expect(events[0].data).toBe("hello")
+    expect(events[0].bubbles).toBe(true)
+  })
+
+  it("reports a deletion when the value is emptied", () => {
+    const input = document.createElement("input")
+    input.value = "restored"
+    document.body.appendChild(input)
+    const events: InputEvent[] = []
+    input.addEventListener("input", (e) => events.push(e as InputEvent))
+
+    setTextControlValue(input, "")
+
+    expect(input.value).toBe("")
+    expect(events[0].inputType).toBe("deleteContentBackward")
+    expect(events[0].data).toBeNull()
   })
 })

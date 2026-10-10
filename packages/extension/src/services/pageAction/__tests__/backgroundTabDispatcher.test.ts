@@ -7,12 +7,19 @@ import {
 } from "@/const"
 
 // Mock dependencies
-vi.mock("@/services/dom", () => ({
-  getElementByXPath: vi.fn(),
-  isValidXPath: vi.fn(),
-  inputContentEditable: vi.fn(),
-  clearInput: vi.fn(),
-}))
+vi.mock("@/services/dom", async () => {
+  const actual = await vi.importActual<
+    typeof import("@/services/dom/inputUtils")
+  >("@/services/dom/inputUtils")
+  return {
+    getElementByXPath: vi.fn(),
+    isValidXPath: vi.fn(),
+    inputContentEditable: vi.fn(),
+    clearInput: vi.fn(),
+    // Keep the real setter so that the value assignment is observable.
+    setTextControlValue: actual.setTextControlValue,
+  }
+})
 
 vi.mock("@/lib/utils", () => ({
   safeInterpolate: vi.fn(),
@@ -1060,6 +1067,36 @@ describe("backgroundTabDispatcher", () => {
       expect(result).toEqual([true])
       expect(clearInput).toHaveBeenCalledWith(mockElement)
       expect(mockElement.value).toBe("test text")
+    })
+
+    it("BDI-clear-ce: Should clear a contenteditable before typing when clearBefore is set", async () => {
+      const mockElement = mockElements.contentEditableDiv
+      mockDocument.querySelector.mockReturnValue(mockElement)
+      const order: string[] = []
+      vi.mocked(clearInput).mockReset()
+      vi.mocked(clearInput).mockImplementation(() => {
+        order.push("clear")
+      })
+      mockInputContentEditable.mockImplementation(async () => {
+        order.push("type")
+        return true
+      })
+
+      const result = await BackgroundTabPageActionDispatcher.input({
+        type: PAGE_ACTION_EVENT.input,
+        selector: ".editor",
+        selectorType: SelectorType.css,
+        label: "Editor",
+        value: "test text",
+        clearBefore: true,
+        srcUrl: "",
+        selectedText: "",
+        clipboardText: "",
+      } as any)
+
+      expect(result).toEqual([true])
+      expect(clearInput).toHaveBeenCalledWith(mockElement)
+      expect(order).toEqual(["clear", "type"])
     })
 
     it("BDI-no-clear: Should not clear when clearBefore is not set", async () => {

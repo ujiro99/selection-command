@@ -172,12 +172,20 @@ export const setTextControlValue = (
   )
 }
 
+/** Whether the node is a placeholder or holds one, so it must be kept. */
+const holdsPlaceholder = (node: Node): boolean =>
+  node instanceof Element &&
+  (node.matches(PLACEHOLDER_SELECTOR) ||
+    node.querySelector(PLACEHOLDER_SELECTOR) != null)
+
 /**
  * Remove the text entered in an input.
  * execCommand("delete") on a selection is ignored by Lexical, so the text
  * nodes are emptied directly and the editor is notified with an input event;
  * editors sync their state from the DOM on it (verified on Perplexity).
- * Placeholder nodes are left untouched.
+ * The emptied blocks (p, li, ...) are removed as well, otherwise a multi-line
+ * text leaves blank lines / list items behind; the editor rebuilds its empty
+ * block by itself. Placeholder nodes are left untouched.
  */
 export const clearInput = (el: Element) => {
   if (isTextControl(el)) {
@@ -185,6 +193,9 @@ export const clearInput = (el: Element) => {
     return
   }
   for (const node of enteredTextNodes(el)) node.data = ""
+  for (const child of Array.from(el.childNodes)) {
+    if (!holdsPlaceholder(child)) child.remove()
+  }
   el.dispatchEvent(
     new InputEvent("input", {
       inputType: "deleteContentBackward",

@@ -1,5 +1,8 @@
-import { inputContentEditable, clearInput } from "@/services/dom"
-import { setTextControlValue } from "@/services/dom/inputUtils"
+import {
+  inputContentEditable,
+  clearInput,
+  setTextControlValue,
+} from "@/services/dom"
 import { isMac, isEmpty } from "@/lib/utils"
 import { PageAction, ActionReturn } from "./dispatcher"
 import { queryElement } from "./queryElement"
