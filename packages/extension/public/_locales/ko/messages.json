@@ -1402,10 +1402,10 @@
     "message": "건너뛰기"
   },
   "onboarding_welcomeMessage": {
-    "message": "환영합니다!"
+    "message": "설치해 주셔서 감사합니다"
   },
   "onboarding_welcomeIntroduction": {
-    "message": "먼저, 유용한 사용법 세 가지를 소개합니다."
+    "message": "바로 인기 기능 세 가지를 사용해 보세요!"
   },
   "onboarding_welcomeContinue": {
     "message": "클릭하여 계속하기"

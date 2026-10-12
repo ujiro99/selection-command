@@ -20,19 +20,19 @@ const pathToExtension = path.join(__dirname, "../dist")
 type Shot = {
   name: string
   // Omitted for shots that should open on whichever screen the variant
-  // starts at (e.g. variant B's welcome overlay).
+  // starts at (e.g. variant C's welcome overlay).
   step?: keyof typeof OnboardingStep
   phase?: StepPhase
-  variant?: "A" | "B"
+  variant?: "A" | "C"
 }
 
 // One shot per visually distinct screen - not one per StepPhase transition;
 // e.g. Step2's WAIT_EXECUTE looks like Step1's, so only Step1 gets it.
 const SHOTS: Shot[] = [
   { name: "00-intro", step: "INTRO" },
-  // Variant B of the onboarding A/B test (see services/experiments): no
+  // Variant C of the onboarding A/B test (see services/experiments): no
   // INTRO step, a brief welcome overlay in front of the first step instead.
-  { name: "00b-welcome-variant-b", variant: "B" },
+  { name: "00c-welcome-variant-c", variant: "C" },
   { name: "01-search-explain", step: "SEARCH", phase: StepPhase.EXPLAIN },
   {
     name: "02-search-wait-execute",

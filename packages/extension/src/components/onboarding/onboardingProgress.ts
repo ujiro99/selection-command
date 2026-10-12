@@ -20,7 +20,7 @@ export type OnboardingProgress = {
 // Derives the header progress indicator's state from the current step, so
 // no other component needs to know the step count or index arithmetic.
 // Returns null for INTRO/COMPLETE, which don't show an indicator, and for
-// variant B's WELCOME phase, which covers the header with its own overlay.
+// variant C's WELCOME phase, which covers the header with its own overlay.
 export function getProgress(
   step: OnboardingStep,
   phase: StepPhase,
@@ -41,7 +41,7 @@ export function getProgress(
 
 // The Skip button is available on every step except the final one - there's
 // nothing left to skip once the user has reached it. It is also withheld
-// during variant B's WELCOME phase: the overlay hides it visually, so
+// during variant C's WELCOME phase: the overlay hides it visually, so
 // leaving it rendered would only make it reachable by keyboard.
 export const showsSkip = (step: OnboardingStep, phase: StepPhase): boolean =>
   step !== OnboardingStep.COMPLETE && phase !== StepPhase.WELCOME

@@ -23,7 +23,7 @@ const FETCH_TIMEOUT_MS = 3000
  * update these values too, or the fallback path keeps using the old split.
  */
 export const DEFAULT_CONFIGS: Record<string, ExperimentConfig> = {
-  onboarding_v2: { enabled: true, allocation: 0.5 },
+  onboarding_v3: { enabled: true, allocation: 0.5 },
 }
 
 const DEFAULT_CONFIG: ExperimentConfig = { enabled: false, allocation: 0 }
