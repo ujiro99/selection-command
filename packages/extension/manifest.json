@@ -20,19 +20,13 @@
     {
       "matches": [
         "https://selection-command.com/*",
-        "https://selection-command-hub.siro-cola.workers.dev/*",
+        "https://*.siro-cola.workers.dev/*",
         "http://localhost:3000/*"
       ],
-      "js": [
-        "src/new_command_hub.tsx"
-      ]
-    },
-    {
-      "matches": [
-        "https://*.siro-cola.workers.dev/*"
-      ],
       "include_globs": [
-        "https://*-selection-command-hub.siro-cola.workers.dev/*"
+        "https://selection-command.com/*",
+        "https://*selection-command-hub.siro-cola.workers.dev/*",
+        "http://localhost:3000/*"
       ],
       "js": [
         "src/new_command_hub.tsx"
