@@ -36,6 +36,13 @@ export enum SESSION_STORAGE_KEY {
   DEV_TOOLS_ENABLED = "devToolsEnabled",
 }
 
+// Selection text recorded by the tab where the text was selected.
+export type SelectionTextData = {
+  text: string
+  // ID of the tab that recorded the selection. null if unknown.
+  tabId: number | null
+}
+
 export type KEY =
   | STORAGE_KEY
   | LOCAL_STORAGE_KEY

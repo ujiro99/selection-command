@@ -5,6 +5,7 @@ import {
   SESSION_STORAGE_KEY,
   CMD_PREFIX,
   KEY,
+  SelectionTextData,
 } from "./storage/const"
 import { BaseStorage, ChangedCallback } from "./storage/index"
 import {
@@ -27,7 +28,7 @@ export {
   WeeklyBackupManager,
 }
 
-export type { ChangedCallback, KEY }
+export type { ChangedCallback, KEY, SelectionTextData }
 
 export const Storage = {
   // Base storage methods

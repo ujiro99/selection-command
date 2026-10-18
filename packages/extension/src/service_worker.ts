@@ -28,7 +28,11 @@ import { findMatchingPageRule, isEmpty } from "@/lib/utils"
 import { execute } from "@/action/serviceWorker"
 import * as ActionHelper from "@/action/helper"
 import type { WindowType } from "@/types"
-import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
+import {
+  Storage,
+  SESSION_STORAGE_KEY,
+  type SelectionTextData,
+} from "@/services/storage"
 import {
   ANALYTICS_EVENTS,
   sendEvent,
@@ -397,7 +401,10 @@ const clearSelectionTextUnlessKeepOpen = async () => {
     CACHE_SECTIONS.USER_SETTINGS,
   )
   if (!settings.startupMethod?.keepMenuOpenOnFocusChange) {
-    await Storage.set(SESSION_STORAGE_KEY.SELECTION_TEXT, "")
+    await Storage.set<SelectionTextData>(SESSION_STORAGE_KEY.SELECTION_TEXT, {
+      text: "",
+      tabId: null,
+    })
   }
 }
 
@@ -696,9 +703,19 @@ chrome.commands.onCommand.addListener(async (commandName) => {
       return
     }
 
-    const selectionText = await Storage.get<string>(
+    // Get active tab
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
+
+    // Use the selection only if it was recorded in the active tab. Tabs
+    // without the content script (e.g. chrome://) can't record their
+    // selection, so the stored one may belong to another tab.
+    const selection = await Storage.get<SelectionTextData>(
       SESSION_STORAGE_KEY.SELECTION_TEXT,
     )
+    const selectionText =
+      selection?.tabId != null && selection.tabId === tab?.id
+        ? selection.text
+        : ""
 
     // If no text is selected, handle according to noSelectionBehavior
     let allowClipboardFallback = false
@@ -715,9 +732,6 @@ chrome.commands.onCommand.addListener(async (commandName) => {
         allowClipboardFallback = true
       }
     }
-
-    // Get active tab
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
     const enableSendTab =
       tab?.id &&
       !tab.url?.startsWith("chrome") &&
