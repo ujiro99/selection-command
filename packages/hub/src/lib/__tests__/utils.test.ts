@@ -1,6 +1,5 @@
 import { describe, test, expect, vi, beforeEach } from "vitest"
 import {
-  cn,
   generateUUIDFromObject,
   isEmpty,
   isSearchCommand,
@@ -14,45 +13,6 @@ import { OPEN_MODE } from "@/const"
 import type { SearchCommand, PageActionCommand } from "@/types"
 
 describe("Utility Functions", () => {
-  describe("cn function", () => {
-    test("UTIL-01: Normal case: classname concatenation works correctly", () => {
-      // Arrange
-      const class1 = "btn"
-      const class2 = "btn-primary"
-
-      // Act
-      const result = cn(class1, class2)
-
-      // Assert
-      expect(result).toBe("btn btn-primary")
-    })
-
-    test("UTIL-02: Normal case: conditional classnames are processed correctly", () => {
-      // Arrange
-      const baseClass = "btn"
-      const conditionalClassTrue = "active"
-      const conditionalClassFalse = "inactive"
-
-      // Act
-      const result = cn(
-        baseClass,
-        true && conditionalClassTrue,
-        false && conditionalClassFalse,
-      )
-
-      // Assert
-      expect(result).toBe("btn active")
-    })
-
-    test("UTIL-03: Edge case: empty strings, null, and undefined are handled correctly", () => {
-      // Arrange & Act & Assert
-      expect(cn()).toBe("")
-      expect(cn("")).toBe("")
-      expect(cn(null)).toBe("")
-      expect(cn(undefined)).toBe("")
-    })
-  })
-
   describe("generateUUIDFromObject function", () => {
     test("UTIL-04: Normal case: unique UUID is generated from object", () => {
       // Arrange

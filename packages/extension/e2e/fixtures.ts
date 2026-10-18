@@ -8,6 +8,7 @@ import path from "path"
 import { fileURLToPath } from "url"
 import { attachSWConsole } from "./utils/logConsole"
 import { fetchCfAuthToken } from "./utils/cfAuth"
+import { routeHubToLocal } from "./utils/hubRoute"
 import {
   STORAGE_KEY,
   LOCAL_STORAGE_KEY,
@@ -63,6 +64,9 @@ export const test = base.extend<Fixtures>({
     // Without this, the SW may already be running when we call serviceWorkers()
     // and its early logs are lost before attachSWConsole is called.
     context.on("serviceworker", (worker) => attachSWConsole(worker))
+
+    // Optionally serve the hub test page from a local build (E2E_HUB_BASE_URL).
+    await routeHubToLocal(context)
 
     // Wait for the service worker to be ready before proceeding, so tests can interact with it immediately.
     let [sw] = context.serviceWorkers()
