@@ -178,7 +178,7 @@ Extension の Playwright e2e テストは、**GitHub Pages にデプロイされ
 
 - テキスト選択の対象（`h1, h2, h3`）、`data-testid`、`input` の `placeholder`、`textarea`、ボタンの文言など、**e2e が参照する要素・属性・テキストは変更しない**。変更するのはスタイリング（`className`）のみとする。
 - `menu-layout.spec.ts` はメニューボタンの `boundingBox` を検証しているため、見出しの位置・サイズなどテストページのレイアウトは大きく変えない。
-- PR の CI で実行される e2e は、まだデプロイされていない旧テストページに対して実行される。そのため PR 内では、hub をローカルでビルド・配信し、その URL に対して e2e を実行して確認する（`TEST_URL` を環境変数で上書きできるようにする小変更を含める）。
+- PR の CI で実行される e2e は、まだデプロイされていない旧テストページに対して実行される。そのため PR 内では、hub をローカルでビルド・配信し、その URL に対して e2e を実行して確認する（`E2E_HUB_BASE_URL` を指定すると、`ujiro99.github.io` へのリクエストをローカルの hub へ転送する e2e ヘルパー `e2e/utils/hubRoute.ts` を追加する。テスト設定データにも同 URL が散在しているため、URL を個別に差し替えるのではなく転送方式とした）。
 - マージ後に GitHub Pages へのデプロイが完了してから、main で e2e が通ることを確認する。
 
 ### 8. 関連ライブラリ
@@ -207,7 +207,7 @@ extension の移行と独立して実施できるため先に行う。hub が ro
 1. 各コンポーネントの Tailwind クラスを CSS Modules / `globals.css` に移す（7.1）。
 2. shadcn/ui コンポーネントを置き換える（7.2）。
 3. 依存・設定ファイルを削除する（7.3）。
-4. `TEST_URL` を環境変数で上書きできるようにし、ローカル配信したテストページで e2e を実行する（7.4）。
+4. `E2E_HUB_BASE_URL` によるローカル hub への転送を追加し、ローカル配信したテストページで e2e を実行する（7.4）。
 
 ### Phase 2: extension の依存とビルド設定の更新
 
@@ -259,6 +259,22 @@ extension の移行と独立して実施できるため先に行う。hub が ro
 - `space-x/y-*` を使う箇所のレイアウト崩れ
 - ボタンのカーソル、placeholder の色
 - 生成 CSS のサイズ（content script の注入コストに影響するため v3 と比較）
+
+## 実装メモ（計画からの差分・判明事項）
+
+実装時に判明し、計画から変更・追加した点。
+
+- **アップグレードツールの誤変換**: `npx @tailwindcss/upgrade` は TypeScript の文字列リテラル型 `"blur"`（`OnboardingFadeIn` の `FadeInEffect`）を `"blur-sm"` に書き換えたため元に戻した。また shadcn の v4 版で既に `shadow-xs` を使っていた `radio-group` を `shadow-2xs` に変換したため `shadow-xs` に戻した。CSS Modules 内の `@apply` は変換されないため手動で置換した。依存の追加はツール内の `yarn add` が workspace 構成で失敗したため手動で行った。
+- **素の `rounded`**: v4 でも `rounded` は `0.25rem` 固定の組み込みユーティリティとして残り、`@utility` では上書きできない。アップグレードガイドどおり `rounded` → `rounded-sm`（テーマ上 4px）に置換した。
+- **`App.css` の `@import url(...)`**: `url()` 形式の import では Tailwind が `global.css` を処理せず、`@theme default` が未処理のまま出力された。`@import "./global.css"` に変更した。
+- **未使用の `container` ユーティリティ**: ソース中の単語 "container"（`css.container` 等）から rem 定義の `container` が生成されていた（v3 でも同様）。`@source not inline("container")` で生成対象から除外した。
+- **`text-xs` / `text-sm` の line-height**: v3 と同じく line-height を付与しないよう、`--text-xs--line-height: initial` 等で無効化した。
+- **content script 内の既存の rem**: `Popup.module.css` の `1.2rem` / `0.8rem`、`text-[0.8rem]` を px に置き換えた（v3 時代からユーザーページの影響を受けていた箇所）。options page 専用の CSS Modules の rem はユーザーページの影響を受けないため対象外とした。
+- **`--font-sans`**: v3 の設定は未定義の `var(--font-sans)` を参照しており実質無効だったため、v4 既定のシステムフォントスタックに戻した。content script の各コンテナは `--font-family` で独自にフォントを指定しているため見た目は変わらない。
+- **`@layer properties`**: Tailwind v4 の出力は先頭で `@layer properties;` を宣言するため、Shadow DOM 用プラグインが末尾に追加する初期値は最も優先度の低いレイヤーに入る。
+- **hub テストページの縦方向の余白**: flex の `gap` にすると Quill の `.ql-container { height: 100% }` が親からはみ出したため、v3 の `space-y-*` と同じく兄弟要素間のマージンで実装した。
+- **CSS サイズ**: content script に注入される CSS は約 65KB → 約 85KB（v4 はテーマ変数と `@property`、互換用の初期値ブロックを含むため）。
+- **`cn()` のテスト**: tailwind-merge v3 の v4 クラス名の扱いを `src/lib/__tests__/utils.cn.test.ts` で確認するようにした。
 
 ## リスクと対策
 
