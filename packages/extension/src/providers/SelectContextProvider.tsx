@@ -8,15 +8,6 @@ import { Ipc } from "@/services/ipc"
 import { getSelectionText } from "@/services/dom"
 import { ContextType, selectContext } from "@/hooks/useSelectContext"
 
-const fetchTabId = async (): Promise<number | null> => {
-  try {
-    return (await Ipc.getTabId()) ?? null
-  } catch {
-    // e.g. side panel, which does not belong to a tab
-    return null
-  }
-}
-
 export const SelectContextProvider = ({
   children,
 }: {
@@ -31,7 +22,7 @@ export const SelectContextProvider = ({
     _setSelectionText(text)
     // Record the tab ID with the text, so that the shortcut handler in the
     // service worker can ignore a selection recorded in another tab.
-    tabIdRef.current ??= fetchTabId()
+    tabIdRef.current ??= Ipc.getTabId()
     const tabId = await tabIdRef.current
     await Storage.set<SelectionTextData>(SESSION_STORAGE_KEY.SELECTION_TEXT, {
       text,

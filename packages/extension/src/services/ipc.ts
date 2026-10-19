@@ -566,8 +566,20 @@ export const Ipc = {
     }
   },
 
-  async getTabId() {
-    return Ipc.send(ServiceWorkerCommand.getTabId)
+  /**
+   * Get the ID of the tab this script runs in.
+   * @returns The tab ID, or null if this script doesn't belong to a tab
+   *   (e.g. side panel) or the ID couldn't be retrieved.
+   */
+  async getTabId(): Promise<number | null> {
+    try {
+      return (
+        (await Ipc.send<unknown, number>(ServiceWorkerCommand.getTabId)) ?? null
+      )
+    } catch {
+      // Ipc.send has already logged the error.
+      return null
+    }
   },
 
   async getActiveTabId() {

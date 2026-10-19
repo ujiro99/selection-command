@@ -50,7 +50,7 @@ describe("SelectContextProvider", () => {
   })
 
   it("SC-02: 異常系: タブIDを取得できない場合はtabIdをnullとして保存する", async () => {
-    mockGetTabId.mockRejectedValue(new Error("no tab"))
+    mockGetTabId.mockResolvedValue(null)
     mockGetSelectionText.mockReturnValue("selected")
     render(<SelectContextProvider>{null}</SelectContextProvider>)
 

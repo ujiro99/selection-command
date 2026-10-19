@@ -704,7 +704,7 @@ chrome.commands.onCommand.addListener(async (commandName) => {
     }
 
     // Get active tab
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
+    const tab = await getCurrentTab()
 
     // Use the selection only if it was recorded in the active tab. Tabs
     // without the content script (e.g. chrome://) can't record their

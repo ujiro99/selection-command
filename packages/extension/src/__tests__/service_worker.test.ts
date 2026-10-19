@@ -293,8 +293,12 @@ describe("Service Worker Migration", () => {
       noSelectionBehavior as any
     mockEnhancedSettings.get.mockResolvedValue(initialSettings as any)
 
-    // Mock chrome.tabs.query to return the active tab
-    ;(chrome.tabs.query as any).mockResolvedValue([tab])
+    // Mock getCurrentTab to return the active tab
+    vi.doMock("@/services/chrome", () => ({
+      getCurrentTab: vi.fn().mockResolvedValue(tab),
+      closeWindow: vi.fn(),
+      windowExists: vi.fn(),
+    }))
 
     // Mock the current window used to center the popup
     ;(chrome.windows as any).getCurrent = vi

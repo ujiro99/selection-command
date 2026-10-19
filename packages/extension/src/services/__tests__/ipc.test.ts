@@ -169,3 +169,34 @@ describe("Ipc.send", () => {
     expect(vi.getTimerCount()).toBe(0)
   })
 })
+
+describe("Ipc.getTabId", () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    vi.spyOn(console, "error").mockImplementation(() => {})
+  })
+
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
+  it("IPC-08: 正常系: タブIDを返す", async () => {
+    vi.mocked(chrome.runtime.sendMessage).mockResolvedValue(10 as never)
+
+    expect(await Ipc.getTabId()).toBe(10)
+  })
+
+  it("IPC-09: 正常系: タブに属さない場合（サイドパネル等）は null を返す", async () => {
+    vi.mocked(chrome.runtime.sendMessage).mockResolvedValue(undefined as never)
+
+    expect(await Ipc.getTabId()).toBeNull()
+  })
+
+  it("IPC-10: 異常系: 取得に失敗した場合は例外を投げずに null を返す", async () => {
+    vi.mocked(chrome.runtime.sendMessage).mockRejectedValue(
+      new Error("Extension context invalidated") as never,
+    )
+
+    expect(await Ipc.getTabId()).toBeNull()
+  })
+})

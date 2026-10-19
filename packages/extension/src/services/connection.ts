@@ -20,7 +20,9 @@ Ipc.getTabId().then(async (tabId) => {
     console.error("Failed to load service worker data:", error)
   }
   const serviceWorkerData = ServiceWorkerData.get()
-  const isConnected = serviceWorkerData?.connectedTabs?.includes(tabId) ?? false
+  const isConnected =
+    tabId != null &&
+    (serviceWorkerData?.connectedTabs?.includes(tabId) ?? false)
 
   if (!isConnected) {
     // Setup event listeners for bfcache handling
