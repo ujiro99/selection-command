@@ -484,7 +484,8 @@ describe("Service Worker Migration", () => {
     })
   })
 
-  it("MG-01-i: should keep the selection after the window lost focus when keepMenuOpenOnFocusChange is on", async () => {
+  it("MG-01-i: should ignore the selection after the window lost focus even when keepMenuOpenOnFocusChange is on", async () => {
+    // The setting only keeps the menu open. It doesn't keep the selection.
     const { commandListener, mockIpcSendTab } = await setupOnCommand({
       tab: { id: 1, url: "https://example.com", windowId: 1 },
       tabSelection: { text: "selected", focusLost: true },
@@ -497,8 +498,8 @@ describe("Service Worker Migration", () => {
 
     expect(mockIpcSendTab).toHaveBeenCalledWith(1, "executeAction", {
       command: expect.objectContaining({ id: "test-command-123" }),
-      selectionText: "selected",
-      selectionFromClipboard: false,
+      selectionText: "",
+      selectionFromClipboard: true,
     })
   })
 
@@ -526,7 +527,6 @@ describe("Service Worker Migration", () => {
       tab: { id: 1, url: "https://example.com", windowId: 1 },
       tabSelection: { text: "selected", focusLost: false },
       noSelectionBehavior: SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD,
-      keepMenuOpenOnFocusChange: true,
       chromeFocused: false,
       executeActionResult: true,
     })

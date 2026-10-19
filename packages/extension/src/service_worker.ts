@@ -699,13 +699,14 @@ chrome.commands.onCommand.addListener(async (commandName) => {
         unknown,
         TabSelection | Error | undefined
       >(tab.id ?? 0, TabCommand.getSelection)
-      if (selection != null && !(selection instanceof Error)) {
-        // A selection made before the window lost focus may be older than
-        // the clipboard, as the user may have copied other text elsewhere.
-        const stale =
-          selection.focusLost &&
-          !settings.startupMethod?.keepMenuOpenOnFocusChange
-        if (!stale) selectionText = selection.text
+      // A selection made before the window lost focus may be older than the
+      // clipboard, as the user may have copied other text elsewhere.
+      if (
+        selection != null &&
+        !(selection instanceof Error) &&
+        !selection.focusLost
+      ) {
+        selectionText = selection.text
       }
     }
 
