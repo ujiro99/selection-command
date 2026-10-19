@@ -27,13 +27,13 @@ export const SearchUrlAssistButton = ({
       disabled={disabled}
       className={cn(
         "px-2 gap-0.5 text-xs font-medium",
-        "bg-gradient-to-r from-purple-50 to-blue-50",
+        "bg-linear-to-r from-purple-50 to-blue-50",
         "border-purple-200 hover:border-purple-300",
         "hover:from-purple-100 hover:to-blue-100",
         "text-purple-700 hover:text-purple-800",
         "transition-all duration-200",
         disabled && "opacity-50 cursor-not-allowed",
-        compact && "[&_svg]:mr-[0]",
+        compact && "[&_svg]:mr-0",
         !compact && "min-w-[80px]",
         className,
       )}

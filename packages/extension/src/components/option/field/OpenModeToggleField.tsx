@@ -161,7 +161,7 @@ const OpenModeItem = ({
             disabled={disabled}
             aria-label={t(`openMode_${mode}`)}
             className={cn(
-              "relative flex-col gap-0.5 h-full w-full py-1.5 shadow-sm text-xs font-medium text-gray-600 hover:text-gray-700",
+              "relative flex-col gap-0.5 h-full w-full py-1.5 shadow-xs text-xs font-medium text-gray-600 hover:text-gray-700",
               "border transition-all duration-200",
               checked && "bg-gray-50",
               disabled &&

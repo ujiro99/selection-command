@@ -172,7 +172,7 @@ export const MenuFolder = (props: {
         <ScrollAreaConditional scrollEnabled={!isHorizontalContent}>
           <div
             style={menubarStyle}
-            className={cn("flex items-center p-0.5 gap-[1px]", {
+            className={cn("flex items-center p-0.5 gap-px", {
               [css.menuVertical]: !isHorizontalContent,
               "flex-wrap": isHorizontalContent,
             })}

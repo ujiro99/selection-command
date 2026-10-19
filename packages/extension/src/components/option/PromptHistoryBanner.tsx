@@ -46,11 +46,11 @@ export function PromptHistoryBanner() {
       target="_blank"
       rel="noopener noreferrer"
       className={cn(
-        "fixed bottom-5 right-5 z-[1000] p-5 max-w-[300px]",
+        "fixed bottom-5 right-5 z-1000 p-5 max-w-[300px]",
         "bg-white shadow-2xl rounded-lg",
         "cursor-pointer transition-all duration-300 ease-in-out",
         "no-underline text-inherit",
-        "hover:-translate-y-0.5 hover:shadow-[0_20px_25px_-5px_rgb(0_0_0_/_0.1),0_8px_10px_-6px_rgb(0_0_0_/_0.1)]",
+        "hover:-translate-y-0.5 hover:shadow-xl",
         css.fadeIn,
       )}
     >
@@ -59,7 +59,7 @@ export function PromptHistoryBanner() {
           "absolute top-2 right-2 p-1 rounded-full",
           "bg-transparent border-none cursor-pointer",
           "text-gray-600 hover:text-gray-800 hover:bg-gray-100",
-          "transition-colors z-[1001]",
+          "transition-colors z-1001",
           "focus:outline-2 focus:outline-blue-500 focus:outline-offset-2",
         )}
         onClick={handleDismiss}

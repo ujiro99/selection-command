@@ -1,3 +1,5 @@
+@reference "../global.css";
+
 :root {
   --font-family:
     -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
@@ -12,7 +14,7 @@
 
 .titleHeader {
   @apply flex items-center font-mono sticky top-0 px-4 py-1.5 z-50 w-full border-b gap-4;
-  @apply bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/40;
+  @apply bg-background/95 backdrop-blur-sm supports-backdrop-filter:bg-background/40;
 }
 
 .title {

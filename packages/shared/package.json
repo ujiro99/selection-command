@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "clsx": "^2.1.1",
-    "tailwind-merge": "^2.5.4",
+    "tailwind-merge": "^3.7.0",
     "uuid": "^14.0.0"
   },
   "devDependencies": {},

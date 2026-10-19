@@ -24,7 +24,7 @@ export const CommandListMenu: React.FC<Props> = ({
 }) => {
   return (
     <div className="relative h-10 flex items-end justify-between pr-2">
-      <span className="text-sm bg-gray-100 px-2 py-0.5 rounded font-mono tracking-tight">
+      <span className="text-sm bg-gray-100 px-2 py-0.5 rounded-sm font-mono tracking-tight">
         {commandCount ?? 0}
         {t("commands_desc_count")}
       </span>

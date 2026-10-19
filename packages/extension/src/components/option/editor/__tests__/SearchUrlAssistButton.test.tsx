@@ -67,7 +67,7 @@ describe("SearchUrlAssistButton", () => {
     const button = screen.getByRole("button")
 
     // Check for expected styling classes
-    expect(button).toHaveClass("bg-gradient-to-r")
+    expect(button).toHaveClass("bg-linear-to-r")
     expect(button).toHaveClass("from-purple-50")
     expect(button).toHaveClass("to-blue-50")
     expect(button).toHaveClass("border-purple-200")

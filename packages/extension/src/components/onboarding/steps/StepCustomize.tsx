@@ -18,7 +18,7 @@ const HUB_SCREEN_URL = chrome.runtime.getURL("onboarding/HubScreen.png")
 // to start a real editing/browsing flow mid-onboarding.
 export function StepCustomize({ onboarding }: Props) {
   return (
-    <div className="flex flex-col items-center gap-10 !h-[540px]">
+    <div className="flex flex-col items-center gap-10 h-[540px]!">
       <OnboardingFadeIn key="title" delay={100}>
         <h2 className="text-4xl font-bold text-slate-700 flex items-center">
           <span className="font-mono">4.</span> {t("onboarding_step4_title")}
@@ -41,7 +41,7 @@ export function StepCustomize({ onboarding }: Props) {
         <OnboardingFadeIn key="option-screen" delay={1000}>
           <div className="flex flex-col gap-2.5">
             <div className="flex items-center gap-2 text-left text-sm font-bold text-slate-700">
-              <span className="flex size-6 items-center justify-center rounded-md bg-sky-950/[0.1] text-sky-950">
+              <span className="flex size-6 items-center justify-center rounded-md bg-sky-950/10 text-sky-950">
                 <Settings className="size-4" strokeWidth={2} />
               </span>
               {t("onboarding_step4SettingsHeading")}
@@ -59,7 +59,7 @@ export function StepCustomize({ onboarding }: Props) {
         <OnboardingFadeIn key="hub-screen" delay={1200}>
           <div className="flex flex-col gap-2.5">
             <div className="flex items-center gap-2 text-left text-sm font-bold text-slate-700">
-              <span className="flex size-6 items-center justify-center rounded-md bg-sky-950/[0.1] text-sky-950">
+              <span className="flex size-6 items-center justify-center rounded-md bg-sky-950/10 text-sky-950">
                 <Share2 className="size-4" strokeWidth={2} />
               </span>
               {t("onboarding_step4HubHeading")}

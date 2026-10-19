@@ -594,7 +594,7 @@ const CommandEditDialogInner = ({
                           <div className="flex-1 relative">
                             {!isEmpty(getValues("iconUrl")) && (
                               <MenuImage
-                                className="absolute top-[0.7em] left-[0.8em] w-6 h-6 rounded"
+                                className="absolute top-[0.7em] left-[0.8em] w-6 h-6 rounded-sm"
                                 src={getValues("iconUrl")}
                                 alt="Preview of image"
                               />

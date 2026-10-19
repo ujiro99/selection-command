@@ -53,7 +53,7 @@ export function InputEditor(props: InputEditorProps) {
           <div className="retative">
             <InputMenu
               targetElm={textarea}
-              className="w-fit relative left-[100%] -translate-x-[100%] -top-1"
+              className="w-fit relative left-full -translate-x-full -top-1"
               hideFilePaste
               userVariables={props.userVariables}
             />

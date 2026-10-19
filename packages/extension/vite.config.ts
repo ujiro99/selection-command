@@ -2,6 +2,7 @@ import fs from "fs"
 import path from "path"
 import { defineConfig, loadEnv } from "vite"
 import react from "@vitejs/plugin-react"
+import tailwindcss from "@tailwindcss/vite"
 import { crx } from "@crxjs/vite-plugin"
 import { sentryVitePlugin } from "@sentry/vite-plugin"
 import manifest from "./manifest.json"
@@ -12,6 +13,7 @@ import refreshLocales from "./src/lib/vite-plugin-refresh-locales"
 import packageJson from "./package.json"
 import { importIfPlugin } from "./src/lib/vite-plugin-import-if"
 import { CONTENT_SCRIPT_CSS_PLACEHOLDER } from "./src/lib/contentScriptCss"
+import shadowDomProperties from "./src/lib/postcss-shadow-dom-properties"
 
 const shouldUploadSourcemaps = process.env.UPLOAD_SOURCEMAP_TO_SENTRY === "true"
 
@@ -48,6 +50,7 @@ export default defineConfig(({ mode }) => {
 
   const plugins = [
     react(),
+    tailwindcss(),
     crx({ manifest: activeManifest }),
     ...importIfPlugin({ mode }),
     viteTouchCss({
@@ -138,6 +141,13 @@ export default defineConfig(({ mode }) => {
       __CONTENT_SCRIPT_CSS_FILES__: JSON.stringify([
         CONTENT_SCRIPT_CSS_PLACEHOLDER,
       ]),
+    },
+    css: {
+      postcss: {
+        // Tailwind CSS v4 relies on `@property`, which Chrome ignores inside
+        // the content script's Shadow DOM. See postcss-shadow-dom-properties.
+        plugins: [shadowDomProperties()],
+      },
     },
     resolve: {
       alias: {

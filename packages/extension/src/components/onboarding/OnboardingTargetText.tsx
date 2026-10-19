@@ -68,7 +68,7 @@ export function OnboardingTargetText({ text, selected, calloutDelay }: Props) {
           <span
             ref={cursorRef}
             aria-hidden
-            className="pointer-events-none absolute top-0 left-0 select-none text-slate-900 opacity-0 [filter:drop-shadow(0_0_2px_#fff)_drop-shadow(0_1px_3px_rgba(15,23,42,.35))]"
+            className="pointer-events-none absolute top-0 left-0 select-none text-slate-900 opacity-0 filter-[drop-shadow(0_0_2px_#fff)_drop-shadow(0_1px_3px_rgba(15,23,42,.35))]"
           >
             <TextCursor className="size-[18px]" strokeWidth={2} />
           </span>

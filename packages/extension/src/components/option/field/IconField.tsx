@@ -74,7 +74,7 @@ export const IconField = ({
         />
         <FormMessage />
         {(errUrl || errSvg) && (
-          <p className="text-[0.8rem] font-medium text-destructive">
+          <p className="text-[12.8px] font-medium text-destructive">
             {errUrl && <span>{`${errUrl.message}`}</span>}
             {errSvg && <span>{`${errSvg.message}`}</span>}
           </p>
@@ -122,7 +122,7 @@ const GlobalIconColorToggle = ({
         {isAutoPreserved && (
           <span
             data-testid="favicon-automatic-badge"
-            className="text-[11px] bg-secondary text-secondary-foreground px-1.5 py-0.5 rounded font-medium leading-none"
+            className="text-[11px] bg-secondary text-secondary-foreground px-1.5 py-0.5 rounded-sm font-medium leading-none"
           >
             {t("excludeFromGlobalIconColor_automatic")}
           </span>
@@ -177,7 +177,7 @@ const IconUrlInput = ({
     <div style={{ "--sc-icon-color": iconColor } as CSSProperties}>
       <popupContext.Provider value={{ ...popup, hasIconColor }}>
         <MenuImage
-          className="absolute top-[0.7em] left-[0.8em] w-6 h-6 rounded"
+          className="absolute top-[0.7em] left-[0.8em] w-6 h-6 rounded-sm"
           src={fieldUrl.value}
           svg={fieldSvg.value}
           alt="Preview of image"
@@ -198,7 +198,7 @@ const IconUrlInput = ({
 }
 
 const Loading = () => (
-  <div className="cursor-wait w-full h-10 border border-input shadow-sm bg-gray-100 animate-pulse rounded-md" />
+  <div className="cursor-wait w-full h-10 border border-input shadow-xs bg-gray-100 animate-pulse rounded-md" />
 )
 
 function isValidUrl(urlString: string): boolean {
@@ -254,7 +254,7 @@ const UrlOrSvgInput = ({
         className="pl-10"
       />
       {error && (
-        <p className="text-[0.8rem] font-medium text-destructive">{error}</p>
+        <p className="text-[12.8px] font-medium text-destructive">{error}</p>
       )}
     </>
   )

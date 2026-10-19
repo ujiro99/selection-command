@@ -172,7 +172,7 @@ export const SearchUrlAssistDialog = ({
                     controls
                     controlsList="nodownload noremoteplayback"
                     disablePictureInPicture
-                    className="rounded-md w-full mx-auto aspect-[3/2]"
+                    className="rounded-md w-full mx-auto aspect-3/2"
                   >
                     <source
                       src="https://github.com/ujiro99/selection-command/raw/refs/heads/main/docs/Search/Search%20URL%20AI%20assist.mp4"
@@ -202,7 +202,7 @@ export const SearchUrlAssistDialog = ({
             type="button"
             onClick={form.handleSubmit(handleGeminiExecution)}
             disabled={isProcessing}
-            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+            className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
           >
             <Sparkles size={16} className="mr-1.5" />
             {isProcessing

@@ -1,3 +1,5 @@
+@reference "../../global.css";
+
 button .tag {
   @apply right-8;
 }

@@ -3,6 +3,7 @@ import type { OutputAsset } from "rollup"
 import fs from "node:fs"
 import path from "node:path"
 import { CONTENT_SCRIPT_CSS_PLACEHOLDER } from "./contentScriptCss"
+import { findRemUsages } from "./findRemUsages"
 
 // Swaps the CONTENT_SCRIPT_CSS_PLACEHOLDER array literal embedded in the
 // built JS for the real content_script CSS file list. The list isn't known
@@ -10,6 +11,25 @@ import { CONTENT_SCRIPT_CSS_PLACEHOLDER } from "./contentScriptCss"
 // `define` directly - instead we patch it into whichever emitted chunk
 // contains the placeholder, the same way vite-plugin-pwa injects its
 // `self.__WB_MANIFEST` precache list.
+// The content script UI lives in the user's page, where `rem` follows the
+// page's root font-size. Fail the build if any content script CSS uses it, so
+// the UI never changes with the page (see
+// docs/design/tailwindcss-v4-migration.md).
+function assertNoRemInCss(distDir: string, cssFiles: string[]) {
+  const errors: string[] = []
+  for (const file of cssFiles) {
+    const css = fs.readFileSync(path.join(distDir, file), "utf-8")
+    for (const { selector, prop, value } of findRemUsages(css)) {
+      errors.push(`  ${file}: ${selector} { ${prop}: ${value} }`)
+    }
+  }
+  if (errors.length > 0) {
+    throw new Error(
+      `Content script CSS must not use rem units:\n${errors.join("\n")}`,
+    )
+  }
+}
+
 function injectContentScriptCssFiles(distDir: string, cssFiles: string[]) {
   const assetsDir = path.join(distDir, "assets")
   const placeholderPattern = new RegExp(
@@ -36,6 +56,7 @@ export default function removeCssFromContentScript(): Plugin {
       )
 
       if (!b) return
+      let contentScriptCssFiles: string[] = []
       try {
         const src = (b[1] as unknown as OutputAsset).source
         const manifest = JSON.parse(src as string)
@@ -58,6 +79,7 @@ export default function removeCssFromContentScript(): Plugin {
             cs.js?.some((f: string) => f.includes("content_script.tsx"))
           ) {
             injectContentScriptCssFiles("./dist", cs.css)
+            contentScriptCssFiles = cs.css
           }
           delete cs.css
         }
@@ -70,6 +92,9 @@ export default function removeCssFromContentScript(): Plugin {
       } catch (e) {
         console.error(e)
       }
+
+      // Checked outside the try block above so that a violation fails the build.
+      assertNoRemInCss("./dist", contentScriptCssFiles)
     },
   }
 }

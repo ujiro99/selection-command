@@ -26,9 +26,16 @@ export async function routeHubToLocal(context: BrowserContext): Promise<void> {
     if (!/\.[a-z0-9]+$/i.test(pathname)) {
       pathname = `${pathname.replace(/\/$/, "/index")}.html`
     }
-    const response = await route.fetch({
-      url: `${localBaseUrl}${pathname}${url.search}`,
-    })
-    await route.fulfill({ response })
+    try {
+      const response = await route.fetch({
+        url: `${localBaseUrl}${pathname}${url.search}`,
+      })
+      await route.fulfill({ response })
+    } catch {
+      // Requests still in flight when a page or the context is closed at the
+      // end of a test fail with "Request context disposed". They don't matter
+      // to the test, so swallow the error instead of failing the test.
+      await route.abort().catch(() => {})
+    }
   })
 }
