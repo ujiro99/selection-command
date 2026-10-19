@@ -1,4 +1,10 @@
-@import "tailwindcss";
+/*
+ * Only scan the source code for class names. By default Tailwind scans every
+ * file in the package (docs, configs, ...), which generates unused utilities
+ * from plain text.
+ */
+@import "tailwindcss" source("../");
+@source not "../**/__tests__";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
@@ -10,7 +16,14 @@
  */
 @source not inline("container");
 
-@theme {
+/*
+ * Tokens that reference runtime CSS variables use `@theme inline`, so that
+ * utilities embed `hsl(var(--background))` etc. directly and resolve the
+ * variables on the element itself. With a plain `@theme`, the value would be
+ * resolved once on :root / :host, and overriding e.g. `--background` on a
+ * descendant (the popup does this for user styles) would have no effect.
+ */
+@theme inline {
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
@@ -37,6 +50,10 @@
 
   --color-card: hsl(var(--card));
   --color-card-foreground: hsl(var(--card-foreground));
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
 
   --list-style-type-square: square;
   --list-style-type-circle: circle;
@@ -258,9 +275,6 @@
   --container-7xl: 1280px;
 
   --radius-xs: 2px;
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
   --radius-xl: 12px;
   --radius-2xl: 16px;
   --radius-3xl: 24px;
