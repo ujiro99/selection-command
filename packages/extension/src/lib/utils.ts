@@ -9,10 +9,9 @@ import {
   isEmpty,
   sleep,
 } from "@shared"
-import { normalizeObject } from "@shared/utils/common"
 
 // Re-export for other files to use
-export { cn, isSearchCommand, capitalize, isEmpty, sleep, normalizeObject }
+export { cn, isSearchCommand, capitalize, isEmpty, sleep }
 import { APP_ID, SPACE_ENCODING, OPEN_MODE, DRAG_OPEN_MODE } from "@/const"
 // Imported from the standalone module (not the barrel) to avoid a cycle back
 // into this file through @/services/pageAction.
