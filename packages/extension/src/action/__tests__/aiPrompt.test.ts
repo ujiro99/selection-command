@@ -122,6 +122,7 @@ describe("AiPrompt.execute", () => {
 
       await AiPrompt.execute({
         selectionText: "hello world",
+        selectionFromClipboard: false,
         command: {
           ...baseCommand,
           aiPromptOption: {
@@ -152,6 +153,7 @@ describe("AiPrompt.execute", () => {
 
       await AiPrompt.execute({
         selectionText: "hello world",
+        selectionFromClipboard: false,
         command: {
           ...baseCommand,
           aiPromptOption: {
@@ -174,6 +176,7 @@ describe("AiPrompt.execute", () => {
 
       await AiPrompt.execute({
         selectionText: "hello world",
+        selectionFromClipboard: false,
         command: {
           ...baseCommand,
           aiPromptOption: {
@@ -202,6 +205,7 @@ describe("AiPrompt.execute", () => {
 
       await AiPrompt.execute({
         selectionText: "hello world",
+        selectionFromClipboard: false,
         command: {
           ...baseCommand,
           aiPromptOption: {
@@ -235,6 +239,7 @@ describe("AiPrompt.execute", () => {
 
       await AiPrompt.execute({
         selectionText: "hello world",
+        selectionFromClipboard: false,
         command: {
           ...baseCommand,
           aiPromptOption: {
@@ -290,6 +295,7 @@ describe("AiPrompt.execute", () => {
       try {
         await AiPrompt.execute({
           selectionText: "hello world",
+          selectionFromClipboard: false,
           command: {
             ...baseCommand,
             aiPromptOption: {
@@ -321,6 +327,7 @@ describe("AiPrompt.execute", () => {
 
       await AiPrompt.execute({
         selectionText: "hello world",
+        selectionFromClipboard: false,
         command: {
           ...baseCommand,
           aiPromptOption: {
@@ -356,6 +363,7 @@ describe("AiPrompt.execute", () => {
 
       await AiPrompt.execute({
         selectionText: "hello",
+        selectionFromClipboard: false,
         command: {
           ...baseCommand,
           aiPromptOption: {
@@ -383,6 +391,7 @@ describe("AiPrompt.execute", () => {
 
       await AiPrompt.execute({
         selectionText: "hello",
+        selectionFromClipboard: false,
         command: baseCommand as any,
         position: { x: 0, y: 0 },
       })
@@ -397,6 +406,7 @@ describe("AiPrompt.execute", () => {
 
       await AiPrompt.execute({
         selectionText: "hello",
+        selectionFromClipboard: false,
         command: baseCommand as any,
         position: { x: 0, y: 0 },
       })
@@ -411,6 +421,7 @@ describe("AiPrompt.execute", () => {
 
       await AiPrompt.execute({
         selectionText: "hello",
+        selectionFromClipboard: false,
         command: {
           ...baseCommand,
           aiPromptOption: {
@@ -447,6 +458,7 @@ describe("AiPrompt.execute", () => {
 
       await AiPrompt.execute({
         selectionText: "hello",
+        selectionFromClipboard: false,
         command: {
           ...baseCommand,
           aiPromptOption: {
@@ -471,6 +483,7 @@ describe("AiPrompt.execute", () => {
 
       await AiPrompt.execute({
         selectionText: "hello",
+        selectionFromClipboard: false,
         command: baseCommand as any,
         position: { x: 0, y: 0 },
       })
@@ -484,6 +497,7 @@ describe("AiPrompt.execute", () => {
 
       await AiPrompt.execute({
         selectionText: "hello world",
+        selectionFromClipboard: false,
         command: baseCommand as any, // prompt: "Explain: {{SelectedText}}"
         position: { x: 0, y: 0 },
       })
@@ -497,6 +511,7 @@ describe("AiPrompt.execute", () => {
 
       await AiPrompt.execute({
         selectionText: "hello",
+        selectionFromClipboard: false,
         command: {
           ...baseCommand,
           aiPromptOption: {
@@ -627,6 +642,7 @@ describe("AiPrompt.execute", () => {
 
       await AiPrompt.execute({
         selectionText: "hello",
+        selectionFromClipboard: false,
         command: {
           ...baseCommand,
           aiPromptOption: {
@@ -648,6 +664,7 @@ describe("AiPrompt.execute", () => {
 
       await AiPrompt.execute({
         selectionText: "hello",
+        selectionFromClipboard: false,
         command: {
           ...baseCommand,
           aiPromptOption: {
@@ -668,6 +685,7 @@ describe("AiPrompt.execute", () => {
 
       await AiPrompt.execute({
         selectionText: "hello",
+        selectionFromClipboard: false,
         command: {
           ...baseCommand,
           aiPromptOption: {
@@ -696,6 +714,7 @@ describe("AiPrompt.execute", () => {
 
       await AiPrompt.execute({
         selectionText: "https://example.com/page",
+        selectionFromClipboard: false,
         command: {
           ...baseCommand,
           aiPromptOption: {
@@ -718,6 +737,7 @@ describe("AiPrompt.execute", () => {
 
       await AiPrompt.execute({
         selectionText: "hello",
+        selectionFromClipboard: false,
         command: {
           ...baseCommand,
           aiPromptOption: {
@@ -743,6 +763,7 @@ describe("AiPrompt.execute", () => {
 
       await AiPrompt.execute({
         selectionText: "https://example.com/page",
+        selectionFromClipboard: false,
         command: {
           ...baseCommand,
           aiPromptOption: {

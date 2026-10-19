@@ -259,6 +259,11 @@ export type ExecuteCommandParams = {
   pageUrl?: string
 }
 
+/** Parameters each action receives. The executor fills in the defaults. */
+export type ActionExecuteParams = ExecuteCommandParams & {
+  selectionFromClipboard: boolean
+}
+
 export type ActionTypes = PAGE_ACTION_EVENT | PAGE_ACTION_CONTROL
 export type PageActionStep = {
   id: string

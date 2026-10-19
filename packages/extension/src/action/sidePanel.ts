@@ -1,6 +1,6 @@
 import { isValidString, toUrl } from "@/lib/utils"
 import { SPACE_ENCODING } from "@/const"
-import type { ExecuteCommandParams, ShowToastParam } from "@/types"
+import type { ActionExecuteParams, ShowToastParam } from "@/types"
 import type { OpenSidePanelProps } from "@/services/chrome"
 import { Ipc, ServiceWorkerCommand, TabCommand } from "@/services/ipc"
 import { t } from "@/services/i18n"
@@ -11,7 +11,7 @@ export const SidePanel = {
     command,
     selectionFromClipboard,
     pageUrl,
-  }: ExecuteCommandParams) {
+  }: ActionExecuteParams) {
     if (!isValidString(command.searchUrl)) {
       console.error("searchUrl is not valid.")
       return
@@ -39,7 +39,7 @@ export const SidePanel = {
           searchUrl: command.searchUrl,
           spaceEncoding: command.spaceEncoding ?? SPACE_ENCODING.PLUS,
           selectionText,
-          selectionFromClipboard: selectionFromClipboard ?? false,
+          selectionFromClipboard,
           pageUrl: pageUrl ?? "",
         },
         clipboardText,

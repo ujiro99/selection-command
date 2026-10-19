@@ -23,7 +23,7 @@ import {
 } from "@/const"
 import { resolvePopupSize } from "@/services/option/defaultSettings"
 import type {
-  ExecuteCommandParams,
+  ActionExecuteParams,
   PageActionStep,
   UrlParam,
   AiService,
@@ -472,7 +472,7 @@ export const AiPrompt = {
     useSecondary,
     selectionFromClipboard,
     pageUrl,
-  }: ExecuteCommandParams) {
+  }: ActionExecuteParams) {
     if (!isAiPromptType(command)) {
       console.error("command is not for AiPrompt.")
       return
@@ -504,7 +504,7 @@ export const AiPrompt = {
     } = analyzePromptRequirements(
       aiPromptOption,
       service,
-      selectionFromClipboard ?? false,
+      selectionFromClipboard,
     )
 
     const { steps, urlParam, serviceUrl } = useQueryUrl

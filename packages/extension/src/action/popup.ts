@@ -3,7 +3,7 @@ import { isValidString } from "@/lib/utils"
 import { getWindowPosition } from "@/services/screen"
 import { POPUP_TYPE, SPACE_ENCODING } from "@/const"
 import { resolvePopupSize } from "@/services/option/defaultSettings"
-import type { ExecuteCommandParams } from "@/types"
+import type { ActionExecuteParams } from "@/types"
 import type { OpenPopupProps } from "@/services/chrome"
 
 export const Popup = {
@@ -13,7 +13,7 @@ export const Popup = {
     position,
     selectionFromClipboard,
     pageUrl,
-  }: ExecuteCommandParams) {
+  }: ActionExecuteParams) {
     if (!isValidString(command.searchUrl)) {
       console.error("searchUrl is not valid.")
       return
@@ -31,7 +31,7 @@ export const Popup = {
         searchUrl: command.searchUrl,
         spaceEncoding: command.spaceEncoding ?? SPACE_ENCODING.PLUS,
         selectionText,
-        selectionFromClipboard: selectionFromClipboard ?? false,
+        selectionFromClipboard,
         pageUrl: pageUrl ?? "",
       },
       top: Math.floor(windowPosition.top + position.y),

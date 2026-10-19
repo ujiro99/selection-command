@@ -9,7 +9,7 @@ import { getWindowPosition } from "@/services/screen"
 import { isValidString, isPageActionCommand } from "@/lib/utils"
 import { PAGE_ACTION_OPEN_MODE, PAGE_ACTION_EVENT } from "@/const"
 import { resolvePopupSize } from "@/services/option/defaultSettings"
-import type { ExecuteCommandParams, UrlParam } from "@/types"
+import type { ActionExecuteParams, UrlParam } from "@/types"
 import type { OpenAndRunProps } from "@/services/pageAction/serviceWorker"
 import { INSERT, templateReferencesInsert } from "@/services/pageAction"
 
@@ -26,7 +26,7 @@ export const PageAction = {
     selectionFromClipboard,
     userVariables,
     pageUrl,
-  }: ExecuteCommandParams & PageActionParams) {
+  }: ActionExecuteParams & PageActionParams) {
     if (!isPageActionCommand(command)) {
       console.error("command is not for PageAction.")
       return
@@ -63,7 +63,7 @@ export const PageAction = {
         selectedText: selectionText,
         srcUrl: pageUrl ?? "",
         clipboardText: "",
-        selectionFromClipboard: selectionFromClipboard ?? false,
+        selectionFromClipboard,
         clipboardForSteps,
         userVariables: effectiveUserVariables,
       }
@@ -90,7 +90,7 @@ export const PageAction = {
     const url: UrlParam = {
       searchUrl: command.pageActionOption.startUrl,
       selectionText,
-      selectionFromClipboard: selectionFromClipboard ?? false,
+      selectionFromClipboard,
       clipboardForSteps,
       pageUrl: pageUrl ?? "",
     }

@@ -1,7 +1,7 @@
 import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
 import { isValidString } from "@/lib/utils"
 import { SPACE_ENCODING } from "@/const"
-import type { ExecuteCommandParams } from "@/types"
+import type { ActionExecuteParams } from "@/types"
 import type { OpenTabProps } from "@/services/chrome"
 
 export const BackgroundTab = {
@@ -10,7 +10,7 @@ export const BackgroundTab = {
     command,
     selectionFromClipboard,
     pageUrl,
-  }: ExecuteCommandParams) {
+  }: ActionExecuteParams) {
     if (!isValidString(command.searchUrl)) {
       console.error("searchUrl is not valid.")
       return
@@ -21,7 +21,7 @@ export const BackgroundTab = {
         searchUrl: command.searchUrl,
         spaceEncoding: command.spaceEncoding ?? SPACE_ENCODING.PLUS,
         selectionText,
-        selectionFromClipboard: selectionFromClipboard ?? false,
+        selectionFromClipboard,
         pageUrl: pageUrl ?? "",
       },
       active: false,
