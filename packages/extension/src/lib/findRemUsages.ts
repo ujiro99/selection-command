@@ -6,11 +6,13 @@ export type RemUsage = {
   value: string
 }
 
-// Matches a length in rem units, e.g. "1rem", ".5rem", "-0.25rem".
-const REM_PATTERN = /(?:^|[^\w.-])-?(?:\d+\.?\d*|\.\d+)rem\b/
+// Matches a length in a root-relative unit, e.g. "1rem", ".5REM", "-0.25rlh".
+// All of these follow the document root element, i.e. the user's page.
+const REM_PATTERN =
+  /(?:^|[^\w.-])-?(?:\d+\.?\d*|\.\d+)(?:rem|rlh|rex|rch|rcap|ric)\b/i
 
 /**
- * Returns every declaration that uses `rem` units.
+ * Returns every declaration that uses `rem` (or another root-relative unit).
  *
  * `rem` is relative to the font-size of the document root, so inside the
  * content script's Shadow DOM it depends on the user's page. The content

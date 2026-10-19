@@ -129,6 +129,7 @@ content script はユーザーが閲覧中の任意のページ上で動作す�
   任意値（`w-[2rem]` 等）や CSS Modules でも `rem` は使わず `px` を使うこと。
   content script の CSS に `rem` が含まれるとビルドが失敗する（`src/lib/findRemUsages.ts`）。
   素の `rounded` は v4 の組み込みで `0.25rem` 固定のため、代わりに `rounded-sm`（4px）を使う。
+  ブレークポイント（`--breakpoint-*`）も v3 と同じ px で再定義している。
 - **`@property` は Shadow DOM 内で無視される**: Tailwind v4 が `@property` で登録する `--tw-*` の初期値は、
   `src/lib/postcss-shadow-dom-properties.ts`（PostCSS プラグイン）が Shadow root に注入される CSS 内で宣言している。
   `@property` をドキュメント（`document.head`）へ注入するなど、Shadow root の外へスタイルを出す方法は取らないこと。

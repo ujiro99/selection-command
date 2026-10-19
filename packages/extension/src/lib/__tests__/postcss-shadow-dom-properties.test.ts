@@ -134,4 +134,37 @@ describe("postcss-shadow-dom-properties", () => {
     })
     expect(count).toBe(1)
   })
+
+  it("SDP-08: 正常系: properties レイヤーの順序を CSS の先頭で宣言する", async () => {
+    // Arrange
+    const css = `
+      @layer utilities { .shadow { --tw-shadow: 0 1px 3px #0000001a; } }
+      @property --tw-shadow { syntax: "*"; inherits: false; initial-value: 0 0 #0000; }
+    `
+
+    // Act
+    const root = await run(css)
+
+    // Assert
+    const first = root.first as postcss.AtRule
+    expect(first.type).toBe("atrule")
+    expect(first.name).toBe("layer")
+    expect(first.params).toBe("properties")
+    expect(first.nodes).toBeUndefined()
+  })
+
+  it("SDP-09: 正常系: @property が無くてもレイヤーを使う CSS では順序を宣言する", async () => {
+    // Arrange
+    const css = "@layer utilities { .a { color: red; } }"
+
+    // Act
+    const root = await run(css)
+
+    // Assert
+    const first = root.first as postcss.AtRule
+    expect(first.name).toBe("layer")
+    expect(first.params).toBe("properties")
+    expect(first.nodes).toBeUndefined()
+    expect(findLayer(root)).toBeUndefined()
+  })
 })

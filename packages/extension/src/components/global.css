@@ -260,6 +260,16 @@
   --text-8xl: 96px;
   --text-9xl: 128px;
 
+  /*
+   * Breakpoints in px as in v3. In rem, media queries would follow the
+   * browser's default font-size setting.
+   */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+
   --container-3xs: 256px;
   --container-2xs: 288px;
   --container-xs: 320px;

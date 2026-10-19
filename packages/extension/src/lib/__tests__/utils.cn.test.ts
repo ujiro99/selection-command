@@ -5,7 +5,8 @@ import { cn } from "../utils"
 // pin down its behavior for Tailwind CSS v4 class names (tailwind-merge v3).
 describe("cn", () => {
   it("CN-01: 正常系: 条件付きのクラスを結合する", () => {
-    expect(cn("flex", false && "hidden", undefined, null, "gap-2")).toBe(
+    const isHidden = false
+    expect(cn("flex", isHidden && "hidden", undefined, null, "gap-2")).toBe(
       "flex gap-2",
     )
   })

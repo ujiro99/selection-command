@@ -16,8 +16,9 @@ const DEPLOYED_HUB_BASE_PATH = "/selection-command"
  * Limitation: navigations of windows opened by the extension itself (e.g. the
  * PageAction recorder) can't be intercepted, so those windows still load the
  * deployed HTML. Its assets have different hashed file names than the local
- * build, so requests the local server can't serve (404) are passed through to
- * the deployed hub to keep such pages working.
+ * build, so assets the local server can't serve (404) are passed through to
+ * the deployed hub to keep such pages working. Pages (HTML) are never passed
+ * through, so that a broken local build isn't hidden by the deployed hub.
  */
 export async function routeHubToLocal(context: BrowserContext): Promise<void> {
   const localBaseUrl = process.env.E2E_HUB_BASE_URL
@@ -26,20 +27,27 @@ export async function routeHubToLocal(context: BrowserContext): Promise<void> {
   await context.route(`${DEPLOYED_HUB_ORIGIN}/**`, async (route) => {
     const url = new URL(route.request().url())
     let pathname = url.pathname
-    if (pathname.startsWith(DEPLOYED_HUB_BASE_PATH)) {
+    if (
+      pathname === DEPLOYED_HUB_BASE_PATH ||
+      pathname.startsWith(`${DEPLOYED_HUB_BASE_PATH}/`)
+    ) {
       pathname = pathname.slice(DEPLOYED_HUB_BASE_PATH.length) || "/"
     }
-    if (!/\.[a-z0-9]+$/i.test(pathname)) {
+    const hasExtension = /\.[a-z0-9]+$/i.test(pathname)
+    const isPage = !hasExtension || pathname.endsWith(".html")
+    if (!hasExtension) {
       pathname = `${pathname.replace(/\/$/, "/index")}.html`
     }
     try {
       const response = await route.fetch({
         url: `${localBaseUrl}${pathname}${url.search}`,
       })
-      if (response.status() === 404) {
+      if (response.status() === 404 && !isPage) {
         await route.continue()
         return
       }
+      // A missing page is returned as the local 404, so that the tests fail
+      // instead of passing against the deployed (old) hub.
       await route.fulfill({ response })
     } catch {
       // Requests still in flight when a page or the context is closed at the

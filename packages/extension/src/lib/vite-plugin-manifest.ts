@@ -16,6 +16,11 @@ import { findRemUsages } from "./findRemUsages"
 // the UI never changes with the page (see
 // docs/design/tailwindcss-v4-migration.md).
 function assertNoRemInCss(distDir: string, cssFiles: string[]) {
+  // An empty list means the manifest could not be processed. Fail instead of
+  // silently skipping the check.
+  if (cssFiles.length === 0) {
+    throw new Error("No content script CSS files found to check for rem units")
+  }
   const errors: string[] = []
   for (const file of cssFiles) {
     const css = fs.readFileSync(path.join(distDir, file), "utf-8")
@@ -61,7 +66,7 @@ export default function removeCssFromContentScript(): Plugin {
         const src = (b[1] as unknown as OutputAsset).source
         const manifest = JSON.parse(src as string)
         const { content_scripts } = manifest
-        if (!content_scripts) return
+        if (!content_scripts) throw new Error("content_scripts not found")
         // Remove the css field from all content_script entries.
         // crxjs automatically adds CSS imports as manifest css[], but Chrome
         // injects those into the page document (not Shadow DOM), breaking page styles.
@@ -93,7 +98,8 @@ export default function removeCssFromContentScript(): Plugin {
         console.error(e)
       }
 
-      // Checked outside the try block above so that a violation fails the build.
+      // Checked outside the try block above so that a violation fails the
+      // build. It also fails when the manifest could not be processed.
       assertNoRemInCss("./dist", contentScriptCssFiles)
     },
   }

@@ -63,4 +63,23 @@ describe("findRemUsages", () => {
       { selector: "@page ", prop: "margin", value: "2rem" },
     ])
   })
+
+  it("FRU-06: 正常系: 大文字の REM や他のルート相対単位も検出する", () => {
+    // Arrange
+    const css =
+      ".e { padding: 1REM; line-height: 1rlh; width: 2rch; height: 1rex; margin: 1rcap; gap: 1ric; }"
+
+    // Act
+    const usages = findRemUsages(css)
+
+    // Assert
+    expect(usages.map((u) => u.prop)).toEqual([
+      "padding",
+      "line-height",
+      "width",
+      "height",
+      "margin",
+      "gap",
+    ])
+  })
 })

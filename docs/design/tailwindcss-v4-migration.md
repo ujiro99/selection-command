@@ -118,7 +118,7 @@ v4 ではスペーシングが `--spacing` を基準にした単一スケール�
   - `--container-*`（`max-w-lg` / `max-w-xl` / `max-w-2xl`〜`4xl` 等）
   - `--radius-*`（root の `--radius` は extension では既に `8px`）
   - `--tracking-*` は em 単位のため対象外。`--leading-*` は単位なしのため対象外。
-  - `--breakpoint-*` はメディアクエリ内の rem がブラウザ既定値基準でありユーザーページの影響を受けないため対象外。
+  - `--breakpoint-*` もメディアクエリ内の rem がブラウザの既定フォントサイズ設定に連動して v3 と挙動が変わるため、px で再定義する（ユーザーページの影響は受けないため rem 検査の対象外）。
 - 再定義漏れを防ぐため、ビルド後の content script 用 CSS に `rem` が残っていないことを確認するチェック（ビルドスクリプト or ユニットテスト）を追加する。arbitrary value（`w-[2rem]` 等）での rem 記述も禁止し、同チェックで検出する。
 - v3 では `fontSize.xs/sm` が文字列指定のため line-height が付与されていなかったが、v4 では `--text-*--line-height` が付与される。差分が出る場合は `--text-xs--line-height` / `--text-sm--line-height` を調整する。
 - options page / onboarding page も同じテーマを共有するが、root font-size は既定の 16px のため見た目は変わらない。
@@ -271,12 +271,12 @@ extension の移行と独立して実施できるため先に行う。hub が ro
 - **`text-xs` / `text-sm` の line-height**: v3 と同じく line-height を付与しないよう、`--text-xs--line-height: initial` 等で無効化した。
 - **content script 内の既存の rem**: `Popup.module.css` の `1.2rem` / `0.8rem`、`text-[0.8rem]` を px に置き換えた（v3 時代からユーザーページの影響を受けていた箇所）。options page 専用の CSS Modules の rem はユーザーページの影響を受けないため対象外とした。
 - **`--font-sans`**: v3 の設定は未定義の `var(--font-sans)` を参照しており実質無効だったため、v4 既定のシステムフォントスタックに戻した。content script の各コンテナは `--font-family` で独自にフォントを指定しているため見た目は変わらない。
-- **`@layer properties`**: Tailwind v4 の出力は先頭で `@layer properties;` を宣言するため、Shadow DOM 用プラグインが末尾に追加する初期値は最も優先度の低いレイヤーに入る。
+- **`@layer properties`**: Vite はファイルごとに処理した CSS を連結してチャンクを作り、各チャンクは Shadow root に別々に注入される。レイヤーの優先度は全チャンクを通して最初に現れた順で決まるため、CSS Modules だけのチャンクではプラグインが末尾に追加した `properties` が後ろに並ぶおそれがあった（コードレビューで指摘）。プラグインは、レイヤーを使うファイルの先頭に `@layer properties;` を宣言するようにした。
 - **hub テストページの縦方向の余白**: flex の `gap` にすると Quill の `.ql-container { height: 100% }` が親からはみ出したため、v3 の `space-y-*` と同じく兄弟要素間のマージンで実装した。
 - **CSS サイズ**: content script に注入される CSS は約 65KB → 約 85KB（v4 はテーマ変数と `@property`、互換用の初期値ブロックを含むため）。
 - **`@theme inline`**: ツールは色トークンを通常の `@theme` で出力したが、それでは `--color-background: hsl(var(--background))` が `:root` / `:host` で一度だけ解決され、ポップアップ要素上で `--background` を上書きするユーザースタイル（背景色）が反映されなくなった（e2e の E2E-72 で検出）。実行時の変数を参照する色・角丸のトークンは `@theme inline` にした。
 - **クラス名の走査範囲**: v4 は既定でパッケージ内の全ファイルを走査するため、AGENTS.md の説明文（`w-[2rem]` など）からも rem を含むユーティリティが生成され、rem 検査に検出された。`@import "tailwindcss" source("../")` と `@source not "../**/__tests__"` で `src`（テスト除外）に限定した。
-- **e2e のローカル hub 転送の制約**: 拡張機能が自ら開くウィンドウ（PageAction の録画画面など）は最初のページ読み込みを Playwright で横取りできず、デプロイ済みの HTML が読み込まれる。ローカルに無いアセット（404）はデプロイ済みの hub へそのまま流すようにした。
+- **e2e のローカル hub 転送の制約**: 拡張機能が自ら開くウィンドウ（PageAction の録画画面など）は最初のページ読み込みを Playwright で横取りできず、デプロイ済みの HTML が読み込まれる。ローカルに無いアセット（404）はデプロイ済みの hub へそのまま流すようにした。ただしページ（HTML）は流さずローカルの 404 を返し、ローカルのビルドが壊れていても e2e が通ってしまうことを防ぐ。
 - **`cn()` のテスト**: tailwind-merge v3 の v4 クラス名の扱いを `src/lib/__tests__/utils.cn.test.ts` で確認するようにした。
 
 ## リスクと対策

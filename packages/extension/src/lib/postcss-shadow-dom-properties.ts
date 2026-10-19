@@ -34,6 +34,11 @@ const shadowDomProperties: PluginCreator<Options> = (opts = {}) => {
       // for extension pages) so that they still inherit as registered.
       const nonInherited = new Map<string, string>()
       const inherited = new Map<string, string>()
+      let hasLayer = false
+      root.walkAtRules("layer", () => {
+        hasLayer = true
+        return false
+      })
 
       root.walkAtRules("property", (atRule: AtRule) => {
         const name = atRule.params.trim()
@@ -53,7 +58,17 @@ const shadowDomProperties: PluginCreator<Options> = (opts = {}) => {
         target.set(name, initialValue)
       })
 
-      if (nonInherited.size === 0 && inherited.size === 0) return
+      const hasProperties = nonInherited.size > 0 || inherited.size > 0
+      if (hasLayer || hasProperties) {
+        // Fix the layer order at the very top of this stylesheet. Vite
+        // concatenates the processed files into CSS chunks, each chunk is
+        // injected into the shadow root separately, and a layer's priority is
+        // decided by where it first appears across all of them. Declaring
+        // `properties` before any other layer in every file that uses layers
+        // keeps it the lowest-priority layer regardless of that order.
+        root.prepend(new AtRule({ name: "layer", params: LAYER_NAME }))
+      }
+      if (!hasProperties) return
 
       const layer = new AtRule({ name: "layer", params: LAYER_NAME })
       if (inherited.size > 0) {
