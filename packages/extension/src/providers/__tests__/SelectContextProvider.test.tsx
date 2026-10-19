@@ -1,22 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
-import { render, waitFor } from "@testing-library/react"
+import { render, act } from "@testing-library/react"
 import { SelectContextProvider } from "../SelectContextProvider"
-import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
-import { Ipc } from "@/services/ipc"
+import { Ipc, TabCommand, type IpcCallback } from "@/services/ipc"
 import { getSelectionText } from "@/services/dom"
-
-vi.mock("@/services/storage", () => ({
-  Storage: {
-    set: vi.fn(),
-  },
-  SESSION_STORAGE_KEY: {
-    SELECTION_TEXT: "selectionText",
-  },
-}))
 
 vi.mock("@/services/ipc", () => ({
   Ipc: {
-    getTabId: vi.fn(),
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+  },
+  TabCommand: {
+    getSelection: "getSelection",
   },
 }))
 
@@ -24,54 +18,70 @@ vi.mock("@/services/dom", () => ({
   getSelectionText: vi.fn(),
 }))
 
-const mockSet = vi.mocked(Storage.set)
-const mockGetTabId = vi.mocked(Ipc.getTabId)
+const mockAddListener = vi.mocked(Ipc.addListener)
 const mockGetSelectionText = vi.mocked(getSelectionText)
+
+// Calls the getSelection listener as the service worker does.
+const requestSelection = () => {
+  const call = mockAddListener.mock.calls.find(
+    ([command]) => command === TabCommand.getSelection,
+  )
+  const listener = call?.[1] as IpcCallback
+  const response = vi.fn()
+  listener(undefined, {} as chrome.runtime.MessageSender, response)
+  return response.mock.calls[0][0]
+}
+
+const selectText = (text: string) => {
+  mockGetSelectionText.mockReturnValue(text)
+  act(() => {
+    document.dispatchEvent(new Event("selectionchange"))
+  })
+}
 
 describe("SelectContextProvider", () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockSet.mockResolvedValue(true)
-    mockGetTabId.mockResolvedValue(10)
   })
 
-  it("SC-01: 正常系: 選択変更時に選択テキストとタブIDを保存する", async () => {
-    mockGetSelectionText.mockReturnValue("selected")
+  it("SC-01: 正常系: 現在の選択テキストを返す", () => {
     render(<SelectContextProvider>{null}</SelectContextProvider>)
 
-    document.dispatchEvent(new Event("selectionchange"))
+    selectText("selected")
 
-    await waitFor(() => {
-      expect(mockSet).toHaveBeenCalledWith(SESSION_STORAGE_KEY.SELECTION_TEXT, {
-        text: "selected",
-        tabId: 10,
-      })
+    expect(requestSelection()).toEqual({ text: "selected", focusLost: false })
+  })
+
+  it("SC-02: 正常系: 選択後にウィンドウのフォーカスが外れたことを返す", () => {
+    render(<SelectContextProvider>{null}</SelectContextProvider>)
+
+    selectText("selected")
+    act(() => {
+      window.dispatchEvent(new Event("blur"))
     })
+
+    expect(requestSelection()).toEqual({ text: "selected", focusLost: true })
   })
 
-  it("SC-02: 異常系: タブIDを取得できない場合はtabIdをnullとして保存する", async () => {
-    mockGetTabId.mockResolvedValue(null)
-    mockGetSelectionText.mockReturnValue("selected")
+  it("SC-03: 正常系: フォーカスが外れた後に選択し直すと、フォーカス喪失をリセットする", () => {
     render(<SelectContextProvider>{null}</SelectContextProvider>)
 
-    document.dispatchEvent(new Event("selectionchange"))
-
-    await waitFor(() => {
-      expect(mockSet).toHaveBeenCalledWith(SESSION_STORAGE_KEY.SELECTION_TEXT, {
-        text: "selected",
-        tabId: null,
-      })
+    selectText("old")
+    act(() => {
+      window.dispatchEvent(new Event("blur"))
     })
+    selectText("new")
+
+    expect(requestSelection()).toEqual({ text: "new", focusLost: false })
   })
 
-  it("SC-03: 正常系: タブIDの取得は一度だけ行う", async () => {
-    mockGetSelectionText.mockReturnValue("selected")
-    render(<SelectContextProvider>{null}</SelectContextProvider>)
+  it("SC-04: 正常系: アンマウント時にリスナーを解除する", () => {
+    const { unmount } = render(
+      <SelectContextProvider>{null}</SelectContextProvider>,
+    )
 
-    document.dispatchEvent(new Event("selectionchange"))
-    document.dispatchEvent(new Event("selectionchange"))
+    unmount()
 
-    await waitFor(() => expect(mockSet).toHaveBeenCalledTimes(2))
-    expect(mockGetTabId).toHaveBeenCalledTimes(1)
+    expect(Ipc.removeListener).toHaveBeenCalledWith(TabCommand.getSelection)
   })
 })

@@ -277,20 +277,23 @@ describe("Service Worker Migration", () => {
   })
 
   const setupOnCommand = async ({
-    storedSelection,
     tab,
+    tabSelection,
     noSelectionBehavior = SHORTCUT_NO_SELECTION_BEHAVIOR.DO_NOTHING,
-    sendTabResult = new Error("Tab execution failed"),
+    keepMenuOpenOnFocusChange = false,
+    executeActionResult = new Error("Tab execution failed"),
   }: {
-    storedSelection: { text: string; tabId: number | null }
     tab: { id: number; url: string; windowId: number }
+    tabSelection?: unknown
     noSelectionBehavior?: SHORTCUT_NO_SELECTION_BEHAVIOR
-    sendTabResult?: unknown
+    keepMenuOpenOnFocusChange?: boolean
+    executeActionResult?: unknown
   }) => {
-    const initialSettings = createTestSettings()
+    const initialSettings = createTestSettings() as any
     initialSettings.shortcuts.shortcuts[0].noSelectionBehavior =
-      noSelectionBehavior as any
-    mockEnhancedSettings.get.mockResolvedValue(initialSettings as any)
+      noSelectionBehavior
+    initialSettings.startupMethod = { keepMenuOpenOnFocusChange }
+    mockEnhancedSettings.get.mockResolvedValue(initialSettings)
 
     vi.doMock("@/services/chrome", () => ({
       getCurrentTab: vi.fn().mockResolvedValue(tab),
@@ -303,15 +306,11 @@ describe("Service Worker Migration", () => {
       .fn()
       .mockResolvedValue({ left: 1920, top: 0, width: 1600, height: 1000 })
 
-    // Mock Storage.get for selection text
-    const mockStorageGet = vi.fn().mockResolvedValue(storedSelection)
     vi.doMock("@/services/storage", () => ({
       Storage: {
-        get: mockStorageGet,
+        get: vi.fn(),
       },
-      SESSION_STORAGE_KEY: {
-        SELECTION_TEXT: "selectionText",
-      },
+      SESSION_STORAGE_KEY: {},
       LOCAL_STORAGE_KEY: {
         CLIENT_ID: "clientId",
       },
@@ -323,9 +322,10 @@ describe("Service Worker Migration", () => {
       execute: mockExecute,
     }))
 
-    // Mock Ipc.sendTab. By default it simulates tab execution failure
-    // (to force service worker execution).
-    const mockIpcSendTab = vi.fn().mockResolvedValue(sendTabResult)
+    // By default executeAction fails, to force service worker execution.
+    const mockIpcSendTab = vi.fn(async (_tabId: number, command: string) =>
+      command === "getSelection" ? tabSelection : executeActionResult,
+    )
     vi.doMock("@/services/ipc", () => ({
       Ipc: {
         sendTab: mockIpcSendTab,
@@ -337,6 +337,7 @@ describe("Service Worker Migration", () => {
       },
       TabCommand: {
         executeAction: "executeAction",
+        getSelection: "getSelection",
       },
     }))
 
@@ -355,13 +356,18 @@ describe("Service Worker Migration", () => {
     return { commandListener, mockExecute, mockIpcSendTab }
   }
 
+  const runShortcut = async (commandListener: (name: string) => unknown) => {
+    await commandListener("test-shortcut-cmd")
+    await new Promise((resolve) => setTimeout(resolve, 10))
+  }
+
   it("MG-01-d: should call enhancedSettings.get() in onCommand function and pass correct command to action/serviceWorker.execute", async () => {
     const testShortcutId = "test-shortcut-cmd"
     const testCommandId = "test-command-123"
 
     const { commandListener, mockExecute } = await setupOnCommand({
-      storedSelection: { text: "test selection text", tabId: 1 },
       tab: { id: 1, url: "https://example.com", windowId: 1 },
+      tabSelection: { text: "test selection text", focusLost: false },
     })
 
     // Call the listener with our test shortcut command
@@ -396,18 +402,14 @@ describe("Service Worker Migration", () => {
     )
   })
 
-  it("MG-01-e: should ignore a selection recorded in another tab and fall back to the clipboard", async () => {
-    // The selection was recorded in tab 1, but the shortcut is pressed in a
-    // chrome:// tab, where the content script can't record its selection.
+  it("MG-01-e: should not ask a chrome:// tab for its selection and fall back to the clipboard", async () => {
     const { commandListener, mockExecute, mockIpcSendTab } =
       await setupOnCommand({
-        storedSelection: { text: "stale selection", tabId: 1 },
         tab: { id: 2, url: "chrome://settings/", windowId: 1 },
         noSelectionBehavior: SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD,
       })
 
-    await commandListener("test-shortcut-cmd")
-    await new Promise((resolve) => setTimeout(resolve, 10))
+    await runShortcut(commandListener)
 
     expect(mockIpcSendTab).not.toHaveBeenCalled()
     expect(mockExecute).toHaveBeenCalledWith(
@@ -419,51 +421,36 @@ describe("Service Worker Migration", () => {
     )
   })
 
-  it("MG-01-f: should do nothing when the selection was recorded in another tab and noSelectionBehavior is DO_NOTHING", async () => {
+  it("MG-01-f: should do nothing when the tab has no selection and noSelectionBehavior is DO_NOTHING", async () => {
     const { commandListener, mockExecute, mockIpcSendTab } =
       await setupOnCommand({
-        storedSelection: { text: "stale selection", tabId: 1 },
-        tab: { id: 2, url: "https://example.com", windowId: 1 },
+        tab: { id: 1, url: "https://example.com", windowId: 1 },
+        tabSelection: { text: "", focusLost: false },
         noSelectionBehavior: SHORTCUT_NO_SELECTION_BEHAVIOR.DO_NOTHING,
       })
 
-    await commandListener("test-shortcut-cmd")
-    await new Promise((resolve) => setTimeout(resolve, 10))
+    await runShortcut(commandListener)
 
-    expect(mockIpcSendTab).not.toHaveBeenCalled()
+    expect(mockIpcSendTab).not.toHaveBeenCalledWith(
+      1,
+      "executeAction",
+      expect.anything(),
+    )
     expect(mockExecute).not.toHaveBeenCalled()
   })
 
-  it("MG-01-g: should ignore a selection whose tab is unknown", async () => {
-    const { commandListener, mockExecute } = await setupOnCommand({
-      storedSelection: { text: "unknown tab selection", tabId: null },
-      tab: { id: 2, url: "chrome://settings/", windowId: 1 },
-      noSelectionBehavior: SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD,
-    })
-
-    await commandListener("test-shortcut-cmd")
-    await new Promise((resolve) => setTimeout(resolve, 10))
-
-    expect(mockExecute).toHaveBeenCalledWith(
-      expect.objectContaining({
-        selectionText: "",
-        selectionFromClipboard: true,
-      }),
-    )
-  })
-
-  it("MG-01-h: should pass the selection decided by the service worker to the content script", async () => {
+  it("MG-01-g: should pass the selection of the tab to the content script", async () => {
     const { commandListener, mockExecute, mockIpcSendTab } =
       await setupOnCommand({
-        storedSelection: { text: "selected", tabId: 1 },
         tab: { id: 1, url: "https://example.com", windowId: 1 },
+        tabSelection: { text: "selected", focusLost: false },
         noSelectionBehavior: SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD,
-        sendTabResult: true,
+        executeActionResult: true,
       })
 
-    await commandListener("test-shortcut-cmd")
-    await new Promise((resolve) => setTimeout(resolve, 10))
+    await runShortcut(commandListener)
 
+    expect(mockIpcSendTab).toHaveBeenCalledWith(1, "getSelection")
     expect(mockIpcSendTab).toHaveBeenCalledWith(1, "executeAction", {
       command: expect.objectContaining({ id: "test-command-123" }),
       selectionText: "selected",
@@ -472,24 +459,59 @@ describe("Service Worker Migration", () => {
     expect(mockExecute).not.toHaveBeenCalled()
   })
 
-  it("MG-01-i: should tell the content script to use the clipboard when the stored selection was cleared", async () => {
-    // e.g. the selection was cleared when the window lost focus, while the
-    // text is still selected in the page.
+  it("MG-01-h: should use the clipboard when the window lost focus after the text was selected", async () => {
+    // The text is still selected in the page, but the user may have copied
+    // other text in another app.
     const { commandListener, mockIpcSendTab } = await setupOnCommand({
-      storedSelection: { text: "", tabId: null },
       tab: { id: 1, url: "https://example.com", windowId: 1 },
+      tabSelection: { text: "selected", focusLost: true },
       noSelectionBehavior: SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD,
-      sendTabResult: true,
+      executeActionResult: true,
     })
 
-    await commandListener("test-shortcut-cmd")
-    await new Promise((resolve) => setTimeout(resolve, 10))
+    await runShortcut(commandListener)
 
     expect(mockIpcSendTab).toHaveBeenCalledWith(1, "executeAction", {
       command: expect.objectContaining({ id: "test-command-123" }),
       selectionText: "",
       selectionFromClipboard: true,
     })
+  })
+
+  it("MG-01-i: should keep the selection after the window lost focus when keepMenuOpenOnFocusChange is on", async () => {
+    const { commandListener, mockIpcSendTab } = await setupOnCommand({
+      tab: { id: 1, url: "https://example.com", windowId: 1 },
+      tabSelection: { text: "selected", focusLost: true },
+      noSelectionBehavior: SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD,
+      keepMenuOpenOnFocusChange: true,
+      executeActionResult: true,
+    })
+
+    await runShortcut(commandListener)
+
+    expect(mockIpcSendTab).toHaveBeenCalledWith(1, "executeAction", {
+      command: expect.objectContaining({ id: "test-command-123" }),
+      selectionText: "selected",
+      selectionFromClipboard: false,
+    })
+  })
+
+  it("MG-01-j: should treat the selection as empty when the tab doesn't respond", async () => {
+    // e.g. the content script isn't injected yet.
+    const { commandListener, mockExecute } = await setupOnCommand({
+      tab: { id: 1, url: "https://example.com", windowId: 1 },
+      tabSelection: undefined,
+      noSelectionBehavior: SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD,
+    })
+
+    await runShortcut(commandListener)
+
+    expect(mockExecute).toHaveBeenCalledWith(
+      expect.objectContaining({
+        selectionText: "",
+        selectionFromClipboard: true,
+      }),
+    )
   })
 })
 
@@ -538,9 +560,7 @@ describe("Popup Auto-Close Delay", () => {
       Storage: {
         set: mockStorageSet,
       },
-      SESSION_STORAGE_KEY: {
-        SELECTION_TEXT: "selectionText",
-      },
+      SESSION_STORAGE_KEY: {},
     }))
 
     // Clear module cache and re-import
@@ -601,9 +621,7 @@ describe("Popup Auto-Close Delay", () => {
       Storage: {
         set: mockStorageSet,
       },
-      SESSION_STORAGE_KEY: {
-        SELECTION_TEXT: "selectionText",
-      },
+      SESSION_STORAGE_KEY: {},
     }))
 
     // Clear module cache and re-import
@@ -667,9 +685,7 @@ describe("Popup Auto-Close Delay", () => {
       Storage: {
         set: mockStorageSet,
       },
-      SESSION_STORAGE_KEY: {
-        SELECTION_TEXT: "selectionText",
-      },
+      SESSION_STORAGE_KEY: {},
     }))
 
     // Clear module cache and re-import

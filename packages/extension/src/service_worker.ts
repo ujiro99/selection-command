@@ -14,7 +14,7 @@ import {
   TabCommand,
   CONNECTION_APP,
 } from "@/services/ipc"
-import type { IpcCallback } from "@/services/ipc"
+import type { IpcCallback, TabSelection } from "@/services/ipc"
 import { Settings } from "@/services/settings/settings"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { CACHE_SECTIONS } from "@/services/settings/settingsCache"
@@ -28,11 +28,7 @@ import { findMatchingPageRule, isEmpty } from "@/lib/utils"
 import { execute } from "@/action/serviceWorker"
 import * as ActionHelper from "@/action/helper"
 import type { WindowType } from "@/types"
-import {
-  Storage,
-  SESSION_STORAGE_KEY,
-  type SelectionTextData,
-} from "@/services/storage"
+import { Storage } from "@/services/storage"
 import {
   ANALYTICS_EVENTS,
   sendEvent,
@@ -394,20 +390,6 @@ const updateActiveTabId = async (activeTabId?: number) => {
   }
 }
 
-// Clears the selection text unless the user opted to keep the menu open
-// across tab/window changes.
-const clearSelectionTextUnlessKeepOpen = async () => {
-  const settings = await enhancedSettings.getSection(
-    CACHE_SECTIONS.USER_SETTINGS,
-  )
-  if (!settings.startupMethod?.keepMenuOpenOnFocusChange) {
-    await Storage.set<SelectionTextData>(SESSION_STORAGE_KEY.SELECTION_TEXT, {
-      text: "",
-      tabId: null,
-    })
-  }
-}
-
 chrome.action.onClicked.addListener(() => {
   chrome.tabs.create({
     url: OPTION_PAGE_PATH,
@@ -415,10 +397,7 @@ chrome.action.onClicked.addListener(() => {
 })
 
 chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
-  if (windowId === chrome.windows.WINDOW_ID_NONE) {
-    await clearSelectionTextUnlessKeepOpen()
-    return
-  }
+  if (windowId === chrome.windows.WINDOW_ID_NONE) return
 
   // Update active tab ID
   await updateActiveTabId()
@@ -427,11 +406,7 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
   const windowsToClose = await WindowStackManager.getWindowsToClose(windowId)
 
   // Schedule popup windows to close with configured delay.
-  // Run this before the settings fetch below so popup auto-close isn't
-  // delayed behind it and doesn't race with overlapping focus-change events.
   await PopupAutoClose.scheduleClose(windowsToClose)
-
-  await clearSelectionTextUnlessKeepOpen()
 })
 
 chrome.windows.onRemoved.addListener(async (windowId: number) => {
@@ -704,17 +679,28 @@ chrome.commands.onCommand.addListener(async (commandName) => {
     }
 
     const tab = await getCurrentTab()
+    const enableSendTab =
+      tab?.id &&
+      !tab.url?.startsWith("chrome") &&
+      !tab.url?.includes("chromewebstore.google.com")
 
-    // Use the selection only if it was recorded in the active tab. Tabs
-    // without the content script (e.g. chrome://) can't record their
-    // selection, so the stored one may belong to another tab.
-    const selection = await Storage.get<SelectionTextData>(
-      SESSION_STORAGE_KEY.SELECTION_TEXT,
-    )
-    const selectionText =
-      selection?.tabId != null && selection.tabId === tab?.id
-        ? selection.text
-        : ""
+    // Ask the active tab for its latest selection. Tabs without the content
+    // script (e.g. chrome://) are treated as having no selection.
+    let selectionText = ""
+    if (enableSendTab) {
+      const selection = await Ipc.sendTab<
+        unknown,
+        TabSelection | Error | undefined
+      >(tab.id ?? 0, TabCommand.getSelection)
+      if (selection != null && !(selection instanceof Error)) {
+        // A selection made before the window lost focus may be older than
+        // the clipboard, as the user may have copied other text elsewhere.
+        const stale =
+          selection.focusLost &&
+          !settings.startupMethod?.keepMenuOpenOnFocusChange
+        if (!stale) selectionText = selection.text
+      }
+    }
 
     // This is the only place to decide whether to use the clipboard text as
     // the selected text. Actions trust this decision and don't re-check.
@@ -732,10 +718,6 @@ chrome.commands.onCommand.addListener(async (commandName) => {
         selectionFromClipboard = true
       }
     }
-    const enableSendTab =
-      tab?.id &&
-      !tab.url?.startsWith("chrome") &&
-      !tab.url?.includes("chromewebstore.google.com")
 
     let ret: unknown
     if (enableSendTab) {

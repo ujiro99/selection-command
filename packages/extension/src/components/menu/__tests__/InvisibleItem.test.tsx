@@ -69,7 +69,6 @@ describe("InvisibleItem", () => {
       expect.objectContaining({
         command,
         selectionText: "selection in tab",
-        selectionFromClipboard: false,
       }),
     )
   })

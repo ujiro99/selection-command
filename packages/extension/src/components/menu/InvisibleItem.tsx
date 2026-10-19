@@ -66,11 +66,11 @@ export function InvisibleItem(props: InvisibleItemProps): React.ReactNode {
     executeCommand({
       command: action.command as SelectionCommand,
       position,
-      // Prefer the selection decided by the sender, since the selection in
-      // this tab may be stale (e.g. after the window lost focus).
+      // Prefer the selection decided by the sender, which ignores a selection
+      // made before the window lost focus.
       selectionText: action.selectionText ?? selectionText,
       target,
-      selectionFromClipboard: action.selectionFromClipboard ?? false,
+      selectionFromClipboard: action.selectionFromClipboard,
     })
     clearAction()
   }

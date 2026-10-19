@@ -24,7 +24,6 @@ export enum LOCAL_STORAGE_KEY {
 
 export enum SESSION_STORAGE_KEY {
   SERVICE_WORKER_DATA = "serviceWorkerData",
-  SELECTION_TEXT = "selectionText ",
   SESSION_DATA = "sessionData",
   MESSAGE_QUEUE = "messageQueue",
   TMP_CAPTURES = "tmpCaptures",
@@ -34,12 +33,6 @@ export enum SESSION_STORAGE_KEY {
   PA_RECORDER_OPTION = "pageActionRecorderOption",
   PA_SIDE_PANEL_PENDING = "pageActionSidePanelPending",
   DEV_TOOLS_ENABLED = "devToolsEnabled",
-}
-
-export type SelectionTextData = {
-  text: string
-  // null if the selection was cleared or the tab is unknown.
-  tabId: number | null
 }
 
 export type KEY =

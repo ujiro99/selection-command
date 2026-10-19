@@ -1,10 +1,5 @@
 import { useState, ReactNode, useEffect, useCallback, useRef } from "react"
-import {
-  Storage,
-  SESSION_STORAGE_KEY,
-  type SelectionTextData,
-} from "@/services/storage"
-import { Ipc } from "@/services/ipc"
+import { Ipc, TabCommand, type TabSelection } from "@/services/ipc"
 import { getSelectionText } from "@/services/dom"
 import { ContextType, selectContext } from "@/hooks/useSelectContext"
 
@@ -16,25 +11,17 @@ export const SelectContextProvider = ({
   const [selectionText, _setSelectionText] = useState("")
   const [target, setTarget] = useState<Element | null>(null)
   const [detectSelectionEnabled, setDetectSelectionEnabled] = useState(true)
-  const tabIdRef = useRef<Promise<number | null> | null>(null)
+  const selectionRef = useRef<TabSelection>({ text: "", focusLost: false })
 
-  const setSelectionText = useCallback(async (text: string) => {
+  const setSelectionText = useCallback((text: string) => {
     _setSelectionText(text)
-    // Record the tab ID with the text, so that the shortcut handler in the
-    // service worker can ignore a selection recorded in another tab.
-    tabIdRef.current ??= Ipc.getTabId()
-    const tabId = await tabIdRef.current
-    await Storage.set<SelectionTextData>(SESSION_STORAGE_KEY.SELECTION_TEXT, {
-      text,
-      tabId,
-    })
+    selectionRef.current = { text, focusLost: false }
   }, [])
 
   useEffect(() => {
-    const onSelectionchange = async () => {
+    const onSelectionchange = () => {
       if (!detectSelectionEnabled) return
-      const text = getSelectionText()
-      await setSelectionText(text)
+      setSelectionText(getSelectionText())
     }
 
     document.addEventListener("selectionchange", onSelectionchange)
@@ -42,6 +29,26 @@ export const SelectContextProvider = ({
       document.removeEventListener("selectionchange", onSelectionchange)
     }
   }, [detectSelectionEnabled, setSelectionText])
+
+  useEffect(() => {
+    // The selection stays in the page after the window loses focus, so the
+    // shortcut handler in the service worker needs to know it to decide
+    // whether to use the selection or the clipboard.
+    const onBlur = () => {
+      selectionRef.current = { ...selectionRef.current, focusLost: true }
+    }
+    window.addEventListener("blur", onBlur)
+
+    Ipc.addListener(TabCommand.getSelection, (_param, _sender, response) => {
+      response(selectionRef.current)
+      return true
+    })
+
+    return () => {
+      window.removeEventListener("blur", onBlur)
+      Ipc.removeListener(TabCommand.getSelection)
+    }
+  }, [])
 
   const value: ContextType = {
     selectionText,

@@ -87,6 +87,7 @@ export enum TabCommand {
   ping = "ping",
   connected = "connected",
   executeAction = "executeAction",
+  getSelection = "getSelection",
   clickElement = "clickElement",
   closeMenu = "closeMenu",
   showReviewRequest = "showReviewRequest",
@@ -102,6 +103,16 @@ export enum TabCommand {
 /** Asks the user whether to overwrite a locally edited command. */
 export type ConfirmCommandUpdateProps = {
   title: string
+}
+
+/** The selection in a tab, returned for TabCommand.getSelection. */
+export type TabSelection = {
+  text: string
+  /**
+   * The window lost focus after the text was selected. The user may have
+   * copied other text elsewhere in the meantime.
+   */
+  focusLost: boolean
 }
 
 export type ClickElementProps = {
@@ -566,20 +577,8 @@ export const Ipc = {
     }
   },
 
-  /**
-   * Get the ID of the tab this script runs in.
-   * @returns The tab ID, or null if this script doesn't belong to a tab
-   *   (e.g. side panel) or the ID couldn't be retrieved.
-   */
-  async getTabId(): Promise<number | null> {
-    try {
-      return (
-        (await Ipc.send<unknown, number>(ServiceWorkerCommand.getTabId)) ?? null
-      )
-    } catch {
-      // Ipc.send has already logged the error.
-      return null
-    }
+  async getTabId() {
+    return Ipc.send(ServiceWorkerCommand.getTabId)
   },
 
   async getActiveTabId() {
