@@ -684,10 +684,17 @@ chrome.commands.onCommand.addListener(async (commandName) => {
       !tab.url?.startsWith("chrome") &&
       !tab.url?.includes("chromewebstore.google.com")
 
+    // A global shortcut can be pressed while another app has focus. Then the
+    // selection left in the page is ignored, as the user may have copied
+    // other text in that app. getLastFocused fails when no window is open.
+    const lastFocusedWindow = await chrome.windows
+      .getLastFocused()
+      .catch(() => undefined)
+
     // Ask the active tab for its latest selection. Tabs without the content
     // script (e.g. chrome://) are treated as having no selection.
     let selectionText = ""
-    if (enableSendTab) {
+    if (enableSendTab && lastFocusedWindow?.focused) {
       const selection = await Ipc.sendTab<
         unknown,
         TabSelection | Error | undefined

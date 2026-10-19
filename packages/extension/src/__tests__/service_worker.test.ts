@@ -281,12 +281,14 @@ describe("Service Worker Migration", () => {
     tabSelection,
     noSelectionBehavior = SHORTCUT_NO_SELECTION_BEHAVIOR.DO_NOTHING,
     keepMenuOpenOnFocusChange = false,
+    chromeFocused = true,
     executeActionResult = new Error("Tab execution failed"),
   }: {
     tab: { id: number; url: string; windowId: number }
     tabSelection?: unknown
     noSelectionBehavior?: SHORTCUT_NO_SELECTION_BEHAVIOR
     keepMenuOpenOnFocusChange?: boolean
+    chromeFocused?: boolean
     executeActionResult?: unknown
   }) => {
     const initialSettings = createTestSettings() as any
@@ -300,6 +302,10 @@ describe("Service Worker Migration", () => {
       closeWindow: vi.fn(),
       windowExists: vi.fn(),
     }))
+
+    ;(chrome.windows as any).getLastFocused = vi
+      .fn()
+      .mockResolvedValue({ id: tab.windowId, focused: chromeFocused })
 
     // Mock the current window used to center the popup
     ;(chrome.windows as any).getCurrent = vi
@@ -512,6 +518,27 @@ describe("Service Worker Migration", () => {
         selectionFromClipboard: true,
       }),
     )
+  })
+
+  it("MG-01-k: should treat the selection as empty when another app has focus", async () => {
+    // e.g. a global shortcut pressed right after copying text in another app.
+    const { commandListener, mockIpcSendTab } = await setupOnCommand({
+      tab: { id: 1, url: "https://example.com", windowId: 1 },
+      tabSelection: { text: "selected", focusLost: false },
+      noSelectionBehavior: SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD,
+      keepMenuOpenOnFocusChange: true,
+      chromeFocused: false,
+      executeActionResult: true,
+    })
+
+    await runShortcut(commandListener)
+
+    expect(mockIpcSendTab).not.toHaveBeenCalledWith(1, "getSelection")
+    expect(mockIpcSendTab).toHaveBeenCalledWith(1, "executeAction", {
+      command: expect.objectContaining({ id: "test-command-123" }),
+      selectionText: "",
+      selectionFromClipboard: true,
+    })
   })
 })
 
