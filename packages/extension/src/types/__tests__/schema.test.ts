@@ -309,6 +309,22 @@ describe("command title in schemas", () => {
     }
   })
 
+  it("SC-25: accepts a 100-character title and rejects a 101-character one", () => {
+    expect(commandSchema.safeParse(searchCmd("a".repeat(100))).success).toBe(
+      true,
+    )
+    const res = commandSchema.safeParse(searchCmd("a".repeat(101)))
+    expect(res.success).toBe(false)
+    if (!res.success) {
+      expect(res.error.issues[0].path).toEqual(["title"])
+    }
+  })
+
+  it("SC-26: checks the max length after normalization", () => {
+    const res = commandSchema.safeParse(searchCmd(` ${"a".repeat(100)}  `))
+    expect(res.success).toBe(true)
+  })
+
   it("SC-22: returns the normalized title", () => {
     const res = commandSchema.safeParse(searchCmd(" Google\u3000\u3000検索 "))
     expect(res.success).toBe(true)

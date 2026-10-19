@@ -26,6 +26,7 @@ import { countHtmlAttachments } from "@/services/pageAction"
 import type { AiPromptCommand } from "@/types"
 
 export const COMMAND_TITLE_MIN_LENGTH = 2
+export const COMMAND_TITLE_MAX_LENGTH = 100
 
 /**
  * Normalizes a command title: trims both ends and collapses every whitespace
@@ -40,9 +41,14 @@ const commandTitleSchema = z
   .string()
   .transform(normalizeCommandTitle)
   .pipe(
-    z.string().min(COMMAND_TITLE_MIN_LENGTH, {
-      message: t("Option_zod_string_min", [String(COMMAND_TITLE_MIN_LENGTH)]),
-    }),
+    z
+      .string()
+      .min(COMMAND_TITLE_MIN_LENGTH, {
+        message: t("Option_zod_string_min", [String(COMMAND_TITLE_MIN_LENGTH)]),
+      })
+      .max(COMMAND_TITLE_MAX_LENGTH, {
+        message: t("Option_zod_string_max", [String(COMMAND_TITLE_MAX_LENGTH)]),
+      }),
   )
 
 const commandSourceSchema = {
