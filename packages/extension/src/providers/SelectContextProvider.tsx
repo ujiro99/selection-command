@@ -46,24 +46,9 @@ export const SelectContextProvider = ({
       await setSelectionText(text)
     }
 
-    // The stored selection is shared by all tabs, so re-record this tab's
-    // selection when the tab becomes active again. An empty selection is not
-    // recorded, so that a frame without a selection doesn't overwrite the one
-    // recorded by another frame in this tab. (A selection recorded in another
-    // tab is ignored by the shortcut handler anyway.)
-    const onVisibilitychange = async () => {
-      if (!detectSelectionEnabled) return
-      if (document.visibilityState !== "visible") return
-      const text = getSelectionText()
-      if (!text) return
-      await setSelectionText(text)
-    }
-
     document.addEventListener("selectionchange", onSelectionchange)
-    document.addEventListener("visibilitychange", onVisibilitychange)
     return () => {
       document.removeEventListener("selectionchange", onSelectionchange)
-      document.removeEventListener("visibilitychange", onVisibilitychange)
     }
   }, [detectSelectionEnabled, setSelectionText])
 

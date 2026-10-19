@@ -10,9 +10,9 @@ import {
   mockReadClipboard,
   mockMatchesPageActionUrl,
   mockIncrementCommandExecutionCount,
-  mockIsEmpty,
   mockIsUrl,
   mockIsUrlParam,
+  mockNeedsClipboard,
   mockConsole,
 } from "./serviceWorker-setup"
 import { openAndRun, preview, stopRunner } from "../serviceWorker"
@@ -329,10 +329,10 @@ describe("serviceWorker.ts - Execution Operations", () => {
       expect(mockOpenTab).not.toHaveBeenCalled()
     })
 
-    it("SWD-45: Normal case: Clipboard is fetched in CURRENT_TAB mode when useClipboard is true", async () => {
+    it("SWD-45: Normal case: Clipboard is fetched in CURRENT_TAB mode when the url needs the clipboard", async () => {
       const mockParam = {
         openMode: PAGE_ACTION_OPEN_MODE.CURRENT_TAB,
-        url: { url: "https://example.com", useClipboard: true },
+        url: { url: "https://example.com", clipboardForSteps: true },
         commandId: "cmd-1",
         selectedText: "selected",
         userVariables: [],
@@ -350,6 +350,7 @@ describe("serviceWorker.ts - Execution Operations", () => {
         url: "https://example.com/page",
       })
       mockIsUrlParam.mockReturnValue(true)
+      mockNeedsClipboard.mockReturnValue(true)
       mockReadClipboard.mockResolvedValue({
         clipboardText: "clipboard content",
         err: null,
@@ -368,10 +369,10 @@ describe("serviceWorker.ts - Execution Operations", () => {
       expect(mockIpc.ensureConnection).toHaveBeenCalledWith(555)
     })
 
-    it("SWD-46: Normal case: Clipboard is NOT fetched in CURRENT_TAB mode when useClipboard is false", async () => {
+    it("SWD-46: Normal case: Clipboard is NOT fetched in CURRENT_TAB mode when the url does not need the clipboard", async () => {
       const mockParam = {
         openMode: PAGE_ACTION_OPEN_MODE.CURRENT_TAB,
-        url: { url: "https://example.com", useClipboard: false },
+        url: { url: "https://example.com" },
         commandId: "cmd-1",
         selectedText: "selected",
         userVariables: [],
@@ -389,6 +390,7 @@ describe("serviceWorker.ts - Execution Operations", () => {
         url: "https://example.com/page",
       })
       mockIsUrlParam.mockReturnValue(true)
+      mockNeedsClipboard.mockReturnValue(false)
       mockStorage.getCommands.mockResolvedValue([mockCommand])
 
       const result = openAndRun(
@@ -403,16 +405,15 @@ describe("serviceWorker.ts - Execution Operations", () => {
       expect(mockIpc.ensureConnection).toHaveBeenCalledWith(555)
     })
 
-    it("SWD-44: Normal case: Use clipboardText when selectedText is empty and useClipboard is true", async () => {
+    it("SWD-44: Normal case: Use clipboardText as selectedText when selectionFromClipboard is true", async () => {
       const mockParam = {
         openMode: PAGE_ACTION_OPEN_MODE.TAB,
-        url: { url: "https://example.com", useClipboard: true },
+        url: { url: "https://example.com", selectionFromClipboard: true },
         commandId: "cmd-1",
         selectedText: "",
         steps: [{ id: "step-1", param: { type: "click" } }],
       }
 
-      mockIsEmpty.mockReturnValue(true)
       mockIsUrlParam.mockReturnValue(true)
       mockOpenTab.mockResolvedValue({
         tabId: 456,
@@ -428,6 +429,34 @@ describe("serviceWorker.ts - Execution Operations", () => {
         "execPageAction",
         expect.objectContaining({
           selectedText: "clipboard content",
+          clipboardText: "clipboard content",
+        }),
+      )
+    })
+
+    it("SWD-44-b: Normal case: Keep selectedText empty when only the steps use the clipboard", async () => {
+      const mockParam = {
+        openMode: PAGE_ACTION_OPEN_MODE.TAB,
+        url: { url: "https://example.com", clipboardForSteps: true },
+        commandId: "cmd-1",
+        selectedText: "",
+        steps: [{ id: "step-1", param: { type: "click" } }],
+      }
+
+      mockIsUrlParam.mockReturnValue(true)
+      mockOpenTab.mockResolvedValue({
+        tabId: 456,
+        clipboardText: "clipboard content",
+      })
+
+      openAndRun(mockParam as any, mockSender as any, mockResponse)
+      await vi.runAllTimersAsync()
+
+      expect(mockIpc.sendTab).toHaveBeenCalledWith(
+        456,
+        "execPageAction",
+        expect.objectContaining({
+          selectedText: "",
           clipboardText: "clipboard content",
         }),
       )

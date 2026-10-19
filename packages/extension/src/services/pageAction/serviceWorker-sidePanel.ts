@@ -194,12 +194,17 @@ const runPendingSidePanelAction = async (
     return
   }
   await Storage.set(SESSION_STORAGE_KEY.PA_SIDE_PANEL_PENDING, null)
-  if (pending.useClipboard) {
+  if (pending.selectionFromClipboard || pending.clipboardForSteps) {
     try {
       const clipboard = await readClipboard()
       pending.clipboardText = clipboard.clipboardText
     } catch (e) {
       console.warn("Failed to read clipboard in background:", e)
+    }
+    // Use the clipboard text as the selected text if requested
+    // (e.g. a shortcut key run without a selection).
+    if (pending.selectionFromClipboard) {
+      pending.selectedText = pending.clipboardText
     }
   }
   runViaPort(port, pending)

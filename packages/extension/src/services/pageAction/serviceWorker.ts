@@ -28,10 +28,10 @@ import {
 } from "@/const"
 import {
   generateRandomID,
-  isEmpty,
   isUrl,
   isUrlParam,
   matchesPageActionUrl,
+  needsClipboard,
   sleep,
 } from "@/lib/utils"
 import type {
@@ -382,7 +382,7 @@ export const openAndRun = (
       tabId = currentTab.id
 
       // Get clipboard text only when needed.
-      if (isUrlParam(param.url) && param.url.useClipboard) {
+      if (needsClipboard(param.url)) {
         const clipboard = await readClipboard()
         clipboardText = clipboard.clipboardText
         if (clipboard.err) {
@@ -412,13 +412,9 @@ export const openAndRun = (
       return
     }
 
-    // Use clipboard text if selected text is empty and useClipboard is true.
-    // This is for the case for shortcut key.
-    if (
-      isEmpty(selectedText) &&
-      isUrlParam(param.url) &&
-      param.url.useClipboard
-    ) {
+    // Use the clipboard text as the selected text if requested
+    // (e.g. a shortcut key run without a selection).
+    if (isUrlParam(param.url) && param.url.selectionFromClipboard) {
       selectedText = clipboardText
     }
 

@@ -1,4 +1,4 @@
-import { sleep, toUrl, isOverBytes, isUrlParam } from "@/lib/utils"
+import { sleep, toUrl, isOverBytes, needsClipboard } from "@/lib/utils"
 import type { ScreenSize } from "@/services/dom"
 import type { ShowToastParam, UrlParam, WindowLayer } from "@/types"
 import { POPUP_OFFSET, POPUP_TYPE, WINDOW_STATE } from "@/const"
@@ -99,7 +99,6 @@ export const fetchIconUrl = async (url: string): Promise<string> => {
     url: toUrl({
       searchUrl: url,
       selectionText: "test",
-      useClipboard: false,
     }),
     state: "minimized",
   })
@@ -475,7 +474,7 @@ export const openPopupWindow = async (
   let window: chrome.windows.Window
   let clipboardText = ""
 
-  if (isUrlParam(url) && url.useClipboard) {
+  if (needsClipboard(url)) {
     const result = await openWindowAndReadClipboard({
       commandId: param.commandId,
       type,
@@ -607,12 +606,7 @@ export const openTab = async (param: OpenTabProps): Promise<OpenResult> => {
     console.warn("Failed to get current tab:", e)
   }
 
-  let useClipboard = false
-  if (isUrlParam(url)) {
-    useClipboard = url.useClipboard ?? false
-  }
-
-  if (useClipboard) {
+  if (needsClipboard(url)) {
     const tab = await chrome.tabs.create({
       url: chrome.runtime.getURL("src/clipboard.html"),
       active: true,

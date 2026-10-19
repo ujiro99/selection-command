@@ -281,10 +281,12 @@ describe("Service Worker Migration", () => {
     storedSelection,
     tab,
     noSelectionBehavior = SHORTCUT_NO_SELECTION_BEHAVIOR.DO_NOTHING,
+    sendTabResult = new Error("Tab execution failed"),
   }: {
     storedSelection: { text: string; tabId: number | null }
     tab: { id: number; url: string; windowId: number }
     noSelectionBehavior?: SHORTCUT_NO_SELECTION_BEHAVIOR
+    sendTabResult?: unknown
   }) => {
     const initialSettings = createTestSettings()
     initialSettings.shortcuts.shortcuts[0].noSelectionBehavior =
@@ -319,10 +321,9 @@ describe("Service Worker Migration", () => {
       execute: mockExecute,
     }))
 
-    // Mock Ipc.sendTab to simulate tab execution failure (to force service worker execution)
-    const mockIpcSendTab = vi
-      .fn()
-      .mockResolvedValue(new Error("Tab execution failed"))
+    // Mock Ipc.sendTab. By default it simulates tab execution failure
+    // (to force service worker execution).
+    const mockIpcSendTab = vi.fn().mockResolvedValue(sendTabResult)
     vi.doMock("@/services/ipc", () => ({
       Ipc: {
         sendTab: mockIpcSendTab,
@@ -388,7 +389,7 @@ describe("Service Worker Migration", () => {
         position: { x: 600, y: 350 },
         selectionText: "test selection text",
         target: null,
-        allowClipboardFallback: false,
+        selectionFromClipboard: false,
         pageUrl: "https://example.com",
       }),
     )
@@ -411,7 +412,7 @@ describe("Service Worker Migration", () => {
     expect(mockExecute).toHaveBeenCalledWith(
       expect.objectContaining({
         selectionText: "",
-        allowClipboardFallback: true,
+        selectionFromClipboard: true,
         pageUrl: "chrome://settings/",
       }),
     )
@@ -445,9 +446,49 @@ describe("Service Worker Migration", () => {
     expect(mockExecute).toHaveBeenCalledWith(
       expect.objectContaining({
         selectionText: "",
-        allowClipboardFallback: true,
+        selectionFromClipboard: true,
       }),
     )
+  })
+
+  it("MG-01-h: should pass the selection decided by the service worker to the content script", async () => {
+    const { commandListener, mockExecute, mockIpcSendTab } =
+      await setupOnCommand({
+        storedSelection: { text: "selected", tabId: 1 },
+        tab: { id: 1, url: "https://example.com", windowId: 1 },
+        noSelectionBehavior: SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD,
+        sendTabResult: true,
+      })
+
+    await commandListener("test-shortcut-cmd")
+    await new Promise((resolve) => setTimeout(resolve, 10))
+
+    expect(mockIpcSendTab).toHaveBeenCalledWith(1, "executeAction", {
+      command: expect.objectContaining({ id: "test-command-123" }),
+      selectionText: "selected",
+      selectionFromClipboard: false,
+    })
+    expect(mockExecute).not.toHaveBeenCalled()
+  })
+
+  it("MG-01-i: should tell the content script to use the clipboard when the stored selection was cleared", async () => {
+    // e.g. the selection was cleared when the window lost focus, while the
+    // text is still selected in the page.
+    const { commandListener, mockIpcSendTab } = await setupOnCommand({
+      storedSelection: { text: "", tabId: null },
+      tab: { id: 1, url: "https://example.com", windowId: 1 },
+      noSelectionBehavior: SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD,
+      sendTabResult: true,
+    })
+
+    await commandListener("test-shortcut-cmd")
+    await new Promise((resolve) => setTimeout(resolve, 10))
+
+    expect(mockIpcSendTab).toHaveBeenCalledWith(1, "executeAction", {
+      command: expect.objectContaining({ id: "test-command-123" }),
+      selectionText: "",
+      selectionFromClipboard: true,
+    })
   })
 })
 

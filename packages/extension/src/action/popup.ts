@@ -11,7 +11,7 @@ export const Popup = {
     selectionText,
     command,
     position,
-    allowClipboardFallback,
+    selectionFromClipboard,
     pageUrl,
   }: ExecuteCommandParams) {
     if (!isValidString(command.searchUrl)) {
@@ -31,7 +31,7 @@ export const Popup = {
         searchUrl: command.searchUrl,
         spaceEncoding: command.spaceEncoding ?? SPACE_ENCODING.PLUS,
         selectionText,
-        useClipboard: allowClipboardFallback ?? false,
+        selectionFromClipboard: selectionFromClipboard ?? false,
         pageUrl: pageUrl ?? "",
       },
       top: Math.floor(windowPosition.top + position.y),

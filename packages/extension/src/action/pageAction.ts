@@ -23,7 +23,7 @@ export const PageAction = {
     command,
     position,
     useSecondary,
-    allowClipboardFallback,
+    selectionFromClipboard,
     userVariables,
     pageUrl,
   }: ExecuteCommandParams & PageActionParams) {
@@ -41,7 +41,7 @@ export const PageAction = {
       userVariables ?? command.pageActionOption.userVariables
 
     // Checks if any step needs clipboard data, directly or through a user variable
-    const needClipboard = command.pageActionOption.steps.some(
+    const clipboardForSteps = command.pageActionOption.steps.some(
       (step) =>
         step.param.type === PAGE_ACTION_EVENT.input &&
         templateReferencesInsert(
@@ -63,7 +63,8 @@ export const PageAction = {
         selectedText: selectionText,
         srcUrl: pageUrl ?? "",
         clipboardText: "",
-        useClipboard: needClipboard || (allowClipboardFallback ?? false),
+        selectionFromClipboard: selectionFromClipboard ?? false,
+        clipboardForSteps,
         userVariables: effectiveUserVariables,
       }
       try {
@@ -89,7 +90,8 @@ export const PageAction = {
     const url: UrlParam = {
       searchUrl: command.pageActionOption.startUrl,
       selectionText,
-      useClipboard: needClipboard || (allowClipboardFallback ?? false),
+      selectionFromClipboard: selectionFromClipboard ?? false,
+      clipboardForSteps,
       pageUrl: pageUrl ?? "",
     }
 

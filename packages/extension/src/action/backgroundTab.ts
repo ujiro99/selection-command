@@ -8,7 +8,7 @@ export const BackgroundTab = {
   async execute({
     selectionText,
     command,
-    allowClipboardFallback,
+    selectionFromClipboard,
     pageUrl,
   }: ExecuteCommandParams) {
     if (!isValidString(command.searchUrl)) {
@@ -21,7 +21,7 @@ export const BackgroundTab = {
         searchUrl: command.searchUrl,
         spaceEncoding: command.spaceEncoding ?? SPACE_ENCODING.PLUS,
         selectionText,
-        useClipboard: allowClipboardFallback ?? false,
+        selectionFromClipboard: selectionFromClipboard ?? false,
         pageUrl: pageUrl ?? "",
       },
       active: false,

@@ -17,7 +17,7 @@ type InvisibleItemProps = {
 
 export function InvisibleItem(props: InvisibleItemProps): React.ReactNode {
   const { selectionText, target } = useSelectContext()
-  const { command, setCommand, allowClipboardFallback } = useContextMenu()
+  const { action, clearAction } = useContextMenu()
   const { itemState, result, executeCommand, clearResult } =
     useCommandExecutor()
   const elmRef = useRef<HTMLDivElement>(null)
@@ -62,15 +62,17 @@ export function InvisibleItem(props: InvisibleItemProps): React.ReactNode {
     }
   }, [position])
 
-  if (command != null) {
+  if (action != null) {
     executeCommand({
-      command: command as SelectionCommand,
+      command: action.command as SelectionCommand,
       position,
-      selectionText,
+      // Prefer the selection decided by the sender, since the selection in
+      // this tab may be stale (e.g. after the window lost focus).
+      selectionText: action.selectionText ?? selectionText,
       target,
-      allowClipboardFallback,
+      selectionFromClipboard: action.selectionFromClipboard ?? false,
     })
-    setCommand(null)
+    clearAction()
   }
 
   const visible = result != null

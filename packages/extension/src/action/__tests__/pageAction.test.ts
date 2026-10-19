@@ -73,7 +73,7 @@ describe("PageAction.execute", () => {
         url: expect.objectContaining({
           searchUrl: "https://ai.example.com",
           selectionText: "Selected content",
-          useClipboard: false,
+          clipboardForSteps: false,
         }),
       }),
     )
@@ -100,7 +100,7 @@ describe("PageAction.execute", () => {
       ServiceWorkerCommand.openAndRunPageAction,
       expect.objectContaining({
         url: expect.objectContaining({
-          useClipboard: true,
+          clipboardForSteps: true,
         }),
       }),
     )
@@ -138,7 +138,7 @@ describe("PageAction.execute", () => {
       ServiceWorkerCommand.openAndRunPageAction,
       expect.objectContaining({
         url: expect.objectContaining({
-          useClipboard: false,
+          clipboardForSteps: false,
         }),
       }),
     )
@@ -181,7 +181,7 @@ describe("PageAction.execute", () => {
         url: expect.objectContaining({
           searchUrl: "https://example.com",
           selectionText: "sample",
-          useClipboard: false,
+          clipboardForSteps: false,
         }),
       }),
     )
@@ -211,7 +211,7 @@ describe("PageAction.execute", () => {
         selectedText: "side panel content",
         srcUrl: "https://origin.example.com",
         clipboardText: "",
-        useClipboard: false,
+        clipboardForSteps: false,
         userVariables: [
           { name: "Prompt", value: "Summarize: {{SelectedText}}" },
         ],
@@ -274,7 +274,7 @@ describe("PageAction.execute", () => {
     expect(Storage.set).toHaveBeenCalledWith(
       SESSION_STORAGE_KEY.PA_SIDE_PANEL_PENDING,
       expect.objectContaining({
-        useClipboard: true,
+        clipboardForSteps: true,
         userVariables: [
           { name: "Prompt", value: "Translate clipboard: {{Clipboard}}" },
         ],

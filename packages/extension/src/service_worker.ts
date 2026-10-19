@@ -717,8 +717,10 @@ chrome.commands.onCommand.addListener(async (commandName) => {
         ? selection.text
         : ""
 
-    // If no text is selected, handle according to noSelectionBehavior
-    let allowClipboardFallback = false
+    // If no text is selected, handle according to noSelectionBehavior.
+    // This is the only place to decide whether to use the clipboard text as
+    // the selected text.
+    let selectionFromClipboard = false
     if (isEmpty(selectionText)) {
       if (
         shortcut.noSelectionBehavior ===
@@ -729,7 +731,7 @@ chrome.commands.onCommand.addListener(async (commandName) => {
         shortcut.noSelectionBehavior ===
         SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD
       ) {
-        allowClipboardFallback = true
+        selectionFromClipboard = true
       }
     }
     const enableSendTab =
@@ -745,7 +747,10 @@ chrome.commands.onCommand.addListener(async (commandName) => {
         TabCommand.executeAction,
         {
           command,
-          allowClipboardFallback,
+          // Pass the selection decided here, so that the selection is
+          // judged only once.
+          selectionText,
+          selectionFromClipboard,
         },
       )
     }
@@ -762,7 +767,7 @@ chrome.commands.onCommand.addListener(async (commandName) => {
         position,
         selectionText,
         target: null,
-        allowClipboardFallback,
+        selectionFromClipboard,
         pageUrl: tab?.url ?? "",
       })
     }

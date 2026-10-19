@@ -150,7 +150,10 @@ export type SidePanelPendingAction = {
   selectedText: string
   srcUrl: string
   clipboardText: string
-  useClipboard?: boolean
+  /** See UrlParam.selectionFromClipboard. */
+  selectionFromClipboard?: boolean
+  /** See UrlParam.clipboardForSteps. */
+  clipboardForSteps?: boolean
   pageHtml?: string
   selectionHtml?: string
   userVariables?: Array<UserVariable>
