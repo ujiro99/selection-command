@@ -103,7 +103,8 @@ Google Analytics 連携・お問い合わせフォーム等は、全て新リポ
     （例: `python3 -m http.server 3100 -d packages/hub/out` →
     `E2E_HUB_BASE_URL=http://localhost:3100 yarn test:e2e`）。
     `ujiro99.github.io` へのリクエストがローカルへ転送される
-    （`packages/extension/e2e/utils/hubRoute.ts`）
+    （`packages/extension/e2e/utils/hubRoute.ts`）。ただし拡張機能が自ら開く
+    ウィンドウ（PageAction の録画画面など）は転送できず、デプロイ済みのページが表示される
 - スタイリングは素の CSS（`globals.css` と CSS Modules）のみで行う。
   Tailwind CSS や shadcn/ui などの CSS フレームワーク・UI ライブラリは導入しない
   （テストページと設定値のホスティングのみが目的で、導入するメリットがないため）
