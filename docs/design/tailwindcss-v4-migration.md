@@ -274,6 +274,9 @@ extension の移行と独立して実施できるため先に行う。hub が ro
 - **`@layer properties`**: Tailwind v4 の出力は先頭で `@layer properties;` を宣言するため、Shadow DOM 用プラグインが末尾に追加する初期値は最も優先度の低いレイヤーに入る。
 - **hub テストページの縦方向の余白**: flex の `gap` にすると Quill の `.ql-container { height: 100% }` が親からはみ出したため、v3 の `space-y-*` と同じく兄弟要素間のマージンで実装した。
 - **CSS サイズ**: content script に注入される CSS は約 65KB → 約 85KB（v4 はテーマ変数と `@property`、互換用の初期値ブロックを含むため）。
+- **`@theme inline`**: ツールは色トークンを通常の `@theme` で出力したが、それでは `--color-background: hsl(var(--background))` が `:root` / `:host` で一度だけ解決され、ポップアップ要素上で `--background` を上書きするユーザースタイル（背景色）が反映されなくなった（e2e の E2E-72 で検出）。実行時の変数を参照する色・角丸のトークンは `@theme inline` にした。
+- **クラス名の走査範囲**: v4 は既定でパッケージ内の全ファイルを走査するため、AGENTS.md の説明文（`w-[2rem]` など）からも rem を含むユーティリティが生成され、rem 検査に検出された。`@import "tailwindcss" source("../")` と `@source not "../**/__tests__"` で `src`（テスト除外）に限定した。
+- **e2e のローカル hub 転送の制約**: 拡張機能が自ら開くウィンドウ（PageAction の録画画面など）は最初のページ読み込みを Playwright で横取りできず、デプロイ済みの HTML が読み込まれる。ローカルに無いアセット（404）はデプロイ済みの hub へそのまま流すようにした。
 - **`cn()` のテスト**: tailwind-merge v3 の v4 クラス名の扱いを `src/lib/__tests__/utils.cn.test.ts` で確認するようにした。
 
 ## リスクと対策
