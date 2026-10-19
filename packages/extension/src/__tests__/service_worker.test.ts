@@ -280,21 +280,18 @@ describe("Service Worker Migration", () => {
     tab,
     tabSelection,
     noSelectionBehavior = SHORTCUT_NO_SELECTION_BEHAVIOR.DO_NOTHING,
-    keepMenuOpenOnFocusChange = false,
     chromeFocused = true,
     executeActionResult = new Error("Tab execution failed"),
   }: {
     tab: { id: number; url: string; windowId: number }
     tabSelection?: unknown
     noSelectionBehavior?: SHORTCUT_NO_SELECTION_BEHAVIOR
-    keepMenuOpenOnFocusChange?: boolean
     chromeFocused?: boolean
     executeActionResult?: unknown
   }) => {
     const initialSettings = createTestSettings() as any
     initialSettings.shortcuts.shortcuts[0].noSelectionBehavior =
       noSelectionBehavior
-    initialSettings.startupMethod = { keepMenuOpenOnFocusChange }
     mockEnhancedSettings.get.mockResolvedValue(initialSettings)
 
     vi.doMock("@/services/chrome", () => ({
@@ -373,7 +370,7 @@ describe("Service Worker Migration", () => {
 
     const { commandListener, mockExecute } = await setupOnCommand({
       tab: { id: 1, url: "https://example.com", windowId: 1 },
-      tabSelection: { text: "test selection text", focusLost: false },
+      tabSelection: "test selection text",
     })
 
     // Call the listener with our test shortcut command
@@ -431,7 +428,7 @@ describe("Service Worker Migration", () => {
     const { commandListener, mockExecute, mockIpcSendTab } =
       await setupOnCommand({
         tab: { id: 1, url: "https://example.com", windowId: 1 },
-        tabSelection: { text: "", focusLost: false },
+        tabSelection: "",
         noSelectionBehavior: SHORTCUT_NO_SELECTION_BEHAVIOR.DO_NOTHING,
       })
 
@@ -449,7 +446,7 @@ describe("Service Worker Migration", () => {
     const { commandListener, mockExecute, mockIpcSendTab } =
       await setupOnCommand({
         tab: { id: 1, url: "https://example.com", windowId: 1 },
-        tabSelection: { text: "selected", focusLost: false },
+        tabSelection: "selected",
         noSelectionBehavior: SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD,
         executeActionResult: true,
       })
@@ -465,45 +462,7 @@ describe("Service Worker Migration", () => {
     expect(mockExecute).not.toHaveBeenCalled()
   })
 
-  it("MG-01-h: should use the clipboard when the window lost focus after the text was selected", async () => {
-    // The text is still selected in the page, but the user may have copied
-    // other text in another app.
-    const { commandListener, mockIpcSendTab } = await setupOnCommand({
-      tab: { id: 1, url: "https://example.com", windowId: 1 },
-      tabSelection: { text: "selected", focusLost: true },
-      noSelectionBehavior: SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD,
-      executeActionResult: true,
-    })
-
-    await runShortcut(commandListener)
-
-    expect(mockIpcSendTab).toHaveBeenCalledWith(1, "executeAction", {
-      command: expect.objectContaining({ id: "test-command-123" }),
-      selectionText: "",
-      selectionFromClipboard: true,
-    })
-  })
-
-  it("MG-01-i: should ignore the selection after the window lost focus even when keepMenuOpenOnFocusChange is on", async () => {
-    // The setting only keeps the menu open. It doesn't keep the selection.
-    const { commandListener, mockIpcSendTab } = await setupOnCommand({
-      tab: { id: 1, url: "https://example.com", windowId: 1 },
-      tabSelection: { text: "selected", focusLost: true },
-      noSelectionBehavior: SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD,
-      keepMenuOpenOnFocusChange: true,
-      executeActionResult: true,
-    })
-
-    await runShortcut(commandListener)
-
-    expect(mockIpcSendTab).toHaveBeenCalledWith(1, "executeAction", {
-      command: expect.objectContaining({ id: "test-command-123" }),
-      selectionText: "",
-      selectionFromClipboard: true,
-    })
-  })
-
-  it("MG-01-j: should treat the selection as empty when the tab doesn't respond", async () => {
+  it("MG-01-h: should treat the selection as empty when the tab doesn't respond", async () => {
     // e.g. the content script isn't injected yet.
     const { commandListener, mockExecute } = await setupOnCommand({
       tab: { id: 1, url: "https://example.com", windowId: 1 },
@@ -521,11 +480,11 @@ describe("Service Worker Migration", () => {
     )
   })
 
-  it("MG-01-k: should treat the selection as empty when another app has focus", async () => {
+  it("MG-01-i: should treat the selection as empty when another app has focus", async () => {
     // e.g. a global shortcut pressed right after copying text in another app.
     const { commandListener, mockIpcSendTab } = await setupOnCommand({
       tab: { id: 1, url: "https://example.com", windowId: 1 },
-      tabSelection: { text: "selected", focusLost: false },
+      tabSelection: "selected",
       noSelectionBehavior: SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD,
       chromeFocused: false,
       executeActionResult: true,

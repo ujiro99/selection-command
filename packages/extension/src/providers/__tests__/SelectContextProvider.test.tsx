@@ -49,33 +49,10 @@ describe("SelectContextProvider", () => {
 
     selectText("selected")
 
-    expect(requestSelection()).toEqual({ text: "selected", focusLost: false })
+    expect(requestSelection()).toBe("selected")
   })
 
-  it("SC-02: 正常系: 選択後にウィンドウのフォーカスが外れたことを返す", () => {
-    render(<SelectContextProvider>{null}</SelectContextProvider>)
-
-    selectText("selected")
-    act(() => {
-      window.dispatchEvent(new Event("blur"))
-    })
-
-    expect(requestSelection()).toEqual({ text: "selected", focusLost: true })
-  })
-
-  it("SC-03: 正常系: フォーカスが外れた後に選択し直すと、フォーカス喪失をリセットする", () => {
-    render(<SelectContextProvider>{null}</SelectContextProvider>)
-
-    selectText("old")
-    act(() => {
-      window.dispatchEvent(new Event("blur"))
-    })
-    selectText("new")
-
-    expect(requestSelection()).toEqual({ text: "new", focusLost: false })
-  })
-
-  it("SC-04: 正常系: アンマウント時にリスナーを解除する", () => {
+  it("SC-02: 正常系: アンマウント時にリスナーを解除する", () => {
     const { unmount } = render(
       <SelectContextProvider>{null}</SelectContextProvider>,
     )

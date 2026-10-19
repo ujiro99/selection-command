@@ -105,16 +105,6 @@ export type ConfirmCommandUpdateProps = {
   title: string
 }
 
-/** The selection in a tab, returned for TabCommand.getSelection. */
-export type TabSelection = {
-  text: string
-  /**
-   * The window lost focus after the text was selected. The user may have
-   * copied other text elsewhere in the meantime.
-   */
-  focusLost: boolean
-}
-
 export type ClickElementProps = {
   selector: string
 }

@@ -14,7 +14,7 @@ import {
   TabCommand,
   CONNECTION_APP,
 } from "@/services/ipc"
-import type { IpcCallback, TabSelection } from "@/services/ipc"
+import type { IpcCallback } from "@/services/ipc"
 import { Settings } from "@/services/settings/settings"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { CACHE_SECTIONS } from "@/services/settings/settingsCache"
@@ -686,7 +686,8 @@ chrome.commands.onCommand.addListener(async (commandName) => {
 
     // A global shortcut can be pressed while another app has focus. Then the
     // selection left in the page is ignored, as the user may have copied
-    // other text in that app. getLastFocused fails when no window is open.
+    // other text in that app. After returning to Chrome, the selection shown
+    // in the page is used. getLastFocused fails when no window is open.
     const lastFocusedWindow = await chrome.windows
       .getLastFocused()
       .catch(() => undefined)
@@ -695,19 +696,11 @@ chrome.commands.onCommand.addListener(async (commandName) => {
     // script (e.g. chrome://) are treated as having no selection.
     let selectionText = ""
     if (enableSendTab && lastFocusedWindow?.focused) {
-      const selection = await Ipc.sendTab<
-        unknown,
-        TabSelection | Error | undefined
-      >(tab.id ?? 0, TabCommand.getSelection)
-      // A selection made before the window lost focus may be older than the
-      // clipboard, as the user may have copied other text elsewhere.
-      if (
-        selection != null &&
-        !(selection instanceof Error) &&
-        !selection.focusLost
-      ) {
-        selectionText = selection.text
-      }
+      const selection = await Ipc.sendTab<unknown, string | Error | undefined>(
+        tab.id ?? 0,
+        TabCommand.getSelection,
+      )
+      if (typeof selection === "string") selectionText = selection
     }
 
     // This is the only place to decide whether to use the clipboard text as

@@ -66,8 +66,8 @@ export function InvisibleItem(props: InvisibleItemProps): React.ReactNode {
     executeCommand({
       command: action.command as SelectionCommand,
       position,
-      // Prefer the selection decided by the sender, which ignores a selection
-      // made before the window lost focus.
+      // Prefer the selection decided by the sender, which ignores the
+      // selection when another app has focus.
       selectionText: action.selectionText ?? selectionText,
       target,
       selectionFromClipboard: action.selectionFromClipboard,
