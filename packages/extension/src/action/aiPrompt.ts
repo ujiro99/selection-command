@@ -96,8 +96,6 @@ const analyzePromptRequirements = (
   service: AiService,
   selectionFromClipboard: boolean,
 ): PromptRequirements => {
-  // {{SelectedText}} is resolved with the clipboard text when the caller
-  // decided to use it as the selected text (e.g. from a shortcut key).
   const selectedTextFromClipboard =
     selectionFromClipboard &&
     aiPromptOption.prompt.includes(toInsertTemplate(INSERT.SELECTED_TEXT))

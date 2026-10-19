@@ -201,8 +201,6 @@ const runPendingSidePanelAction = async (
     } catch (e) {
       console.warn("Failed to read clipboard in background:", e)
     }
-    // Use the clipboard text as the selected text if requested
-    // (e.g. a shortcut key run without a selection).
     if (pending.selectionFromClipboard) {
       pending.selectedText = pending.clipboardText
     }

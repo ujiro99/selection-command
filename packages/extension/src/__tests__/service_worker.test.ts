@@ -276,7 +276,6 @@ describe("Service Worker Migration", () => {
     )
   })
 
-  // Sets up the mocks for the onCommand listener and returns it.
   const setupOnCommand = async ({
     storedSelection,
     tab,
@@ -293,7 +292,6 @@ describe("Service Worker Migration", () => {
       noSelectionBehavior as any
     mockEnhancedSettings.get.mockResolvedValue(initialSettings as any)
 
-    // Mock getCurrentTab to return the active tab
     vi.doMock("@/services/chrome", () => ({
       getCurrentTab: vi.fn().mockResolvedValue(tab),
       closeWindow: vi.fn(),
@@ -358,7 +356,6 @@ describe("Service Worker Migration", () => {
   }
 
   it("MG-01-d: should call enhancedSettings.get() in onCommand function and pass correct command to action/serviceWorker.execute", async () => {
-    // Setup test data
     const testShortcutId = "test-shortcut-cmd"
     const testCommandId = "test-command-123"
 

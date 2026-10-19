@@ -703,7 +703,6 @@ chrome.commands.onCommand.addListener(async (commandName) => {
       return
     }
 
-    // Get active tab
     const tab = await getCurrentTab()
 
     // Use the selection only if it was recorded in the active tab. Tabs
@@ -717,9 +716,8 @@ chrome.commands.onCommand.addListener(async (commandName) => {
         ? selection.text
         : ""
 
-    // If no text is selected, handle according to noSelectionBehavior.
     // This is the only place to decide whether to use the clipboard text as
-    // the selected text.
+    // the selected text. Actions trust this decision and don't re-check.
     let selectionFromClipboard = false
     if (isEmpty(selectionText)) {
       if (
@@ -747,8 +745,6 @@ chrome.commands.onCommand.addListener(async (commandName) => {
         TabCommand.executeAction,
         {
           command,
-          // Pass the selection decided here, so that the selection is
-          // judged only once.
           selectionText,
           selectionFromClipboard,
         },

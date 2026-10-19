@@ -53,9 +53,9 @@ export const isUrlParam = (url: string | UrlParam): url is UrlParam => {
 }
 
 /**
- * Whether the clipboard must be read when opening the url.
- * @param url The url to open.
- * @returns true if any part of the url uses the clipboard text.
+ * Whether the clipboard must be read when opening the url. This is derived
+ * from how the url uses the clipboard text, rather than kept as a separate
+ * flag that could disagree with them.
  */
 export const needsClipboard = (url: string | UrlParam): boolean => {
   if (!isUrlParam(url)) return false

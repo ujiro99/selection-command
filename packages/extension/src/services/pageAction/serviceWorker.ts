@@ -412,8 +412,6 @@ export const openAndRun = (
       return
     }
 
-    // Use the clipboard text as the selected text if requested
-    // (e.g. a shortcut key run without a selection).
     if (isUrlParam(param.url) && param.url.selectionFromClipboard) {
       selectedText = clipboardText
     }
