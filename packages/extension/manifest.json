@@ -51,6 +51,7 @@
     "contextMenus",
     "declarativeNetRequest",
     "clipboardRead",
+    "offscreen",
     "system.display",
     "sidePanel"
   ],

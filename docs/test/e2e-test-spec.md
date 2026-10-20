@@ -69,6 +69,11 @@
 | E2E-103  | ショートカット     | DO_NOTHING                   | onCommand以降                 | 実装済   |
 | E2E-104  | ショートカット     | Content Scriptなし           | onCommand以降                 | 実装済   |
 | E2E-105  | ショートカット     | 登録状態                     | onCommand以降                 | 実装済   |
+| E2E-106  | ショートカット     | PageAction / Popup           | Clipboard / 未選択            | 実装済   |
+| E2E-107  | ショートカット     | PageAction / BackgroundTab   | Clipboard / 未選択            | 実装済   |
+| E2E-108  | ショートカット     | PageAction / Popup           | SelectedText / 選択あり       | 実装済   |
+| E2E-109  | ショートカット     | PageAction / Popup           | SelectedText / 未選択         | 実装済   |
+| E2E-110  | ショートカット     | PageAction / BackgroundTab   | SelectedText / 未選択         | 実装済   |
 
 ---
 
@@ -1071,3 +1076,27 @@ E2EビルドでのみService Workerのグローバルへ関数を公開し、Pla
 | E2E-103  | 未選択状態でDO_NOTHINGのslot_2を実行し処理完了を待つ   | タブ数・ID・URLが変化しない                                                      |
 | E2E-104  | クリップボードを設定しchrome://versionでslot_1を実行   | Content Scriptを使わずService Workerから検索する                                 |
 | E2E-105  | Service Workerでchrome.commands.getAll()を実行         | slot_1〜slot_3の登録を確認する。キー文字列の値はOSや競合に依存するため固定しない |
+
+#### PageActionの変数展開（E2E-106〜110）
+
+各ケースで入力ステップを含むPageActionをOptionsPageからインポートし、
+`slot_1` に割り当てる。未選択時の設定は `USE_CLIPBOARD` とする。
+TestPageを開き、実際のクリップボードに日本語・記号・改行と、配列を含む
+TypeScriptコードを設定する。`[KeyA]`、`{Enter}`、`[]`、`[[`、`{{` も含め、
+キー操作として解釈されず、textareaに文字列のまま入力されることを検証する。
+ショートカット実行後、入力欄の値が `Input: ` と期待する文字列に一致するまで待機する。
+ウィンドウ種別がポップアップ／通常ウィンドウであることも検証する。
+テスト側で対象ページをアクティブ化する操作は行わない。
+
+バックグラウンドタブでは `readClipboard()` がOffscreen Documentで読み取り、
+結果タブを非アクティブで作成する。E2E-107／110ではウィンドウが新規作成されないこと、
+結果タブの非アクティブ状態と元ページのフォーカス維持も検証する。
+Offscreen API非対応環境では従来の一時ウィンドウ方式を使用する。
+
+| テストID | 選択状態 | 入力ステップ       | 表示方法             | 期待する入力値の変数部分                   |
+| -------- | -------- | ------------------ | -------------------- | ------------------------------------------ |
+| E2E-106  | 未選択   | `{{Clipboard}}`    | ポップアップ         | クリップボードの内容                       |
+| E2E-107  | 未選択   | `{{Clipboard}}`    | バックグラウンドタブ | クリップボードの内容                       |
+| E2E-108  | 選択あり | `{{SelectedText}}` | ポップアップ         | 選択テキスト（クリップボードとは異なる値） |
+| E2E-109  | 未選択   | `{{SelectedText}}` | ポップアップ         | クリップボードの内容                       |
+| E2E-110  | 未選択   | `{{SelectedText}}` | バックグラウンドタブ | クリップボードの内容                       |
