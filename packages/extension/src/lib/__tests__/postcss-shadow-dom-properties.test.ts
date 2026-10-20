@@ -66,7 +66,7 @@ describe("postcss-shadow-dom-properties", () => {
     expect(declsOf(rules[1])).toEqual({ "--tw-blur": "0" })
   })
 
-  it("SDP-03: 正常系: initial-value を持たない @property は宣言しない", async () => {
+  it("SDP-03: 正常系: initial-value を持たない非継承の @property は全要素で initial にリセットする", async () => {
     // Arrange
     const css = `
       @property --tw-ring-color { syntax: "*"; inherits: false; }
@@ -77,8 +77,32 @@ describe("postcss-shadow-dom-properties", () => {
     const root = await run(css)
 
     // Assert
+    // Declared on every element so that a value set on an ancestor is not
+    // inherited by descendants.
     const rule = findLayer(root)!.first as postcss.Rule
-    expect(declsOf(rule)).toEqual({ "--tw-ring-shadow": "0 0 #0000" })
+    expect(rule.selector).toBe(":host, *, ::before, ::after, ::backdrop")
+    expect(declsOf(rule)).toEqual({
+      "--tw-ring-color": "initial",
+      "--tw-ring-shadow": "0 0 #0000",
+    })
+  })
+
+  it("SDP-10: 正常系: initial-value を持たない継承の @property は :host / :root で initial にリセットする", async () => {
+    // Arrange
+    const css = `
+      @property --tw-leading { syntax: "*"; inherits: true; }
+    `
+
+    // Act
+    const root = await run(css)
+
+    // Assert
+    // Declared on the shadow host so that values from the host page do not
+    // leak into the shadow tree.
+    const rules = findLayer(root)!.nodes as postcss.Rule[]
+    expect(rules).toHaveLength(1)
+    expect(rules[0].selector).toBe(":host, :root")
+    expect(declsOf(rules[0])).toEqual({ "--tw-leading": "initial" })
   })
 
   it("SDP-04: 正常系: 接頭辞が一致しない @property は対象外とする", async () => {

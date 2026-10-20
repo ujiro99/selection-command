@@ -133,6 +133,8 @@ content script はユーザーが閲覧中の任意のページ上で動作す�
 - **`@property` は Shadow DOM 内で無視される**: Tailwind v4 が `@property` で登録する `--tw-*` の初期値は、
   `src/lib/postcss-shadow-dom-properties.ts`（PostCSS プラグイン）が Shadow root に注入される CSS 内で宣言している。
   `@property` をドキュメント（`document.head`）へ注入するなど、Shadow root の外へスタイルを出す方法は取らないこと。
+- **CSS Modules のルールはレイヤー外のため Tailwind のユーティリティ（`@layer utilities`）より常に優先される**:
+  同じ要素に付けるユーティリティ（`hover:bg-accent` 等）と同じプロパティを CSS Modules 側で宣言しないこと（`background: none` 等のリセットも含む）。
 - **CSS Modules で `@apply` を使う場合**は、ファイル先頭に `@reference "<相対パス>/global.css";` を書くこと。
 
 **パスエイリアス**:

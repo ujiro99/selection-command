@@ -50,12 +50,13 @@ const shadowDomProperties: PluginCreator<Options> = (opts = {}) => {
           if (decl.prop === "initial-value") initialValue = decl.value
           if (decl.prop === "inherits") inherits = decl.value.trim() === "true"
         })
-        // Without an initial value the property starts as the guaranteed-invalid
-        // value, which is the same as leaving it undeclared.
-        if (initialValue === undefined) return
-
+        // Without an initial value the registered property starts as the
+        // guaranteed-invalid value. It still has to be declared: unregistered
+        // custom properties always inherit, so leaving it undeclared would let
+        // values from ancestors (or the host page) leak in. `initial` resets an
+        // unregistered custom property to the guaranteed-invalid value.
         const target = inherits ? inherited : nonInherited
-        target.set(name, initialValue)
+        target.set(name, initialValue ?? "initial")
       })
 
       const hasProperties = nonInherited.size > 0 || inherited.size > 0

@@ -99,6 +99,7 @@ content script の UI は Shadow DOM 内でスタイルを適用している。v
 **対策: 自前のビルドプラグインで初期値を Shadow root 内に閉じて付与する。**
 
 - ビルド時に生成 CSS の `@property --tw-*` 定義から `initial-value` を抽出し、`:host, *, ::before, ::after, ::backdrop { --tw-xxx: <initial-value>; }` を `@layer base`（`@layer properties`）に付与する小さな PostCSS / Vite プラグインを作成する。
+- `initial-value` を持たない `@property` も `initial` として宣言する。Shadow DOM 内では未登録のカスタムプロパティとして扱われ常に継承されるため、宣言しないと祖先要素（ユーザーページ側を含む）の値が流入する（例: 親の `duration-300` が子の `transition-all` に伝わる）。
 - 付与したルールは Shadow root に注入される CSS の中にのみ存在するため、ユーザーページへは影響しない。
 - `@property` を `document.head` に注入する方式は、ユーザーページにグローバルな登録を残して影響を与えるため**採用しない**。逆に、ユーザーページ側が同名の `--tw-*` を `@property` 登録している場合（ユーザーページが Tailwind v4 製の場合など）でも、各要素に明示的に値を宣言するため初期値の差異の影響を受けない。
   - ただし `@property` の `syntax`（型）はユーザーページ側の登録が Shadow DOM 内にも適用される。Tailwind v4 同士であれば同一定義のため問題ないが、型の異なる同名登録がある場合の挙動を PoC で確認する。
