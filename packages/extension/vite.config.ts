@@ -171,7 +171,7 @@ export default defineConfig(({ mode }) => {
       emptyOutDir: !isWatchMode, // prevent deleting the dist folder when running in watch mode
       rollupOptions: {
         input: {
-          clipboard: "src/clipboard.html",
+          offscreenClipboard: "src/offscreen_clipboard.html",
           onboarding: "src/onboarding_page.html",
         },
       },

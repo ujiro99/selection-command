@@ -1,6 +1,6 @@
-import { isValidString, toUrl, isEmpty } from "@/lib/utils"
+import { isValidString, toUrl } from "@/lib/utils"
 import { SPACE_ENCODING } from "@/const"
-import type { ExecuteCommandParams, ShowToastParam } from "@/types"
+import type { ActionExecuteParams, ShowToastParam } from "@/types"
 import type { OpenSidePanelProps } from "@/services/chrome"
 import { Ipc, ServiceWorkerCommand, TabCommand } from "@/services/ipc"
 import { t } from "@/services/i18n"
@@ -9,9 +9,9 @@ export const SidePanel = {
   async execute({
     selectionText,
     command,
-    allowClipboardFallback,
+    selectionFromClipboard,
     pageUrl,
-  }: ExecuteCommandParams) {
+  }: ActionExecuteParams) {
     if (!isValidString(command.searchUrl)) {
       console.error("searchUrl is not valid.")
       return
@@ -19,7 +19,7 @@ export const SidePanel = {
     // Read clipboard text for interpolation, but don't block execution if it fails.
     let clipboardText: string = ""
     try {
-      if (allowClipboardFallback && isEmpty(selectionText)) {
+      if (selectionFromClipboard) {
         clipboardText = await navigator.clipboard.readText()
       }
     } catch (e) {
@@ -39,7 +39,7 @@ export const SidePanel = {
           searchUrl: command.searchUrl,
           spaceEncoding: command.spaceEncoding ?? SPACE_ENCODING.PLUS,
           selectionText,
-          useClipboard: allowClipboardFallback ?? false,
+          selectionFromClipboard,
           pageUrl: pageUrl ?? "",
         },
         clipboardText,

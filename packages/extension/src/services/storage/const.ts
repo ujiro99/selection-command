@@ -24,7 +24,6 @@ export enum LOCAL_STORAGE_KEY {
 
 export enum SESSION_STORAGE_KEY {
   SERVICE_WORKER_DATA = "serviceWorkerData",
-  SELECTION_TEXT = "selectionText ",
   SESSION_DATA = "sessionData",
   MESSAGE_QUEUE = "messageQueue",
   TMP_CAPTURES = "tmpCaptures",

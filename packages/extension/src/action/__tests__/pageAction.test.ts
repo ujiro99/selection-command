@@ -59,6 +59,7 @@ describe("PageAction.execute", () => {
     await PageAction.execute({
       command: baseCommand as any,
       selectionText: "Selected content",
+      selectionFromClipboard: false,
       position: { x: 50, y: 50 },
     })
 
@@ -73,7 +74,7 @@ describe("PageAction.execute", () => {
         url: expect.objectContaining({
           searchUrl: "https://ai.example.com",
           selectionText: "Selected content",
-          useClipboard: false,
+          clipboardForSteps: false,
         }),
       }),
     )
@@ -93,6 +94,7 @@ describe("PageAction.execute", () => {
     await PageAction.execute({
       command: commandWithClipboardVariable as any,
       selectionText: "",
+      selectionFromClipboard: false,
       position: { x: 50, y: 50 },
     })
 
@@ -100,7 +102,7 @@ describe("PageAction.execute", () => {
       ServiceWorkerCommand.openAndRunPageAction,
       expect.objectContaining({
         url: expect.objectContaining({
-          useClipboard: true,
+          clipboardForSteps: true,
         }),
       }),
     )
@@ -131,6 +133,7 @@ describe("PageAction.execute", () => {
     await PageAction.execute({
       command: commandWithoutVariableStep as any,
       selectionText: "hello",
+      selectionFromClipboard: false,
       position: { x: 50, y: 50 },
     })
 
@@ -138,7 +141,7 @@ describe("PageAction.execute", () => {
       ServiceWorkerCommand.openAndRunPageAction,
       expect.objectContaining({
         url: expect.objectContaining({
-          useClipboard: false,
+          clipboardForSteps: false,
         }),
       }),
     )
@@ -170,6 +173,7 @@ describe("PageAction.execute", () => {
     await PageAction.execute({
       command: legacyCommand as any,
       selectionText: "sample",
+      selectionFromClipboard: false,
       position: { x: 10, y: 10 },
     })
 
@@ -181,7 +185,7 @@ describe("PageAction.execute", () => {
         url: expect.objectContaining({
           searchUrl: "https://example.com",
           selectionText: "sample",
-          useClipboard: false,
+          clipboardForSteps: false,
         }),
       }),
     )
@@ -199,6 +203,7 @@ describe("PageAction.execute", () => {
     await PageAction.execute({
       command: sidePanelCommand as any,
       selectionText: "side panel content",
+      selectionFromClipboard: false,
       position: { x: 50, y: 50 },
       pageUrl: "https://origin.example.com",
     })
@@ -211,7 +216,7 @@ describe("PageAction.execute", () => {
         selectedText: "side panel content",
         srcUrl: "https://origin.example.com",
         clipboardText: "",
-        useClipboard: false,
+        clipboardForSteps: false,
         userVariables: [
           { name: "Prompt", value: "Summarize: {{SelectedText}}" },
         ],
@@ -239,6 +244,7 @@ describe("PageAction.execute", () => {
     await PageAction.execute({
       command: sidePanelCommand as any,
       selectionText: "context menu invocation",
+      selectionFromClipboard: false,
       position: null,
     })
 
@@ -268,13 +274,14 @@ describe("PageAction.execute", () => {
     await PageAction.execute({
       command: sidePanelCommand as any,
       selectionText: "",
+      selectionFromClipboard: false,
       position: { x: 50, y: 50 },
     })
 
     expect(Storage.set).toHaveBeenCalledWith(
       SESSION_STORAGE_KEY.PA_SIDE_PANEL_PENDING,
       expect.objectContaining({
-        useClipboard: true,
+        clipboardForSteps: true,
         userVariables: [
           { name: "Prompt", value: "Translate clipboard: {{Clipboard}}" },
         ],
@@ -305,6 +312,7 @@ describe("PageAction.execute", () => {
     await PageAction.execute({
       command: sidePanelLegacyCommand as any,
       selectionText: "legacy text",
+      selectionFromClipboard: false,
       position: null,
     })
 

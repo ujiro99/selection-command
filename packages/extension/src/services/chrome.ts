@@ -1,16 +1,13 @@
-import { sleep, toUrl, isOverBytes, isUrlParam } from "@/lib/utils"
+import { sleep, toUrl, isOverBytes, needsClipboard } from "@/lib/utils"
 import type { ScreenSize } from "@/services/dom"
 import type { ShowToastParam, UrlParam, WindowLayer } from "@/types"
 import { POPUP_OFFSET, POPUP_TYPE, WINDOW_STATE } from "@/const"
 import { PopupOption } from "@/services/option/defaultSettings"
 import { ServiceWorkerData } from "@/services/serviceWorkerData"
 import { WindowStackManager } from "@/services/windowStackManager"
-import {
-  ServiceWorkerCommand,
-  ClipboardResult,
-  TabCommand,
-} from "@/services/ipc"
+import { TabCommand } from "@/services/ipc"
 import { getScreenSize } from "@/services/screen"
+import { readOffscreenClipboard } from "@/services/offscreenClipboard"
 import { Ipc } from "@/services/ipc"
 import { t } from "@/services/i18n"
 import {
@@ -99,7 +96,6 @@ export const fetchIconUrl = async (url: string): Promise<string> => {
     url: toUrl({
       searchUrl: url,
       selectionText: "test",
-      useClipboard: false,
     }),
     state: "minimized",
   })
@@ -134,17 +130,6 @@ export type OpenPopupAndClickProps = OpenPopupProps & {
 export type OpenTabProps = {
   url: string | UrlParam
   active: boolean
-}
-
-type ReadClipboardParam = Omit<OpenPopupsProps, "urls"> & {
-  incognito: boolean
-  state?: "fullscreen" | "maximized"
-}
-
-type ReadClipboardResult = {
-  clipboardText: string
-  window: chrome.windows.Window
-  err?: string
 }
 
 type OpenResult = {
@@ -340,104 +325,29 @@ const updateRules = async (tabIds: number[]) => {
   })
 }
 
-/**
- * Read clipboard content from a tab
- * @param {number} tabId - The ID of the tab to read clipboard from
- * @returns {Promise<ClipboardResult>} The clipboard content
- */
-const readClipboardContent = async (
-  tabId: number,
-): Promise<ClipboardResult> => {
-  try {
-    const result = await new Promise<ClipboardResult>((resolve) => {
-      const onConnect = (port: chrome.runtime.Port) => {
-        if (port.sender?.tab?.id !== tabId) {
-          return
-        }
-        const onMessage = (msg: { command: string; data: ClipboardResult }) => {
-          if (msg.command === ServiceWorkerCommand.setClipboard) {
-            port.onMessage.removeListener(onMessage)
-            chrome.runtime.onConnect.removeListener(onConnect)
-            resolve(msg.data)
-          }
-        }
-        port.onMessage.addListener(onMessage)
-      }
-      chrome.runtime.onConnect.addListener(onConnect)
-      if (chrome.runtime.lastError) {
-        throw new Error(chrome.runtime.lastError.message)
-      }
-    })
-
-    return result
-  } catch (e) {
-    console.error(e)
-    return { data: "", err: e instanceof Error ? e.message : "Unknown error" }
-  }
-}
-
-const openWindowAndReadClipboard = async (
-  param: ReadClipboardParam,
-): Promise<ReadClipboardResult> => {
-  const usesWindowState =
-    param.state === "fullscreen" || param.state === "maximized"
-  const w = await chrome.windows.create({
-    url: chrome.runtime.getURL("src/clipboard.html"),
-    focused: true,
-    type: param.type,
-    width: usesWindowState ? undefined : param.width,
-    height: usesWindowState ? undefined : param.height,
-    left: usesWindowState ? undefined : param.left,
-    top: usesWindowState ? undefined : param.top,
-    state: param.state,
-    incognito: param.incognito,
-  })
-
-  const tab = w?.tabs?.[0]
-  if (!tab?.id || !w?.id) {
-    throw new Error("Failed to create clipboard window")
-  }
-  const result = await readClipboardContent(tab.id)
-
-  return {
-    window: w,
-    clipboardText: result.data ?? "",
-    err: result.err,
-  }
-}
-
-/**
- * Open a temporary window to read clipboard content and return the result.
- * @returns {Promise<{ clipboardText: string; err?: string }>} The clipboard content and any error message
- *
- * Note: This function opens a temporary window to read the clipboard content,
- *       which is necessary due to browser security restrictions.
- *       The window is closed immediately after reading the clipboard.
- */
+/** Read clipboard text through the shared offscreen document. */
 export const readClipboard = async (): Promise<{
   clipboardText: string
   err?: string
 }> => {
-  const w = await chrome.windows.create({
-    url: chrome.runtime.getURL("src/clipboard.html"),
-    focused: true,
-    type: "popup",
-    width: 1,
-    height: 1,
-    left: 0,
-    top: 0,
-    state: "normal",
+  const result = await readOffscreenClipboard()
+  return { clipboardText: result.data ?? "", err: result.err }
+}
+
+/** Read clipboard text only when the URL refers to the clipboard. */
+const readClipboardIfNeeded = async (
+  url: string | UrlParam,
+): Promise<{ clipboardText: string; err?: string }> =>
+  needsClipboard(url) ? readClipboard() : { clipboardText: "" }
+
+/** Notify the user in the given tab that reading the clipboard failed. */
+export const showClipboardErrorToast = async (tabId: number): Promise<void> => {
+  await Ipc.ensureConnection(tabId)
+  await Ipc.sendTab<ShowToastParam>(tabId, TabCommand.showToast, {
+    title: t("clipboard_error_title"),
+    description: t("clipboard_error_description"),
+    action: t("clipboard_error_action"),
   })
-  const tab = w?.tabs?.[0]
-  if (!tab?.id || !w?.id) {
-    throw new Error("Failed to create clipboard window")
-  }
-  const result = await readClipboardContent(tab.id)
-  await closeWindow(w.id, "readClipboard close window")
-  return {
-    clipboardText: result.data ?? "",
-    err: result.err,
-  }
 }
 
 export const openPopupWindow = async (
@@ -472,68 +382,28 @@ export const openPopupWindow = async (
       ? "maximized"
       : undefined
 
-  let window: chrome.windows.Window
-  let clipboardText = ""
-
-  if (isUrlParam(url) && url.useClipboard) {
-    const result = await openWindowAndReadClipboard({
-      commandId: param.commandId,
-      type,
-      width,
-      height,
-      top: at,
-      left: al,
-      state: windowState,
-      incognito: current.incognito,
-    })
-    window = result.window
-    clipboardText = result.clipboardText
-
-    try {
-      await chrome.tabs.update(window.tabs?.[0].id as number, {
-        url: toUrl(url, clipboardText),
-      })
-      if (isFullscreen) {
-        // On macOS, even if you open with state: "fullscreen",
-        // it may not actually go fullscreen, so switch to fullscreen after opening.
-        await chrome.windows.update(window.id!, { state: "fullscreen" })
-      }
-    } catch (e) {
-      console.error(e)
+  const clipboard = await readClipboardIfNeeded(url)
+  const window = (await chrome.windows.create({
+    url: toUrl(url, clipboard.clipboardText),
+    type,
+    width: usesWindowState ? undefined : width,
+    height: usesWindowState ? undefined : height,
+    top: usesWindowState ? undefined : at,
+    left: usesWindowState ? undefined : al,
+    state: windowState,
+    incognito: current.incognito,
+  }))!
+  try {
+    if (isFullscreen) {
+      // macOS may require reapplying fullscreen after window creation.
+      await chrome.windows.update(window.id!, { state: "fullscreen" })
     }
+  } catch (e) {
+    console.error(e)
+  }
 
-    if (result.err) {
-      await Ipc.ensureConnection(window.tabs?.[0].id as number)
-      await Ipc.sendTab<ShowToastParam>(
-        window.tabs?.[0].id as number,
-        TabCommand.showToast,
-        {
-          title: t("clipboard_error_title"),
-          description: t("clipboard_error_description"),
-          action: t("clipboard_error_action"),
-        },
-      )
-    }
-  } else {
-    window = (await chrome.windows.create({
-      url: toUrl(url),
-      type,
-      width: usesWindowState ? undefined : width,
-      height: usesWindowState ? undefined : height,
-      top: usesWindowState ? undefined : at,
-      left: usesWindowState ? undefined : al,
-      state: windowState,
-      incognito: current.incognito,
-    }))!
-    try {
-      if (isFullscreen) {
-        // On macOS, even if you open with state: "fullscreen",
-        // it may not actually go fullscreen, so switch to fullscreen after opening.
-        await chrome.windows.update(window.id!, { state: "fullscreen" })
-      }
-    } catch (e) {
-      console.error(e)
-    }
+  if (clipboard.err) {
+    await showClipboardErrorToast(window.tabs?.[0].id as number)
   }
 
   await updateServiceWorkerData([window], param.commandId, current.id, type)
@@ -543,7 +413,7 @@ export const openPopupWindow = async (
 
   return {
     tabId: window.tabs?.[0]?.id,
-    clipboardText,
+    clipboardText: clipboard.clipboardText,
   }
 }
 
@@ -607,52 +477,23 @@ export const openTab = async (param: OpenTabProps): Promise<OpenResult> => {
     console.warn("Failed to get current tab:", e)
   }
 
-  let useClipboard = false
-  if (isUrlParam(url)) {
-    useClipboard = url.useClipboard ?? false
+  const clipboard = await readClipboardIfNeeded(url)
+  const tab = await chrome.tabs.create({
+    url: toUrl(url, clipboard.clipboardText),
+    active,
+    windowId: currentTab?.windowId,
+    index: currentTab?.index !== undefined ? currentTab.index + 1 : undefined,
+  })
+
+  if (clipboard.err) {
+    // A background tab is not visible, so notify in the tab the user is on.
+    const toastTabId = active ? tab.id : (currentTab?.id ?? tab.id)
+    await showClipboardErrorToast(toastTabId as number)
   }
 
-  if (useClipboard) {
-    const tab = await chrome.tabs.create({
-      url: chrome.runtime.getURL("src/clipboard.html"),
-      active: true,
-      windowId: currentTab?.windowId,
-      index: currentTab?.index !== undefined ? currentTab.index + 1 : undefined,
-    })
-
-    const result = await readClipboardContent(tab.id as number)
-    await chrome.tabs.update(tab.id as number, {
-      url: toUrl(url, result.data ?? ""),
-    })
-
-    if (result.err) {
-      await Ipc.ensureConnection(tab.id as number)
-      await Ipc.sendTab<ShowToastParam>(
-        tab.id as number,
-        TabCommand.showToast,
-        {
-          title: t("clipboard_error_title"),
-          description: t("clipboard_error_description"),
-          action: t("clipboard_error_action"),
-        },
-      )
-    }
-
-    return {
-      tabId: tab.id as number,
-      clipboardText: result.data ?? "",
-    }
-  } else {
-    const tab = await chrome.tabs.create({
-      url: toUrl(url),
-      active,
-      windowId: currentTab?.windowId,
-      index: currentTab?.index !== undefined ? currentTab.index + 1 : undefined,
-    })
-    return {
-      tabId: tab.id as number,
-      clipboardText: "",
-    }
+  return {
+    tabId: tab.id as number,
+    clipboardText: clipboard.clipboardText,
   }
 }
 

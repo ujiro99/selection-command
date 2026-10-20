@@ -14,7 +14,7 @@ export async function executeAction({
   selectionText,
   target,
   useSecondary = false,
-  allowClipboardFallback = false,
+  selectionFromClipboard = false,
   changeState,
   pageUrl,
 }: ExecuteCommandParams & { actions: Record<string, any> }) {
@@ -32,7 +32,7 @@ export async function executeAction({
     command,
     position,
     useSecondary,
-    allowClipboardFallback,
+    selectionFromClipboard,
     changeState: changeState ?? (() => {}),
     target: target ?? null,
     pageUrl,

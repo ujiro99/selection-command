@@ -9,7 +9,7 @@ import { getWindowPosition } from "@/services/screen"
 import { isValidString, isPageActionCommand } from "@/lib/utils"
 import { PAGE_ACTION_OPEN_MODE, PAGE_ACTION_EVENT } from "@/const"
 import { resolvePopupSize } from "@/services/option/defaultSettings"
-import type { ExecuteCommandParams, UrlParam } from "@/types"
+import type { ActionExecuteParams, UrlParam } from "@/types"
 import type { OpenAndRunProps } from "@/services/pageAction/serviceWorker"
 import { INSERT, templateReferencesInsert } from "@/services/pageAction"
 
@@ -23,10 +23,10 @@ export const PageAction = {
     command,
     position,
     useSecondary,
-    allowClipboardFallback,
+    selectionFromClipboard,
     userVariables,
     pageUrl,
-  }: ExecuteCommandParams & PageActionParams) {
+  }: ActionExecuteParams & PageActionParams) {
     if (!isPageActionCommand(command)) {
       console.error("command is not for PageAction.")
       return
@@ -41,7 +41,7 @@ export const PageAction = {
       userVariables ?? command.pageActionOption.userVariables
 
     // Checks if any step needs clipboard data, directly or through a user variable
-    const needClipboard = command.pageActionOption.steps.some(
+    const clipboardForSteps = command.pageActionOption.steps.some(
       (step) =>
         step.param.type === PAGE_ACTION_EVENT.input &&
         templateReferencesInsert(
@@ -63,7 +63,8 @@ export const PageAction = {
         selectedText: selectionText,
         srcUrl: pageUrl ?? "",
         clipboardText: "",
-        useClipboard: needClipboard || (allowClipboardFallback ?? false),
+        selectionFromClipboard,
+        clipboardForSteps,
         userVariables: effectiveUserVariables,
       }
       try {
@@ -89,7 +90,8 @@ export const PageAction = {
     const url: UrlParam = {
       searchUrl: command.pageActionOption.startUrl,
       selectionText,
-      useClipboard: needClipboard || (allowClipboardFallback ?? false),
+      selectionFromClipboard,
+      clipboardForSteps,
       pageUrl: pageUrl ?? "",
     }
 
