@@ -231,11 +231,15 @@ export function PageActionItem(props: Props): JSX.Element {
               <RemoveButton onClick={handleClickRemove} size={16} />
             </div>
             <PopoverArrow className="fill-white -mt-px" height={6} />
-            <HoverArea
-              anchorRef={anchorRef}
-              contentRef={contentRef}
-              isHorizontal={true}
-            />
+            {/* Unmount while closing so the bridge does not capture the
+                pointer during the exit animation. */}
+            {isOpen && (
+              <HoverArea
+                anchorRef={anchorRef}
+                contentRef={contentRef}
+                isHorizontal={true}
+              />
+            )}
           </PopoverContent>
         )}
       </Popover>

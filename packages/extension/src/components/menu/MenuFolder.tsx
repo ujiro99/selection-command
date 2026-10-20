@@ -194,11 +194,16 @@ export const MenuFolder = (props: {
             ))}
           </div>
         </ScrollAreaConditional>
-        <HoverArea
-          anchorRef={anchorRef}
-          contentRef={contentRef}
-          isHorizontal={isHorizontal}
-        />
+        {/* Unmount while closing so the bridge of a folder being closed does
+            not capture the pointer over neighboring folders during the exit
+            animation, which would toggle the open folder back and forth. */}
+        {isOpen && (
+          <HoverArea
+            anchorRef={anchorRef}
+            contentRef={contentRef}
+            isHorizontal={isHorizontal}
+          />
+        )}
       </PopoverContent>
     </Popover>
   )
