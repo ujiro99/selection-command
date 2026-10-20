@@ -659,7 +659,7 @@ Settings.addChangedListener(() => ContextMenu.init())
 // )
 
 // Add command processing
-chrome.commands.onCommand.addListener(async (commandName) => {
+async function handleShortcutCommand(commandName: string) {
   try {
     // Get settings
     const settings = await enhancedSettings.get()
@@ -760,7 +760,14 @@ chrome.commands.onCommand.addListener(async (commandName) => {
   } catch (error) {
     console.error("Failed to execute shortcut command:", error)
   }
-})
+}
+
+chrome.commands.onCommand.addListener(handleShortcutCommand)
+
+// Expose only in the E2E worker for Playwright evaluation, without a message endpoint.
+if (import.meta.env.MODE === "e2e") {
+  Object.assign(globalThis, { __e2eHandleShortcutCommand: handleShortcutCommand })
+}
 
 // Side panel is an optional capability (e.g. not available on Opera), so
 // each event is feature-detected individually.
