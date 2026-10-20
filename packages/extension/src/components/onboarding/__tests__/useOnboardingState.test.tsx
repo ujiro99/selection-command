@@ -14,7 +14,7 @@ describe("useOnboardingState", () => {
     sendOnboardingEvent.mockClear()
   })
 
-  it("opens on the intro step for the control variant", () => {
+  it("opens on the intro step for variant A", () => {
     const { result } = renderHook(() => useOnboardingState("A"))
 
     expect(result.current.step).toBe(OnboardingStep.INTRO)
@@ -26,5 +26,27 @@ describe("useOnboardingState", () => {
 
     expect(result.current.step).toBe(OnboardingStep.SEARCH)
     expect(result.current.phase).toBe(StepPhase.WELCOME)
+  })
+
+  it("opens on the welcome overlay for variant D too", () => {
+    const { result } = renderHook(() => useOnboardingState("D"))
+
+    expect(result.current.step).toBe(OnboardingStep.SEARCH)
+    expect(result.current.phase).toBe(StepPhase.WELCOME)
+  })
+
+  it("keeps the rail and the vignette for variant C", () => {
+    const { result } = renderHook(() => useOnboardingState("C"))
+
+    expect(result.current.ui).toEqual({
+      showRail: true,
+      background: "vignette",
+    })
+  })
+
+  it("drops the rail and uses the glow background for variant D", () => {
+    const { result } = renderHook(() => useOnboardingState("D"))
+
+    expect(result.current.ui).toEqual({ showRail: false, background: "glow" })
   })
 })

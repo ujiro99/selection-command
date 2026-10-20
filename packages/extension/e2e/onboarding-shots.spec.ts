@@ -23,13 +23,15 @@ type Shot = {
   // starts at (e.g. variant C's welcome overlay).
   step?: keyof typeof OnboardingStep
   phase?: StepPhase
-  variant?: "A" | "C"
+  // Defaults to the control (variant C), so the shots never depend on the
+  // assignment the install happened to draw.
+  variant?: "A" | "C" | "D"
 }
 
 // One shot per visually distinct screen - not one per StepPhase transition;
 // e.g. Step2's WAIT_EXECUTE looks like Step1's, so only Step1 gets it.
 const SHOTS: Shot[] = [
-  { name: "00-intro", step: "INTRO" },
+  { name: "00-intro", step: "INTRO", variant: "A" },
   // Variant C of the onboarding A/B test (see services/experiments): no
   // INTRO step, a brief welcome overlay in front of the first step instead.
   { name: "00c-welcome-variant-c", variant: "C" },
@@ -59,6 +61,20 @@ const SHOTS: Shot[] = [
   },
   { name: "09-customize", step: "CUSTOMIZE" },
   { name: "10-complete", step: "COMPLETE" },
+]
+
+// Variant D (no step rail, welcome glow as the page background) only
+// changes how the steps after the welcome overlay look, so it gets its own
+// copy of each of those shots for side-by-side review against variant C.
+const VARIANT_D_SHOTS: Shot[] = [
+  { name: "00d-welcome-variant-d", variant: "D" },
+  ...SHOTS.filter((shot) => shot.step && shot.step !== "INTRO").map(
+    (shot): Shot => ({
+      ...shot,
+      name: `${shot.name}-variant-d`,
+      variant: "D",
+    }),
+  ),
 ]
 
 const LOCALES = ["ja", "en-US", "de"]
@@ -95,11 +111,11 @@ test.describe("onboarding screenshots (design review)", () => {
         )
         fs.mkdirSync(outDir, { recursive: true })
 
-        for (const shot of SHOTS) {
+        for (const shot of [...SHOTS, ...VARIANT_D_SHOTS]) {
           const params = new URLSearchParams()
           if (shot.step) params.set("step", shot.step)
           if (shot.phase) params.set("phase", shot.phase)
-          if (shot.variant) params.set("variant", shot.variant)
+          params.set("variant", shot.variant ?? "C")
           await page.goto(
             `chrome-extension://${extensionId}/src/onboarding_page.html?${params}`,
           )

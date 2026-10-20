@@ -138,7 +138,14 @@ export function StepAiPromptCommand({ onboarding }: Props) {
         </h2>
       </OnboardingFadeIn>
 
-      <div className="flex flex-col items-center gap-4">
+      <div
+        className={cn(
+          "flex flex-col items-center gap-4",
+          // Without the rail (and its own pb-14), the target text's callout
+          // would overlap the explanation above it; keep the room it needs.
+          !onboarding.ui.showRail && !isValueShown && "pb-14",
+        )}
+      >
         <OnboardingFadeIn
           key={
             isValueShown
@@ -180,19 +187,21 @@ export function StepAiPromptCommand({ onboarding }: Props) {
           </OnboardingFadeIn>
         )}
 
-        <OnboardingFadeIn
-          key={isValueShown ? "rail-complete" : "rail"}
-          delay={phaseDelays.rail}
-          className={isValueShown ? undefined : "pb-14"}
-        >
-          <OnboardingRail
-            selectLabel={t("onboarding_railSelect")}
-            commandLabel={t("onboarding_railCommand")}
-            resultLabel={t("onboarding_railResultAi")}
-            activeBeat={railBeat(phase)}
-            size="lg"
-          />
-        </OnboardingFadeIn>
+        {onboarding.ui.showRail && (
+          <OnboardingFadeIn
+            key={isValueShown ? "rail-complete" : "rail"}
+            delay={phaseDelays.rail}
+            className={isValueShown ? undefined : "pb-14"}
+          >
+            <OnboardingRail
+              selectLabel={t("onboarding_railSelect")}
+              commandLabel={t("onboarding_railCommand")}
+              resultLabel={t("onboarding_railResultAi")}
+              activeBeat={railBeat(phase)}
+              size="lg"
+            />
+          </OnboardingFadeIn>
+        )}
       </div>
 
       {!isValueShown && (

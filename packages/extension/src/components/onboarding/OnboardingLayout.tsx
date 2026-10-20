@@ -1,6 +1,8 @@
 import { ReactNode } from "react"
 import { t } from "@/services/i18n"
 import { getProgress, showsSkip } from "./onboardingProgress"
+import { OnboardingGlow } from "./OnboardingGlow"
+import type { OnboardingBackground } from "./onboardingVariantUi"
 import type { OnboardingStep, StepPhase } from "@/types/onboarding"
 
 const ICON_URL = chrome.runtime.getURL("SelectionCommandLogo.png")
@@ -8,25 +10,43 @@ const ICON_URL = chrome.runtime.getURL("SelectionCommandLogo.png")
 type Props = {
   step: OnboardingStep
   phase: StepPhase
+  background: OnboardingBackground
   onSkip: () => void
   children: ReactNode
 }
 
 // Shared chrome around every onboarding step: a constant-strength vignette
 // (unlike the old per-step OnboardingOverlay spotlight, this never changes
-// between screens, so nothing about the background shifts on transition),
-// a header with the brand mark and a 4-segment progress indicator, and a
-// Skip button fixed to the bottom-right corner. Individual step components
+// between screens, so nothing about the background shifts on transition) or,
+// for variant D, the welcome overlay's blue glow kept in place for the whole
+// flow, a header with the brand mark and a 4-segment progress indicator, and
+// a Skip button fixed to the bottom-right corner. Individual step components
 // now render only their own content.
-export function OnboardingLayout({ step, phase, onSkip, children }: Props) {
+export function OnboardingLayout({
+  step,
+  phase,
+  background,
+  onSkip,
+  children,
+}: Props) {
   const progress = getProgress(step, phase)
 
   return (
     <div className="relative flex min-h-screen flex-col overflow-hidden bg-white">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(56%_50%_at_50%_50%,rgba(15,23,42,0)_0%,rgba(15,23,42,0)_52%,rgba(15,23,42,0.12)_100%)]"
-      />
+      {background === "glow" ? (
+        // Fixed to the viewport, like the welcome overlay, so its center
+        // lines up exactly with the overlay's glow during the handoff.
+        <OnboardingGlow
+          data-testid="onboarding-layout-glow"
+          className="fixed z-0"
+        />
+      ) : (
+        <div
+          aria-hidden
+          data-testid="onboarding-layout-vignette"
+          className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(56%_50%_at_50%_50%,rgba(15,23,42,0)_0%,rgba(15,23,42,0)_52%,rgba(15,23,42,0.12)_100%)]"
+        />
+      )}
 
       <div className="relative z-10 flex items-center justify-between px-10 py-5">
         {progress && (

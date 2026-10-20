@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import clsx from "clsx"
 import { t } from "@/services/i18n"
 import { OnboardingFadeIn } from "./OnboardingFadeIn"
+import { OnboardingGlow } from "./OnboardingGlow"
 
 const ICON_URL = chrome.runtime.getURL("SelectionCommandLogo.png")
 
@@ -11,29 +12,11 @@ export const WELCOME_DURATION_MS = 2200
 /** Keep in sync with the onboarding-blur-out duration in tailwind.config.js. */
 const EXIT_DURATION_MS = 320
 
-/** How long after mount the background glow starts to bloom. */
-const GLOW_DELAY_MS = 100
-
-// Center of the background glow, slightly above the middle of the screen.
-// Also used as the bloom animation's transform origin so the glow grows
-// from its own center instead of drifting upward while it scales.
-const GLOW_CENTER = "50% 46%"
-
-// Soft brand-blue glow radiating from just above the center of the screen,
-// fading to fully transparent well before the edges so it reads as light,
-// not a fill.
-const GLOW_BACKGROUND = [
-  `radial-gradient(ellipse 26% 26% at ${GLOW_CENTER}`,
-  "rgb(32 140 190 / 0.24) 0%",
-  "rgb(32 140 190 / 0.12) 40%",
-  "rgb(32 140 190 / 0) 100%)",
-].join(", ")
-
 type Props = {
   onDone: () => void
 }
 
-// Variant C's opening beat, replacing variant A's INTRO step: the brand mark
+// Variants C and D's opening beat, replacing variant A's INTRO step: the brand mark
 // and a short greeting, then straight into the first step. Rendered as an
 // opaque full-screen overlay so the layout chrome (progress pills, Skip)
 // stays hidden until the greeting is done, matching how INTRO looks in
@@ -86,15 +69,9 @@ export function OnboardingWelcome({ onDone }: Props) {
     >
       {/* Negative z-index keeps the glow above the white background but
           behind the greeting, even when the animations are disabled. */}
-      <span
-        aria-hidden
+      <OnboardingGlow
         data-testid="onboarding-welcome-glow"
-        className="pointer-events-none absolute inset-0 -z-10 animate-onboarding-glow-in motion-reduce:animate-none"
-        style={{
-          backgroundImage: GLOW_BACKGROUND,
-          transformOrigin: GLOW_CENTER,
-          animationDelay: `${GLOW_DELAY_MS}ms`,
-        }}
+        className="absolute -z-10"
       />
       <OnboardingFadeIn effect="blur" delay={100} className="-mt-10">
         <img src={ICON_URL} className="block h-[50px]" alt="" aria-hidden />

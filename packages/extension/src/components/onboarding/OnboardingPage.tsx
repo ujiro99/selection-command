@@ -47,6 +47,7 @@ function OnboardingFlow({ variant }: { variant: ExperimentVariant }) {
       <OnboardingLayout
         step={onboarding.step}
         phase={onboarding.phase}
+        background={onboarding.ui.background}
         onSkip={onboarding.skip}
       >
         {!isWelcome && (

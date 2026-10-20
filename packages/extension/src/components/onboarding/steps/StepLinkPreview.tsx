@@ -162,18 +162,20 @@ export function StepLinkPreview({ onboarding }: Props) {
           </OnboardingFadeIn>
         )}
 
-        <OnboardingFadeIn
-          key={isValueShown ? "rail-complete" : "rail"}
-          delay={phaseDelays.rail}
-        >
-          <OnboardingRail
-            selectLabel={t("onboarding_railSelect")}
-            commandLabel={t("onboarding_railCommand")}
-            resultLabel={t("onboarding_railResultPreview")}
-            activeBeat={isValueShown ? -1 : railBeat(phase)}
-            size="lg"
-          />
-        </OnboardingFadeIn>
+        {onboarding.ui.showRail && (
+          <OnboardingFadeIn
+            key={isValueShown ? "rail-complete" : "rail"}
+            delay={phaseDelays.rail}
+          >
+            <OnboardingRail
+              selectLabel={t("onboarding_railSelect")}
+              commandLabel={t("onboarding_railCommand")}
+              resultLabel={t("onboarding_railResultPreview")}
+              activeBeat={isValueShown ? -1 : railBeat(phase)}
+              size="lg"
+            />
+          </OnboardingFadeIn>
+        )}
       </div>
 
       {isExplain && (
