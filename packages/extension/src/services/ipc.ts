@@ -62,7 +62,6 @@ export enum ServiceWorkerCommand {
   toggleStar = "toggleStar",
   getTabId = "getTabId",
   getActiveTabId = "getActiveTabId",
-  setClipboard = "setClipboard",
   closeTab = "closeTab",
   resolveIconColors = "resolveIconColors",
   // Hub

@@ -1,6 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { openTab } from "../chrome"
-import { Ipc, ServiceWorkerCommand } from "../ipc"
+import { Ipc } from "../ipc"
+import { readOffscreenClipboard } from "../offscreenClipboard"
+
+vi.mock("../offscreenClipboard", () => ({ readOffscreenClipboard: vi.fn() }))
 
 const sourceTab = { id: 10, windowId: 1, index: 2 } as chrome.tabs.Tab
 const resultTab = { id: 20, windowId: 1 } as chrome.tabs.Tab
@@ -8,26 +11,6 @@ const url = {
   searchUrl: "https://example.com/?q=%s",
   selectionText: "",
   selectionFromClipboard: true,
-}
-
-function provideClipboard(data: string, err?: string) {
-  vi.mocked(chrome.runtime.onConnect.addListener).mockImplementation(
-    (listener) => {
-      const port = {
-        sender: { tab: { id: 30 } },
-        onMessage: {
-          addListener: (onMessage: (message: unknown) => void) => {
-            onMessage({
-              command: ServiceWorkerCommand.setClipboard,
-              data: { data, err },
-            })
-          },
-          removeListener: vi.fn(),
-        },
-      } as unknown as chrome.runtime.Port
-      listener(port)
-    },
-  )
 }
 
 describe("openTab", () => {
@@ -48,14 +31,16 @@ describe("openTab", () => {
         remove: vi.fn().mockResolvedValue(undefined),
       },
     })
-    provideClipboard("clipboard text")
+    vi.mocked(readOffscreenClipboard).mockResolvedValue({
+      data: "clipboard text",
+    })
   })
 
-  it("COT-01: 正常系: クリップボードを一時ウィンドウで読み非アクティブタブに渡す", async () => {
+  it("COT-01: 正常系: Offscreenで読み非アクティブタブを直接作成する", async () => {
     const result = await openTab({ url, active: false })
 
-    expect(chrome.windows.create).toHaveBeenCalledOnce()
-    expect(chrome.windows.remove).toHaveBeenCalledWith(3)
+    expect(readOffscreenClipboard).toHaveBeenCalledOnce()
+    expect(chrome.windows.create).not.toHaveBeenCalled()
     expect(chrome.tabs.create).toHaveBeenCalledExactlyOnceWith({
       url: "https://example.com/?q=clipboard+text",
       active: false,
@@ -66,12 +51,25 @@ describe("openTab", () => {
     expect(result).toEqual({ tabId: 20, clipboardText: "clipboard text" })
   })
 
+  it("COT-01-a: 正常系: アクティブタブも完成したURLで一度だけ作成する", async () => {
+    await openTab({ url, active: true })
+    expect(readOffscreenClipboard).toHaveBeenCalledOnce()
+    expect(chrome.tabs.create).toHaveBeenCalledExactlyOnceWith(
+      expect.objectContaining({
+        url: "https://example.com/?q=clipboard+text",
+        active: true,
+      }),
+    )
+    expect(chrome.tabs.update).not.toHaveBeenCalled()
+  })
+
   it("COT-02: 正常系: クリップボード不要なら一時ウィンドウを開かない", async () => {
     await openTab({
       url: { ...url, selectionText: "selected", selectionFromClipboard: false },
       active: false,
     })
 
+    expect(readOffscreenClipboard).not.toHaveBeenCalled()
     expect(chrome.windows.create).not.toHaveBeenCalled()
     expect(chrome.tabs.create).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -82,7 +80,10 @@ describe("openTab", () => {
   })
 
   it("COT-03: 異常系: 読み取り失敗時も非アクティブで開きエラーを通知する", async () => {
-    provideClipboard("", "Permission denied")
+    vi.mocked(readOffscreenClipboard).mockResolvedValue({
+      data: "",
+      err: "Permission denied",
+    })
     const connection = vi.spyOn(Ipc, "ensureConnection").mockResolvedValue()
     const sendTab = vi.spyOn(Ipc, "sendTab").mockResolvedValue(undefined)
     try {
@@ -92,7 +93,7 @@ describe("openTab", () => {
       )
       expect(connection).toHaveBeenCalledWith(20)
       expect(sendTab).toHaveBeenCalledWith(20, "showToast", expect.any(Object))
-      expect(chrome.windows.remove).toHaveBeenCalledWith(3)
+      expect(chrome.windows.create).not.toHaveBeenCalled()
       expect(result).toEqual({ tabId: 20, clipboardText: "" })
     } finally {
       connection.mockRestore()

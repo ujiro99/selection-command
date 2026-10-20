@@ -277,17 +277,7 @@ for (const { id, openMode, variable, hasSelection } of pageActionCases) {
       })
     }
 
-    // Popup mode may first load the clipboard page before the destination.
-    const resultPromise = context.waitForEvent("page", {
-      predicate: async (candidate) => {
-        try {
-          await candidate.waitForURL(`${targetUrl}?shortcutPageAction=${id}`)
-          return true
-        } catch {
-          return false
-        }
-      },
-    })
+    const resultPromise = context.waitForEvent("page")
     await runShortcut(context)
     const result = await resultPromise
     await expect(result).toHaveURL(`${targetUrl}?shortcutPageAction=${id}`)
@@ -317,6 +307,39 @@ for (const { id, openMode, variable, hasSelection } of pageActionCases) {
       expect(createdWindowCount).toBe(0)
       expect(resultTab.active).toBe(false)
       expect(await page.evaluate(() => document.hasFocus())).toBe(true)
+      if (id === "E2E-107") {
+        const worker = context.serviceWorkers()[0]
+        const getDocumentId = () =>
+          worker.evaluate(async () => {
+            const contexts = await chrome.runtime.getContexts({
+              contextTypes: ["OFFSCREEN_DOCUMENT"],
+            })
+            return contexts[0]?.documentId
+          })
+        const documentId = await getDocumentId()
+        expect(documentId).toBeTruthy()
+        const nextText = "Updated clipboard [second] 日本語"
+        await page.evaluate(
+          (text) => navigator.clipboard.writeText(text),
+          nextText,
+        )
+        const nextResultPromise = context.waitForEvent("page")
+        await runShortcut(context)
+        const nextResult = await nextResultPromise
+        await expect(nextResult.locator("textarea")).toHaveValue(
+          `Input: ${nextText}`,
+          { timeout: 10_000 },
+        )
+        expect(await getDocumentId()).toBe(documentId)
+        expect(await page.evaluate(() => document.hasFocus())).toBe(true)
+        expect(
+          await worker.evaluate(
+            () =>
+              (globalThis as typeof globalThis & { createdWindowCount: number })
+                .createdWindowCount,
+          ),
+        ).toBe(0)
+      }
     }
   })
 }
