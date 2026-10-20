@@ -27,7 +27,7 @@ async function expectSearch(context: BrowserContext, text: string) {
   )
 }
 
-test.describe("検索ショートカット", () => {
+test.describe("Search shortcuts", () => {
   test.beforeEach(async ({ context, extensionId, getCommands }) => {
     const options = new OptionsPage(context, extensionId, getCommands)
     await options.importSettings({
@@ -50,7 +50,7 @@ test.describe("検索ショートカット", () => {
     await options.close()
   })
 
-  test("E2E-100: slot_1で検索コマンドが実行され選択テキストが渡る", async ({
+  test("E2E-100: slot_1 runs the search command with the selected text", async ({
     context,
     page,
   }) => {
@@ -65,7 +65,7 @@ test.describe("検索ショートカット", () => {
     await expectSearch(context, selection)
   })
 
-  test("E2E-101: 選択テキストの日本語・空白・記号が検索URLへ渡る", async ({
+  test("E2E-101: Japanese, spaces, and symbols in the selected text are passed to the search URL", async ({
     context,
     page,
   }) => {
@@ -86,7 +86,7 @@ test.describe("検索ショートカット", () => {
     await expectSearch(context, text)
   })
 
-  test("E2E-102: 未選択時にクリップボードから検索する", async ({
+  test("E2E-102: Searches with the clipboard when nothing is selected", async ({
     context,
     page,
   }) => {
@@ -101,7 +101,7 @@ test.describe("検索ショートカット", () => {
     await expectSearch(context, text)
   })
 
-  test("E2E-103: DO_NOTHING設定では未選択時に実行しない", async ({
+  test("E2E-103: Does nothing when nothing is selected with the DO_NOTHING setting", async ({
     context,
     page,
   }) => {
@@ -122,7 +122,7 @@ test.describe("検索ショートカット", () => {
     )
   })
 
-  test("E2E-104: Content Scriptのないchrome://ページではService Workerから実行する", async ({
+  test("E2E-104: Runs from the Service Worker on chrome:// pages without a content script", async ({
     context,
     page,
   }) => {
@@ -135,7 +135,7 @@ test.describe("検索ショートカット", () => {
     await expectSearch(context, text)
   })
 
-  test("E2E-105: chrome.commands.getAllでslot_1〜slot_3が登録されている", async ({
+  test("E2E-105: slot_1 to slot_3 are registered in chrome.commands.getAll", async ({
     context,
   }) => {
     const commands = await context
@@ -187,7 +187,7 @@ const pageActionCases = [
 ] as const
 
 for (const { id, openMode, variable, hasSelection } of pageActionCases) {
-  test(`${id}: PageActionショートカット / ${openMode} / {{${variable}}} / ${hasSelection ? "選択あり" : "未選択"}`, async ({
+  test(`${id}: PageAction shortcut / ${openMode} / {{${variable}}} / ${hasSelection ? "with selection" : "no selection"}`, async ({
     context,
     extensionId,
     getCommands,
