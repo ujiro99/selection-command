@@ -5,7 +5,7 @@ import {
   fetchExperimentConfig,
 } from "../experimentConfig"
 
-const EXPERIMENT_ID = "onboarding_v3"
+const EXPERIMENT_ID = "onboarding_v4"
 
 const mockFetchOnce = (body: unknown, ok = true, status = 200) => {
   vi.stubGlobal(

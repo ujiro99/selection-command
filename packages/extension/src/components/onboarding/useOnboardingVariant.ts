@@ -2,16 +2,18 @@ import { useEffect, useState } from "react"
 import {
   ensureOnboardingAssignment,
   overrideOnboardingAssignment,
+  ONBOARDING_CONTROL_VARIANT,
 } from "@/services/experiments"
 import type { ExperimentVariant } from "@/services/experiments"
 
-// development or e2e build-only escape hatch (`?variant=C`), mirroring
+// development or e2e build-only escape hatch (`?variant=D`), mirroring
 // useOnboardingState's `?step=/?phase=` override so screenshot and manual QA
-// tooling can land on either arm of the experiment on demand.
+// tooling can land on either arm of the experiment on demand. "A" is still
+// accepted while its code path remains, though it is no longer assigned.
 function readVariantOverride(): ExperimentVariant | null {
   if (!["e2e", "development"].includes(import.meta.env.MODE)) return null
   const param = new URLSearchParams(window.location.search).get("variant")
-  if (param !== "A" && param !== "C") return null
+  if (param !== "A" && param !== "C" && param !== "D") return null
   return overrideOnboardingAssignment(param).variant
 }
 
@@ -37,7 +39,7 @@ export function useOnboardingVariant(): ExperimentVariant | null {
       .catch((error) => {
         console.error("Failed to resolve onboarding variant:", error)
         // Never leave the user on a blank tab: fall back to the control.
-        if (!cancelled) setVariant("A")
+        if (!cancelled) setVariant(ONBOARDING_CONTROL_VARIANT)
       })
     return () => {
       cancelled = true
