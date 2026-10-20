@@ -86,14 +86,49 @@ describe("readOffscreenClipboard", () => {
     expect(createDocument).toHaveBeenCalledTimes(2)
   })
 
-  it("OC-06: 異常系: 作成失敗後の要求で再試行できる", async () => {
+  it("OC-06: 異常系: 作成に一時失敗しても再試行して読み取る", async () => {
     createDocument.mockRejectedValueOnce(new Error("Creation failed"))
-    await expect(readOffscreenClipboard()).resolves.toEqual({
-      data: "",
-      err: "Creation failed",
-    })
     await expect(readOffscreenClipboard()).resolves.toEqual({
       data: "日本語 clipboard",
     })
+    expect(createDocument).toHaveBeenCalledTimes(2)
+  })
+
+  it("OC-07: 異常系: 一時的な読み取り失敗は再試行して読み取る", async () => {
+    sendMessage
+      .mockResolvedValueOnce({ data: "", err: "Busy" })
+      .mockResolvedValueOnce({ data: "retried" })
+    await expect(readOffscreenClipboard()).resolves.toEqual({
+      data: "retried",
+    })
+    expect(sendMessage).toHaveBeenCalledTimes(2)
+  })
+
+  it("OC-08: 異常系: 再試行上限に達したら最後のエラーを返す", async () => {
+    sendMessage.mockRejectedValue(new Error("Read failed"))
+    await expect(readOffscreenClipboard()).resolves.toEqual({
+      data: "",
+      err: "Read failed",
+    })
+    expect(sendMessage).toHaveBeenCalledTimes(3)
+  })
+
+  it("OC-09: 異常系: 不正な応答はエラーとして扱う", async () => {
+    sendMessage.mockResolvedValue(undefined)
+    await expect(readOffscreenClipboard()).resolves.toEqual({
+      data: "",
+      err: "Invalid response from offscreen document",
+    })
+  })
+
+  it("OC-10: 異常系: 作成時の競合で既存ドキュメントがあればそのまま読み取る", async () => {
+    createDocument.mockRejectedValueOnce(
+      new Error("Only a single offscreen document may be created."),
+    )
+    await expect(readOffscreenClipboard()).resolves.toEqual({
+      data: "日本語 clipboard",
+    })
+    expect(createDocument).toHaveBeenCalledOnce()
+    expect(sendMessage).toHaveBeenCalledOnce()
   })
 })

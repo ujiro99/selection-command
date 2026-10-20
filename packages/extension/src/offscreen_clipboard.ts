@@ -15,6 +15,10 @@ chrome.runtime.onMessage.addListener((message, sender, respond) => {
     textarea.value = ""
     textarea.focus()
     textarea.select()
+    // Without focus, paste may report success while inserting nothing.
+    if (document.activeElement !== textarea) {
+      throw new Error("Failed to focus the clipboard textarea")
+    }
     // Async Clipboard requires document focus, which offscreen documents lack.
     if (!document.execCommand("paste")) {
       throw new Error("Failed to paste clipboard text")

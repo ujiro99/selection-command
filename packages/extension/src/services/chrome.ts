@@ -1,4 +1,3 @@
-import { readOffscreenClipboard } from "./offscreenClipboard"
 import { sleep, toUrl, isOverBytes, needsClipboard } from "@/lib/utils"
 import type { ScreenSize } from "@/services/dom"
 import type { ShowToastParam, UrlParam, WindowLayer } from "@/types"
@@ -8,6 +7,7 @@ import { ServiceWorkerData } from "@/services/serviceWorkerData"
 import { WindowStackManager } from "@/services/windowStackManager"
 import { TabCommand } from "@/services/ipc"
 import { getScreenSize } from "@/services/screen"
+import { readOffscreenClipboard } from "@/services/offscreenClipboard"
 import { Ipc } from "@/services/ipc"
 import { t } from "@/services/i18n"
 import {
@@ -334,6 +334,22 @@ export const readClipboard = async (): Promise<{
   return { clipboardText: result.data ?? "", err: result.err }
 }
 
+/** Read clipboard text only when the URL refers to the clipboard. */
+const readClipboardIfNeeded = async (
+  url: string | UrlParam,
+): Promise<{ clipboardText: string; err?: string }> =>
+  needsClipboard(url) ? readClipboard() : { clipboardText: "" }
+
+/** Notify the user in the given tab that reading the clipboard failed. */
+export const showClipboardErrorToast = async (tabId: number): Promise<void> => {
+  await Ipc.ensureConnection(tabId)
+  await Ipc.sendTab<ShowToastParam>(tabId, TabCommand.showToast, {
+    title: t("clipboard_error_title"),
+    description: t("clipboard_error_description"),
+    action: t("clipboard_error_action"),
+  })
+}
+
 export const openPopupWindow = async (
   param: OpenPopupProps,
 ): Promise<OpenResult> => {
@@ -366,9 +382,7 @@ export const openPopupWindow = async (
       ? "maximized"
       : undefined
 
-  const clipboard = needsClipboard(url)
-    ? await readClipboard()
-    : { clipboardText: "", err: undefined }
+  const clipboard = await readClipboardIfNeeded(url)
   const window = (await chrome.windows.create({
     url: toUrl(url, clipboard.clipboardText),
     type,
@@ -389,16 +403,7 @@ export const openPopupWindow = async (
   }
 
   if (clipboard.err) {
-    await Ipc.ensureConnection(window.tabs?.[0].id as number)
-    await Ipc.sendTab<ShowToastParam>(
-      window.tabs?.[0].id as number,
-      TabCommand.showToast,
-      {
-        title: t("clipboard_error_title"),
-        description: t("clipboard_error_description"),
-        action: t("clipboard_error_action"),
-      },
-    )
+    await showClipboardErrorToast(window.tabs?.[0].id as number)
   }
 
   await updateServiceWorkerData([window], param.commandId, current.id, type)
@@ -472,9 +477,7 @@ export const openTab = async (param: OpenTabProps): Promise<OpenResult> => {
     console.warn("Failed to get current tab:", e)
   }
 
-  const clipboard = needsClipboard(url)
-    ? await readClipboard()
-    : { clipboardText: "", err: undefined }
+  const clipboard = await readClipboardIfNeeded(url)
   const tab = await chrome.tabs.create({
     url: toUrl(url, clipboard.clipboardText),
     active,
@@ -483,12 +486,9 @@ export const openTab = async (param: OpenTabProps): Promise<OpenResult> => {
   })
 
   if (clipboard.err) {
-    await Ipc.ensureConnection(tab.id as number)
-    await Ipc.sendTab<ShowToastParam>(tab.id as number, TabCommand.showToast, {
-      title: t("clipboard_error_title"),
-      description: t("clipboard_error_description"),
-      action: t("clipboard_error_action"),
-    })
+    // A background tab is not visible, so notify in the tab the user is on.
+    const toastTabId = active ? tab.id : (currentTab?.id ?? tab.id)
+    await showClipboardErrorToast(toastTabId as number)
   }
 
   return {

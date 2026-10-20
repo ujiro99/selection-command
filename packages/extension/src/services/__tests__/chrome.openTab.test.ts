@@ -79,7 +79,7 @@ describe("openTab", () => {
     )
   })
 
-  it("COT-03: 異常系: 読み取り失敗時も非アクティブで開きエラーを通知する", async () => {
+  it("COT-03: 異常系: 読み取り失敗時は非アクティブで開き元のタブへエラーを通知する", async () => {
     vi.mocked(readOffscreenClipboard).mockResolvedValue({
       data: "",
       err: "Permission denied",
@@ -91,10 +91,27 @@ describe("openTab", () => {
       expect(chrome.tabs.create).toHaveBeenCalledWith(
         expect.objectContaining({ active: false }),
       )
-      expect(connection).toHaveBeenCalledWith(20)
-      expect(sendTab).toHaveBeenCalledWith(20, "showToast", expect.any(Object))
+      expect(connection).toHaveBeenCalledWith(10)
+      expect(sendTab).toHaveBeenCalledWith(10, "showToast", expect.any(Object))
       expect(chrome.windows.create).not.toHaveBeenCalled()
       expect(result).toEqual({ tabId: 20, clipboardText: "" })
+    } finally {
+      connection.mockRestore()
+      sendTab.mockRestore()
+    }
+  })
+
+  it("COT-04: 異常系: アクティブタブで開いた場合は新しいタブへエラーを通知する", async () => {
+    vi.mocked(readOffscreenClipboard).mockResolvedValue({
+      data: "",
+      err: "Permission denied",
+    })
+    const connection = vi.spyOn(Ipc, "ensureConnection").mockResolvedValue()
+    const sendTab = vi.spyOn(Ipc, "sendTab").mockResolvedValue(undefined)
+    try {
+      await openTab({ url, active: true })
+      expect(connection).toHaveBeenCalledWith(20)
+      expect(sendTab).toHaveBeenCalledWith(20, "showToast", expect.any(Object))
     } finally {
       connection.mockRestore()
       sendTab.mockRestore()
