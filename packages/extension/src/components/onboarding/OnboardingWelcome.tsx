@@ -63,7 +63,7 @@ export function OnboardingWelcome({ onDone }: Props) {
       aria-label={t("onboarding_welcomeContinue")}
       data-testid="onboarding-welcome"
       className={clsx(
-        "fixed inset-0 z-30 flex cursor-default flex-col items-center justify-center gap-10 overflow-hidden bg-white",
+        "fixed inset-0 z-30 flex cursor-default flex-col items-center justify-center gap-12 overflow-hidden bg-white",
         exiting && "animate-onboarding-blur-out motion-reduce:animate-none",
       )}
     >
@@ -72,16 +72,17 @@ export function OnboardingWelcome({ onDone }: Props) {
       <OnboardingGlow
         data-testid="onboarding-welcome-glow"
         className="absolute -z-10"
+        delay={300}
       />
-      <OnboardingFadeIn effect="blur" delay={100} className="-mt-10">
-        <img src={ICON_URL} className="block h-[50px]" alt="" aria-hidden />
+      <OnboardingFadeIn effect="blur" delay={600} className="-mt-20">
+        <img src={ICON_URL} className="block h-12.5" alt="" aria-hidden />
       </OnboardingFadeIn>
-      <OnboardingFadeIn effect="blur" delay={300}>
+      <OnboardingFadeIn effect="blur" delay={900}>
         <p className="text-3xl font-bold tracking-tight text-slate-900">
           {t("onboarding_welcomeMessage")}
         </p>
       </OnboardingFadeIn>
-      <OnboardingFadeIn effect="blur" delay={600}>
+      <OnboardingFadeIn effect="blur" delay={1200}>
         <p className="text-2xl font-normal text-slate-900">
           {t("onboarding_welcomeIntroduction")}
         </p>

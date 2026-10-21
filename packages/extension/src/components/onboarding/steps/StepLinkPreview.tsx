@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { ChevronRight, ArrowBigUp, MousePointerClick } from "lucide-react"
 import { t } from "@/services/i18n"
 import { DRAG_OPEN_MODE } from "@/const"
+import { cn } from "@/lib/utils"
 import { subscribeCommandExecuted } from "../onboardingEvents"
 import { OnboardingCallout } from "../OnboardingCallout"
 import { OnboardingFadeIn } from "../OnboardingFadeIn"
@@ -181,7 +182,10 @@ export function StepLinkPreview({ onboarding }: Props) {
       {isExplain && (
         <OnboardingFadeIn
           key={"target-text"}
-          className="mt-24 flex flex-col items-center gap-8"
+          className={cn(
+            "flex flex-col items-center gap-8",
+            onboarding.ui.showRail ? "mt-24" : "mt-28",
+          )}
           delay={phaseDelays.targetText}
         >
           <div
@@ -243,7 +247,10 @@ export function StepLinkPreview({ onboarding }: Props) {
           <button
             type="button"
             onClick={() => onboarding.goToStep(OnboardingStep.CUSTOMIZE)}
-            className="flex items-center gap-2 min-h-14 rounded-xl bg-sky-950 px-8 text-lg font-semibold text-white shadow-[0_10px_20px_-14px_rgba(15,23,42,.7)] hover:brightness-[1.35]"
+            className={cn(
+              "flex items-center gap-2 min-h-14 rounded-xl bg-sky-950 px-8 text-lg font-semibold text-white shadow-[0_10px_20px_-14px_rgba(15,23,42,.7)] hover:brightness-[1.35]",
+              !onboarding.ui.showRail && "mt-4",
+            )}
           >
             {t("onboarding_nextButton")}
             <ChevronRight className="inline-block size-5" />

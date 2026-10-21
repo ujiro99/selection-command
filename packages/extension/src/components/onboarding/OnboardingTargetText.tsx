@@ -6,9 +6,13 @@ import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion"
 import { useSelectContext } from "@/hooks/useSelectContext"
 import { useSelectionDemo } from "./useSelectionDemo"
 import { OnboardingCallout } from "./OnboardingCallout"
+import type { OnboardingBackground } from "./onboardingVariantUi"
 
 type Props = {
   text: string
+  // The page background behind the card; on the "glow" background the card
+  // is solid white so it stands out from the blue glow.
+  background: OnboardingBackground
   // True once the user has actually selected the text (any later phase),
   // rendering it as a static, already-selected highlight instead.
   selected: boolean
@@ -24,7 +28,12 @@ type Props = {
 // other "do this next" hint in the onboarding flow (see OnboardingCallout)
 // so first-time users recognize this as something to select rather than
 // something to read.
-export function OnboardingTargetText({ text, selected, calloutDelay }: Props) {
+export function OnboardingTargetText({
+  text,
+  background,
+  selected,
+  calloutDelay,
+}: Props) {
   const prefersReducedMotion = usePrefersReducedMotion()
   const { selectionText } = useSelectContext()
   const textRef = useRef<HTMLSpanElement>(null)
@@ -45,7 +54,8 @@ export function OnboardingTargetText({ text, selected, calloutDelay }: Props) {
         ref={setCardElm}
         className={cn(
           "relative max-w-[560px] rounded-lg border px-[26px] py-5 text-left text-base leading-[1.9] text-slate-800 select-text",
-          "border-slate-200 bg-muted/80",
+          "border-slate-200",
+          background === "glow" ? "bg-white" : "bg-muted/80",
           !selected &&
             !runDemo &&
             "[--onboarding-ring-color:rgba(8,47,73,0.16)] animate-onboarding-ring motion-reduce:animate-none",

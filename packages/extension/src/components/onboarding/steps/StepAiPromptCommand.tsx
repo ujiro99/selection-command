@@ -206,9 +206,14 @@ export function StepAiPromptCommand({ onboarding }: Props) {
 
       {!isValueShown && (
         <>
-          <OnboardingFadeIn key={"target-text"} delay={phaseDelays.targetText}>
+          <OnboardingFadeIn
+            key={"target-text"}
+            delay={phaseDelays.targetText}
+            className={cn(!onboarding.ui.showRail && "mt-4")}
+          >
             <OnboardingTargetText
               text={t("onboarding_step2TargetText")}
+              background={onboarding.ui.background}
               selected={!isExplain}
               calloutDelay={phaseDelays.targetTextCallout}
             />
@@ -230,7 +235,10 @@ export function StepAiPromptCommand({ onboarding }: Props) {
           <button
             type="button"
             onClick={() => onboarding.goToStep(OnboardingStep.LINK_PREVIEW)}
-            className="flex items-center gap-2 min-h-14 rounded-xl bg-sky-950 px-8 text-lg font-semibold text-white shadow-[0_10px_20px_-14px_rgba(15,23,42,.7)] hover:brightness-[1.35]"
+            className={cn(
+              "flex items-center gap-2 min-h-14 rounded-xl bg-sky-950 px-8 text-lg font-semibold text-white shadow-[0_10px_20px_-14px_rgba(15,23,42,.7)] hover:brightness-[1.35]",
+              !onboarding.ui.showRail && "mt-4",
+            )}
           >
             {t("onboarding_nextButton")}
             <ChevronRight className="inline-block size-5" />

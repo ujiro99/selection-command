@@ -6,7 +6,7 @@ const GLOW_DELAY_MS = 100
 // Center of the glow, slightly above the middle of the screen. Also used as
 // the bloom animation's transform origin so the glow grows from its own
 // center instead of drifting upward while it scales.
-const GLOW_CENTER = "50% 46%"
+const GLOW_CENTER = "50% 48%"
 
 // Soft brand-blue glow radiating from just above the center of the screen,
 // fading to fully transparent well before the edges so it reads as light,
@@ -22,6 +22,7 @@ type Props = {
   // Positioning and stacking, which differ between the welcome overlay and
   // the page layout.
   className?: string
+  delay?: number // in milliseconds; optional delay before the fade-in starts
   "data-testid"?: string
 }
 
@@ -30,7 +31,11 @@ type Props = {
 // layout as the background of every step. Both mount at the same time, so
 // when the overlay fades out the identical glow is already in place beneath
 // it.
-export function OnboardingGlow({ className, ...rest }: Props) {
+export function OnboardingGlow({
+  className,
+  delay = GLOW_DELAY_MS,
+  ...rest
+}: Props) {
   return (
     <span
       aria-hidden
@@ -41,7 +46,7 @@ export function OnboardingGlow({ className, ...rest }: Props) {
       style={{
         backgroundImage: GLOW_BACKGROUND,
         transformOrigin: GLOW_CENTER,
-        animationDelay: `${GLOW_DELAY_MS}ms`,
+        animationDelay: `${delay}ms`,
       }}
       {...rest}
     />
