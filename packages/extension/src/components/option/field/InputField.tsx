@@ -55,7 +55,7 @@ export const InputField = ({
           <div className="w-4/6 relative">
             {hasPreview && (
               <MenuImage
-                className="absolute top-[0.7em] left-[0.8em] w-6 h-6 rounded"
+                className="absolute top-[0.7em] left-[0.8em] w-6 h-6 rounded-sm"
                 src={previewUrl}
                 alt="Preview of image"
               />

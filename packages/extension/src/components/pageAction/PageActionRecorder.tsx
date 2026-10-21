@@ -148,7 +148,7 @@ export function PageActionRecorder(): JSX.Element {
 
   return (
     <DndContext onDragEnd={handleDragEnd} modifiers={[restrictToParentElement]}>
-      <div className="fixed inset-0 pointer-events-none z-[2147483647]">
+      <div className="fixed inset-0 pointer-events-none z-2147483647">
         <Draggable id="controller" position={position} className="z-10">
           <Controller
             steps={steps}

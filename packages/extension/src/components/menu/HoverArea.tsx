@@ -1,4 +1,5 @@
 import { useState, useEffect, type RefObject } from "react"
+import { createPortal } from "react-dom"
 
 type Props = {
   anchorRef: RefObject<HTMLElement>
@@ -8,24 +9,67 @@ type Props = {
 
 type Placement = "top" | "bottom" | "left" | "right"
 
+type Rects = {
+  anchor: DOMRect
+  content: DOMRect
+}
+
+const isSameRect = (a: DOMRect, b: DOMRect) =>
+  a.x === b.x && a.y === b.y && a.width === b.width && a.height === b.height
+
+/**
+ * Returns the portal container for the given element.
+ * Uses the ShadowRoot when the element lives in shadow DOM so that the
+ * hover area shares the same style scope, otherwise falls back to the body.
+ */
+const getPortalContainer = (elm: HTMLElement): Element | ShadowRoot => {
+  const root = elm.getRootNode()
+  return root instanceof ShadowRoot ? root : document.body
+}
+
+/**
+ * Invisible area that bridges the anchor and the content so that the pointer
+ * can move between them without leaving the hover state.
+ *
+ * It is rendered through a portal outside the content element so that the
+ * content's enter/exit transforms (zoom, slide) are not applied to the area.
+ * React synthetic mouseenter/mouseleave events follow the component tree,
+ * so hovering this area is still treated as hovering the content.
+ */
 export const HoverArea = (props: Props) => {
   const { anchorRef, contentRef, isHorizontal } = props
-  const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null)
-  const [contentRect, setContentRect] = useState<DOMRect | null>(null)
+  const [rects, setRects] = useState<Rects | null>(null)
+  const [container, setContainer] = useState<Element | ShadowRoot | null>(null)
 
   useEffect(() => {
     const anchor = anchorRef.current
     const content = contentRef.current
     if (!anchor || !content) return
 
+    setContainer(getPortalContainer(anchor))
+
     let rafId: number | null = null
     let isMonitoring = false
     let disposed = false
+    let last: Rects | null = null
 
     const update = () => {
       if (disposed) return
-      setAnchorRect(anchor.getBoundingClientRect())
-      setContentRect(content.getBoundingClientRect())
+      const next = {
+        anchor: anchor.getBoundingClientRect(),
+        content: content.getBoundingClientRect(),
+      }
+
+      // Skip re-render when neither position nor size has changed
+      if (
+        last &&
+        isSameRect(last.anchor, next.anchor) &&
+        isSameRect(last.content, next.content)
+      ) {
+        return
+      }
+      last = next
+      setRects(next)
     }
 
     const loop = () => {
@@ -59,8 +103,15 @@ export const HoverArea = (props: Props) => {
     // Fallback: stop after 500ms if no animation events fire
     const fallbackTimeout = setTimeout(stop, 500)
 
-    const onAnimationStart = () => start()
-    const onAnimationEnd = () => {
+    // Animation and transition events bubble, so ignore those from descendants
+    // (e.g. hover transitions of menu items) to avoid stopping monitoring
+    // while the anchor or content itself is still animating.
+    const onAnimationStart = (e: Event) => {
+      if (e.target !== e.currentTarget) return
+      start()
+    }
+    const onAnimationEnd = (e: Event) => {
+      if (e.target !== e.currentTarget) return
       clearTimeout(fallbackTimeout)
       stop()
     }
@@ -86,11 +137,18 @@ export const HoverArea = (props: Props) => {
     resizeObserver.observe(anchor)
     resizeObserver.observe(content)
 
+    // The area is fixed to the viewport, so follow the elements on page scroll
+    const scrollOptions = { capture: true, passive: true } as const
+    window.addEventListener("scroll", update, scrollOptions)
+    window.addEventListener("resize", update)
+
     return () => {
       disposed = true
       stop()
       clearTimeout(fallbackTimeout)
       resizeObserver.disconnect()
+      window.removeEventListener("scroll", update, scrollOptions)
+      window.removeEventListener("resize", update)
       startEvents.forEach((e) => {
         anchor.removeEventListener(e, onAnimationStart)
         content.removeEventListener(e, onAnimationStart)
@@ -102,14 +160,12 @@ export const HoverArea = (props: Props) => {
     }
   }, [anchorRef, contentRef])
 
-  const anchor = anchorRect
-  const content = contentRect
-
-  if (!anchor || !content) {
+  if (!rects || !container) {
     return null
   }
+  const { anchor, content } = rects
 
-  // SVG size and position
+  // SVG size and position (viewport coordinates)
   const x = Math.min(anchor.x, content.x)
   const y = Math.min(anchor.y, content.y)
   const width = Math.max(anchor.right, content.right) - x
@@ -127,8 +183,6 @@ export const HoverArea = (props: Props) => {
         ? "left"
         : "right"
 
-  let top = 0
-  let left = 0
   let d
 
   switch (placement) {
@@ -142,7 +196,6 @@ export const HoverArea = (props: Props) => {
            ${anchor.x} ${anchor.top}
          h ${anchor.width}
          z`
-      top = anchor.top - content.top
       break
     case "bottom":
       d = `M ${anchor.left} ${anchor.bottom}
@@ -165,7 +218,6 @@ export const HoverArea = (props: Props) => {
          h ${-(anchor.width / 4)}
          v ${-anchor.height}
          z`
-      left = -anchor.width + 2
       break
     case "right":
       d = `M ${anchor.right} ${anchor.top}
@@ -177,20 +229,20 @@ export const HoverArea = (props: Props) => {
          h ${anchor.width / 4}
          v ${-anchor.height}
          z`
-      left = -2
       break
   }
 
-  return (
+  return createPortal(
     <svg
       width={width}
       height={height}
       viewBox={`${x} ${y} ${width} ${height}`}
       style={{
         pointerEvents: "none",
-        position: "absolute",
-        top,
-        left,
+        position: "fixed",
+        top: y,
+        left: x,
+        zIndex: 2147483647,
       }}
     >
       <path
@@ -199,6 +251,7 @@ export const HoverArea = (props: Props) => {
         fillOpacity="0"
         style={{ pointerEvents: "auto" }}
       />
-    </svg>
+    </svg>,
+    container,
   )
 }

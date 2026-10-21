@@ -332,7 +332,7 @@ const VariableBadge = ({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <div className="group/variable inline-flex h-9 px-1 max-w-full items-center rounded-xl border border-gray-300 bg-white shadow-sm transition hover:border-gray-400 hover:shadow">
+      <div className="group/variable inline-flex h-9 px-1 max-w-full items-center rounded-xl border border-gray-300 bg-white shadow-xs transition hover:border-gray-400 hover:shadow-sm">
         <DialogTrigger asChild>
           <button
             type="button"

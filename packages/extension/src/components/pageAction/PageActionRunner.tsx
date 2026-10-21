@@ -67,12 +67,12 @@ export function PageActionRunner(): JSX.Element {
   return (
     <div
       className={cn(
-        "relative fixed z-[2147483647] top-2 right-2 pointer-events-none",
-        "backdrop-blur bg-gray-100/60 rounded-md shadow-md transition-opacity duration-300",
+        "relative fixed z-2147483647 top-2 right-2 pointer-events-none",
+        "backdrop-blur-sm bg-gray-100/60 rounded-md shadow-md transition-opacity duration-300",
         visible ? "opacity-100" : "opacity-0",
       )}
     >
-      <div className="overflow-hidden rounded-md h-[12px] -mb-[12px]">
+      <div className="overflow-hidden rounded-md h-[12px] mb-[-12px]">
         <Progress
           value={progress}
           className={cn(

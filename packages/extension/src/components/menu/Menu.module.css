@@ -7,8 +7,11 @@
 .item {
   display: flex;
   align-items: center;
-  padding: var(--sc-padding) calc(var(--sc-padding) * 2) var(--sc-padding) calc(var(--sc-padding) * 1.5);
-  height: calc(max(var(--sc-font-size), var(--sc-image-size, 16px)) + var(--sc-padding) * 2);
+  padding: var(--sc-padding) calc(var(--sc-padding) * 2) var(--sc-padding)
+    calc(var(--sc-padding) * 1.5);
+  height: calc(
+    max(var(--sc-font-size), var(--sc-image-size, 16px)) + var(--sc-padding) * 2
+  );
   box-sizing: border-box;
   width: 100%;
   white-space: pre;
@@ -17,7 +20,6 @@
   text-wrap: nowrap;
   font-size: var(--sc-font-size);
   font-family: var(--font-family);
-  transition: ease-out 0.15s background;
   color: var(--sc-font-color);
 
   &:disabled {
@@ -26,8 +28,11 @@
   }
 }
 
+/*
+ * No background reset here: preflight already makes buttons transparent, and
+ * this unlayered rule would override layered utilities such as `hover:bg-accent`.
+ */
 .button {
-  background: none;
   border: none;
   cursor: pointer;
 }
@@ -96,7 +101,6 @@
 .folder {
   cursor: default;
   padding-right: calc(var(--sc-padding) / 2);
-  transition: ease-out 0.15s background;
   color: var(--sc-font-color);
 }
 

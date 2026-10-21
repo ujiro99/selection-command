@@ -75,8 +75,9 @@ This file provides guidance to AI Agent when working with code in this repositor
 - `src/app/[lang]/layout.tsx`, `src/app/layout.tsx` - App Router の必須レイアウト（Header/Footer/LanguageProvider を保持）
 - `src/features/locale/` - 14言語分の辞書ファイル（layout.tsx が
   無条件にバレルインポートするため削除できない）
-- `src/components/ui/` - shadcn/ui のうち button, separator, select のみ残存
-- `src/lib/utils.ts` - 共通ユーティリティ（`cn` 等、`@shared` からの re-export）
+- `src/components/MovedNotice.tsx` - ルートページと 404 ページで共有する移転案内
+- `src/lib/utils.ts` - 共通ユーティリティ（`@shared` からの re-export 等）
+- `src/app/globals.css` + 各 `*.module.css` - スタイル（素の CSS のみ。下記参照）
 
 ## 削除済みの機能
 
@@ -97,3 +98,15 @@ Google Analytics 連携・お問い合わせフォーム等は、全て新リポ
   壊れないことを確認すること
 - `src/app/[lang]/test/page.tsx` を変更する場合は、`packages/extension/e2e/` の
   対応する spec が壊れないことを確認すること（本番反映後の e2e 実行で最終確認）
+  - デプロイ前の確認は、`yarn build` した `out/` をローカルで配信し、
+    `E2E_HUB_BASE_URL` を指定して extension の e2e を実行する
+    （例: `python3 -m http.server 3100 -d packages/hub/out` →
+    `E2E_HUB_BASE_URL=http://localhost:3100 yarn test:e2e`）。
+    `ujiro99.github.io` へのリクエストがローカルへ転送される
+    （`packages/extension/e2e/utils/hubRoute.ts`）。ただし拡張機能が自ら開く
+    ウィンドウ（PageAction の録画画面など）は転送できず、デプロイ済みのページが表示される
+- スタイリングは素の CSS（`globals.css` と CSS Modules）のみで行う。
+  Tailwind CSS や shadcn/ui などの CSS フレームワーク・UI ライブラリは導入しない
+  （テストページと設定値のホスティングのみが目的で、導入するメリットがないため）
+- テストページの DOM 構造（見出し、`data-testid`、`placeholder`、文言など）は
+  e2e が参照しているため、スタイル変更時も維持すること

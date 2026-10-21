@@ -34,9 +34,7 @@ export default function RootLayout({
           content="MhXlQWtyoEkz6jOLkdC4V2aXrZVn1xWFDyV3slv5QBA"
         />
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-stone-50  text-stone-700`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <LanguageProvider>{children}</LanguageProvider>
       </body>
     </html>

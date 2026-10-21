@@ -129,12 +129,10 @@ export const MenuFolder = (props: {
         <button
           className={cn("rounded-sm", css.item, css.folder, {
             [css.itemHorizontal]: isHorizontal,
-            [css.itemOnlyIcon]: folder.onlyIcon && isHorizontal,
             [css.folderHorizontal]: isHorizontal,
             "pointer-events-none": inTransition,
-            "bg-accent": isOpen,
             "text-accent-foreground": isOpen,
-            "hover:bg-accent": !inTransition,
+            "bg-accent": isOpen,
           })}
           ref={anchorRef}
           role="menuitem"
@@ -172,7 +170,7 @@ export const MenuFolder = (props: {
         <ScrollAreaConditional scrollEnabled={!isHorizontalContent}>
           <div
             style={menubarStyle}
-            className={cn("flex items-center p-0.5 gap-[1px]", {
+            className={cn("flex items-center p-0.5 gap-px", {
               [css.menuVertical]: !isHorizontalContent,
               "flex-wrap": isHorizontalContent,
             })}
@@ -194,11 +192,16 @@ export const MenuFolder = (props: {
             ))}
           </div>
         </ScrollAreaConditional>
-        <HoverArea
-          anchorRef={anchorRef}
-          contentRef={contentRef}
-          isHorizontal={isHorizontal}
-        />
+        {/* Unmount while closing so the bridge of a folder being closed does
+            not capture the pointer over neighboring folders during the exit
+            animation, which would toggle the open folder back and forth. */}
+        {isOpen && (
+          <HoverArea
+            anchorRef={anchorRef}
+            contentRef={contentRef}
+            isHorizontal={isHorizontal}
+          />
+        )}
       </PopoverContent>
     </Popover>
   )

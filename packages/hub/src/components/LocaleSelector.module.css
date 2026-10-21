@@ -1,0 +1,36 @@
+.root {
+  position: fixed;
+  right: 12px;
+  bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 128px;
+  height: 36px;
+  padding: 0 8px 0 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background-color: var(--color-background);
+  font-size: 14px;
+  color: var(--color-text);
+}
+
+.icon {
+  flex-shrink: 0;
+  stroke: #57534e; /* stone-600 */
+}
+
+.select {
+  flex: 1;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+.root:focus-within {
+  outline: 1px solid var(--color-text);
+}
