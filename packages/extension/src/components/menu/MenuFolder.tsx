@@ -109,19 +109,19 @@ export const MenuFolder = (props: {
   }, [isOpen])
   const menubarStyle = isHorizontalContent
     ? {
-      maxWidth:
-        baseSize * 10 /* buttons */ +
-        1 * 9 /* gap */ +
-        2 * 2 /* padding */ +
-        1 * 2 /* border */,
-    }
+        maxWidth:
+          baseSize * 10 /* buttons */ +
+          1 * 9 /* gap */ +
+          2 * 2 /* padding */ +
+          1 * 2 /* border */,
+      }
     : {
-      maxHeight:
-        baseSize * 11.5 /* buttons */ +
-        1 * 10 /* gap */ +
-        2 * 2 /* padding */ +
-        1 * 2 /* border */,
-    }
+        maxHeight:
+          baseSize * 11.5 /* buttons */ +
+          1 * 10 /* gap */ +
+          2 * 2 /* padding */ +
+          1 * 2 /* border */,
+      }
 
   return (
     <Popover open={isOpen}>
