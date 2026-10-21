@@ -109,19 +109,19 @@ export const MenuFolder = (props: {
   }, [isOpen])
   const menubarStyle = isHorizontalContent
     ? {
-        maxWidth:
-          baseSize * 10 /* buttons */ +
-          1 * 9 /* gap */ +
-          2 * 2 /* padding */ +
-          1 * 2 /* border */,
-      }
+      maxWidth:
+        baseSize * 10 /* buttons */ +
+        1 * 9 /* gap */ +
+        2 * 2 /* padding */ +
+        1 * 2 /* border */,
+    }
     : {
-        maxHeight:
-          baseSize * 11.5 /* buttons */ +
-          1 * 10 /* gap */ +
-          2 * 2 /* padding */ +
-          1 * 2 /* border */,
-      }
+      maxHeight:
+        baseSize * 11.5 /* buttons */ +
+        1 * 10 /* gap */ +
+        2 * 2 /* padding */ +
+        1 * 2 /* border */,
+    }
 
   return (
     <Popover open={isOpen}>
@@ -129,12 +129,10 @@ export const MenuFolder = (props: {
         <button
           className={cn("rounded-sm", css.item, css.folder, {
             [css.itemHorizontal]: isHorizontal,
-            [css.itemOnlyIcon]: folder.onlyIcon && isHorizontal,
             [css.folderHorizontal]: isHorizontal,
             "pointer-events-none": inTransition,
-            "bg-accent": isOpen,
             "text-accent-foreground": isOpen,
-            "hover:bg-accent": !inTransition,
+            "bg-accent": isOpen,
           })}
           ref={anchorRef}
           role="menuitem"
