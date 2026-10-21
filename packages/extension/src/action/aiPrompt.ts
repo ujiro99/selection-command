@@ -6,7 +6,6 @@ import {
 import { getWindowPosition } from "@/services/screen"
 import {
   isValidString,
-  isEmpty,
   generateRandomID,
   safeInterpolate,
   toUrl,
@@ -24,7 +23,7 @@ import {
 } from "@/const"
 import { resolvePopupSize } from "@/services/option/defaultSettings"
 import type {
-  ExecuteCommandParams,
+  ActionExecuteParams,
   PageActionStep,
   UrlParam,
   AiService,
@@ -80,7 +79,8 @@ const createEndStep = (): PageActionStep =>
 
 type PromptRequirements = {
   needClipboard: boolean
-  selectionFromClipboard: boolean
+  clipboardInPrompt: boolean
+  selectedTextFromClipboard: boolean
   needPageHtml: boolean
   pageHtml: string | undefined
   needSelectionHtml: boolean
@@ -94,20 +94,17 @@ type PromptRequirements = {
 const analyzePromptRequirements = (
   aiPromptOption: AiPromptOption,
   service: AiService,
-  selectionText: string,
-  allowClipboardFallback: boolean,
+  selectionFromClipboard: boolean,
 ): PromptRequirements => {
-  // {{SelectedText}} falls back to the clipboard text when the command is run
-  // without a selection and the caller allows it (e.g. from a shortcut key).
-  const selectionFromClipboard =
-    allowClipboardFallback &&
-    isEmpty(selectionText) &&
+  const selectedTextFromClipboard =
+    selectionFromClipboard &&
     aiPromptOption.prompt.includes(toInsertTemplate(INSERT.SELECTED_TEXT))
 
   // Checks if the prompt requires clipboard data
-  const needClipboard =
-    aiPromptOption.prompt.includes(toInsertTemplate(INSERT.CLIPBOARD)) ||
-    selectionFromClipboard
+  const clipboardInPrompt = aiPromptOption.prompt.includes(
+    toInsertTemplate(INSERT.CLIPBOARD),
+  )
+  const needClipboard = clipboardInPrompt || selectedTextFromClipboard
 
   // Detect HTML placeholders that require file-paste upload instead of text embedding.
   // File paste cannot be used with queryUrl mode (URL length limit), so these force
@@ -139,7 +136,8 @@ const analyzePromptRequirements = (
 
   return {
     needClipboard,
-    selectionFromClipboard,
+    clipboardInPrompt,
+    selectedTextFromClipboard,
     needPageHtml,
     pageHtml,
     needSelectionHtml,
@@ -225,7 +223,7 @@ const buildQueryUrlSteps = (
   selectionText: string,
   pageUrl: string | undefined,
   needClipboard: boolean,
-  selectionFromClipboard: boolean,
+  selectedTextFromClipboard: boolean,
 ): { steps: PageActionStep[]; urlParam: UrlParam; serviceUrl: string } => {
   // Pre-expand the prompt template with synchronously available variables.
   // INSERT.CLIPBOARD (and INSERT.SELECTED_TEXT when it falls back to the
@@ -236,7 +234,7 @@ const buildQueryUrlSteps = (
     [InsertSymbol[INSERT.URL]]: pageUrl ?? "",
     [InsertSymbol[INSERT.LANG]]: getUILanguage(),
   }
-  if (!selectionFromClipboard) {
+  if (!selectedTextFromClipboard) {
     variables[InsertSymbol[INSERT.SELECTED_TEXT]] = selectionText
   }
   const expandedPrompt = safeInterpolate(aiPromptOption.prompt, variables)
@@ -248,7 +246,6 @@ const buildQueryUrlSteps = (
   const urlParam: UrlParam = {
     searchUrl: service.queryUrl!,
     selectionText: finalPrompt,
-    useClipboard: needClipboard,
     clipboardTemplate: needClipboard
       ? { urlToMarkdown: service.urlToMarkdown ?? false }
       : undefined,
@@ -329,7 +326,8 @@ const buildDomInputSteps = (
   service: AiService,
   aiPromptOption: AiPromptOption,
   selectionText: string,
-  needClipboard: boolean,
+  clipboardInPrompt: boolean,
+  selectedTextFromClipboard: boolean,
   needPageHtml: boolean,
   needSelectionHtml: boolean,
   needFilePaste: boolean,
@@ -341,7 +339,8 @@ const buildDomInputSteps = (
   const urlParam: UrlParam = {
     searchUrl: service.url,
     selectionText,
-    useClipboard: needClipboard,
+    selectionFromClipboard: selectedTextFromClipboard,
+    clipboardForSteps: clipboardInPrompt,
   }
 
   // When HTML placeholders are present, build filePaste steps that upload
@@ -409,7 +408,8 @@ const runSidePanelAction = async (params: {
   steps: PageActionStep[]
   selectionText: string
   pageUrl: string | undefined
-  needClipboard: boolean
+  clipboardInPrompt: boolean
+  selectedTextFromClipboard: boolean
   pageHtml: string | undefined
   selectionHtml: string | undefined
 }): Promise<void> => {
@@ -418,7 +418,8 @@ const runSidePanelAction = async (params: {
     steps,
     selectionText,
     pageUrl,
-    needClipboard,
+    clipboardInPrompt,
+    selectedTextFromClipboard,
     pageHtml,
     selectionHtml,
   } = params
@@ -430,7 +431,8 @@ const runSidePanelAction = async (params: {
     srcUrl: pageUrl ?? "",
     clipboardText: "",
     // Always false with the query URL approach: see analyzePromptRequirements.
-    useClipboard: needClipboard,
+    selectionFromClipboard: selectedTextFromClipboard,
+    clipboardForSteps: clipboardInPrompt,
     pageHtml,
     selectionHtml,
   }
@@ -468,9 +470,9 @@ export const AiPrompt = {
     command,
     position,
     useSecondary,
-    allowClipboardFallback,
+    selectionFromClipboard,
     pageUrl,
-  }: ExecuteCommandParams) {
+  }: ActionExecuteParams) {
     if (!isAiPromptType(command)) {
       console.error("command is not for AiPrompt.")
       return
@@ -491,7 +493,8 @@ export const AiPrompt = {
 
     const {
       needClipboard,
-      selectionFromClipboard,
+      clipboardInPrompt,
+      selectedTextFromClipboard,
       needPageHtml,
       pageHtml,
       needSelectionHtml,
@@ -501,8 +504,7 @@ export const AiPrompt = {
     } = analyzePromptRequirements(
       aiPromptOption,
       service,
-      selectionText,
-      allowClipboardFallback ?? false,
+      selectionFromClipboard,
     )
 
     const { steps, urlParam, serviceUrl } = useQueryUrl
@@ -512,13 +514,14 @@ export const AiPrompt = {
           selectionText,
           pageUrl,
           needClipboard,
-          selectionFromClipboard,
+          selectedTextFromClipboard,
         )
       : buildDomInputSteps(
           service,
           aiPromptOption,
           selectionText,
-          needClipboard,
+          clipboardInPrompt,
+          selectedTextFromClipboard,
           needPageHtml,
           needSelectionHtml,
           needFilePaste,
@@ -533,7 +536,8 @@ export const AiPrompt = {
         steps,
         selectionText,
         pageUrl,
-        needClipboard,
+        clipboardInPrompt,
+        selectedTextFromClipboard,
         pageHtml,
         selectionHtml,
       })

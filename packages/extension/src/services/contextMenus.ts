@@ -11,8 +11,13 @@ import {
 
 export type executeActionProps = {
   command: Command
-  /** See ExecuteCommandParams.allowClipboardFallback. */
-  allowClipboardFallback?: boolean
+  /**
+   * The selected text decided by the sender (e.g. the shortcut handler).
+   * If undefined, the current selection in the tab is used.
+   */
+  selectionText?: string
+  /** See ExecuteCommandParams.selectionFromClipboard. */
+  selectionFromClipboard?: boolean
 }
 
 type Callback = () => void

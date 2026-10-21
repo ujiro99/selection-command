@@ -1,5 +1,7 @@
+@reference "../global.css";
+
 .recordButton {
-  @apply flex items-center gap-1.5 rounded p-1 py-0.5 pointer-events-auto;
+  @apply flex items-center gap-1.5 rounded-sm p-1 py-0.5 pointer-events-auto;
   @apply relative transition hover:scale-105;
 }
 
@@ -11,7 +13,7 @@
 }
 
 .button {
-  @apply flex items-center gap-1 rounded px-1 py-0.5 pointer-events-auto;
+  @apply flex items-center gap-1 rounded-sm px-1 py-0.5 pointer-events-auto;
   @apply relative transition hover:scale-110;
 }
 

@@ -1,0 +1,23 @@
+.footer {
+  width: 100%;
+  margin-top: 32px;
+}
+
+.separator {
+  width: 100%;
+  height: 1px;
+  background-color: var(--color-border);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 32px 0;
+  color: var(--color-text-muted);
+}
+
+.copyright {
+  text-align: center;
+}

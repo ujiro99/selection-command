@@ -184,10 +184,10 @@ export function PageActionItem(props: Props): JSX.Element {
                   </label>
                   <pre
                     className={cn(
-                      "w-2/3 max-h-32 truncate text-xs p-2 bg-gray-100 font-mono rounded whitespace-pre-line",
+                      "w-2/3 max-h-32 truncate text-xs p-2 bg-gray-100 font-mono rounded-sm whitespace-pre-line",
                       isInput &&
                         isEditing &&
-                        "border border-gray-300 shadow cursor-pointer",
+                        "border border-gray-300 shadow-sm cursor-pointer",
                     )}
                     onClick={handleEditInputValue}
                   >
@@ -230,12 +230,16 @@ export function PageActionItem(props: Props): JSX.Element {
 
               <RemoveButton onClick={handleClickRemove} size={16} />
             </div>
-            <PopoverArrow className="fill-white mt-[-1px]" height={6} />
-            <HoverArea
-              anchorRef={anchorRef}
-              contentRef={contentRef}
-              isHorizontal={true}
-            />
+            <PopoverArrow className="fill-white -mt-px" height={6} />
+            {/* Unmount while closing so the bridge does not capture the
+                pointer during the exit animation. */}
+            {isOpen && (
+              <HoverArea
+                anchorRef={anchorRef}
+                contentRef={contentRef}
+                isHorizontal={true}
+              />
+            )}
           </PopoverContent>
         )}
       </Popover>

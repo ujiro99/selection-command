@@ -1,3 +1,5 @@
+@reference "../global.css";
+
 .container {
   @apply text-gray-800;
   margin: 0;

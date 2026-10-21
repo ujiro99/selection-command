@@ -4,16 +4,16 @@ import { getWindowPosition } from "@/services/screen"
 import { POPUP_TYPE, SPACE_ENCODING } from "@/const"
 import { resolvePopupSize } from "@/services/option/defaultSettings"
 import type { OpenPopupProps } from "@/services/chrome"
-import type { ExecuteCommandParams } from "@/types"
+import type { ActionExecuteParams } from "@/types"
 
 export const Window = {
   async execute({
     selectionText,
     command,
     position,
-    allowClipboardFallback,
+    selectionFromClipboard,
     pageUrl,
-  }: ExecuteCommandParams) {
+  }: ActionExecuteParams) {
     if (!isValidString(command.searchUrl)) {
       console.error("searchUrl is not valid.")
       return
@@ -31,7 +31,7 @@ export const Window = {
         searchUrl: command.searchUrl,
         spaceEncoding: command.spaceEncoding ?? SPACE_ENCODING.PLUS,
         selectionText,
-        useClipboard: allowClipboardFallback ?? false,
+        selectionFromClipboard,
         pageUrl: pageUrl ?? "",
       },
       top: Math.floor(windowPosition.top + position.y),

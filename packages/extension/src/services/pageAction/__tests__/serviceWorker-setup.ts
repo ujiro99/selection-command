@@ -63,6 +63,7 @@ vi.mock("@/lib/utils", () => ({
   isUrl: vi.fn(),
   isUrlParam: vi.fn(),
   matchesPageActionUrl: vi.fn(),
+  needsClipboard: vi.fn(),
   sleep: vi.fn(),
 }))
 
@@ -121,6 +122,7 @@ import {
   isUrl,
   isUrlParam,
   matchesPageActionUrl,
+  needsClipboard,
   sleep,
 } from "@/lib/utils"
 import { resetLastUrl } from "../serviceWorker"
@@ -141,6 +143,7 @@ export const mockIsEmpty = isEmpty as any
 export const mockIsPageActionCommand = isPageActionCommand as any
 export const mockIsUrl = isUrl as any
 export const mockIsUrlParam = isUrlParam as any
+export const mockNeedsClipboard = needsClipboard as any
 export const mockMatchesPageActionUrl = matchesPageActionUrl as any
 export const mockSleep = sleep as any
 

@@ -1,3 +1,5 @@
+@reference "../global.css";
+
 .table {
   @apply border-collapse border border-gray-300 text-sm mt-8 mx-auto;
 }
@@ -23,6 +25,6 @@
   content: "";
   z-index: -1;
   @apply absolute w-full h-3 -left-1 -bottom-0.5;
-  @apply bg-blue-100 rounded;
+  @apply bg-blue-100 rounded-sm;
   @apply box-content px-1;
 }

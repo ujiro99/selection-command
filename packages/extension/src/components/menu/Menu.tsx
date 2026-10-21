@@ -22,7 +22,7 @@ export function Menu(): JSX.Element {
   return (
     <div
       className={cn(
-        "flex items-center p-0.5 gap-[1px] border rounded-md bg-background",
+        "flex items-center p-0.5 gap-px border rounded-md bg-background",
         { [css.menuVertical]: !isHorizontal },
       )}
       ref={menuRef}

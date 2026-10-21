@@ -52,6 +52,20 @@ export const isUrlParam = (url: string | UrlParam): url is UrlParam => {
 }
 
 /**
+ * Whether the clipboard must be read when opening the url. This is derived
+ * from how the url uses the clipboard text, rather than kept as a separate
+ * flag that could disagree with them.
+ */
+export const needsClipboard = (url: string | UrlParam): boolean => {
+  if (!isUrlParam(url)) return false
+  return (
+    !!url.selectionFromClipboard ||
+    !!url.clipboardForSteps ||
+    url.clipboardTemplate != null
+  )
+}
+
+/**
  * Convert bare URLs in text to Markdown link format [URL](URL).
  * URLs already in Markdown link format ([text](url)) are returned unchanged,
  * so applying this to already-converted text is a no-op.
@@ -76,7 +90,7 @@ export function convertUrlsToMarkdown(text: string): string {
 /**
  * Convert a string or UrlParam to a URL.
  * @param param The string or UrlParam to convert.
- * @param clipboardText The clipboard text to use if the UrlParam has useClipboard set to true.
+ * @param clipboardText The clipboard text, read when needsClipboard(param) is true.
  * @returns The URL.
  */
 export function toUrl(
@@ -90,10 +104,10 @@ export function toUrl(
     searchUrl,
     selectionText,
     spaceEncoding = SPACE_ENCODING.PLUS,
-    useClipboard = false,
+    selectionFromClipboard = false,
   } = param
   let text = selectionText
-  if (useClipboard && param.clipboardTemplate) {
+  if (param.clipboardTemplate) {
     // selectionText is a pre-expanded prompt whose clipboard-dependent
     // placeholders were left unresolved, because the clipboard can only be
     // read here in the service worker.
@@ -105,7 +119,7 @@ export function toUrl(
     if (param.clipboardTemplate.urlToMarkdown) {
       text = convertUrlsToMarkdown(text)
     }
-  } else if (useClipboard && isEmpty(text)) {
+  } else if (selectionFromClipboard) {
     text = clipboardText ?? ""
   }
   // URL encode the text

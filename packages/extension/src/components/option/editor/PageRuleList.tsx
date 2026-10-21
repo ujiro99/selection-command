@@ -290,7 +290,7 @@ export const PageRuleList = ({
                 value={urlPatternQuery}
                 onChange={(e) => setUrlPatternQuery(e.target.value)}
                 placeholder={t("pageRules_filter_placeholder")}
-                className="w-full pl-7 pr-3 h-8 text-sm rounded-md border border-input bg-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                className="w-full pl-7 pr-3 h-8 text-sm rounded-md border border-input bg-white focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring"
               />
             </div>
             <div className="flex items-center gap-1">
@@ -316,7 +316,7 @@ export const PageRuleList = ({
               <button
                 type="button"
                 onClick={handleSortOrderToggle}
-                className="px-1.5 py-1 border border-input shadow-sm bg-white rounded-lg hover:bg-accent transition duration-50 leading-none"
+                className="px-1.5 py-1 border border-input shadow-xs bg-white rounded-lg hover:bg-accent transition duration-50 leading-none"
               >
                 <SortByArrow sortBy={sortBy} sortOrder={sortOrder} />
               </button>
@@ -339,7 +339,7 @@ export const PageRuleList = ({
                         <img
                           src={`https://www.google.com/s2/favicons?sz=64&domain_url=${field.urlPattern}`}
                           alt="favicon"
-                          className="w-5 h-5 inline-block mr-2 rounded"
+                          className="w-5 h-5 inline-block mr-2 rounded-sm"
                         />
                         <span className="text-base font-mono truncate">
                           {field.urlPattern}
@@ -497,7 +497,7 @@ export const PageRuleDialog = ({
                     id="inheritPopupPlacement"
                     checked={popupPlacement === INHERIT}
                     onChange={(e) => handleInheritChange(e.target.checked)}
-                    className="rounded border-gray-300 cursor-pointer"
+                    className="rounded-sm border-gray-300 cursor-pointer"
                   />
                   <label
                     htmlFor="inheritPopupPlacement"

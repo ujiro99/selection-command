@@ -81,7 +81,7 @@ export function OnboardingConfetti() {
       // constraints, per CSS2.1 10.6.5) - canvas-confetti's `resize: true`
       // then reads that tiny box via getBoundingClientRect() and everything
       // renders squeezed into the top-left corner.
-      className="pointer-events-none fixed inset-0 z-20 size-full !h-full"
+      className="pointer-events-none fixed inset-0 z-20 size-full h-full!"
     />
   )
 }

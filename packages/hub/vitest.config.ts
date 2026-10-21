@@ -13,7 +13,6 @@ export default mergeConfig(
         exclude: [
           ...(rootConfig.test?.coverage?.exclude || []),
           "next.config.mjs",
-          "tailwind.config.ts",
         ],
       },
     },

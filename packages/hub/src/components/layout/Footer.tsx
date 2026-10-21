@@ -1,12 +1,12 @@
-import { Separator } from "@/components/ui/separator"
 import { LocaleSelector } from "@/components/LocaleSelector"
+import css from "./Footer.module.css"
 
 export function Footer(): JSX.Element {
   return (
-    <footer className="w-full mt-8">
-      <Separator />
-      <div className="flex flex-col gap-4 items-center py-8 text-stone-500">
-        <p className="text-center">
+    <footer className={css.footer}>
+      <hr className={css.separator} />
+      <div className={css.content}>
+        <p className={css.copyright}>
           <span>© 2024 Selection Command</span>
         </p>
       </div>
