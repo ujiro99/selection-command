@@ -8,7 +8,7 @@ import {
   SquareTerminal,
   ChevronsUpDown,
   ChevronsDownUp,
-  Share,
+  CloudUpload,
 } from "lucide-react"
 
 import {
@@ -908,7 +908,7 @@ const CommandEditDialogInner = ({
                   (err) => console.error(err),
                 )}
               >
-                <Share />
+                <CloudUpload />
                 {t("labelShare")}
               </Button>
             )}
@@ -927,7 +927,7 @@ const CommandEditDialogInner = ({
               )}
               data-testid={TEST_IDS.submitCommandButton}
             >
-              {isHubEdit ? <Share /> : <Save />}
+              {isHubEdit ? <CloudUpload /> : <Save />}
               {isHubEdit
                 ? t("labelShare")
                 : isEdit
