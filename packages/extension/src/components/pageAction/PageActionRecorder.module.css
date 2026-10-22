@@ -19,7 +19,7 @@
 
 .buttonLabelStatus,
 .buttonLabel {
-  @apply font-mono text-gray-700;
+  @apply font-mono text-gray-700 dark:text-gray-300;
 }
 
 .buttonLabelStatus {

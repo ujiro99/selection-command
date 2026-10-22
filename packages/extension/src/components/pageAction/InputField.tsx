@@ -26,8 +26,8 @@ export const InputField = forwardRef<HTMLInputElement, Props>(
             inputClassName={cn(
               "h-auto px-1 py-0 text-sm",
               !isEditing &&
-                "border-white shadow-none truncate disabled:cursor-auto disabled:opacity-100",
-              isEditing && "px-2 py-1.5 border-gray-300",
+                "border-white dark:border-gray-900 shadow-none truncate disabled:cursor-auto disabled:opacity-100",
+              isEditing && "px-2 py-1.5 border-gray-300 dark:border-gray-700",
             )}
             ref={ref}
             unit={props.unit}

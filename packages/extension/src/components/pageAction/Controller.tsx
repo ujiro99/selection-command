@@ -95,7 +95,7 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
       <div
         className={cn(
           "flex flex-col items-center gap-2 w-fit pointer-events-auto",
-          "backdrop-blur-sm bg-gray-100/60 rounded-md py-4 pl-5 pr-3 shadow-md",
+          "backdrop-blur-sm bg-gray-100/60 dark:bg-gray-900/80 rounded-md py-4 pl-5 pr-3 shadow-md",
         )}
         ref={ref}
         data-hover={hover}
@@ -136,7 +136,7 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
               <Circle
                 size={iconSize + 2}
                 strokeWidth="1.5"
-                className="stroke-gray-500 fill-gray-100"
+                className="stroke-gray-500 dark:stroke-gray-400 fill-gray-100 dark:fill-gray-700"
               />
               <span className={css.buttonLabelStatus}>
                 {t("PageAction_Controller_not_recording")}
@@ -150,7 +150,10 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
               onClick={() => finish()}
               data-testid={TEST_IDS.pageActionCompleteButton}
             >
-              <Check size={iconSize} className="stroke-gray-600" />
+              <Check
+                size={iconSize}
+                className="stroke-gray-600 dark:stroke-gray-400"
+              />
               <span className={css.buttonLabel}>
                 {t("PageAction_Controller_complete")}
               </span>
@@ -161,21 +164,30 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
                 className={css.button}
                 onClick={() => Ipc.send(ServiceWorkerCommand.stopPageAction)}
               >
-                <Square size={iconSize} className="stroke-gray-600" />
+                <Square
+                  size={iconSize}
+                  className="stroke-gray-600 dark:stroke-gray-400"
+                />
                 <span className={css.buttonLabel}>
                   {t("PageAction_Controller_stop")}
                 </span>
               </button>
             ) : (
               <button className={css.button} onClick={() => preview()}>
-                <Play size={iconSize} className="stroke-gray-600" />
+                <Play
+                  size={iconSize}
+                  className="stroke-gray-600 dark:stroke-gray-400"
+                />
                 <span className={css.buttonLabel}>
                   {t("PageAction_Controller_preview")}
                 </span>
               </button>
             )}
             <button className={css.button} onClick={() => reset()}>
-              <RotateCcw size={iconSize} className="stroke-gray-600" />
+              <RotateCcw
+                size={iconSize}
+                className="stroke-gray-600 dark:stroke-gray-400"
+              />
               <span className={css.buttonLabel}>
                 {t("PageAction_Controller_reset")}
               </span>

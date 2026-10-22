@@ -29,7 +29,7 @@ export function showReviewRequestToast(onAccept: () => void): void {
 
   toast.custom(
     (toastId) => (
-      <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-4 text-gray-800">
+      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg shadow-lg p-4 text-gray-800 dark:text-gray-200">
         <div className="flex flex-row gap-3 items-center mb-2">
           <img src={ICON_URL} className="w-7 h-7" />
           <span className="text-base font-semibold">
@@ -39,7 +39,7 @@ export function showReviewRequestToast(onAccept: () => void): void {
         <div className="text-sm mb-4">{t("review_request_message")}</div>
         <div className="flex flex-row gap-3">
           <button
-            className="flex-1 h-9 px-3 rounded-md border border-gray-300 bg-white text-sm font-medium transition hover:bg-gray-50"
+            className="flex-1 h-9 px-3 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm font-medium transition hover:bg-gray-50 dark:hover:bg-gray-800"
             onClick={() => {
               toast.dismiss(toastId)
             }}

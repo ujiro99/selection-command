@@ -310,7 +310,7 @@ export function InputMenu(props: MenuProps): JSX.Element {
         <img src={iconSrc} alt="icon" className="size-[18px] ml-1.5 mr-0.5" />
         <MenubarTrigger
           className={cn(
-            "p-1 pl-1.5 text-sm font-normal font-sans text-gray-700 cursor-pointer",
+            "p-1 pl-1.5 text-sm font-normal font-sans text-gray-700 dark:text-gray-300 cursor-pointer",
             disabled && "opacity-60 bg-muted cursor-not-allowed",
           )}
           disabled={disabled}
@@ -330,19 +330,31 @@ export function InputMenu(props: MenuProps): JSX.Element {
           sideOffset={2}
         >
           <InputMenuItem onClick={onClickItem} value={INSERT.SELECTED_TEXT}>
-            <TextCursorInput size={16} className="mr-2 stroke-gray-600" />
+            <TextCursorInput
+              size={16}
+              className="mr-2 stroke-gray-600 dark:stroke-gray-400"
+            />
             {t("PageAction_InputMenu_selectedText")}
           </InputMenuItem>
           <InputMenuItem onClick={onClickItem} value={INSERT.URL}>
-            <Link2 size={16} className="mr-2 stroke-gray-600" />
+            <Link2
+              size={16}
+              className="mr-2 stroke-gray-600 dark:stroke-gray-400"
+            />
             {t("PageAction_InputMenu_url")}
           </InputMenuItem>
           <InputMenuItem onClick={onClickItem} value={INSERT.CLIPBOARD}>
-            <Clipboard size={16} className="mr-2 stroke-gray-600" />
+            <Clipboard
+              size={16}
+              className="mr-2 stroke-gray-600 dark:stroke-gray-400"
+            />
             {t("PageAction_InputMenu_clipboard")}
           </InputMenuItem>
           <InputMenuItem onClick={onClickItem} value={INSERT.LANG}>
-            <Languages size={16} className="mr-2 stroke-gray-600" />
+            <Languages
+              size={16}
+              className="mr-2 stroke-gray-600 dark:stroke-gray-400"
+            />
             {t("PageAction_InputMenu_lang")}
           </InputMenuItem>
           {userVariables.length > 0 && (
@@ -351,10 +363,13 @@ export function InputMenu(props: MenuProps): JSX.Element {
           {userVariables.map((variable) => (
             <MenubarItem
               key={variable.name}
-              className="m-0.5 px-2.5 py-2 text-sm font-normal font-sans text-gray-700 cursor-pointer"
+              className="m-0.5 px-2.5 py-2 text-sm font-normal font-sans text-gray-700 dark:text-gray-300 cursor-pointer"
               onClick={() => onClickVariable(variable.name)}
             >
-              <Braces size={16} className="mr-2 stroke-gray-600" />
+              <Braces
+                size={16}
+                className="mr-2 stroke-gray-600 dark:stroke-gray-400"
+              />
               {variable.name}
             </MenubarItem>
           ))}
@@ -366,7 +381,7 @@ export function InputMenu(props: MenuProps): JSX.Element {
           <MenubarMenu value={MENU.FILE_PASTE}>
             <MenubarTrigger
               className={cn(
-                "p-1 px-1.5 text-sm font-normal font-sans text-gray-700 cursor-pointer",
+                "p-1 px-1.5 text-sm font-normal font-sans text-gray-700 dark:text-gray-300 cursor-pointer",
                 props.fileAttachDisabled &&
                   "opacity-60 bg-muted cursor-not-allowed",
               )}
@@ -381,14 +396,20 @@ export function InputMenu(props: MenuProps): JSX.Element {
               sideOffset={2}
             >
               <InputMenuItem onClick={onClickItem} value={INSERT.PAGE_HTML}>
-                <FileCode size={16} className="mr-2 stroke-gray-600" />
+                <FileCode
+                  size={16}
+                  className="mr-2 stroke-gray-600 dark:stroke-gray-400"
+                />
                 {t("PageAction_InputMenu_pageHtml")}
               </InputMenuItem>
               <InputMenuItem
                 onClick={onClickItem}
                 value={INSERT.SELECTION_HTML}
               >
-                <Code size={16} className="mr-2 stroke-gray-600" />
+                <Code
+                  size={16}
+                  className="mr-2 stroke-gray-600 dark:stroke-gray-400"
+                />
                 {t("PageAction_InputMenu_selectionHtml")}
               </InputMenuItem>
             </MenubarContent>
@@ -409,7 +430,7 @@ function InputMenuItem(props: ItemProps): JSX.Element {
   return (
     <MenubarItem
       onClick={() => props.onClick(props.value as INSERT)}
-      className="m-0.5 px-2.5 py-2 text-sm font-normal font-sans text-gray-700 cursor-pointer"
+      className="m-0.5 px-2.5 py-2 text-sm font-normal font-sans text-gray-700 dark:text-gray-300 cursor-pointer"
     >
       {props.children}
     </MenubarItem>
