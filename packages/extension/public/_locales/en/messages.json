@@ -834,7 +834,7 @@
     "description": "Tooltip for the share button when the command has already been shared to the Hub. Clicking opens the hub dashboard for this command."
   },
   "Option_shareButton_modified_tooltip": {
-    "message": "Local changes not synced to Hub. Click to update",
+    "message": "Unsynced changes. Click to sync",
     "description": "Tooltip for the share button when the command has already been shared to the Hub but has local edits not yet pushed. Clicking pushes the edits to the Hub."
   },
   "Option_remove_title": {

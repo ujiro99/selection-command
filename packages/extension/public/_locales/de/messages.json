@@ -828,7 +828,7 @@
     "message": "Bereits geteilt"
   },
   "Option_shareButton_modified_tooltip": {
-    "message": "Lokale Änderungen nicht mit dem Hub synchronisiert. Zum Aktualisieren klicken"
+    "message": "Nicht synchronisierte Änderungen. Zum Synchronisieren klicken"
   },
   "Option_remove_title": {
     "message": "Dies löschen?"

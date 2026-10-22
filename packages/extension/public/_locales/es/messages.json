@@ -828,7 +828,7 @@
     "message": "Ya compartido"
   },
   "Option_shareButton_modified_tooltip": {
-    "message": "Hay cambios locales sin sincronizar con el Hub. Haz clic para actualizar"
+    "message": "Cambios sin sincronizar. Haz clic para sincronizar"
   },
   "Option_remove_title": {
     "message": "¿Eliminar esto?"

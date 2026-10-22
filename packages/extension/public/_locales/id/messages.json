@@ -828,7 +828,7 @@
     "message": "Sudah dibagikan"
   },
   "Option_shareButton_modified_tooltip": {
-    "message": "Perubahan lokal belum disinkronkan ke Hub. Klik untuk memperbarui"
+    "message": "Ada perubahan yang belum disinkronkan. Klik untuk menyinkronkan"
   },
   "Option_remove_title": {
     "message": "Hapus ini?"
