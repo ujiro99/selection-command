@@ -129,12 +129,37 @@ describe("ShareButton", () => {
     expect(mockShareCommandToHub).not.toHaveBeenCalled()
   })
 
-  it("SB-06: shows the shared state when isModified is set on an unshared command", () => {
+  it("SB-06: keeps the unshared state when isModified is set without isShared", () => {
     render(<ShareButton command={command} isModified />)
 
     expect(screen.getByTestId(TEST_IDS.shareCommandButton)).toBeTruthy()
     expect(
       screen.queryByTestId(TEST_IDS.modifiedSharedCommandButton),
     ).toBeNull()
+  })
+
+  it("SB-07: shows the error state when pushing the edits fails", () => {
+    mockPushEditToHub.mockReturnValue(false)
+    render(<ShareButton command={command} isShared isModified />)
+
+    const button = screen.getByTestId(TEST_IDS.modifiedSharedCommandButton)
+    fireEvent.click(button)
+
+    expect(mockPushEditToHub).toHaveBeenCalledWith(command)
+    expect((button as HTMLButtonElement).disabled).toBe(true)
+    expect(button.querySelector("svg")?.getAttribute("class")).toContain(
+      "stroke-red-500",
+    )
+  })
+
+  it("SB-08: blocks repeated pushes while the result is shown", () => {
+    mockPushEditToHub.mockReturnValue(true)
+    render(<ShareButton command={command} isShared isModified />)
+
+    const button = screen.getByTestId(TEST_IDS.modifiedSharedCommandButton)
+    fireEvent.click(button)
+    fireEvent.click(button)
+
+    expect(mockPushEditToHub).toHaveBeenCalledOnce()
   })
 })

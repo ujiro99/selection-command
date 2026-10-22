@@ -39,19 +39,25 @@ export const ShareButton = ({
     "idle",
   )
 
+  const shareState: "unshared" | "shared" | "modified" = !isShared
+    ? "unshared"
+    : isModified
+      ? "modified"
+      : "shared"
+
   const handleClick = async (e: React.MouseEvent) => {
     e.stopPropagation()
 
-    if (isShared && isModified) {
-      // Push the local edits to the Hub
-      setStatus("pending")
+    if (shareState === "modified") {
+      // Push the local edits to the Hub. The mark clears once the Hub
+      // acknowledges and the new content hash is saved.
       const ok = pushEditToHub(command)
       setStatus(ok ? "sent" : "error")
       setTimeout(() => setStatus("idle"), 2000)
       return
     }
 
-    if (isShared) {
+    if (shareState === "shared") {
       // Open the hub dashboard page for the shared command
       const locale = getHubLocale()
       const url = `${NEW_HUB_URL}/${locale}/dashboard/mycommands?id=${encodeURIComponent(command.id)}`
@@ -107,6 +113,29 @@ export const ShareButton = ({
     return null
   }
 
+  const iconClassName = cn(
+    "stroke-gray-500",
+    shareState === "modified"
+      ? "group-hover/share-btn:stroke-orange-600"
+      : "group-hover/share-btn:stroke-green-600",
+    status === "error" && "stroke-red-500",
+  )
+
+  const { testId, tooltip } = {
+    unshared: {
+      testId: TEST_IDS.shareCommandButton,
+      tooltip: t("Option_shareButton_tooltip"),
+    },
+    shared: {
+      testId: TEST_IDS.sharedCommandButton,
+      tooltip: t("Option_shareButton_shared_tooltip"),
+    },
+    modified: {
+      testId: TEST_IDS.modifiedSharedCommandButton,
+      tooltip: t("Option_shareButton_modified_tooltip"),
+    },
+  }[shareState]
+
   return (
     <>
       <button
@@ -115,57 +144,30 @@ export const ShareButton = ({
         className={cn(
           "outline-gray-200 p-2 rounded-md transition hover:bg-green-100 hover:scale-125 group/share-btn",
           "disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none",
-          isShared && isModified && "bg-orange-50 hover:bg-orange-100",
+          shareState === "modified" && "bg-orange-50 hover:bg-orange-100",
         )}
         onClick={handleClick}
         ref={buttonRef}
-        data-testid={
-          !isShared
-            ? TEST_IDS.shareCommandButton
-            : isModified
-              ? TEST_IDS.modifiedSharedCommandButton
-              : TEST_IDS.sharedCommandButton
-        }
+        aria-label={tooltip}
+        data-testid={testId}
       >
-        {!isShared ? (
-          <CloudUpload
-            className={cn(
-              "stroke-gray-500 group-hover/share-btn:stroke-green-600",
-              status === "error" && "stroke-red-500",
-            )}
-            size={16}
-          />
-        ) : isModified ? (
+        {shareState === "unshared" && (
+          <CloudUpload className={iconClassName} size={16} />
+        )}
+        {shareState === "shared" && (
+          <CloudCheck className={iconClassName} size={16} />
+        )}
+        {shareState === "modified" && (
           <span className="relative block">
-            <CloudUpload
-              className={cn(
-                "stroke-gray-500 group-hover/share-btn:stroke-orange-600",
-                status === "error" && "stroke-red-500",
-              )}
-              size={16}
+            <CloudUpload className={iconClassName} size={16} />
+            <span
+              aria-hidden="true"
+              className="absolute -top-1 -right-1 w-1.5 h-1.5 rounded-full bg-orange-500"
             />
-            <span className="absolute -top-1 -right-1 w-1.5 h-1.5 rounded-full bg-orange-500" />
           </span>
-        ) : (
-          <CloudCheck
-            className={cn(
-              "stroke-gray-500 group-hover/share-btn:stroke-green-600",
-              status === "error" && "stroke-red-500",
-            )}
-            size={16}
-          />
         )}
       </button>
-      <Tooltip
-        positionElm={buttonRef.current}
-        text={
-          !isShared
-            ? t("Option_shareButton_tooltip")
-            : isModified
-              ? t("Option_shareButton_modified_tooltip")
-              : t("Option_shareButton_shared_tooltip")
-        }
-      />
+      <Tooltip positionElm={buttonRef.current} text={tooltip} />
     </>
   )
 }

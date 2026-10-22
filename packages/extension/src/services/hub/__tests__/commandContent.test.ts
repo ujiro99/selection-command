@@ -9,6 +9,7 @@ import {
   pickHubContent,
   stampForHub,
 } from "../commandContent"
+import { commandSchema } from "@/types/schema"
 import type { SelectionCommand } from "@/types"
 
 const base = {
@@ -104,6 +105,58 @@ describe("hasUnpushedEdits", () => {
 
   it("CC-07c: false when there is no fingerprint", () => {
     expect(hasUnpushedEdits(base)).toBe(false)
+  })
+
+  // Saving from the edit dialog passes the command through the zod schema.
+  // A command already saved once must keep its fingerprint through it,
+  // otherwise saving without changes would mark it as edited.
+  it("CC-07d: false after saving a saved command again through the form schema", () => {
+    const commands = [
+      {
+        id: "s",
+        title: "Search",
+        iconUrl: "https://a.com/i.png",
+        openMode: "popup",
+        openModeSecondary: "tab",
+        spaceEncoding: "plus",
+        searchUrl: "https://a.com/?q=%s",
+      },
+      {
+        id: "a",
+        title: "AI",
+        iconUrl: "https://a.com/i.png",
+        openMode: "aiPrompt",
+        aiPromptOption: {
+          serviceId: "gemini",
+          prompt: "{{SelectedText}}",
+          openMode: "popup",
+        },
+      },
+      {
+        id: "p",
+        title: "Page Action",
+        iconUrl: "https://a.com/i.png",
+        openMode: "pageAction",
+        pageActionOption: {
+          startUrl: "https://a.com",
+          openMode: "popup",
+          steps: [
+            {
+              id: "1",
+              // Set by the recorder but not part of the schema
+              timestamp: 1,
+              param: { type: "start", label: "Start" },
+            },
+          ],
+        },
+      },
+    ]
+    for (const raw of commands) {
+      const saved = commandSchema.parse(raw) as SelectionCommand
+      const stamped = { ...saved, contentHash: calcContentHash(saved) }
+      const resaved = commandSchema.parse(stamped) as SelectionCommand
+      expect(hasUnpushedEdits(resaved)).toBe(false)
+    }
   })
 })
 
