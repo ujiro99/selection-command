@@ -116,7 +116,7 @@ export function StepLinkPreview({ onboarding }: Props) {
   return (
     <div className="flex flex-col items-center gap-10">
       <OnboardingFadeIn key={"command-type"} delay={phaseDelays.commandType}>
-        <h2 className="text-4xl font-bold text-slate-700 flex items-center">
+        <h2 className="text-4xl font-bold text-slate-700 dark:text-slate-300 flex items-center">
           <span className="font-mono">3.</span> {t("Option_linkCommand")}
         </h2>
       </OnboardingFadeIn>
@@ -133,7 +133,7 @@ export function StepLinkPreview({ onboarding }: Props) {
           className="flex flex-col items-center gap-4"
           delay={phaseDelays.message}
         >
-          <p className="max-w-xl text-xl leading-[1.75] font-semibold text-slate-900">
+          <p className="max-w-xl text-xl leading-[1.75] font-semibold text-slate-900 dark:text-slate-100">
             {isValueShown ? (
               <>
                 <span>{t("onboarding_step3ValueMessage")}</span>
@@ -157,7 +157,7 @@ export function StepLinkPreview({ onboarding }: Props) {
             key="value-submessage"
             delay={phaseDelays.valueSubmessage}
           >
-            <p className="max-w-xl text-lg text-slate-700 text-pretty">
+            <p className="max-w-xl text-lg text-slate-700 dark:text-slate-300 text-pretty">
               {renderMultiline(t("onboarding_step3ValueSubmessage"))}
             </p>
           </OnboardingFadeIn>
@@ -189,12 +189,12 @@ export function StepLinkPreview({ onboarding }: Props) {
           delay={phaseDelays.targetText}
         >
           <div
-            className="flex animate-onboarding-ring items-center justify-center rounded-lg border border-slate-200 bg-white [--onboarding-ring-color:rgba(8,47,73,0.16)] motion-reduce:animate-none"
+            className="flex animate-onboarding-ring items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-gray-900 [--onboarding-ring-color:rgba(8,47,73,0.16)] motion-reduce:animate-none"
             ref={setLinkElm}
           >
             <a
               href="https://www.aalto.fi/en/news/one-in-four-internet-users-are-overwhelmed-by-the-clutter-in-their-browser"
-              className="text-base px-6 py-3 text-sky-700 underline decoration-1 underline-offset-[3px] hover:text-sky-800"
+              className="text-base px-6 py-3 text-sky-700 dark:text-sky-300 underline decoration-1 underline-offset-[3px] hover:text-sky-800 dark:hover:text-sky-200"
               onClick={(e) => e.preventDefault()}
             >
               {t("onboarding_step3LinkLabel")}
@@ -210,12 +210,14 @@ export function StepLinkPreview({ onboarding }: Props) {
             <div className="flex flex-col items-center gap-2 pb-1">
               {t("onboarding_step3Callout")}
               <div className="flex items-center gap-2">
-                <span className="inline-flex min-h-8 items-center gap-1.5 rounded-lg border border-b-2 border-slate-300 bg-white px-2.5 text-xs font-bold tracking-wide text-slate-700">
+                <span className="inline-flex min-h-8 items-center gap-1.5 rounded-lg border border-b-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-gray-900 px-2.5 text-xs font-bold tracking-wide text-slate-700 dark:text-slate-300">
                   <ArrowBigUp className="size-4" strokeWidth={2} />
                   Shift
                 </span>
-                <span className="text-xs font-semibold text-slate-500">+</span>
-                <span className="inline-flex min-h-8 items-center gap-1.5 rounded-lg border border-b-2 border-slate-300 bg-white px-2.5 text-xs font-bold tracking-wide text-slate-700">
+                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                  +
+                </span>
+                <span className="inline-flex min-h-8 items-center gap-1.5 rounded-lg border border-b-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-gray-900 px-2.5 text-xs font-bold tracking-wide text-slate-700 dark:text-slate-300">
                   <MousePointerClick className="size-4" strokeWidth={2} />
                   {t("onboarding_clickKeycap")}
                 </span>
@@ -228,7 +230,7 @@ export function StepLinkPreview({ onboarding }: Props) {
       {isWaitReturn && (
         <>
           <span
-            className="mt-10 size-8 shrink-0 rounded-full bg-sky-950/[0.14] text-sky-950 animate-onboarding-blink motion-reduce:animate-none"
+            className="mt-10 size-8 shrink-0 rounded-full bg-sky-950/[0.14] text-sky-950 dark:text-sky-200 animate-onboarding-blink motion-reduce:animate-none"
             data-testid="onboarding-step3-callout-anchor"
           />
           <OnboardingCallout
@@ -248,7 +250,7 @@ export function StepLinkPreview({ onboarding }: Props) {
             type="button"
             onClick={() => onboarding.goToStep(OnboardingStep.CUSTOMIZE)}
             className={cn(
-              "flex items-center gap-2 min-h-14 rounded-xl bg-sky-950 px-8 text-lg font-semibold text-white shadow-[0_10px_20px_-14px_rgba(15,23,42,.7)] hover:brightness-[1.35]",
+              "flex items-center gap-2 min-h-14 rounded-xl bg-sky-950 dark:bg-sky-700 px-8 text-lg font-semibold text-white shadow-[0_10px_20px_-14px_rgba(15,23,42,.7)] hover:brightness-[1.35]",
               !onboarding.ui.showRail && "mt-4",
             )}
           >
