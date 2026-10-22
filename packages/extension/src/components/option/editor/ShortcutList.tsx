@@ -104,7 +104,7 @@ const createNameRender = (command: Command) => {
           {name}
           <span
             className={cn(
-              "absolute right-4 border rounded-lg px-2 py-0.5 text-[10px] text-gray-600 bg-gray-100 whitespace-nowrap",
+              "absolute right-4 border rounded-lg px-2 py-0.5 text-[10px] text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 whitespace-nowrap",
               css.tag,
             )}
           >
@@ -264,7 +264,10 @@ export function ShortcutList({ control }: ShortcutListProps) {
   return (
     <div className="space-y-3">
       <div className="flex items-center">
-        <Keyboard size={22} className="mr-2 stroke-gray-600" />
+        <Keyboard
+          size={22}
+          className="mr-2 stroke-gray-600 dark:stroke-gray-400"
+        />
         <h3 className="text-xl font-semibold">{t("shortcuts")}</h3>
       </div>
       <p className="text-base">

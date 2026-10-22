@@ -31,7 +31,7 @@ export function DeveloperSupport() {
         rel="noopener noreferrer"
         className={css.menuButton}
       >
-        <Star size={18} className="mr-2 stroke-gray-600" />
+        <Star size={18} className="mr-2 stroke-gray-600 dark:stroke-gray-400" />
         {t("developersupport_review")}
       </a>
       <a
@@ -40,7 +40,10 @@ export function DeveloperSupport() {
         rel="noopener noreferrer"
         className={css.menuButton}
       >
-        <Coffee size={18} className="mr-2 stroke-gray-600" />
+        <Coffee
+          size={18}
+          className="mr-2 stroke-gray-600 dark:stroke-gray-400"
+        />
         {t("developersupport_coffee")}
       </a>
     </div>

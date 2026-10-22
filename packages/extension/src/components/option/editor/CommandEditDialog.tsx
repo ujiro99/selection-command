@@ -53,7 +53,7 @@ import { CommandType } from "@/components/option/editor/CommandType"
 import { SearchUrlAssistButton } from "@/components/option/editor/SearchUrlAssistButton"
 import { SearchUrlAssistDialog } from "@/components/option/editor/SearchUrlAssistDialog"
 import { hasCommandChanged } from "@/components/option/editor/commandChangedDetector"
-import { MenuImage } from "@/components/menu/MenuImage"
+import { OptionMenuImage } from "@/components/option/OptionMenuImage"
 import { Tooltip } from "@/components/Tooltip"
 import { PageActionStep } from "@/types/schema"
 import { TEST_IDS } from "@/testIds"
@@ -593,7 +593,7 @@ const CommandEditDialogInner = ({
                         <div className="w-4/6 relative">
                           <div className="flex-1 relative">
                             {!isEmpty(getValues("iconUrl")) && (
-                              <MenuImage
+                              <OptionMenuImage
                                 className="absolute top-[0.7em] left-[0.8em] w-6 h-6 rounded-sm"
                                 src={getValues("iconUrl")}
                                 alt="Preview of image"
@@ -742,7 +742,7 @@ const CommandEditDialogInner = ({
                                       }
                                     >
                                       <Trash2
-                                        className="stroke-gray-500 group-hover:stroke-red-500"
+                                        className="stroke-gray-500 dark:stroke-gray-400 group-hover:stroke-red-500"
                                         size={16}
                                       />
                                     </button>
@@ -790,7 +790,7 @@ const CommandEditDialogInner = ({
                     "flex flex-col items-end",
                   )}
                 >
-                  <CollapsibleTrigger className="flex items-center hover:bg-gray-200 p-2 py-1.5 rounded-lg text-sm">
+                  <CollapsibleTrigger className="flex items-center hover:bg-gray-200 dark:hover:bg-gray-700 p-2 py-1.5 rounded-lg text-sm">
                     <ChevronsUpDown
                       size={18}
                       className={cn(css.icon, collapsibleCss.iconUpDown)}

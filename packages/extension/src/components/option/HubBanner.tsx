@@ -32,7 +32,10 @@ export function HubBanner() {
         onClick={() => sendHubLinkClick(HUB_LINK_ROUTE.BANNER)}
       >
         <img
-          className={cn(css2.banner, "shadow-xl rounded-md px-4 pt-2 pb-1")}
+          className={cn(
+            css2.banner, // The banner image has a transparent background and dark text.
+            "shadow-xl rounded-md px-4 pt-2 pb-1 dark:bg-white",
+          )}
           src="/SelectionCommandHub.png"
           alt="Selection Command"
           width="230"

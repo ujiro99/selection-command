@@ -13,6 +13,24 @@
   }
 }
 
+/*
+ * Composed from other CSS modules (`composes`), which bypasses Tailwind, so
+ * the dark theme selectors are spelled out instead of `@variant dark`.
+ */
+:host([data-sc-theme="dark"]) .button,
+[data-sc-theme="dark"] .button {
+  border-color: #4b5563; /* gray-600 */
+  background-color: #1f2937; /* gray-800 */
+
+  &:hover {
+    background-color: #374151; /* gray-700 */
+  }
+
+  svg {
+    fill: #d1d5db; /* gray-300 */
+  }
+}
+
 .shadow-xl {
   box-shadow:
     0 20px 25px -5px rgb(0 0 0 / 0.1),

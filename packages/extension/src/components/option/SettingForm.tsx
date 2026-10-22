@@ -424,13 +424,16 @@ export function SettingForm({ className }: { className?: string }) {
       <form
         id="InputForm"
         className={cn(
-          "space-y-10 w-[600px] mx-auto pb-20 text-gray-700",
+          "space-y-10 w-[600px] mx-auto pb-20 text-gray-700 dark:text-gray-300",
           className,
         )}
       >
         <section id="startupMethod" className="space-y-3">
           <h3 className="text-xl font-semibold flex items-center">
-            <MessageSquareMore size={22} className="mr-2 stroke-gray-600" />
+            <MessageSquareMore
+              size={22}
+              className="mr-2 stroke-gray-600 dark:stroke-gray-400"
+            />
             {t("startupMethod")}
           </h3>
           <p className="text-base">{t("startupMethod_desc")}</p>
@@ -512,7 +515,10 @@ export function SettingForm({ className }: { className?: string }) {
         <hr />
         <section id="commands" className="space-y-3">
           <h3 className="text-xl font-semibold flex items-center">
-            <SquareTerminal size={22} className="mr-2 stroke-gray-600" />
+            <SquareTerminal
+              size={22}
+              className="mr-2 stroke-gray-600 dark:stroke-gray-400"
+            />
             {t("commands")}
           </h3>
           <p className="text-base">{t("commands_desc")}</p>
@@ -527,7 +533,10 @@ export function SettingForm({ className }: { className?: string }) {
 
         <section id="linkCommand" className="space-y-3">
           <h3 className="text-xl font-semibold flex items-center">
-            <Eye size={22} className="mr-2 stroke-gray-600" />
+            <Eye
+              size={22}
+              className="mr-2 stroke-gray-600 dark:stroke-gray-400"
+            />
             {t("linkCommand")}
           </h3>
           <p className="text-base">{t("linkCommand_desc")}</p>
@@ -640,7 +649,10 @@ export function SettingForm({ className }: { className?: string }) {
 
         <section id="windowSettings" className="space-y-3">
           <h3 className="text-xl font-semibold flex items-center">
-            <AppWindow size={22} className="mr-2 stroke-gray-600" />
+            <AppWindow
+              size={22}
+              className="mr-2 stroke-gray-600 dark:stroke-gray-400"
+            />
             {t("windowSettings")}
           </h3>
           <p className="text-base">{t("windowSettings_desc")}</p>
@@ -676,7 +688,10 @@ export function SettingForm({ className }: { className?: string }) {
 
         <section id="pageRules" className="space-y-3">
           <h3 className="text-xl font-semibold flex items-center">
-            <BookOpen size={22} className="mr-2 stroke-gray-600" />
+            <BookOpen
+              size={22}
+              className="mr-2 stroke-gray-600 dark:stroke-gray-400"
+            />
             {t("pageRules")}
           </h3>
           <p className="text-base">{t("pageRules_desc")}</p>
@@ -688,7 +703,10 @@ export function SettingForm({ className }: { className?: string }) {
         <hr />
         <section id="userStyles" className="space-y-3">
           <h3 className="text-xl font-semibold flex items-center">
-            <Paintbrush size={22} className="mr-2 stroke-gray-600" />
+            <Paintbrush
+              size={22}
+              className="mr-2 stroke-gray-600 dark:stroke-gray-400"
+            />
             {t("userStyles")}
           </h3>
           <p className="text-base">{t("userStyles_desc")}</p>

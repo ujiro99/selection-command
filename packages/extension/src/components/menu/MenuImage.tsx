@@ -2,7 +2,7 @@ import { isEmpty, isValidSVG, cn } from "@/lib/utils"
 import { usePopupContext } from "@/hooks/usePopupContext"
 import css from "./Menu.module.css"
 
-type MenuImageProps = {
+export type MenuImageProps = {
   src?: string
   svg?: string
   alt?: string
@@ -14,6 +14,12 @@ type MenuImageProps = {
    * List into every page the content script runs on.
    */
   preserveOriginalColor?: boolean
+  /**
+   * Whether to recolor the icon, for icons rendered outside the popup.
+   * Defaults to the popup's decision. Excluded and preserved icons are never
+   * recolored.
+   */
+  recolor?: boolean
 }
 
 /** An icon without a meaningful alt is decorative and hidden from screen readers. */
@@ -37,7 +43,7 @@ export function MenuImage(props: MenuImageProps): JSX.Element {
   const { hasIconColor } = usePopupContext()
 
   const recolor = Boolean(
-    hasIconColor &&
+    (props.recolor ?? hasIconColor) &&
     !props.excludeFromGlobalIconColor &&
     !props.preserveOriginalColor,
   )

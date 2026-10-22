@@ -1,10 +1,19 @@
-import { useEffect, useState } from "react"
+import { createContext, useContext, useEffect, useState } from "react"
 import { THEME, THEME_ATTRIBUTE } from "@/const"
 import { useUserSettings } from "@/hooks/useSettings"
 
 const QUERY = "(prefers-color-scheme: dark)"
 
 export type ResolvedTheme = "light" | "dark"
+
+/**
+ * The resolved theme, provided by the root that calls useTheme. Lets deeply
+ * nested components (e.g. every menu icon) read it without each one loading
+ * the settings.
+ */
+export const themeContext = createContext<ResolvedTheme>("light")
+
+export const useThemeContext = (): ResolvedTheme => useContext(themeContext)
 
 // Tracks the OS / browser level color scheme preference.
 export function usePrefersDarkScheme(): boolean {

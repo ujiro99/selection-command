@@ -7,7 +7,7 @@ import {
   FormMessage,
   FormDescription,
 } from "@/components/ui/form"
-import { MenuImage } from "@/components/menu/MenuImage"
+import { OptionMenuImage } from "@/components/option/OptionMenuImage"
 import { InfoTooltip } from "./InfoTooltip"
 
 type InputFieldType = {
@@ -54,7 +54,7 @@ export const InputField = ({
           </div>
           <div className="w-4/6 relative">
             {hasPreview && (
-              <MenuImage
+              <OptionMenuImage
                 className="absolute top-[0.7em] left-[0.8em] w-6 h-6 rounded-sm"
                 src={previewUrl}
                 alt="Preview of image"

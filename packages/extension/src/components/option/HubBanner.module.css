@@ -1,7 +1,7 @@
 @reference "../global.css";
 
 .menuLabel {
-  @apply font-mono text-gray-800;
+  @apply font-mono text-gray-800 dark:text-gray-200;
   font-size: 1.2rem;
 }
 
@@ -17,7 +17,7 @@
 }
 
 .description {
-  @apply font-mono text-gray-800;
+  @apply font-mono text-gray-800 dark:text-gray-200;
   font-size: 0.8rem;
   padding-left: 4px;
 }
@@ -32,6 +32,6 @@
 }
 
 .userName {
-  @apply font-mono text-gray-700;
+  @apply font-mono text-gray-700 dark:text-gray-300;
   font-size: 0.85rem;
 }

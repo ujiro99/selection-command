@@ -44,7 +44,7 @@ export const PageActionHelp = ({ className }: Props) => {
       <button
         type="button"
         className={cn(
-          "inline-flex items-center gap-1 text-sm text-gray-600 outline-gray-200 p-1 px-1.5 rounded-md transition hover:bg-gray-100 hover:scale-[110%] hover:text-sky-500 group/button",
+          "inline-flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400 outline-gray-200 dark:outline-gray-800 p-1 px-1.5 rounded-md transition hover:bg-gray-100 dark:hover:bg-gray-800 hover:scale-[110%] hover:text-sky-500 group/button",
           className,
         )}
         onClick={() => {
@@ -60,7 +60,7 @@ export const PageActionHelp = ({ className }: Props) => {
         ref={buttonRef}
       >
         <CircleHelp
-          className="stroke-gray-500 group-hover/button:stroke-sky-500"
+          className="stroke-gray-500 dark:stroke-gray-400 group-hover/button:stroke-sky-500"
           size={20}
         />
         <span className="leading-none pb-0.5">Help</span>
@@ -107,7 +107,7 @@ const HelpDialog = ({ open, onOpenChange }: HelpDialogProps) => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogPortal>
         <DialogContent
-          className="pageActionHelp w-184 max-w-4xl text-gray-700"
+          className="pageActionHelp w-184 max-w-4xl text-gray-700 dark:text-gray-300"
           onOpenAutoFocus={handleOpenAutoFocus}
         >
           <DialogHeader>
@@ -182,7 +182,7 @@ const HelpDialog = ({ open, onOpenChange }: HelpDialogProps) => {
                 <div className={css.carouselContent}>
                   <table className={css.table}>
                     <thead>
-                      <tr className="bg-gray-200">
+                      <tr className="bg-gray-200 dark:bg-gray-700">
                         <th className={css.tableCell}>
                           {t("help_pageAction_action")}
                         </th>
@@ -308,7 +308,7 @@ const HelpDialog = ({ open, onOpenChange }: HelpDialogProps) => {
                   <button
                     type="button"
                     className={cn(
-                      "bg-gray-200 h-2 w-full hover:bg-sky-300 rounded-sm transition",
+                      "bg-gray-200 dark:bg-gray-700 h-2 w-full hover:bg-sky-300 rounded-sm transition",
                       i === current - 1 ? "bg-sky-700" : "",
                     )}
                     onClick={() => scrollTo(i)}

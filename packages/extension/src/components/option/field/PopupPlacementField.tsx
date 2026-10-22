@@ -198,7 +198,7 @@ const SideItem = ({ side, current }: { side: SIDE; current: SIDE }) => {
           value={side}
           aria-label={t(`popupPlacement_${side}`)}
           className={cn(
-            "relative w-full h-9 shadow-xs text-xs font-mono text-gray-600",
+            "relative w-full h-9 shadow-xs text-xs font-mono text-gray-600 dark:text-gray-400",
           )}
         >
           {checked && <Check size={16} className="absolute left-5" />}
@@ -229,7 +229,7 @@ const AlignItem = ({
           aria-label={t(`popupPlacement_${align}`)}
           className={cn(
             "relative",
-            "flex-col gap-0 h-auto w-full py-1 shadow-xs text-xs font-mono text-gray-600",
+            "flex-col gap-0 h-auto w-full py-1 shadow-xs text-xs font-mono text-gray-600 dark:text-gray-400",
           )}
         >
           {checked && <Check size={16} className="absolute left-2" />}

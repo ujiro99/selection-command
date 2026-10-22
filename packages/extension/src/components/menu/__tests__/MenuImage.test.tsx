@@ -309,3 +309,37 @@ describe("MenuImage - Global Icon Color Exclusion", () => {
     })
   })
 })
+
+describe("MenuImage - recolor prop", () => {
+  const testUiUrl =
+    "https://cdn3.iconfinder.com/data/icons/feather-5/24/search-1024.png"
+
+  it("recolors when recolor is true even if the popup does not", () => {
+    const { container } = renderWithContext(
+      <MenuImage src={testUiUrl} alt="test-icon" recolor={true} />,
+      { hasIconColor: false },
+    )
+    expect(container.querySelector("span[role='img']")).not.toBeNull()
+    expect(container.querySelector("img")).toBeNull()
+  })
+
+  it("does not recolor when recolor is false even if the popup does", () => {
+    const { container } = renderWithContext(
+      <MenuImage src={testUiUrl} alt="test-icon" recolor={false} />,
+      { hasIconColor: true },
+    )
+    expect(container.querySelector("img")).not.toBeNull()
+  })
+
+  it("keeps preserved icons even when recolor is true", () => {
+    const { container } = renderWithContext(
+      <MenuImage
+        src={testUiUrl}
+        alt="test-icon"
+        recolor={true}
+        preserveOriginalColor={true}
+      />,
+    )
+    expect(container.querySelector("img")).not.toBeNull()
+  })
+})
