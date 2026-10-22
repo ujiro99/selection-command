@@ -258,13 +258,19 @@ export function SettingForm({ className }: { className?: string }) {
         ...current,
         ...settings,
       })
-      await sleep(1000)
     } catch (e) {
       console.error("Failed to update settings!", settings)
       console.error(e)
     } finally {
-      setIsSaving(false)
+      // Keep the saving indicator for a while without delaying the caller.
+      window.setTimeout(() => setIsSaving(false), 1000)
     }
+  }
+
+  // Saves the form right away, taking over the pending debounced save.
+  const saveNow = async () => {
+    clearTimeout(saveToRef.current)
+    await updateSettings(structuredClone(getValues()) as SettingsFormType)
   }
 
   const handlePopupPlacementSubmit = async (data: any) => {
@@ -511,7 +517,7 @@ export function SettingForm({ className }: { className?: string }) {
             {t("commands")}
           </h3>
           <p className="text-base">{t("commands_desc")}</p>
-          <CommandList control={form.control} />
+          <CommandList control={form.control} saveNow={saveNow} />
         </section>
         <hr />
 
