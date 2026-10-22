@@ -6,7 +6,10 @@
     "queryUrl": "https://chatgpt.com/#?q=%s",
     "autoSubmit": true,
     "faviconUrl": "https://chatgpt.com/favicon.ico",
-    "inputSelectors": ["[contenteditable='true']", "#mobile-composer-prompt"],
+    "inputSelectors": [
+      "[contenteditable='true']",
+      "#mobile-composer-prompt"
+    ],
     "submitSelectors": [
       "form button[type='submit']",
       "button[data-composer-submit]",
@@ -18,7 +21,9 @@
     "name": "Gemini",
     "url": "https://gemini.google.com/app",
     "faviconUrl": "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
-    "inputSelectors": [".ql-editor[contenteditable='true']"],
+    "inputSelectors": [
+      ".ql-editor[contenteditable='true']"
+    ],
     "submitSelectors": [
       "[data-test-id='send-button-container'] button",
       "button mat-icon[fonticon='arrow_upward']",
@@ -58,10 +63,7 @@
       "div[contenteditable='true'][role='textbox']"
     ],
     "submitSelectors": [
-      "button[type='button']:has(use[*|href='#pplx-icon-custom-perplexity-v2v'])",
-      "button[type='button']:has(use[*|href='#pplx-icon-arrow-up'])",
-      "button[type='button']:has(use[*|href^='#pplx-icon-arrow-right'])",
-      "button[type='button']:has(use[*|href^='#pplx-icon-player-stop-filled'])",
+      "div.col-end-3:has(div#ask-input) ~ div > button",
       "button[aria-label='Submit']"
     ]
   }
