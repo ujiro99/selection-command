@@ -47,6 +47,7 @@ function OnboardingFlow({ variant }: { variant: ExperimentVariant }) {
       <OnboardingLayout
         step={onboarding.step}
         phase={onboarding.phase}
+        background={onboarding.ui.background}
         onSkip={onboarding.skip}
       >
         {!isWelcome && (
@@ -73,7 +74,9 @@ function OnboardingFlow({ variant }: { variant: ExperimentVariant }) {
         )}
       </OnboardingLayout>
 
-      {isWelcome && <OnboardingWelcome onDone={goToExplain} />}
+      {isWelcome && (
+        <OnboardingWelcome onDone={goToExplain} ui={onboarding.ui.welcome} />
+      )}
 
       <SelectAnchor ref={setPositionElm} />
       <Popup positionElm={positionElm} inOnboarding={true} />

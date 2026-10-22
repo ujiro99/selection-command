@@ -33,7 +33,7 @@ export function StepComplete({ onboarding }: Props) {
       <OnboardingConfetti />
       <div className="flex flex-col items-center gap-8">
         <span
-          className="flex size-[76px] animate-onboarding-pop items-center justify-center rounded-full bg-green-200 text-green-600 motion-reduce:animate-none motion-reduce:opacity-100"
+          className="flex size-19 animate-onboarding-pop items-center justify-center rounded-full bg-green-200 text-green-600 motion-reduce:animate-none motion-reduce:opacity-100"
           style={{ animationDelay: `${delays[0]}ms` }}
         >
           <PartyPopper className="size-9" strokeWidth={1.8} />
@@ -52,12 +52,12 @@ export function StepComplete({ onboarding }: Props) {
           className="flex flex-col items-center gap-5"
           delay={delays[2]}
         >
-          <p className="max-w-lg text-base leading-[1.85] text-slate-700 text-pretty">
+          <p className="max-w-lg text-lg leading-[1.85] text-slate-700 text-pretty">
             {renderMultiline(t("onboarding_completeBody"))}
           </p>
         </OnboardingFadeIn>
 
-        <div className="mt-2.5 flex items-center gap-5">
+        <div className="mt-4 flex items-center gap-5">
           <OnboardingFadeIn
             className="flex flex-col items-center gap-5"
             delay={delays[3]}

@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import { render, screen, act } from "@testing-library/react"
 import { OnboardingWelcome, WELCOME_DURATION_MS } from "../OnboardingWelcome"
+import { getVariantUi } from "../onboardingVariantUi"
 
 const WELCOME_MS = WELCOME_DURATION_MS
 // Keep in sync with OnboardingWelcome's exit animation duration.
@@ -25,6 +26,18 @@ describe("OnboardingWelcome", () => {
     render(<OnboardingWelcome onDone={onDone} />)
 
     await advance(WELCOME_MS - 1)
+    expect(onDone).not.toHaveBeenCalled()
+
+    await advance(1 + EXIT_MS)
+    expect(onDone).toHaveBeenCalledTimes(1)
+  })
+
+  it("uses the per-variant duration when one is given", async () => {
+    const onDone = vi.fn()
+    const ui = getVariantUi("D").welcome
+    render(<OnboardingWelcome onDone={onDone} ui={ui} />)
+
+    await advance(ui.durationMs - 1)
     expect(onDone).not.toHaveBeenCalled()
 
     await advance(1 + EXIT_MS)
