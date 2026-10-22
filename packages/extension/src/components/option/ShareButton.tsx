@@ -1,5 +1,5 @@
 import { useState, useRef } from "react"
-import { Share, CloudCheck } from "lucide-react"
+import { Share, CloudCheck, CloudUpload } from "lucide-react"
 import { Tooltip } from "@/components/Tooltip"
 import { cn, isUUIDv7, generateId } from "@/lib/utils"
 import { t } from "@/services/i18n"
@@ -8,6 +8,7 @@ import {
   getHubLocale,
   isHubShareable,
   isHubRegistered,
+  pushEditToHub,
 } from "@/services/hubShare"
 import {
   sendEvent,
@@ -23,12 +24,15 @@ type Props = {
   command: SelectionCommand
   onCommandIdChange?: (newId: string) => void
   isShared?: boolean
+  // Shared command with local edits not yet pushed to the Hub
+  isModified?: boolean
 }
 
 export const ShareButton = ({
   command,
   onCommandIdChange,
   isShared,
+  isModified,
 }: Props) => {
   const buttonRef = useRef<HTMLButtonElement>(null)
   const [status, setStatus] = useState<"idle" | "pending" | "sent" | "error">(
@@ -37,6 +41,15 @@ export const ShareButton = ({
 
   const handleClick = async (e: React.MouseEvent) => {
     e.stopPropagation()
+
+    if (isShared && isModified) {
+      // Push the local edits to the Hub
+      setStatus("pending")
+      const ok = pushEditToHub(command)
+      setStatus(ok ? "sent" : "error")
+      setTimeout(() => setStatus("idle"), 2000)
+      return
+    }
 
     if (isShared) {
       // Open the hub dashboard page for the shared command
@@ -106,7 +119,11 @@ export const ShareButton = ({
         onClick={handleClick}
         ref={buttonRef}
         data-testid={
-          isShared ? TEST_IDS.sharedCommandButton : TEST_IDS.shareCommandButton
+          !isShared
+            ? TEST_IDS.shareCommandButton
+            : isModified
+              ? TEST_IDS.modifiedSharedCommandButton
+              : TEST_IDS.sharedCommandButton
         }
       >
         {!isShared ? (
@@ -117,6 +134,17 @@ export const ShareButton = ({
             )}
             size={16}
           />
+        ) : isModified ? (
+          <span className="relative block">
+            <CloudUpload
+              className={cn(
+                "stroke-gray-500 group-hover/share-btn:stroke-green-600",
+                status === "error" && "stroke-red-500",
+              )}
+              size={16}
+            />
+            <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-orange-500" />
+          </span>
         ) : (
           <CloudCheck
             className={cn(
@@ -130,9 +158,11 @@ export const ShareButton = ({
       <Tooltip
         positionElm={buttonRef.current}
         text={
-          isShared
-            ? t("Option_shareButton_shared_tooltip")
-            : t("Option_shareButton_tooltip")
+          !isShared
+            ? t("Option_shareButton_tooltip")
+            : isModified
+              ? t("Option_shareButton_modified_tooltip")
+              : t("Option_shareButton_shared_tooltip")
         }
       />
     </>

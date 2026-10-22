@@ -827,6 +827,9 @@
   "Option_shareButton_shared_tooltip": {
     "message": "पहले से साझा किया गया"
   },
+  "Option_shareButton_modified_tooltip": {
+    "message": "स्थानीय बदलाव Hub से सिंक नहीं हुए हैं। अपडेट करने के लिए क्लिक करें"
+  },
   "Option_remove_title": {
     "message": "क्या आप वाकई इसे हटाना चाहते हैं?"
   },

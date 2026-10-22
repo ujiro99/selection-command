@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest"
 import {
   applyHubContent,
   calcContentHash,
+  hasUnpushedEdits,
   isLocallyModified,
   nextContentUpdatedAt,
   parseContentUpdatedAt,
@@ -87,6 +88,22 @@ describe("isLocallyModified", () => {
 
   it("CC-07: true when there is no fingerprint", () => {
     expect(isLocallyModified(base)).toBe(true)
+  })
+})
+
+describe("hasUnpushedEdits", () => {
+  it("CC-07a: false when the fingerprint matches", () => {
+    const cmd = { ...base, contentHash: calcContentHash(base) }
+    expect(hasUnpushedEdits(cmd)).toBe(false)
+  })
+
+  it("CC-07b: true when the content differs from the fingerprint", () => {
+    const cmd = { ...base, contentHash: calcContentHash(base), title: "Edit" }
+    expect(hasUnpushedEdits(cmd)).toBe(true)
+  })
+
+  it("CC-07c: false when there is no fingerprint", () => {
+    expect(hasUnpushedEdits(base)).toBe(false)
   })
 })
 

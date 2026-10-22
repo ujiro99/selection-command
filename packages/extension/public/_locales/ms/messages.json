@@ -827,6 +827,9 @@
   "Option_shareButton_shared_tooltip": {
     "message": "Sudah dikongsi"
   },
+  "Option_shareButton_modified_tooltip": {
+    "message": "Perubahan setempat belum disegerakkan ke Hub. Klik untuk mengemas kini"
+  },
   "Option_remove_title": {
     "message": "Padam ini?"
   },

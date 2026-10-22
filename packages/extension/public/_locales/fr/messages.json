@@ -827,6 +827,9 @@
   "Option_shareButton_shared_tooltip": {
     "message": "Déjà partagé"
   },
+  "Option_shareButton_modified_tooltip": {
+    "message": "Modifications locales non synchronisées avec le Hub. Cliquez pour mettre à jour"
+  },
   "Option_remove_title": {
     "message": "Supprimer ceci ?"
   },
