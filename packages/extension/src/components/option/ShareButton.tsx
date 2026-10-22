@@ -1,5 +1,5 @@
 import { useState, useRef } from "react"
-import { Share, CloudCheck, CloudUpload } from "lucide-react"
+import { CloudCheck, CloudUpload } from "lucide-react"
 import { Tooltip } from "@/components/Tooltip"
 import { cn, isUUIDv7, generateId } from "@/lib/utils"
 import { t } from "@/services/i18n"
@@ -115,6 +115,7 @@ export const ShareButton = ({
         className={cn(
           "outline-gray-200 p-2 rounded-md transition hover:bg-green-100 hover:scale-125 group/share-btn",
           "disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none",
+          isShared && isModified && "bg-red-50 hover:bg-red-100",
         )}
         onClick={handleClick}
         ref={buttonRef}
@@ -127,7 +128,7 @@ export const ShareButton = ({
         }
       >
         {!isShared ? (
-          <Share
+          <CloudUpload
             className={cn(
               "stroke-gray-500 group-hover/share-btn:stroke-green-600",
               status === "error" && "stroke-red-500",
@@ -143,7 +144,7 @@ export const ShareButton = ({
               )}
               size={16}
             />
-            <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-orange-500" />
+            <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-red-500" />
           </span>
         ) : (
           <CloudCheck
