@@ -155,9 +155,7 @@ const commandFuncs = {
   [ServiceWorkerCommand.execApi]: ActionHelper.execApi,
 
   [ServiceWorkerCommand.openOption]: (): boolean => {
-    chrome.tabs.create({
-      url: OPTION_PAGE_PATH,
-    })
+    chrome.runtime.openOptionsPage()
     return false
   },
 
@@ -391,9 +389,8 @@ const updateActiveTabId = async (activeTabId?: number) => {
 }
 
 chrome.action.onClicked.addListener(() => {
-  chrome.tabs.create({
-    url: OPTION_PAGE_PATH,
-  })
+  // Reuses the existing options page tab in the current window if any.
+  chrome.runtime.openOptionsPage()
 })
 
 chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
