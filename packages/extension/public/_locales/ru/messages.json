@@ -827,6 +827,9 @@
   "Option_shareButton_shared_tooltip": {
     "message": "Уже опубликовано"
   },
+  "Option_shareButton_modified_tooltip": {
+    "message": "Есть несинхронизированные изменения. Нажмите, чтобы синхронизировать"
+  },
   "Option_remove_title": {
     "message": "Вы уверены, что хотите удалить это?"
   },

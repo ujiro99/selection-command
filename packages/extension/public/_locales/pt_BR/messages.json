@@ -827,6 +827,9 @@
   "Option_shareButton_shared_tooltip": {
     "message": "Já compartilhado"
   },
+  "Option_shareButton_modified_tooltip": {
+    "message": "Alterações não sincronizadas. Clique para sincronizar"
+  },
   "Option_remove_title": {
     "message": "Excluir isto?"
   },

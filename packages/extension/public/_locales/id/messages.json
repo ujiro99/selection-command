@@ -827,6 +827,9 @@
   "Option_shareButton_shared_tooltip": {
     "message": "Sudah dibagikan"
   },
+  "Option_shareButton_modified_tooltip": {
+    "message": "Ada perubahan yang belum disinkronkan. Klik untuk menyinkronkan"
+  },
   "Option_remove_title": {
     "message": "Hapus ini?"
   },
