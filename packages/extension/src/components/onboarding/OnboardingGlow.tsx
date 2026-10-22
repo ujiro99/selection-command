@@ -11,18 +11,20 @@ const GLOW_CENTER = "50% 48%"
 // Soft brand-blue glow radiating from just above the center of the screen,
 // fading to fully transparent well before the edges so it reads as light,
 // not a fill.
-const GLOW_BACKGROUND = [
-  `radial-gradient(ellipse 26% 26% at ${GLOW_CENTER}`,
-  "rgb(32 140 190 / 0.24) 0%",
-  "rgb(32 140 190 / 0.12) 40%",
-  "rgb(32 140 190 / 0) 100%)",
-].join(", ")
+const glowBackground = (center: string) =>
+  [
+    `radial-gradient(ellipse 26% 26% at ${center}`,
+    "rgb(32 140 190 / 0.24) 0%",
+    "rgb(32 140 190 / 0.12) 40%",
+    "rgb(32 140 190 / 0) 100%)",
+  ].join(", ")
 
 type Props = {
   // Positioning and stacking, which differ between the welcome overlay and
   // the page layout.
   className?: string
   delay?: number // in milliseconds; optional delay before the fade-in starts
+  center?: string // CSS position of the glow's center
   "data-testid"?: string
 }
 
@@ -34,6 +36,7 @@ type Props = {
 export function OnboardingGlow({
   className,
   delay = GLOW_DELAY_MS,
+  center = GLOW_CENTER,
   ...rest
 }: Props) {
   return (
@@ -44,8 +47,8 @@ export function OnboardingGlow({
         className,
       )}
       style={{
-        backgroundImage: GLOW_BACKGROUND,
-        transformOrigin: GLOW_CENTER,
+        backgroundImage: glowBackground(center),
+        transformOrigin: center,
         animationDelay: `${delay}ms`,
       }}
       {...rest}

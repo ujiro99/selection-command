@@ -38,7 +38,7 @@ describe("useOnboardingState", () => {
   it("keeps the rail and the vignette for variant C", () => {
     const { result } = renderHook(() => useOnboardingState("C"))
 
-    expect(result.current.ui).toEqual({
+    expect(result.current.ui).toMatchObject({
       showRail: true,
       background: "vignette",
     })
@@ -47,6 +47,9 @@ describe("useOnboardingState", () => {
   it("drops the rail and uses the glow background for variant D", () => {
     const { result } = renderHook(() => useOnboardingState("D"))
 
-    expect(result.current.ui).toEqual({ showRail: false, background: "glow" })
+    expect(result.current.ui).toMatchObject({
+      showRail: false,
+      background: "glow",
+    })
   })
 })

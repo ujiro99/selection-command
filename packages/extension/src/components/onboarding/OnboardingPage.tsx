@@ -74,7 +74,9 @@ function OnboardingFlow({ variant }: { variant: ExperimentVariant }) {
         )}
       </OnboardingLayout>
 
-      {isWelcome && <OnboardingWelcome onDone={goToExplain} />}
+      {isWelcome && (
+        <OnboardingWelcome onDone={goToExplain} ui={onboarding.ui.welcome} />
+      )}
 
       <SelectAnchor ref={setPositionElm} />
       <Popup positionElm={positionElm} inOnboarding={true} />
