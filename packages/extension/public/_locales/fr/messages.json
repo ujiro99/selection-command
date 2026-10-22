@@ -737,6 +737,21 @@
   "Option_userStyles_desc": {
     "message": "Vous pouvez personnaliser l'affichage du menu pop-up."
   },
+  "Option_theme": {
+    "message": "Thème"
+  },
+  "Option_theme_desc": {
+    "message": "Jeu de couleurs du menu contextuel et des écrans de cette extension. Si vous définissez une couleur du menu dans les styles utilisateur ci-dessous, le menu utilise vos couleurs dans les deux thèmes."
+  },
+  "Option_theme_system": {
+    "message": "Suivre le système"
+  },
+  "Option_theme_light": {
+    "message": "Clair"
+  },
+  "Option_theme_dark": {
+    "message": "Sombre"
+  },
   "Option_userStyles_add": {
     "message": "Modifier le Style Utilisateur"
   },

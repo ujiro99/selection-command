@@ -12,6 +12,7 @@ import { isMac, onHover, cn } from "@/lib/utils"
 import {
   findUserStyleValue,
   hasUserStyle,
+  hasUserColors,
   toCssVariables,
 } from "@/services/option/userStyles"
 import { t } from "@/services/i18n"
@@ -129,6 +130,9 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
               alignOffset={alignOffset}
               className={cn(css.popup, isPreview && "z-10 mt-2")}
               style={userStyles}
+              data-custom-colors={
+                hasUserColors(userSettings?.userStyles) || undefined
+              }
               {...onHover(handleOnHover, true)}
             >
               {!isContextMenu ? <Menu /> : null}

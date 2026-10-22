@@ -106,7 +106,7 @@ function IconWithState(props: ImageProps): JSX.Element {
     <div
       className={cn(
         css.iconWithState,
-        "shadow-md border border-gray-200 bg-white w-5 h-5",
+        "shadow-md border border-gray-200 dark:border-border bg-white w-5 h-5",
       )}
     >
       {status === ExecState.EXECUTING && (

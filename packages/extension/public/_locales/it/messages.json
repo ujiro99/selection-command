@@ -737,6 +737,21 @@
   "Option_userStyles_desc": {
     "message": "Puoi personalizzare la visualizzazione del menu pop-up."
   },
+  "Option_theme": {
+    "message": "Tema"
+  },
+  "Option_theme_desc": {
+    "message": "Combinazione di colori del menu a comparsa e delle schermate di questa estensione. Se imposti un colore del menu negli stili utente qui sotto, il menu a comparsa usa i tuoi colori in entrambi i temi."
+  },
+  "Option_theme_system": {
+    "message": "Segui il sistema"
+  },
+  "Option_theme_light": {
+    "message": "Chiaro"
+  },
+  "Option_theme_dark": {
+    "message": "Scuro"
+  },
   "Option_userStyles_add": {
     "message": "Modifica stile utente"
   },

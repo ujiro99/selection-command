@@ -6,6 +6,7 @@ import type {
   ALIGN,
   STYLE,
   FOLDER_STYLE,
+  THEME,
   KEYBOARD,
   STARTUP_METHOD,
   SPACE_ENCODING,
@@ -206,6 +207,8 @@ export type UserSettings = {
   folders: Array<CommandFolder>
   pageRules: Array<PageRule>
   style: STYLE
+  /** Color theme. Settings saved before this option existed lack it. */
+  theme?: THEME
   userStyles: Array<StyleVariable>
   shortcuts: ShortcutSettings
   windowOption: WindowOption
