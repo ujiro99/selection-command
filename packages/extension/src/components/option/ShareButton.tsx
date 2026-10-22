@@ -115,7 +115,7 @@ export const ShareButton = ({
         className={cn(
           "outline-gray-200 p-2 rounded-md transition hover:bg-green-100 hover:scale-125 group/share-btn",
           "disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none",
-          isShared && isModified && "bg-red-50 hover:bg-red-100",
+          isShared && isModified && "bg-orange-50 hover:bg-orange-100",
         )}
         onClick={handleClick}
         ref={buttonRef}
@@ -139,12 +139,12 @@ export const ShareButton = ({
           <span className="relative block">
             <CloudUpload
               className={cn(
-                "stroke-gray-500 group-hover/share-btn:stroke-green-600",
+                "stroke-gray-500 group-hover/share-btn:stroke-orange-600",
                 status === "error" && "stroke-red-500",
               )}
               size={16}
             />
-            <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-red-500" />
+            <span className="absolute -top-1 -right-1 w-1.5 h-1.5 rounded-full bg-orange-500" />
           </span>
         ) : (
           <CloudCheck
