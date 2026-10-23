@@ -142,7 +142,7 @@ export function PageActionItem(props: Props): JSX.Element {
         {shouldRender && (
           <PopoverContent
             className={
-              "border bg-white dark:bg-gray-900 px-3 pt-4 pb-2 min-w-56 max-w-80 text-gray-600 dark:text-gray-400"
+              "border bg-white dark:bg-popover dark:[--sc-input-bg:hsl(220_18%_21%)] px-3 pt-4 pb-2 min-w-56 max-w-80 text-gray-600 dark:text-gray-400"
             }
             side={"top"}
             arrowPadding={-1}
@@ -186,7 +186,7 @@ export function PageActionItem(props: Props): JSX.Element {
                   </label>
                   <pre
                     className={cn(
-                      "w-2/3 max-h-32 truncate text-xs p-2 bg-gray-100 dark:bg-gray-800 font-mono rounded-sm whitespace-pre-line",
+                      "w-2/3 max-h-32 truncate text-xs p-2 bg-gray-100 dark:bg-(--sc-input-bg,var(--color-gray-800)) font-mono rounded-sm whitespace-pre-line",
                       isInput &&
                         isEditing &&
                         "border border-gray-300 dark:border-gray-700 shadow-sm cursor-pointer",
@@ -236,7 +236,7 @@ export function PageActionItem(props: Props): JSX.Element {
               <RemoveButton onClick={handleClickRemove} size={16} />
             </div>
             <PopoverArrow
-              className="fill-white dark:fill-gray-900 -mt-px"
+              className="fill-white dark:fill-popover -mt-px"
               height={6}
             />
             {/* Unmount while closing so the bridge does not capture the
