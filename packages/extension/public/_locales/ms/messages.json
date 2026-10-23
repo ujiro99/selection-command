@@ -737,6 +737,21 @@
   "Option_userStyles_desc": {
     "message": "Anda boleh menyesuaikan paparan menu pop-up."
   },
+  "Option_theme": {
+    "message": "Tema"
+  },
+  "Option_theme_desc": {
+    "message": "Skema warna menu pop timbul dan skrin sambungan ini. Jika anda menetapkan warna pop timbul dalam gaya pengguna di bawah, menu pop timbul menggunakan warna anda dalam kedua-dua tema."
+  },
+  "Option_theme_system": {
+    "message": "Ikut sistem"
+  },
+  "Option_theme_light": {
+    "message": "Cerah"
+  },
+  "Option_theme_dark": {
+    "message": "Gelap"
+  },
   "Option_userStyles_add": {
     "message": "Edit Gaya Pengguna"
   },

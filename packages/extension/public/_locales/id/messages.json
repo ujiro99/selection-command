@@ -737,6 +737,21 @@
   "Option_userStyles_desc": {
     "message": "Anda dapat menyesuaikan tampilan menu pop-up."
   },
+  "Option_theme": {
+    "message": "Tema"
+  },
+  "Option_theme_desc": {
+    "message": "Skema warna menu pop-up dan layar ekstensi ini. Jika Anda mengatur warna pop-up pada gaya pengguna di bawah, menu pop-up menggunakan warna Anda di kedua tema."
+  },
+  "Option_theme_system": {
+    "message": "Ikuti sistem"
+  },
+  "Option_theme_light": {
+    "message": "Terang"
+  },
+  "Option_theme_dark": {
+    "message": "Gelap"
+  },
   "Option_userStyles_add": {
     "message": "Edit Gaya Pengguna"
   },

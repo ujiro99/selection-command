@@ -89,6 +89,22 @@ export function hasUserStyle(
   return !isEmpty(findUserStyleValue(userStyles, name))
 }
 
+/** Style variables that define a color of the popup. */
+const COLOR_VARIABLES = (Object.keys(Attributes) as STYLE_VARIABLE[]).filter(
+  (name) => Attributes[name].type === "color",
+)
+
+/**
+ * Checks whether any popup color is customized. The popup then keeps the
+ * user's colors (and the light defaults for the rest) in the dark theme too,
+ * since dark defaults mixed with custom colors could lose contrast.
+ */
+export function hasUserColors(
+  userStyles: StyleVariable[] | undefined,
+): boolean {
+  return COLOR_VARIABLES.some((name) => hasUserStyle(userStyles, name))
+}
+
 /** Builds the `--sc-*` custom properties the popup and the menu are styled with. */
 export function toCssVariables(
   userStyles: StyleVariable[] | undefined,

@@ -737,6 +737,21 @@
   "Option_userStyles_desc": {
     "message": "Puede personalizar la visualización del menú emergente."
   },
+  "Option_theme": {
+    "message": "Tema"
+  },
+  "Option_theme_desc": {
+    "message": "Esquema de colores del menú emergente y de las pantallas de esta extensión. Si defines un color del menú emergente en los estilos de usuario de abajo, el menú emergente usa tus colores en ambos temas."
+  },
+  "Option_theme_system": {
+    "message": "Según el sistema"
+  },
+  "Option_theme_light": {
+    "message": "Claro"
+  },
+  "Option_theme_dark": {
+    "message": "Oscuro"
+  },
   "Option_userStyles_add": {
     "message": "Editar Estilo de Usuario"
   },

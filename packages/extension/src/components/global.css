@@ -7,7 +7,21 @@
 @source not "../**/__tests__";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
+/*
+ * Dark mode is keyed on the data-sc-theme attribute, which useTheme sets on
+ * the document root (extension pages) or on the shadow host (content
+ * script). Selectors inside a shadow tree cannot see the host's attributes,
+ * so the host case needs `:host()`. A dedicated attribute is used instead of
+ * `.dark` so that a host page's own `.dark` class has no effect.
+ */
+@custom-variant dark {
+  &:where([data-sc-theme="dark"], [data-sc-theme="dark"] *) {
+    @slot;
+  }
+  :host([data-sc-theme="dark"]) & {
+    @slot;
+  }
+}
 
 /*
  * The built-in `container` utility is not used, but it would still be
@@ -353,7 +367,15 @@
     --radius: 8px;
   }
 
-  .dark {
+  :host([data-sc-theme="light"]),
+  [data-sc-theme="light"] {
+    color-scheme: light;
+  }
+
+  :host([data-sc-theme="dark"]),
+  [data-sc-theme="dark"] {
+    color-scheme: dark;
+
     --background: 224 71% 4%;
     --foreground: 213 31% 91%;
 
@@ -364,7 +386,7 @@
     --accent-foreground: 210 40% 98%;
 
     --popover: 224 71% 4%;
-    --popover-foreground: 215 20.2% 65.1%;
+    --popover-foreground: 213 31% 91%;
 
     --border: 216 34% 17%;
     --input: 216 34% 17%;

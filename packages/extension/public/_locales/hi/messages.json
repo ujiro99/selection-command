@@ -737,6 +737,21 @@
   "Option_userStyles_desc": {
     "message": "आप पॉपअप मेनू के प्रदर्शन को कस्टमाइज़ कर सकते हैं।"
   },
+  "Option_theme": {
+    "message": "थीम"
+  },
+  "Option_theme_desc": {
+    "message": "पॉप-अप मेनू और इस एक्सटेंशन की स्क्रीन की रंग योजना। अगर आप नीचे यूज़र स्टाइल में पॉप-अप का कोई रंग सेट करते हैं, तो पॉप-अप मेनू दोनों थीम में आपके रंगों का उपयोग करता है।"
+  },
+  "Option_theme_system": {
+    "message": "सिस्टम सेटिंग के अनुसार"
+  },
+  "Option_theme_light": {
+    "message": "लाइट"
+  },
+  "Option_theme_dark": {
+    "message": "डार्क"
+  },
   "Option_userStyles_add": {
     "message": "उपयोगकर्ता स्टाइल संपादित करें"
   },

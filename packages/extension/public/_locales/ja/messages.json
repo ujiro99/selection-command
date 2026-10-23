@@ -737,6 +737,21 @@
   "Option_userStyles_desc": {
     "message": "ポップアップの表示をカスタマイズできます。"
   },
+  "Option_theme": {
+    "message": "テーマ"
+  },
+  "Option_theme_desc": {
+    "message": "ポップアップメニューや拡張機能の画面の配色です。下のユーザースタイルでポップアップの色を設定している場合、ポップアップメニューはテーマに関わらずその色で表示されます。"
+  },
+  "Option_theme_system": {
+    "message": "システム設定に従う"
+  },
+  "Option_theme_light": {
+    "message": "ライト"
+  },
+  "Option_theme_dark": {
+    "message": "ダーク"
+  },
   "Option_userStyles_add": {
     "message": "ユーザースタイル編集"
   },

@@ -17,6 +17,7 @@ import { TabContextProvider } from "@/providers/TabContextProvider"
 import { Ipc, TabCommand } from "@/services/ipc"
 import { Settings } from "@/services/settings/settings"
 import { ServiceWorkerData } from "@/services/serviceWorkerData"
+import { useTheme } from "@/hooks/useTheme"
 import type { ShowToastParam } from "@/types"
 
 ServiceWorkerData.init()
@@ -27,6 +28,10 @@ type Props = {
 
 export function App({ rootElm }: Props) {
   const [positionElm, setPositionElm] = useState<Element | null>(null)
+
+  // rootElm is the shadow root; the theme attribute goes on its host so that
+  // the `:host()` selectors in the stylesheets can match it.
+  useTheme(rootElm instanceof ShadowRoot ? rootElm.host : rootElm)
 
   useEffect(() => {
     const handleShowToast = (

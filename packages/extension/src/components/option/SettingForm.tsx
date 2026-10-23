@@ -32,6 +32,7 @@ import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 import {
   STYLE,
+  THEME,
   STARTUP_METHOD,
   KEYBOARD,
   DRAG_OPEN_MODE,
@@ -98,6 +99,7 @@ const formSchema = z
       })
       .strict(),
     style: z.nativeEnum(STYLE),
+    theme: z.nativeEnum(THEME),
     commands: z.array(commandSchema).min(1),
     folders: z.array(folderSchema),
     linkCommand: z
@@ -150,6 +152,7 @@ export function SettingForm({ className }: { className?: string }) {
       popupPlacement: emptySettings.popupPlacement,
       windowOption: emptySettings.windowOption,
       style: emptySettings.style,
+      theme: emptySettings.theme,
       commands: [], // Empty array to avoid type conflicts
       folders: emptySettings.folders,
       linkCommand: emptySettings.linkCommand,
@@ -195,6 +198,8 @@ export function SettingForm({ className }: { className?: string }) {
       }
     }
     settings.commands = settings.commands.filter(isMenuCommand)
+    // Settings saved before the theme option existed lack it.
+    settings.theme = settings.theme ?? THEME.SYSTEM
     return settings as FormValues
   }
 
@@ -693,6 +698,16 @@ export function SettingForm({ className }: { className?: string }) {
             {t("userStyles")}
           </h3>
           <p className="text-base">{t("userStyles_desc")}</p>
+          <SelectField
+            control={form.control}
+            name="theme"
+            formLabel={t("theme")}
+            description={t("theme_desc")}
+            options={e2a(THEME).map((theme) => ({
+              name: t(`theme_${theme}`),
+              value: theme,
+            }))}
+          />
           <UserStyleList control={form.control} />
         </section>
       </form>

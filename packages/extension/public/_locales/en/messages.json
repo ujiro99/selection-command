@@ -741,6 +741,21 @@
   "Option_userStyles_desc": {
     "message": "You can customize the display of pop-up menu."
   },
+  "Option_theme": {
+    "message": "Theme"
+  },
+  "Option_theme_desc": {
+    "message": "Color theme of the pop-up menu and the screens of this extension. If you set a pop-up color in the user styles below, the pop-up menu uses your colors in both themes."
+  },
+  "Option_theme_system": {
+    "message": "Follow system"
+  },
+  "Option_theme_light": {
+    "message": "Light"
+  },
+  "Option_theme_dark": {
+    "message": "Dark"
+  },
   "Option_userStyles_add": {
     "message": "Edit User Style"
   },
