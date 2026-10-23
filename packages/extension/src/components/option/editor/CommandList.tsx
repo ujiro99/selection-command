@@ -299,8 +299,9 @@ export const CommandList = ({ control, saveNow }: CommandListProps) => {
     send(data)
   }
 
-  // location.search is fixed at page load (set via chrome.tabs.create), so it is
-  // safe to read it without adding it to the dependency array.
+  // location.search is fixed at page load (the service worker opens or navigates
+  // the tab with these params via openOptionPage), so it is safe to read it
+  // without adding it to the dependency array.
   useEffect(() => {
     if (editParamHandledRef.current) return
     const params = new URLSearchParams(location.search)
