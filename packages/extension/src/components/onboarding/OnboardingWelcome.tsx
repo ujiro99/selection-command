@@ -7,8 +7,7 @@ import {
   DEFAULT_WELCOME_UI,
   type OnboardingWelcomeUi,
 } from "./onboardingVariantUi"
-
-const ICON_URL = chrome.runtime.getURL("SelectionCommandLogo.png")
+import { useLogoUrl } from "./onboardingLogo"
 
 /** How long variant C's overlay stays up before advancing on its own. */
 export const WELCOME_DURATION_MS = DEFAULT_WELCOME_UI.durationMs
@@ -30,6 +29,7 @@ type Props = {
 // when the user clicks - there is nothing to read here, so making people
 // wait out the timer would just be a second thing to sit through.
 export function OnboardingWelcome({ onDone, ui = DEFAULT_WELCOME_UI }: Props) {
+  const logoUrl = useLogoUrl()
   const [exiting, setExiting] = useState(false)
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([])
   const finishedRef = useRef(false)
@@ -69,7 +69,7 @@ export function OnboardingWelcome({ onDone, ui = DEFAULT_WELCOME_UI }: Props) {
       aria-label={t("onboarding_welcomeContinue")}
       data-testid="onboarding-welcome"
       className={clsx(
-        "fixed inset-0 z-30 flex cursor-default flex-col items-center justify-center overflow-hidden bg-white",
+        "outline-none fixed inset-0 z-30 flex cursor-default flex-col items-center justify-center overflow-hidden bg-background",
         ui.gapClassName,
         exiting && "animate-onboarding-blur-out motion-reduce:animate-none",
       )}
@@ -87,15 +87,15 @@ export function OnboardingWelcome({ onDone, ui = DEFAULT_WELCOME_UI }: Props) {
         delay={ui.logoDelay}
         className={ui.logoClassName}
       >
-        <img src={ICON_URL} className="block h-12.5" alt="" aria-hidden />
+        <img src={logoUrl} className="block h-12.5" alt="" aria-hidden />
       </OnboardingFadeIn>
       <OnboardingFadeIn effect="blur" delay={ui.messageDelay}>
-        <p className="text-3xl font-bold tracking-tight text-slate-900">
+        <p className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
           {t("onboarding_welcomeMessage")}
         </p>
       </OnboardingFadeIn>
       <OnboardingFadeIn effect="blur" delay={ui.introductionDelay}>
-        <p className="text-2xl font-normal text-slate-900">
+        <p className="text-2xl font-normal text-slate-900 dark:text-slate-100">
           {t("onboarding_welcomeIntroduction")}
         </p>
       </OnboardingFadeIn>

@@ -18,6 +18,7 @@
   &:where([data-sc-theme="dark"], [data-sc-theme="dark"] *) {
     @slot;
   }
+
   :host([data-sc-theme="dark"]) & {
     @slot;
   }
@@ -78,164 +79,193 @@
   --animate-marquee2: marquee2 var(--marquee-duration) linear infinite;
   --animate-spin-slow: spin 3s linear infinite;
   --animate-popup: popup 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-  --animate-onboarding-rise: onboarding-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1)
-    both;
-  --animate-onboarding-blur-in: onboarding-blur-in 0.8s
-    cubic-bezier(0.16, 1, 0.3, 1) both;
-  --animate-onboarding-blur-out: onboarding-blur-out 0.32s
-    cubic-bezier(0.4, 0, 1, 1) both;
-  --animate-onboarding-glow-in: onboarding-glow-in 1.6s
-    cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-onboarding-rise: onboarding-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-onboarding-blur-in: onboarding-blur-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-onboarding-blur-out: onboarding-blur-out 0.32s cubic-bezier(0.4, 0, 1, 1) both;
+  --animate-onboarding-glow-in: onboarding-glow-in 1.6s cubic-bezier(0.16, 1, 0.3, 1) both;
   --animate-onboarding-ring: onboarding-ring 2.4s ease-in-out 0.6s infinite;
   --animate-onboarding-blink: onboarding-blink 1.5s ease-in-out 0.3s infinite;
   --animate-onboarding-highlight: onboarding-highlight 4s ease-in-out infinite;
-  --animate-onboarding-pop: onboarding-pop 0.36s
-    cubic-bezier(0.34, 1.4, 0.64, 1) both;
-  --animate-onboarding-pop-2: onboarding-pop-2 0.36s
-    cubic-bezier(0.34, 1.4, 0.64, 1) both;
+  --animate-onboarding-pop: onboarding-pop 0.36s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+  --animate-onboarding-pop-2: onboarding-pop-2 0.36s cubic-bezier(0.34, 1.4, 0.64, 1) both;
   --animate-onboarding-float: onboarding-float 1.4s ease-in-out infinite;
 
   @keyframes accordion-down {
     from {
       height: 0;
     }
+
     to {
       height: var(--radix-accordion-content-height);
     }
   }
+
   @keyframes accordion-up {
     from {
       height: var(--radix-accordion-content-height);
     }
+
     to {
       height: 0;
     }
   }
+
   @keyframes marquee {
     0% {
       transform: translateX(0%);
     }
+
     100% {
       transform: translateX(-100%);
     }
   }
+
   @keyframes marquee2 {
     0% {
       transform: translateX(100%);
     }
+
     100% {
       transform: translateX(0%);
     }
   }
+
   @keyframes popup {
     0% {
       opacity: 0;
       transform: scale(0.5) translate(-10px, 10px);
     }
+
     100% {
       opacity: 1;
       transform: scale(1);
     }
   }
+
   @keyframes onboarding-rise {
     from {
       opacity: 0;
       transform: translateY(10px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
     }
   }
+
   @keyframes onboarding-blur-in {
     from {
       opacity: 0;
       filter: blur(8px);
       transform: translateY(6px);
     }
+
     to {
       opacity: 1;
       filter: blur(0px);
       transform: translateY(0);
     }
   }
+
   @keyframes onboarding-blur-out {
     from {
       opacity: 1;
       filter: blur(0px);
     }
+
     to {
       opacity: 0;
       filter: blur(8px);
     }
   }
+
   @keyframes onboarding-glow-in {
     from {
       opacity: 0;
       transform: scale(0.6);
     }
+
     to {
       opacity: 1;
       transform: scale(1);
     }
   }
+
   @keyframes onboarding-ring {
+
     0%,
     100% {
       box-shadow: 0 0 0 0 var(--onboarding-ring-color);
     }
+
     50% {
       box-shadow: 0 0 0 6px var(--onboarding-ring-color);
     }
   }
+
   @keyframes onboarding-blink {
+
     0%,
     100% {
       opacity: 1;
     }
+
     50% {
       opacity: 0.45;
     }
   }
+
+  /* --onboarding-highlight-color lets dark mode use a darker highlight. */
   @keyframes onboarding-highlight {
+
     0%,
     10% {
-      background-color: rgb(191 219 254 / 0);
+      background-color: transparent;
     }
+
     44%,
     70% {
-      background-color: rgb(191 219 254 / 1);
+      background-color: var(--onboarding-highlight-color, rgb(191 219 254));
     }
+
     82%,
     100% {
-      background-color: rgb(191 219 254 / 0);
+      background-color: transparent;
     }
   }
+
   @keyframes onboarding-pop {
     0% {
       opacity: 0;
       transform: scale(0.72);
     }
+
     100% {
       opacity: 1;
       transform: scale(1);
     }
   }
+
   @keyframes onboarding-pop-2 {
     0% {
       opacity: 0;
       transform: scale(0.72) translate(-10px, 10px);
     }
+
     100% {
       opacity: 1;
       transform: scale(1);
     }
   }
+
   @keyframes onboarding-float {
+
     0%,
     100% {
       translate: 0 0;
     }
+
     50% {
       translate: 0 -4px;
     }
@@ -307,6 +337,7 @@
 
 /* Restore v3 defaults that the v4 preflight changed. */
 @layer base {
+
   input::placeholder,
   textarea::placeholder {
     color: var(--color-gray-400);
@@ -333,6 +364,7 @@
 }
 
 @layer base {
+
   :host,
   :root {
     --background: 0 0% 100%;

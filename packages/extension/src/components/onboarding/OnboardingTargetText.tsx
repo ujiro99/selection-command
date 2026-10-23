@@ -53,12 +53,12 @@ export function OnboardingTargetText({
       <div
         ref={setCardElm}
         className={cn(
-          "relative max-w-[560px] rounded-lg border px-[26px] py-5 text-left text-base leading-[1.9] text-slate-800 select-text",
-          "border-slate-200",
-          background === "glow" ? "bg-white" : "bg-muted/80",
+          "relative max-w-[560px] rounded-lg border px-[26px] py-5 text-left text-base leading-[1.9] text-slate-800 dark:text-slate-200 select-text",
+          "border-slate-200 dark:border-slate-800",
+          background === "glow" ? "bg-white dark:bg-gray-900" : "bg-muted/80",
           !selected &&
-            !runDemo &&
-            "[--onboarding-ring-color:rgba(8,47,73,0.16)] animate-onboarding-ring motion-reduce:animate-none",
+          !runDemo &&
+          "[--onboarding-ring-color:rgba(8,47,73,0.16)] animate-onboarding-ring motion-reduce:animate-none",
         )}
       >
         <span
@@ -68,7 +68,8 @@ export function OnboardingTargetText({
             // `runDemo` is already false when prefers-reduced-motion is on
             // (see usePrefersReducedMotion() above), so no motion-reduce:
             // variant is needed here.
-            runDemo && "animate-onboarding-highlight rounded-sm",
+            runDemo &&
+            "animate-onboarding-highlight rounded-sm dark:[--onboarding-highlight-color:var(--color-sky-900)]",
           )}
         >
           {text}
@@ -78,7 +79,7 @@ export function OnboardingTargetText({
           <span
             ref={cursorRef}
             aria-hidden
-            className="pointer-events-none absolute top-0 left-0 select-none text-slate-900 opacity-0 filter-[drop-shadow(0_0_2px_#fff)_drop-shadow(0_1px_3px_rgba(15,23,42,.35))]"
+            className="pointer-events-none absolute top-0 left-0 select-none text-slate-900 dark:text-slate-100 opacity-0 filter-[drop-shadow(0_0_2px_#fff)_drop-shadow(0_1px_3px_rgba(15,23,42,.35))]"
           >
             <TextCursor className="size-[18px]" strokeWidth={2} />
           </span>

@@ -4,8 +4,7 @@ import { getProgress, showsSkip } from "./onboardingProgress"
 import { OnboardingGlow } from "./OnboardingGlow"
 import type { OnboardingBackground } from "./onboardingVariantUi"
 import type { OnboardingStep, StepPhase } from "@/types/onboarding"
-
-const ICON_URL = chrome.runtime.getURL("SelectionCommandLogo.png")
+import { useLogoUrl } from "./onboardingLogo"
 
 type Props = {
   step: OnboardingStep
@@ -29,10 +28,11 @@ export function OnboardingLayout({
   onSkip,
   children,
 }: Props) {
+  const logoUrl = useLogoUrl()
   const progress = getProgress(step, phase)
 
   return (
-    <div className="relative flex min-h-screen flex-col overflow-hidden bg-white">
+    <div className="relative flex min-h-screen flex-col overflow-hidden bg-background">
       {background === "glow" ? (
         // Fixed to the viewport, like the welcome overlay, so its center
         // lines up exactly with the overlay's glow during the handoff.
@@ -51,7 +51,7 @@ export function OnboardingLayout({
       <div className="relative z-10 flex items-center justify-between px-10 py-5">
         {progress && (
           <img
-            src={ICON_URL}
+            src={logoUrl}
             className="block h-7"
             alt="Logo of selection command"
             aria-hidden
@@ -65,13 +65,13 @@ export function OnboardingLayout({
                   key={i}
                   className={
                     pill === "todo"
-                      ? "h-1 w-6.5 rounded-full bg-slate-100"
-                      : "h-1 w-6.5 rounded-full bg-sky-950"
+                      ? "h-1 w-6.5 rounded-full bg-slate-100 dark:bg-slate-800"
+                      : "h-1 w-6.5 rounded-full bg-sky-950 dark:bg-sky-700"
                   }
                 />
               ))}
             </div>
-            <span className="text-xs font-bold tracking-wide text-slate-500 [font-variant-numeric:tabular-nums]">
+            <span className="text-xs font-bold tracking-wide text-slate-500 dark:text-slate-400 [font-variant-numeric:tabular-nums]">
               {progress.current} / {progress.total}
             </span>
           </div>
@@ -86,7 +86,7 @@ export function OnboardingLayout({
         <button
           type="button"
           onClick={onSkip}
-          className="absolute right-7.5 bottom-6 z-20 inline-flex min-h-11 items-center rounded-md px-3.5 text-sm font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-700"
+          className="absolute right-7.5 bottom-6 z-20 inline-flex min-h-11 items-center rounded-md px-3.5 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100/80 dark:hover:bg-slate-800/80 hover:text-slate-700 dark:hover:text-slate-300"
         >
           {t("onboarding_skipButton")}
         </button>

@@ -132,7 +132,7 @@ export function StepAiPromptCommand({ onboarding }: Props) {
   return (
     <div className={cn("flex flex-col items-center gap-10 select-none")}>
       <OnboardingFadeIn key={"command-type"} delay={phaseDelays.commandType}>
-        <h2 className="text-4xl font-bold text-slate-700 flex items-center">
+        <h2 className="text-4xl font-bold text-slate-700 dark:text-slate-300 flex items-center">
           <span className="font-mono">2.</span>{" "}
           {t("Option_commandType_aiPrompt_title")}
         </h2>
@@ -157,7 +157,7 @@ export function StepAiPromptCommand({ onboarding }: Props) {
           className="flex flex-col items-center gap-4"
           delay={phaseDelays.message}
         >
-          <p className="max-w-xl text-xl leading-[1.75] font-semibold text-slate-900">
+          <p className="max-w-xl text-xl leading-[1.75] font-semibold text-slate-900 dark:text-slate-100">
             {isValueShown ? (
               <>
                 <span>{t("onboarding_step2ValueMessage")}</span>
@@ -181,7 +181,7 @@ export function StepAiPromptCommand({ onboarding }: Props) {
             key="value-submessage"
             delay={phaseDelays.valueSubmessage}
           >
-            <p className="max-w-xl text-lg text-slate-700 text-pretty">
+            <p className="max-w-xl text-lg text-slate-700 dark:text-slate-300 text-pretty">
               {renderMultiline(t("onboarding_step2ValueSubmessage"))}
             </p>
           </OnboardingFadeIn>
@@ -236,7 +236,7 @@ export function StepAiPromptCommand({ onboarding }: Props) {
             type="button"
             onClick={() => onboarding.goToStep(OnboardingStep.LINK_PREVIEW)}
             className={cn(
-              "flex items-center gap-2 min-h-14 rounded-xl bg-sky-950 px-8 text-lg font-semibold text-white shadow-[0_10px_20px_-14px_rgba(15,23,42,.7)] hover:brightness-[1.35]",
+              "flex items-center gap-2 min-h-14 rounded-xl bg-sky-950 dark:bg-sky-700 px-8 text-lg font-semibold text-white shadow-[0_10px_20px_-14px_rgba(15,23,42,.7)] hover:brightness-[1.35]",
               !onboarding.ui.showRail && "mt-4",
             )}
           >

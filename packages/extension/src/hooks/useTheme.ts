@@ -1,4 +1,10 @@
-import { createContext, useContext, useEffect, useState } from "react"
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from "react"
 import { THEME, THEME_ATTRIBUTE } from "@/const"
 import { useUserSettings } from "@/hooks/useSettings"
 
@@ -59,7 +65,9 @@ export function useTheme(target: Element | null | undefined): ResolvedTheme {
   const prefersDark = usePrefersDarkScheme()
   const resolved = resolveTheme(userSettings.theme, prefersDark)
 
-  useEffect(() => {
+  // Layout effect: set the attribute before the first paint, so `dark:`
+  // styles never render a light frame first.
+  useLayoutEffect(() => {
     if (target == null) return
     target.setAttribute(THEME_ATTRIBUTE, resolved)
     return () => target.removeAttribute(THEME_ATTRIBUTE)

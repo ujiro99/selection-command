@@ -5,6 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <title>Onboarding</title>
+    <style>
+      /*
+       * Paint the dark background before the scripts and styles load, so a
+       * dark-mode user does not see a white flash. Once useTheme sets
+       * data-sc-theme, global.css takes over; an explicit light setting
+       * opts out here.
+       */
+      @media (prefers-color-scheme: dark) {
+        html:not([data-sc-theme="light"]) {
+          color-scheme: dark;
+          background-color: hsl(224 71% 4%);
+        }
+      }
+    </style>
   </head>
 
   <body>
