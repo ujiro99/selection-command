@@ -514,15 +514,28 @@ export async function getCurrentTab(): Promise<chrome.tabs.Tab | undefined> {
 
 /**
  * Open the options page, reusing an existing options page tab if any.
+ * A tab in the last focused window is preferred over tabs in other windows.
  * @param path - The options page path. It may include a query and a hash.
+ * @param excludeTabId - A tab not to reuse, e.g. one that is being closed.
  * @returns The tab showing the options page, and whether it was newly created.
  */
 export async function openOptionPage(
   path: string = OPTION_PAGE_PATH,
+  excludeTabId?: number,
 ): Promise<{ tab: chrome.tabs.Tab | undefined; created: boolean }> {
   const optionPageUrl = chrome.runtime.getURL(OPTION_PAGE_PATH)
-  const tabs = await chrome.tabs.query({})
-  const existing = tabs.find((t) => t.url?.startsWith(optionPageUrl))
+  const [tabs, currentTab] = await Promise.all([
+    chrome.tabs.query({}),
+    getCurrentTab(),
+  ])
+  // A tab that is still loading has its destination only in pendingUrl.
+  const candidates = tabs.filter(
+    (t) =>
+      t.id !== excludeTabId &&
+      (t.pendingUrl || t.url)?.startsWith(optionPageUrl),
+  )
+  const existing =
+    candidates.find((t) => t.windowId === currentTab?.windowId) ?? candidates[0]
   if (existing?.id == null) {
     const tab = await chrome.tabs.create({ url: path })
     return { tab, created: true }

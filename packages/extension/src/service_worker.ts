@@ -160,7 +160,9 @@ const commandFuncs = {
   [ServiceWorkerCommand.execApi]: ActionHelper.execApi,
 
   [ServiceWorkerCommand.openOption]: (): boolean => {
-    openOptionPage()
+    openOptionPage().catch((e) =>
+      console.error("Failed to open option page", e),
+    )
     return false
   },
 
@@ -186,7 +188,7 @@ const commandFuncs = {
         )
       }
     }
-    add()
+    add().catch((e) => console.error("Failed to open option page", e))
     return false
   },
 
@@ -394,7 +396,7 @@ const updateActiveTabId = async (activeTabId?: number) => {
 }
 
 chrome.action.onClicked.addListener(() => {
-  openOptionPage()
+  openOptionPage().catch((e) => console.error("Failed to open option page", e))
 })
 
 chrome.windows.onFocusChanged.addListener(async (windowId: number) => {

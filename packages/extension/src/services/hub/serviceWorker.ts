@@ -555,6 +555,8 @@ export function handleEditCommand(
   }
 
   // Cancel any in-progress session; the new request takes over (last-write-wins).
+  // Its edit tab is being closed, so it must not be reused for this request.
+  const closingTabId = _editSession?.editTabId
   cancelEditSession()
 
   const newSession: EditSession = {
@@ -611,6 +613,7 @@ export function handleEditCommand(
 
   openOptionPage(
     `${OPTION_PAGE_PATH}?editCommand=${encodeURIComponent(id)}&syncHub=1#commands`,
+    closingTabId,
   )
     .then(({ tab, created }) => {
       if (_editSession !== newSession) {

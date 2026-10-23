@@ -739,6 +739,7 @@ describe("handleEditCommand", () => {
     expect(result).toBe(true)
     expect(openOptionPage).toHaveBeenCalledWith(
       "src/options_page.html?editCommand=cmd-123&syncHub=1#commands",
+      undefined,
     )
     await vi.waitFor(() =>
       expect(sendResponse).toHaveBeenCalledWith({ result: true }),
@@ -758,6 +759,21 @@ describe("handleEditCommand", () => {
         result: false,
         error: "Failed to create edit tab",
       }),
+    )
+  })
+
+  it("EC-05: does not reuse the edit tab of the cancelled session", async () => {
+    mockOpenOptionPage({ id: 77 })
+    const sender = { tab: { id: 10 } as chrome.tabs.Tab }
+    handleEditCommand("cmd-1", sender, vi.fn())
+    await vi.mocked(openOptionPage).mock.results.at(-1)?.value
+
+    handleEditCommand("cmd-2", sender, vi.fn())
+
+    expect(chrome.tabs.remove).toHaveBeenCalledWith(77)
+    expect(openOptionPage).toHaveBeenLastCalledWith(
+      "src/options_page.html?editCommand=cmd-2&syncHub=1#commands",
+      77,
     )
   })
 
@@ -904,9 +920,8 @@ describe("editCommandToHub", () => {
       onDisconnect: { addListener: vi.fn() },
     }
     hubEditConnectListener(port as any)
-    // Let the opened options page tab be registered to the edit session.
-    await Promise.resolve()
-    await Promise.resolve()
+    // Wait until the opened options page tab is registered to the session.
+    await vi.mocked(openOptionPage).mock.results.at(-1)?.value
     return port
   }
 
