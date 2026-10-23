@@ -230,7 +230,7 @@ export function StepLinkPreview({ onboarding }: Props) {
       {isWaitReturn && (
         <>
           <span
-            className="mt-10 size-8 shrink-0 rounded-full bg-sky-950/[0.14] text-sky-950 dark:text-sky-200 animate-onboarding-blink motion-reduce:animate-none"
+            className="mt-10 size-8 shrink-0 rounded-full bg-sky-950/[0.14] dark:bg-sky-200/25 text-sky-950 dark:text-sky-200 animate-onboarding-blink motion-reduce:animate-none"
             data-testid="onboarding-step3-callout-anchor"
           />
           <OnboardingCallout
