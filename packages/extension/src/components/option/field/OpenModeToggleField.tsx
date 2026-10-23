@@ -162,8 +162,8 @@ const OpenModeItem = ({
             aria-label={t(`openMode_${mode}`)}
             className={cn(
               "relative flex-col gap-0.5 h-full w-full py-1.5 shadow-xs text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300",
-              "border transition-all duration-200",
-              checked && "bg-gray-50 dark:bg-gray-900",
+              "border transition-all duration-200 dark:bg-muted dark:hover:bg-secondary",
+              checked && "bg-gray-50 dark:bg-accent dark:hover:bg-accent",
               disabled &&
                 // Override toggleVariants' `disabled:pointer-events-none` so hover
                 // still reaches this element and the reason tooltip can show.
@@ -176,10 +176,15 @@ const OpenModeItem = ({
                 className="absolute top-2 left-2 text-gray-700 dark:text-gray-300"
               />
             )}
-            <img
-              src={iconSrc}
-              alt={mode}
-              className={cn("h-8 w-8 object-contain")}
+            {/* Rendered as a mask so the icon follows the text color in both themes. */}
+            <span
+              role="img"
+              aria-label={mode}
+              className="h-8 w-8 bg-current mask-contain mask-no-repeat mask-center"
+              style={{
+                WebkitMaskImage: `url("${iconSrc}")`,
+                maskImage: `url("${iconSrc}")`,
+              }}
             />
             <span
               className={cn(

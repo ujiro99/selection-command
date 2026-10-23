@@ -79,15 +79,21 @@
   --animate-marquee2: marquee2 var(--marquee-duration) linear infinite;
   --animate-spin-slow: spin 3s linear infinite;
   --animate-popup: popup 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-  --animate-onboarding-rise: onboarding-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
-  --animate-onboarding-blur-in: onboarding-blur-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
-  --animate-onboarding-blur-out: onboarding-blur-out 0.32s cubic-bezier(0.4, 0, 1, 1) both;
-  --animate-onboarding-glow-in: onboarding-glow-in 1.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-onboarding-rise: onboarding-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1)
+    both;
+  --animate-onboarding-blur-in: onboarding-blur-in 0.8s
+    cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-onboarding-blur-out: onboarding-blur-out 0.32s
+    cubic-bezier(0.4, 0, 1, 1) both;
+  --animate-onboarding-glow-in: onboarding-glow-in 1.6s
+    cubic-bezier(0.16, 1, 0.3, 1) both;
   --animate-onboarding-ring: onboarding-ring 2.4s ease-in-out 0.6s infinite;
   --animate-onboarding-blink: onboarding-blink 1.5s ease-in-out 0.3s infinite;
   --animate-onboarding-highlight: onboarding-highlight 4s ease-in-out infinite;
-  --animate-onboarding-pop: onboarding-pop 0.36s cubic-bezier(0.34, 1.4, 0.64, 1) both;
-  --animate-onboarding-pop-2: onboarding-pop-2 0.36s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+  --animate-onboarding-pop: onboarding-pop 0.36s
+    cubic-bezier(0.34, 1.4, 0.64, 1) both;
+  --animate-onboarding-pop-2: onboarding-pop-2 0.36s
+    cubic-bezier(0.34, 1.4, 0.64, 1) both;
   --animate-onboarding-float: onboarding-float 1.4s ease-in-out infinite;
 
   @keyframes accordion-down {
@@ -193,7 +199,6 @@
   }
 
   @keyframes onboarding-ring {
-
     0%,
     100% {
       box-shadow: 0 0 0 0 var(--onboarding-ring-color);
@@ -205,7 +210,6 @@
   }
 
   @keyframes onboarding-blink {
-
     0%,
     100% {
       opacity: 1;
@@ -218,7 +222,6 @@
 
   /* --onboarding-highlight-color lets dark mode use a darker highlight. */
   @keyframes onboarding-highlight {
-
     0%,
     10% {
       background-color: transparent;
@@ -260,7 +263,6 @@
   }
 
   @keyframes onboarding-float {
-
     0%,
     100% {
       translate: 0 0;
@@ -337,7 +339,6 @@
 
 /* Restore v3 defaults that the v4 preflight changed. */
 @layer base {
-
   input::placeholder,
   textarea::placeholder {
     color: var(--color-gray-400);
@@ -364,7 +365,6 @@
 }
 
 @layer base {
-
   :host,
   :root {
     --background: 0 0% 100%;
@@ -417,7 +417,8 @@
     --accent: 216 34% 17%;
     --accent-foreground: 210 40% 98%;
 
-    --popover: 224 71% 4%;
+    /* Floating surfaces are lighter than the page to stand out from it. */
+    --popover: 220 20% 16%;
     --popover-foreground: 213 31% 91%;
 
     --border: 216 34% 17%;
@@ -435,7 +436,7 @@
     --destructive: 0 63% 31%;
     --destructive-foreground: 210 40% 98%;
 
-    --ring: 216 34% 17%;
+    --ring: 215 20% 55%;
 
     --radius: 8px;
   }
