@@ -21,7 +21,12 @@ import { CACHE_SECTIONS } from "@/services/settings/settingsCache"
 import * as PageActionServiceWorker from "@/services/pageAction/serviceWorker"
 import { ServiceWorkerData } from "@/services/serviceWorkerData"
 import { ContextMenu } from "@/services/contextMenus"
-import { closeWindow, windowExists, getCurrentTab } from "@/services/chrome"
+import {
+  closeWindow,
+  windowExists,
+  getCurrentTab,
+  openOptionPage,
+} from "@/services/chrome"
 import { WindowStackManager } from "@/services/windowStackManager"
 import { PopupAutoClose } from "@/services/popupAutoClose"
 import { findMatchingPageRule, isEmpty } from "@/lib/utils"
@@ -155,7 +160,7 @@ const commandFuncs = {
   [ServiceWorkerCommand.execApi]: ActionHelper.execApi,
 
   [ServiceWorkerCommand.openOption]: (): boolean => {
-    chrome.runtime.openOptionsPage()
+    openOptionPage()
     return false
   },
 
@@ -172,13 +177,13 @@ const commandFuncs = {
       const pageRules = settings.pageRules ?? []
       const matchingRule = findMatchingPageRule(pageRules, param.url)
       if (matchingRule == null) {
-        chrome.tabs.create({
-          url: `${OPTION_PAGE_PATH}?addPageRule=${encodeURIComponent(param.url)}#pageRules`,
-        })
+        await openOptionPage(
+          `${OPTION_PAGE_PATH}?addPageRule=${encodeURIComponent(param.url)}#pageRules`,
+        )
       } else {
-        chrome.tabs.create({
-          url: `${OPTION_PAGE_PATH}?editPageRule=${encodeURIComponent(matchingRule.urlPattern)}#pageRules`,
-        })
+        await openOptionPage(
+          `${OPTION_PAGE_PATH}?editPageRule=${encodeURIComponent(matchingRule.urlPattern)}#pageRules`,
+        )
       }
     }
     add()
@@ -389,8 +394,7 @@ const updateActiveTabId = async (activeTabId?: number) => {
 }
 
 chrome.action.onClicked.addListener(() => {
-  // Reuses the existing options page tab in the current window if any.
-  chrome.runtime.openOptionsPage()
+  openOptionPage()
 })
 
 chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
@@ -763,7 +767,9 @@ chrome.commands.onCommand.addListener(handleShortcutCommand)
 
 // Expose only in the E2E worker for Playwright evaluation, without a message endpoint.
 if (import.meta.env.MODE === "e2e") {
-  Object.assign(globalThis, { __e2eHandleShortcutCommand: handleShortcutCommand })
+  Object.assign(globalThis, {
+    __e2eHandleShortcutCommand: handleShortcutCommand,
+  })
 }
 
 // Side panel is an optional capability (e.g. not available on Opera), so

@@ -7,6 +7,7 @@ import {
   SCREEN,
 } from "@/const"
 import { Ipc, TabCommand } from "@/services/ipc"
+import { openOptionPage } from "@/services/chrome"
 import type { Sender, ConfirmCommandUpdateProps } from "@/services/ipc"
 import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
 import type { SubmitCommandInput } from "@/services/hubShare"
@@ -602,26 +603,34 @@ export function handleEditCommand(
     if (_editSession === newSession) _editSession = undefined
   }, EDIT_CONNECT_TIMEOUT_MS)
 
-  chrome.tabs.create(
-    {
-      url: `${OPTION_PAGE_PATH}?editCommand=${encodeURIComponent(id)}&syncHub=1#commands`,
-    },
-    (tab) => {
+  const failToOpen = () => {
+    cleanupHubEditConnectListener()
+    if (_editSession === newSession) _editSession = undefined
+    sendResponse({ result: false, error: "Failed to create edit tab" })
+  }
+
+  openOptionPage(
+    `${OPTION_PAGE_PATH}?editCommand=${encodeURIComponent(id)}&syncHub=1#commands`,
+  )
+    .then(({ tab, created }) => {
       if (_editSession !== newSession) {
-        if (tab?.id != null) chrome.tabs.remove(tab.id)
+        if (created && tab?.id != null) chrome.tabs.remove(tab.id)
         sendResponse({ result: false, error: "Edit session timed out" })
         return
       }
       if (tab?.id == null) {
-        cleanupHubEditConnectListener()
-        _editSession = undefined
-        sendResponse({ result: false, error: "Failed to create edit tab" })
+        failToOpen()
         return
       }
-      newSession.editTabId = tab.id
+      // Close the tab after editing only if it was opened for this edit, so
+      // that an options page the user already had open is kept.
+      if (created) newSession.editTabId = tab.id
       sendResponse({ result: true })
-    },
-  )
+    })
+    .catch((err) => {
+      console.error("[handleEditCommand] Failed to open options page:", err)
+      failToOpen()
+    })
   return true
 }
 

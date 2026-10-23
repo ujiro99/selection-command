@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { Settings } from "@/services/settings/settings"
 import { ServiceWorkerCommand } from "@/services/ipc"
+import { openOptionPage } from "@/services/chrome"
 import { NEW_HUB_URL, VERSION, SHORTCUT_NO_SELECTION_BEHAVIOR } from "@/const"
 // Imported before any vi.doMock, so this is the real event name table.
 import { ANALYTICS_EVENTS } from "@/services/analytics"
@@ -138,12 +139,8 @@ describe("Service Worker Migration", () => {
 
     expect(mockEnhancedSettings.get).toHaveBeenCalled()
     expect(mockSettings.set).not.toHaveBeenCalled()
-    expect(chrome.tabs.create).toHaveBeenCalledWith(
-      expect.objectContaining({
-        url: expect.stringContaining(
-          `addPageRule=${encodeURIComponent(newUrl)}`,
-        ),
-      }),
+    expect(openOptionPage).toHaveBeenCalledWith(
+      expect.stringContaining(`addPageRule=${encodeURIComponent(newUrl)}`),
     )
   })
 
