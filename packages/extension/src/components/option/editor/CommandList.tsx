@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react"
+import { flushSync } from "react-dom"
 import { useFieldArray } from "react-hook-form"
 
 import {
@@ -46,7 +47,11 @@ import {
   getDescendantFolderIds,
 } from "@/services/option/commandUtils"
 import { isValidDrop } from "@/services/option/dragAndDrop"
-import { editCommandToHub, isHubShareable } from "@/services/hubShare"
+import {
+  editCommandToHub,
+  pushEditToHub,
+  isHubShareable,
+} from "@/services/hubShare"
 import { showHubShareToast } from "@/components/option/HubShareToast"
 import { CACHE_SECTIONS } from "@/services/settings/settingsCache"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
@@ -110,9 +115,11 @@ function isDroppable(
 
 type CommandListProps = {
   control: any
+  // Saves the form to storage right away, skipping the debounce
+  saveNow?: () => Promise<void>
 }
 
-export const CommandList = ({ control }: CommandListProps) => {
+export const CommandList = ({ control, saveNow }: CommandListProps) => {
   const [draggingId, setDraggingId] = useState<string | null>(null)
   const [typeSelectionDialogOpen, setTypeSelectionDialogOpen] = useState(false)
   const [commandDialogOpen, _setCommandDialogOpen] = useState(false)
@@ -227,10 +234,6 @@ export const CommandList = ({ control }: CommandListProps) => {
       const idx = commandArray.fields.findIndex((f) => f.id === data.id)
       if (idx >= 0) {
         commandArray.update(idx, data as CommandSchemaType)
-        if (syncHubOnSave) {
-          editCommandToHub(data as SelectionCommand)
-          setSyncHubOnSave(false)
-        }
         sendEvent(
           ANALYTICS_EVENTS.COMMAND_EDIT,
           {
@@ -277,8 +280,28 @@ export const CommandList = ({ control }: CommandListProps) => {
     }
   }
 
-  // location.search is fixed at page load (set via chrome.tabs.create), so it is
-  // safe to read it without adding it to the dependency array.
+  /**
+   * Saves the command and then sends it to the Hub.
+   *
+   * When the Hub acknowledges, the service worker saves the fingerprint of the
+   * sent content to storage. The command must be stored before that: if the
+   * debounced form save ran later, it would overwrite the fingerprint with the
+   * old one in the form, and the command would be marked as edited locally.
+   */
+  const upsertAndSendToHub = async (
+    data: SelectionCommand,
+    send: (command: SelectionCommand) => boolean,
+  ) => {
+    // Commit the update synchronously so that the form schedules its debounced
+    // save now, which saveNow then takes over.
+    flushSync(() => commandUpsert(data))
+    await saveNow?.()
+    send(data)
+  }
+
+  // location.search is fixed at page load (the service worker opens or navigates
+  // the tab with these params via openOptionPage), so it is safe to read it
+  // without adding it to the dependency array.
   useEffect(() => {
     if (editParamHandledRef.current) return
     const params = new URLSearchParams(location.search)
@@ -380,7 +403,17 @@ export const CommandList = ({ control }: CommandListProps) => {
         }
         open={commandDialogOpen}
         onOpenChange={setCommandDialogOpen}
-        onSubmit={(command) => commandUpsert(command)}
+        onSubmit={(command) => {
+          if (syncHubOnSave) {
+            setSyncHubOnSave(false)
+            void upsertAndSendToHub(command, editCommandToHub)
+          } else {
+            commandUpsert(command)
+          }
+        }}
+        onSubmitAndShare={(command) => {
+          void upsertAndSendToHub(command, pushEditToHub)
+        }}
         folders={folderArray.fields}
         initialCommand={editDataRef.current as SelectionCommand}
         selectedType={selectedType ?? COMMAND_TYPE.SEARCH}

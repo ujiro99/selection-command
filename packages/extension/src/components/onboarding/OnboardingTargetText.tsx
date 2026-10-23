@@ -57,8 +57,8 @@ export function OnboardingTargetText({
           "border-slate-200 dark:border-slate-800",
           background === "glow" ? "bg-white dark:bg-gray-900" : "bg-muted/80",
           !selected &&
-            !runDemo &&
-            "[--onboarding-ring-color:rgba(8,47,73,0.16)] animate-onboarding-ring motion-reduce:animate-none",
+          !runDemo &&
+          "[--onboarding-ring-color:rgba(8,47,73,0.16)] animate-onboarding-ring motion-reduce:animate-none",
         )}
       >
         <span
@@ -68,7 +68,8 @@ export function OnboardingTargetText({
             // `runDemo` is already false when prefers-reduced-motion is on
             // (see usePrefersReducedMotion() above), so no motion-reduce:
             // variant is needed here.
-            runDemo && "animate-onboarding-highlight rounded-sm",
+            runDemo &&
+            "animate-onboarding-highlight rounded-sm dark:[--onboarding-highlight-color:var(--color-sky-900)]",
           )}
         >
           {text}

@@ -842,6 +842,9 @@
   "Option_shareButton_shared_tooltip": {
     "message": "已共享"
   },
+  "Option_shareButton_modified_tooltip": {
+    "message": "有未同步的更改。点击同步"
+  },
   "Option_remove_title": {
     "message": "您确定要删除吗？"
   },

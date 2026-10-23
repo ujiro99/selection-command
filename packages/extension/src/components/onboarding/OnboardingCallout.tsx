@@ -71,7 +71,7 @@ export function OnboardingCallout({
             </div>
           </div>
           <PopoverArrow
-            className="fill-gray-800 dark:fill-gray-200 animate-onboarding-float motion-reduce:animate-none shadow-xl"
+            className="fill-gray-800 animate-onboarding-float motion-reduce:animate-none shadow-xl"
             height={6}
           />
         </PopoverContent>

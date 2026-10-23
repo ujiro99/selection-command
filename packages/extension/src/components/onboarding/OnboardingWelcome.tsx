@@ -69,7 +69,7 @@ export function OnboardingWelcome({ onDone, ui = DEFAULT_WELCOME_UI }: Props) {
       aria-label={t("onboarding_welcomeContinue")}
       data-testid="onboarding-welcome"
       className={clsx(
-        "fixed inset-0 z-30 flex cursor-default flex-col items-center justify-center overflow-hidden bg-white dark:bg-background",
+        "outline-none fixed inset-0 z-30 flex cursor-default flex-col items-center justify-center overflow-hidden bg-background",
         ui.gapClassName,
         exiting && "animate-onboarding-blur-out motion-reduce:animate-none",
       )}

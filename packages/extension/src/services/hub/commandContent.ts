@@ -96,6 +96,17 @@ export function isLocallyModified(cmd: SelectionCommand): boolean {
   return cmd.contentHash !== calcContentHash(cmd)
 }
 
+/**
+ * Whether a shared command has local edits not yet pushed to the Hub.
+ * Unlike isLocallyModified, a command without a fingerprint (shared before
+ * fingerprints existed) counts as unchanged, to avoid flagging every such
+ * command. The fingerprint is saved on the next push, enabling detection.
+ */
+export function hasUnpushedEdits(cmd: SelectionCommand): boolean {
+  if (!cmd.contentHash) return false
+  return cmd.contentHash !== calcContentHash(cmd)
+}
+
 /** Returns the value as ISO 8601 if it is a valid date string. */
 export function parseContentUpdatedAt(value: unknown): string | undefined {
   if (typeof value !== "string") return undefined

@@ -8,7 +8,7 @@ import {
   SquareTerminal,
   ChevronsUpDown,
   ChevronsDownUp,
-  Share,
+  CloudUpload,
 } from "lucide-react"
 
 import {
@@ -83,7 +83,6 @@ import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
 import { getScreenSize } from "@/services/screen"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
-import { pushEditToHub } from "@/services/hubShare"
 
 import { isEmpty, e2a, cn, parseGeminiUrl, generateId } from "@/lib/utils"
 import { t as _t } from "@/services/i18n"
@@ -275,6 +274,8 @@ type CommandEditDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   onSubmit: (command: SelectionCommand) => void
+  // Saves the command and pushes it to the Hub ("update & share")
+  onSubmitAndShare?: (command: SelectionCommand) => void
   folders: CommandFolder[]
   initialCommand?: SelectionCommand
   selectedType: COMMAND_TYPE
@@ -295,6 +296,7 @@ const CommandEditDialogInner = ({
   open,
   onOpenChange,
   onSubmit,
+  onSubmitAndShare,
   folders,
   initialCommand,
   selectedType,
@@ -892,7 +894,7 @@ const CommandEditDialogInner = ({
                 {t("labelCancel")}
               </Button>
             </DialogClose>
-            {isShared && !isHubEdit && (
+            {isShared && !isHubEdit && onSubmitAndShare && (
               <Button
                 type="button"
                 size="lg"
@@ -900,15 +902,14 @@ const CommandEditDialogInner = ({
                 onClick={form.handleSubmit(
                   (data) => {
                     const processed = processFormData(data)
-                    onSubmit(processed)
-                    pushEditToHub(processed)
+                    onSubmitAndShare(processed)
                     onOpenChange(false)
                     reset(InitialValues)
                   },
                   (err) => console.error(err),
                 )}
               >
-                <Share />
+                <CloudUpload />
                 {t("labelShare")}
               </Button>
             )}
@@ -927,7 +928,7 @@ const CommandEditDialogInner = ({
               )}
               data-testid={TEST_IDS.submitCommandButton}
             >
-              {isHubEdit ? <Share /> : <Save />}
+              {isHubEdit ? <CloudUpload /> : <Save />}
               {isHubEdit
                 ? t("labelShare")
                 : isEdit

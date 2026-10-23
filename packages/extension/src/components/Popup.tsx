@@ -12,8 +12,8 @@ import { useThemeContext } from "@/hooks/useTheme"
 import { isMac, onHover, cn } from "@/lib/utils"
 import {
   findUserStyleValue,
-  hasUserStyle,
   hasUserColors,
+  usesIconColor,
   toCssVariables,
 } from "@/services/option/userStyles"
 import { t } from "@/services/i18n"
@@ -107,10 +107,10 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
     // The dark theme paints recolorable icons (not favicons or brand icons)
     // in its own icon color, as the global icon color setting would: they
     // are mostly black glyphs that would vanish on the dark background.
-    const isDarkDefault = useThemeContext() === "dark" && !hasCustomColors
-    const hasIconColor =
-      hasUserStyle(userSettings?.userStyles, STYLE_VARIABLE.ICON_COLOR) ||
-      isDarkDefault
+    const hasIconColor = usesIconColor(
+      userSettings?.userStyles,
+      useThemeContext() === "dark",
+    )
 
     return (
       <popupContext.Provider

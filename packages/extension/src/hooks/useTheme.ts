@@ -1,4 +1,10 @@
-import { createContext, useContext, useEffect, useState } from "react"
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from "react"
 import { THEME, THEME_ATTRIBUTE } from "@/const"
 import { useUserSettings } from "@/hooks/useSettings"
 
@@ -10,6 +16,8 @@ export type ResolvedTheme = "light" | "dark"
  * The resolved theme, provided by the root that calls useTheme. Lets deeply
  * nested components (e.g. every menu icon) read it without each one loading
  * the settings.
+ * Outside a provider it silently falls back to "light", so every new entry
+ * point (e.g. a side panel) must provide it from its own useTheme call.
  */
 export const themeContext = createContext<ResolvedTheme>("light")
 
@@ -57,9 +65,12 @@ export function useTheme(target: Element | null | undefined): ResolvedTheme {
   const prefersDark = usePrefersDarkScheme()
   const resolved = resolveTheme(userSettings.theme, prefersDark)
 
-  useEffect(() => {
+  // Layout effect: set the attribute before the first paint, so `dark:`
+  // styles never render a light frame first.
+  useLayoutEffect(() => {
     if (target == null) return
     target.setAttribute(THEME_ATTRIBUTE, resolved)
+    return () => target.removeAttribute(THEME_ATTRIBUTE)
   }, [target, resolved])
 
   return resolved
