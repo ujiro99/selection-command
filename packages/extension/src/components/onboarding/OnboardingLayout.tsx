@@ -32,7 +32,7 @@ export function OnboardingLayout({
   const progress = getProgress(step, phase)
 
   return (
-    <div className="relative flex min-h-screen flex-col overflow-hidden bg-white dark:bg-background">
+    <div className="relative flex min-h-screen flex-col overflow-hidden bg-background">
       {background === "glow" ? (
         // Fixed to the viewport, like the welcome overlay, so its center
         // lines up exactly with the overlay's glow during the handoff.
