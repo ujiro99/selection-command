@@ -529,11 +529,9 @@ const CommandEditDialogInner = ({
       <DialogPortal>
         <DialogContent
           className={cn(
-            css.dialog,
             "max-w-3xl pr-2",
             selectedType === COMMAND_TYPE.PAGE_ACTION && "max-w-4xl",
           )}
-          overlayClassName="supports-backdrop-filter:backdrop-blur-xs"
         >
           <DialogHeader className="relative">
             <DialogTitle>
