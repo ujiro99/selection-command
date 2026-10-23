@@ -6,6 +6,12 @@
     Arial, sans-serif;
   --font-color: #333;
   --menu-top: 150px;
+
+  @variant dark {
+    --font-color: #e5e7eb;
+    /* Icon color for OptionMenuImage, see there. */
+    --sc-icon-color: var(--color-gray-300);
+  }
 }
 
 :global body {
@@ -18,7 +24,7 @@
 }
 
 .title {
-  @apply tracking-tight text-gray-700;
+  @apply tracking-tight text-gray-700 dark:text-gray-300;
   font-weight: 600;
   font-size: 1.2rem;
   margin: 0;
@@ -29,7 +35,7 @@
 }
 
 .version {
-  @apply mt-0.5 text-gray-500;
+  @apply mt-0.5 text-gray-500 dark:text-gray-400;
   font-size: 0.8rem;
 }
 
@@ -47,7 +53,7 @@
 }
 
 .menuLabel {
-  @apply font-mono text-gray-800;
+  @apply font-mono text-gray-800 dark:text-gray-200;
   font-size: 1.2rem;
   margin-bottom: 16px;
 }
@@ -59,7 +65,7 @@
 
 .menuButton {
   @apply flex items-center;
-  @apply font-mono text-gray-800;
+  @apply font-mono text-gray-800 dark:text-gray-200;
   border: none;
   background: none;
   font-size: 0.9rem;
@@ -72,7 +78,7 @@
   cursor: pointer;
 
   &:hover {
-    @apply bg-gray-200;
+    @apply bg-gray-200 dark:bg-gray-700;
     @apply scale-[110%];
   }
 }
@@ -94,6 +100,9 @@
 
 .bgHatching {
   background-color: #fff;
+  @variant dark {
+    background-color: var(--color-gray-900);
+  }
   background-image: repeating-linear-gradient(
     45deg,
     #6b7280,

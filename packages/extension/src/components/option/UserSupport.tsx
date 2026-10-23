@@ -26,10 +26,13 @@ export function UserSupport() {
         rel="noopener noreferrer"
         className={css.menuButton}
       >
-        <HelpCircle size={18} className="mr-2 stroke-gray-600" />
+        <HelpCircle
+          size={18}
+          className="mr-2 stroke-gray-600 dark:stroke-gray-400"
+        />
         {t("usersupport_contact")}
       </a>
-      <p className="text-sm text-gray-800 mt-1 ml-2 max-w-60">
+      <p className="text-sm text-gray-800 dark:text-gray-200 mt-1 ml-2 max-w-60">
         {t("usersupport_description")}
       </p>
     </div>

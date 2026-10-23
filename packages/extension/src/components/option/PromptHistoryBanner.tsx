@@ -47,7 +47,7 @@ export function PromptHistoryBanner() {
       rel="noopener noreferrer"
       className={cn(
         "fixed bottom-5 right-5 z-1000 p-5 max-w-[300px]",
-        "bg-white shadow-2xl rounded-lg",
+        "bg-white dark:bg-gray-900 shadow-2xl rounded-lg",
         "cursor-pointer transition-all duration-300 ease-in-out",
         "no-underline text-inherit",
         "hover:-translate-y-0.5 hover:shadow-xl",
@@ -58,7 +58,7 @@ export function PromptHistoryBanner() {
         className={cn(
           "absolute top-2 right-2 p-1 rounded-full",
           "bg-transparent border-none cursor-pointer",
-          "text-gray-600 hover:text-gray-800 hover:bg-gray-100",
+          "text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800",
           "transition-colors z-1001",
           "focus:outline-2 focus:outline-blue-500 focus:outline-offset-2",
         )}
@@ -73,7 +73,7 @@ export function PromptHistoryBanner() {
         alt="Prompt History"
         className="w-full h-auto rounded-lg mb-3"
       />
-      <p className="font-mono text-gray-800 text-sm leading-relaxed m-0">
+      <p className="font-mono text-gray-800 dark:text-gray-200 text-sm leading-relaxed m-0">
         {t("prompthistory_banner_description")}
       </p>
     </a>

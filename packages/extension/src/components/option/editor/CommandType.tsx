@@ -47,7 +47,8 @@ export const CommandType = forwardRef<HTMLButtonElement, CommandTypeProps>(
         type="button"
         className={cn(
           "group px-4 py-2 border rounded-lg transition-all duration-200 text-left",
-          !disabled && "hover:bg-gray-50 hover:border-gray-300",
+          !disabled &&
+            "hover:bg-gray-50 dark:hover:bg-gray-900 hover:border-gray-300 dark:hover:border-gray-700",
           !compact && "hover:shadow-md",
         )}
         onClick={() => onClick(type)}
@@ -63,25 +64,27 @@ export const CommandType = forwardRef<HTMLButtonElement, CommandTypeProps>(
         >
           <div
             className={cn(
-              "rounded-full bg-gray-100 transition-colors",
-              !disabled && "group-hover:bg-gray-200",
+              "rounded-full bg-gray-100 dark:bg-gray-800 transition-colors",
+              !disabled &&
+                "group-hover:bg-gray-200 dark:group-hover:bg-gray-700",
               compact ? "p-2" : "p-3",
             )}
           >
             <IconComponent
               size={compact ? 16 : 20}
               className={cn(
-                "text-gray-600 ",
-                !disabled && "group-hover:text-gray-700",
+                "text-gray-600 dark:text-gray-400 ",
+                !disabled &&
+                  "group-hover:text-gray-700 dark:group-hover:text-gray-300",
               )}
             />
           </div>
           <div className="text-center space-y-1">
-            <h4 className="text-sm font-semibold text-gray-900">
+            <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
               {t(metadata.titleKey)}
             </h4>
             {!compact && (
-              <p className="text-xs text-gray-600 line-clamp-3">
+              <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-3">
                 {t(metadata.descKey)}
               </p>
             )}

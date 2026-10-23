@@ -69,16 +69,18 @@ export const CommandTypeSelectionDialog = ({
                 onClick={() =>
                   sendHubLinkClick(HUB_LINK_ROUTE.COMMAND_TYPE_DIALOG)
                 }
-                className="inline-block rounded-lg border px-3 pt-2 pb-1 transition hover:shadow-md hover:bg-gray-50 hover:border-gray-300"
+                className="inline-block rounded-lg border px-3 pt-2 pb-1 transition hover:shadow-md hover:bg-gray-50 dark:hover:bg-gray-900 hover:border-gray-300 dark:hover:border-gray-700"
               >
                 <span className="text-sm inline-flex items-center gap-1">
                   <Search className="inline size-4" />
                   {t("commandType_hubLink")}
                 </span>
+                {/* Transparent background with dark text, like HubBanner. */}
                 <img
                   src="/SelectionCommandHub_new.png"
                   alt="Selection Command Hub"
                   width="200"
+                  className="dark:bg-white dark:rounded-sm"
                 />
               </a>
             </div>
@@ -86,7 +88,7 @@ export const CommandTypeSelectionDialog = ({
           <div className="space-y-6 py-4">
             {COMMAND_TYPE_GROUPS.map((group) => (
               <div key={group.titleKey}>
-                <h3 className="text-lg font-semibold text-gray-800 mb-3">
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-3">
                   {t(group.titleKey)}
                 </h3>
                 <div className="grid grid-cols-3 gap-4">

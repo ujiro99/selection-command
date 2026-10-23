@@ -8,11 +8,12 @@ import { useSidePanelNavigation } from "@/hooks/useSidePanelNavigation"
 import { useSidePanelAutoClose } from "@/hooks/useSidePanelAutoClose"
 import { useSelectContext } from "@/hooks/useSelectContext"
 import { popupContext } from "@/hooks/usePopupContext"
+import { useThemeContext } from "@/hooks/useTheme"
 import { isMac, onHover, cn } from "@/lib/utils"
 import {
   findUserStyleValue,
-  hasUserStyle,
   hasUserColors,
+  usesIconColor,
   toCssVariables,
 } from "@/services/option/userStyles"
 import { t } from "@/services/i18n"
@@ -102,9 +103,13 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
       setDetectSelectionEnabled(!hover)
     }
 
-    const hasIconColor = hasUserStyle(
+    const hasCustomColors = hasUserColors(userSettings?.userStyles)
+    // The dark theme paints recolorable icons (not favicons or brand icons)
+    // in its own icon color, as the global icon color setting would: they
+    // are mostly black glyphs that would vanish on the dark background.
+    const hasIconColor = usesIconColor(
       userSettings?.userStyles,
-      STYLE_VARIABLE.ICON_COLOR,
+      useThemeContext() === "dark",
     )
 
     return (
@@ -130,9 +135,7 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
               alignOffset={alignOffset}
               className={cn(css.popup, isPreview && "z-10 mt-2")}
               style={userStyles}
-              data-custom-colors={
-                hasUserColors(userSettings?.userStyles) || undefined
-              }
+              data-custom-colors={hasCustomColors || undefined}
               {...onHover(handleOnHover, true)}
             >
               {!isContextMenu ? <Menu /> : null}

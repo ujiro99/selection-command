@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { MenuImage } from "@/components/menu/MenuImage"
+import { OptionMenuImage } from "@/components/option/OptionMenuImage"
 import { TEST_IDS } from "@/testIds"
 import { InfoTooltip } from "./InfoTooltip"
 
@@ -51,7 +51,7 @@ const renderOptionContent = (opt: SelectOptionType) => {
 
   return (
     <span className="flex items-center gap-1 truncate max-w-[400px]">
-      <MenuImage
+      <OptionMenuImage
         src={opt.iconUrl}
         svg={opt.iconSvg}
         alt={opt.name}
@@ -70,7 +70,7 @@ const renderOption = (opt: SelectOptionType) => {
       value={opt.value}
       key={opt.value}
       disabled={opt.disabled}
-      className={`${opt.isGroup ? "pointer-events-none" : "hover:bg-gray-100"}`}
+      className={`${opt.isGroup ? "pointer-events-none" : "hover:bg-gray-100 dark:hover:bg-gray-800"}`}
       style={{ paddingLeft }}
       data-testid={TEST_IDS.selectItem(`${opt.value}`)}
     >

@@ -1,7 +1,13 @@
+@reference "../global.css";
+
 .dialog {
   color: var(--font-color);
   background: #fff;
   padding: 30px 40px;
+
+  @variant dark {
+    background: var(--color-gray-900);
+  }
   font-family: var(--font-family);
 }
 
@@ -17,6 +23,10 @@
     display: inline;
     background: #eee;
     padding: 4px 6px;
+
+    @variant dark {
+      background: var(--color-gray-700);
+    }
     border-radius: 6px;
     font-size: 0.9em;
   }

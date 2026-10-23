@@ -49,7 +49,10 @@ export function DevTools() {
         disabled={running}
         title="Results are logged to the console"
       >
-        <ScanSearch size={18} className="mr-2 stroke-gray-600" />
+        <ScanSearch
+          size={18}
+          className="mr-2 stroke-gray-600 dark:stroke-gray-400"
+        />
         AI Selector Check
       </button>
       <button
@@ -58,10 +61,17 @@ export function DevTools() {
         disabled={running}
         title="Checks in a new incognito window (no login session). Results are logged to the console"
       >
-        <VenetianMask size={18} className="mr-2 stroke-gray-600" />
+        <VenetianMask
+          size={18}
+          className="mr-2 stroke-gray-600 dark:stroke-gray-400"
+        />
         AI Selector Check (Incognito)
       </button>
-      {running && <p className="text-sm text-gray-600 ml-2">Checking…</p>}
+      {running && (
+        <p className="text-sm text-gray-600 dark:text-gray-400 ml-2">
+          Checking…
+        </p>
+      )}
     </div>
   )
 }

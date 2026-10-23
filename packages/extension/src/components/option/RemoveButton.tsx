@@ -43,7 +43,7 @@ export const RemoveButton = ({
         data-testid={dataTestId}
       >
         <Trash2
-          className="stroke-gray-500 group-hover/remove-button:stroke-red-500"
+          className="stroke-gray-500 dark:stroke-gray-400 group-hover/remove-button:stroke-red-500"
           size={size}
         />
       </button>

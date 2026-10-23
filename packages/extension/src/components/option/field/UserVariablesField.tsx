@@ -240,7 +240,7 @@ export const UserVariablesField = ({
                 <button
                   type="button"
                   onClick={() => addVariable()}
-                  className="inline-flex h-9 items-center gap-1.5 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 px-3 font-mono text-sm text-gray-900 transition hover:border-gray-300 hover:bg-gray-100"
+                  className="inline-flex h-9 items-center gap-1.5 rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 px-3 font-mono text-sm text-gray-900 dark:text-gray-100 transition hover:border-gray-300 dark:hover:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
                 >
                   <Plus size={14} />
                   {t("userVariable_add")}
@@ -249,7 +249,7 @@ export const UserVariablesField = ({
             </div>
 
             {isFull && (
-              <p className="text-sm text-gray-500 text-center">
+              <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
                 {t("userVariable_max_reached", [`${MAX_VARIABLES}`])}
               </p>
             )}
@@ -264,7 +264,7 @@ export const UserVariablesField = ({
               description={t("userVariable_remove_inUse", [`${removeCount}`])}
               portal
             >
-              <p className="font-mono text-base text-gray-700">{`{{${removeName}}}`}</p>
+              <p className="font-mono text-base text-gray-700 dark:text-gray-300">{`{{${removeName}}}`}</p>
             </RemoveDialog>
           </div>
         </FormItem>
@@ -332,13 +332,15 @@ const VariableBadge = ({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <div className="group/variable inline-flex h-9 px-1 max-w-full items-center rounded-xl border border-gray-300 bg-white shadow-xs transition hover:border-gray-400 hover:shadow-sm">
+      <div className="group/variable inline-flex h-9 px-1 max-w-full items-center rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-xs transition hover:border-gray-400 dark:hover:border-gray-600 hover:shadow-sm">
         <DialogTrigger asChild>
           <button
             type="button"
             className={cn(
               "min-w-0 truncate py-1 pl-3 font-mono text-sm flex-1",
-              variableName ? "text-gray-700" : "text-gray-400",
+              variableName
+                ? "text-gray-700 dark:text-gray-300"
+                : "text-gray-400 dark:text-gray-500",
             )}
           >
             {variableName ? `{{${variableName}}}` : t("userVariable_unnamed")}
@@ -356,7 +358,10 @@ const VariableBadge = ({
             "group-hover/variable:basis-auto",
           )}
         >
-          <Trash2 size={14} className="stroke-gray-500 hover:stroke-red-500" />
+          <Trash2
+            size={14}
+            className="stroke-gray-500 dark:stroke-gray-400 hover:stroke-red-500"
+          />
         </button>
       </div>
 

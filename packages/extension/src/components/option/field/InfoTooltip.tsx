@@ -22,7 +22,7 @@ export const InfoTooltip = ({ text, testId }: InfoTooltipProps) => {
       <span
         ref={setTriggerElm}
         data-testid={testId}
-        className="cursor-pointer p-1 rounded-sm hover:bg-gray-100 transition-background"
+        className="cursor-pointer p-1 rounded-sm hover:bg-gray-100 dark:hover:bg-gray-800 transition-background"
       >
         <Info className="size-4 text-foreground/60" />
       </span>

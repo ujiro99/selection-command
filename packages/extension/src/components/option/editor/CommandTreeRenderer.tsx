@@ -4,7 +4,7 @@ import { EditButton } from "@/components/option/EditButton"
 import { CopyButton } from "@/components/option/CopyButton"
 import { RemoveButton } from "@/components/option/RemoveButton"
 import { ShareButton } from "@/components/option/ShareButton"
-import { MenuImage } from "@/components/menu/MenuImage"
+import { OptionMenuImage } from "@/components/option/OptionMenuImage"
 import type { FlattenNode } from "@/services/option/commandTree"
 import type { CommandFolder } from "@/types"
 import {
@@ -52,13 +52,17 @@ export const CommandTreeRenderer: React.FC<Props> = ({
         >
           <div className="h-14 pr-2 pl-0 flex-1 flex items-center overflow-hidden">
             <div className="flex-1 flex items-center overflow-hidden pr-2">
-              <MenuImage
+              <OptionMenuImage
                 src={field.content.iconUrl}
                 svg={
                   isFolder(field.content) ? field.content.iconSvg : undefined
                 }
                 alt={field.content.title}
                 className="inline-block w-7 h-7 mr-3"
+                command={isCommand(field.content) ? field.content : undefined}
+                excludeFromGlobalIconColor={
+                  field.content.excludeFromGlobalIconColor
+                }
               />
               <div className="overflow-hidden">
                 <p className="text-lg flex flex-row">
@@ -67,7 +71,7 @@ export const CommandTreeRenderer: React.FC<Props> = ({
                   </span>
                 </p>
                 {isCommand(field.content) && (
-                  <p className="text-xs sm:text-sm text-gray-400 truncate">
+                  <p className="text-xs sm:text-sm text-gray-400 dark:text-gray-500 truncate">
                     {field.content.searchUrl}
                   </p>
                 )}

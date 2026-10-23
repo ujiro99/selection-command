@@ -194,7 +194,8 @@ export const PageActionSection = ({
               "relative left-[50%] translate-x-[-50%] mt-4 px-3 py-1 bg-rose-600 font-mono text-base font-medium text-white inline-flex items-center justify-center gap-0.5 rounded-lg",
               !recDisabled &&
                 "group/record transition hover:opacity-80 hover:scale-[1.05]",
-              recDisabled && "opacity-50 cursor-not-allowed bg-gray-400",
+              recDisabled &&
+                "opacity-50 cursor-not-allowed bg-gray-400 dark:bg-gray-500",
             )}
             disabled={recDisabled}
             onClick={openRecorder}
@@ -227,13 +228,13 @@ export const PageActionSection = ({
             <p className="text-base font-medium font-mono flex items-center gap-1.5">
               <TypeIcon
                 type={removeStep.param.type}
-                className="stroke-gray-700"
+                className="stroke-gray-700 dark:stroke-gray-300"
                 size={20}
               />
               {capitalize(removeStep.param.type)}
             </p>
             {hasLabel && (
-              <p className="mt-2 px-3 py-2 rounded-md text-balance whitespace-pre-line text-sm max-h-80 overflow-x-hidden overflow-y-auto bg-gray-100">
+              <p className="mt-2 px-3 py-2 rounded-md text-balance whitespace-pre-line text-sm max-h-80 overflow-x-hidden overflow-y-auto bg-gray-100 dark:bg-gray-800">
                 <span>{removeStep.param.label}</span>
               </p>
             )}

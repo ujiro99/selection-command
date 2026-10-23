@@ -48,7 +48,11 @@ export const TableOfContents = (props: Props) => {
             onClick={onClick}
             data-target={p}
           >
-            <Icon name={p} size={18} className="mr-2 stroke-gray-600" />
+            <Icon
+              name={p}
+              size={18}
+              className="mr-2 stroke-gray-600 dark:stroke-gray-400"
+            />
             <span>{labels[p]}</span>
           </button>
         </li>

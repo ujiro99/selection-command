@@ -26,7 +26,9 @@ export function HubUserInfo() {
             e.currentTarget.style.display = "none"
           }}
         />
-        <span className="font-mono text-sm text-gray-700">{hubUser.name}</span>
+        <span className="font-mono text-sm text-gray-700 dark:text-gray-300">
+          {hubUser.name}
+        </span>
       </div>
     )
   }
@@ -37,9 +39,9 @@ export function HubUserInfo() {
       target="_blank"
       rel="noopener noreferrer"
       onClick={() => sendHubLinkClick(HUB_LINK_ROUTE.LOGIN)}
-      className="inline-flex items-center px-2 py-1 rounded-lg text-xs text-gray-600 border border-gray-300 hover:bg-gray-100 hover:scale-105 transition"
+      className="inline-flex items-center px-2 py-1 rounded-lg text-xs text-gray-600 dark:text-gray-400 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 hover:scale-105 transition"
     >
-      <LogIn size={16} className="mr-2 stroke-gray-600" />
+      <LogIn size={16} className="mr-2 stroke-gray-600 dark:stroke-gray-400" />
       {t("hub_login")}
     </a>
   )

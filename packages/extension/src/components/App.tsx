@@ -17,7 +17,7 @@ import { TabContextProvider } from "@/providers/TabContextProvider"
 import { Ipc, TabCommand } from "@/services/ipc"
 import { Settings } from "@/services/settings/settings"
 import { ServiceWorkerData } from "@/services/serviceWorkerData"
-import { useTheme } from "@/hooks/useTheme"
+import { useTheme, themeContext } from "@/hooks/useTheme"
 import type { ShowToastParam } from "@/types"
 
 ServiceWorkerData.init()
@@ -31,7 +31,7 @@ export function App({ rootElm }: Props) {
 
   // rootElm is the shadow root; the theme attribute goes on its host so that
   // the `:host()` selectors in the stylesheets can match it.
-  useTheme(rootElm instanceof ShadowRoot ? rootElm.host : rootElm)
+  const theme = useTheme(rootElm instanceof ShadowRoot ? rootElm.host : rootElm)
 
   useEffect(() => {
     const handleShowToast = (
@@ -75,20 +75,22 @@ export function App({ rootElm }: Props) {
   }, [])
 
   return (
-    <TabContextProvider>
-      <PageActionContextProvider>
-        <SelectContextProvider>
-          <SelectAnchor ref={setPositionElm} />
-          <Popup positionElm={positionElm} />
-          <InvisibleItem positionElm={positionElm} />
-          <LinkSelector />
-          <OpenInTab />
-          <PageActionRunner />
-          <PageActionRecorder />
-          <CommandUpdateConfirmDialog />
-          <Toaster cssContainer={rootElm} />
-        </SelectContextProvider>
-      </PageActionContextProvider>
-    </TabContextProvider>
+    <themeContext.Provider value={theme}>
+      <TabContextProvider>
+        <PageActionContextProvider>
+          <SelectContextProvider>
+            <SelectAnchor ref={setPositionElm} />
+            <Popup positionElm={positionElm} />
+            <InvisibleItem positionElm={positionElm} />
+            <LinkSelector />
+            <OpenInTab />
+            <PageActionRunner />
+            <PageActionRecorder />
+            <CommandUpdateConfirmDialog />
+            <Toaster cssContainer={rootElm} />
+          </SelectContextProvider>
+        </PageActionContextProvider>
+      </TabContextProvider>
+    </themeContext.Provider>
   )
 }
