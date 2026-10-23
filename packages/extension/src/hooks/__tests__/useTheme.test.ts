@@ -90,4 +90,14 @@ describe("useTheme", () => {
     const { result } = renderHook(() => useTheme(null))
     expect(result.current).toBe("dark")
   })
+
+  it("THM-08: 正常系: アンマウント時に対象要素の属性を削除する", () => {
+    mockColorScheme(false)
+    mockUserSettings.current = { theme: THEME.DARK }
+    const { unmount } = renderHook(() => useTheme(target))
+    expect(target.getAttribute(THEME_ATTRIBUTE)).toBe("dark")
+
+    unmount()
+    expect(target.hasAttribute(THEME_ATTRIBUTE)).toBe(false)
+  })
 })

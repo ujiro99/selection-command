@@ -10,7 +10,7 @@ import { useThemeContext } from "@/hooks/useTheme"
 
 import s from "./Option.module.css"
 
-// Bar colors, passed inline to MultiProgress. Must match the legend's classes.
+// Colors of the bars and their legend swatches, applied inline.
 const BAR_COLORS = {
   light: {
     system: "#4b5563", // gray-600
@@ -137,11 +137,17 @@ const StorageUsage: React.FC = () => {
         />
         <div className="text-[11px] text-gray-600 dark:text-gray-400 mt-3 pl-1 grid grid-cols-2 gap-2">
           <div className="flex items-center">
-            <div className="w-3 h-3 bg-gray-600 dark:bg-gray-300 rounded-sm mr-1"></div>
+            <div
+              className="w-3 h-3 rounded-sm mr-1"
+              style={{ backgroundColor: colors.system }}
+            ></div>
             <span>System: {storageData.sync.systemPercent}%</span>
           </div>
           <div className="flex items-center">
-            <div className="w-3 h-3 bg-gray-400 dark:bg-gray-500 rounded-sm mr-1"></div>
+            <div
+              className="w-3 h-3 rounded-sm mr-1"
+              style={{ backgroundColor: colors.commands }}
+            ></div>
             <span>Commands: {storageData.sync.commandsPercent}%</span>
           </div>
           <div className="flex items-center">
@@ -151,7 +157,10 @@ const StorageUsage: React.FC = () => {
             <span>Reserved: {storageData.sync.reservedPercent}%</span>
           </div>
           <div className="flex items-center">
-            <div className="w-3 h-3 bg-gray-200 dark:bg-gray-700 rounded-sm mr-1"></div>
+            <div
+              className="w-3 h-3 rounded-sm mr-1"
+              style={{ backgroundColor: colors.free }}
+            ></div>
             <span>Free: {storageData.sync.freePercent}%</span>
           </div>
         </div>
@@ -173,11 +182,17 @@ const StorageUsage: React.FC = () => {
         />
         <div className="text-[11px] text-gray-600 dark:text-gray-400 mt-3 pl-1 grid grid-cols-2 gap-2">
           <div className="flex items-center">
-            <div className="w-3 h-3 bg-gray-600 dark:bg-gray-300 rounded-sm mr-1"></div>
+            <div
+              className="w-3 h-3 rounded-sm mr-1"
+              style={{ backgroundColor: colors.system }}
+            ></div>
             <span>System: {storageData.local.systemPercent}%</span>
           </div>
           <div className="flex items-center">
-            <div className="w-3 h-3 bg-gray-400 dark:bg-gray-500 rounded-sm mr-1"></div>
+            <div
+              className="w-3 h-3 rounded-sm mr-1"
+              style={{ backgroundColor: colors.commands }}
+            ></div>
             <span>Commands: {storageData.local.commandsPercent}%</span>
           </div>
           <div className="flex items-center">
@@ -187,7 +202,10 @@ const StorageUsage: React.FC = () => {
             <span>Backup: {storageData.local.backupPercent}%</span>
           </div>
           <div className="flex items-center">
-            <div className="w-3 h-3 bg-gray-200 dark:bg-gray-700 rounded-sm mr-1"></div>
+            <div
+              className="w-3 h-3 rounded-sm mr-1"
+              style={{ backgroundColor: colors.free }}
+            ></div>
             <span>Free: {storageData.local.freePercent}%</span>
           </div>
         </div>

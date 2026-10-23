@@ -13,6 +13,7 @@ import {
   isPageActionCommand,
 } from "@/services/option/commandUtils"
 import { calcLevel } from "@/services/option/commandTree"
+import { hasUnpushedEdits } from "@/services/hub/commandContent"
 
 interface Props {
   nodes: FlattenNode[]
@@ -84,6 +85,10 @@ export const CommandTreeRenderer: React.FC<Props> = ({
                     onUpdateCommandId?.(field.content.id, newId)
                   }
                   isShared={sharedCommandIds?.has(field.content.id)}
+                  isModified={
+                    sharedCommandIds?.has(field.content.id) &&
+                    hasUnpushedEdits(field.content)
+                  }
                 />
               )}
               {isPageActionCommand(field.content) && (
