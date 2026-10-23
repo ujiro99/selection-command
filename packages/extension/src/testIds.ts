@@ -17,6 +17,7 @@ export const TEST_IDS = {
   submitCommandButton: "submit-command-button",
   shareCommandButton: "share-command-button",
   sharedCommandButton: "shared-command-button",
+  modifiedSharedCommandButton: "modified-shared-command-button",
   commandType: (type: string) => `command-type-${type}`,
   recButton: "rec-button",
   pageActionCompleteButton: "page-action-complete-button",

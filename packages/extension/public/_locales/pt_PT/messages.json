@@ -842,6 +842,9 @@
   "Option_shareButton_shared_tooltip": {
     "message": "Já partilhado"
   },
+  "Option_shareButton_modified_tooltip": {
+    "message": "Alterações não sincronizadas. Clique para sincronizar"
+  },
   "Option_remove_title": {
     "message": "Eliminar isto?"
   },

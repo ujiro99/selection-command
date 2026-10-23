@@ -2,7 +2,11 @@ import { describe, it, expect, vi, beforeEach } from "vitest"
 import { render, screen, fireEvent, waitFor } from "@testing-library/react"
 import { ShareButton } from "../ShareButton"
 import { sendEvent, sendHubLinkClick } from "@/services/analytics"
-import { shareCommandToHub, isHubRegistered } from "@/services/hubShare"
+import {
+  shareCommandToHub,
+  isHubRegistered,
+  pushEditToHub,
+} from "@/services/hubShare"
 import { OPEN_MODE } from "@/const"
 import { TEST_IDS } from "@/testIds"
 import type { SearchCommand } from "@/types"
@@ -20,6 +24,7 @@ vi.mock("@/services/hubShare", () => ({
   getHubLocale: () => "en",
   isHubShareable: () => true,
   isHubRegistered: vi.fn(),
+  pushEditToHub: vi.fn(),
 }))
 
 vi.mock("@/services/analytics", () => ({
@@ -39,6 +44,7 @@ const mockSendEvent = vi.mocked(sendEvent)
 const mockSendHubLinkClick = vi.mocked(sendHubLinkClick)
 const mockShareCommandToHub = vi.mocked(shareCommandToHub)
 const mockIsHubRegistered = vi.mocked(isHubRegistered)
+const mockPushEditToHub = vi.mocked(pushEditToHub)
 
 // A UUIDv7 id, so that sharing does not regenerate the command id.
 const command: SearchCommand = {
@@ -110,5 +116,50 @@ describe("ShareButton", () => {
     expect(mockIsHubRegistered).not.toHaveBeenCalled()
     expect(mockSendHubLinkClick).not.toHaveBeenCalled()
     expect(mockSendEvent).not.toHaveBeenCalled()
+  })
+
+  it("SB-05: pushes local edits to the Hub for a modified shared command", () => {
+    mockPushEditToHub.mockReturnValue(true)
+    render(<ShareButton command={command} isShared isModified />)
+
+    fireEvent.click(screen.getByTestId(TEST_IDS.modifiedSharedCommandButton))
+
+    expect(mockPushEditToHub).toHaveBeenCalledWith(command)
+    expect(chrome.tabs.create).not.toHaveBeenCalled()
+    expect(mockShareCommandToHub).not.toHaveBeenCalled()
+  })
+
+  it("SB-06: keeps the unshared state when isModified is set without isShared", () => {
+    render(<ShareButton command={command} isModified />)
+
+    expect(screen.getByTestId(TEST_IDS.shareCommandButton)).toBeTruthy()
+    expect(
+      screen.queryByTestId(TEST_IDS.modifiedSharedCommandButton),
+    ).toBeNull()
+  })
+
+  it("SB-07: shows the error state when pushing the edits fails", () => {
+    mockPushEditToHub.mockReturnValue(false)
+    render(<ShareButton command={command} isShared isModified />)
+
+    const button = screen.getByTestId(TEST_IDS.modifiedSharedCommandButton)
+    fireEvent.click(button)
+
+    expect(mockPushEditToHub).toHaveBeenCalledWith(command)
+    expect((button as HTMLButtonElement).disabled).toBe(true)
+    expect(button.querySelector("svg")?.getAttribute("class")).toContain(
+      "stroke-red-500",
+    )
+  })
+
+  it("SB-08: blocks repeated pushes while the result is shown", () => {
+    mockPushEditToHub.mockReturnValue(true)
+    render(<ShareButton command={command} isShared isModified />)
+
+    const button = screen.getByTestId(TEST_IDS.modifiedSharedCommandButton)
+    fireEvent.click(button)
+    fireEvent.click(button)
+
+    expect(mockPushEditToHub).toHaveBeenCalledOnce()
   })
 })
