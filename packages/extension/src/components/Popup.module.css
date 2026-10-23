@@ -41,7 +41,7 @@
       --sc-bd-color-s: 10%;
       --sc-bd-color-l: 26%;
       --sc-font-color: #e2e8f0;
-      --sc-icon-color: #e2e8f0;
+      --sc-icon-color: var(--sc-font-color);
 
       --foreground: 213 31% 91%;
       /* Hover color: lighter than the background, unlike the light theme. */

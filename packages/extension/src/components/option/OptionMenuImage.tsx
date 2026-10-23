@@ -3,7 +3,8 @@ import { useThemeContext } from "@/hooks/useTheme"
 import { shouldPreserveIconColor } from "@/lib/favicon"
 import type { Command } from "@/types"
 
-type Props = MenuImageProps & {
+// recolor is decided by the theme, so callers cannot pass it.
+type Props = Omit<MenuImageProps, "recolor"> & {
   /** The command the icon belongs to, to keep its website's own icons. */
   command?: Command
 }

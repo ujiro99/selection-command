@@ -105,6 +105,21 @@ export function hasUserColors(
   return COLOR_VARIABLES.some((name) => hasUserStyle(userStyles, name))
 }
 
+/**
+ * Checks whether the popup paints recolorable icons in an icon color: either
+ * the user's icon color, or the dark theme's own one. The dark theme's icon
+ * color applies only without custom colors, like the other dark defaults;
+ * otherwise the icons keep their own colors on the user's (or the light
+ * default) background.
+ */
+export function usesIconColor(
+  userStyles: StyleVariable[] | undefined,
+  isDark: boolean,
+): boolean {
+  if (hasUserStyle(userStyles, STYLE_VARIABLE.ICON_COLOR)) return true
+  return isDark && !hasUserColors(userStyles)
+}
+
 /** Builds the `--sc-*` custom properties the popup and the menu are styled with. */
 export function toCssVariables(
   userStyles: StyleVariable[] | undefined,
