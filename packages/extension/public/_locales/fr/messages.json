@@ -768,7 +768,13 @@
     "message": "Couleur de Fond"
   },
   "Option_userStyles_desc_background_color": {
-    "message": "Spécifiez la couleur de fond du menu. Par défaut : #FFFFFF"
+    "message": "Spécifiez la couleur de fond du menu. Par défaut : $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#FFFFFF"
+      }
+    }
   },
   "Option_userStyles_option_border_color": {
     "message": "Couleur de la Bordure"
@@ -777,16 +783,34 @@
     "message": "Couleur de police"
   },
   "Option_userStyles_desc_border_color": {
-    "message": "Spécifiez la couleur de la bordure du menu. Par défaut : #F3F4F6"
+    "message": "Spécifiez la couleur de la bordure du menu. Par défaut : $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#F3F4F6"
+      }
+    }
   },
   "Option_userStyles_desc_font_color": {
-    "message": "Spécifier la couleur de police. Par défaut: #0F172A"
+    "message": "Spécifier la couleur de police. Par défaut: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#0F172A"
+      }
+    }
   },
   "Option_userStyles_option_icon_color": {
     "message": "Couleur de l'icône"
   },
   "Option_userStyles_desc_icon_color": {
-    "message": "Spécifier la couleur de l'icône. Par défaut: #0F172A"
+    "message": "Spécifier la couleur de l'icône. Par défaut: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#0F172A"
+      }
+    }
   },
   "Option_excludeFromGlobalIconColor": {
     "message": "Exclure de la couleur d'icône globale"

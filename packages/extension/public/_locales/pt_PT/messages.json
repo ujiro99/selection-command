@@ -768,7 +768,13 @@
     "message": "Cor de Fundo"
   },
   "Option_userStyles_desc_background_color": {
-    "message": "Especifique a cor de fundo do menu. Padrão: #FFFFFF"
+    "message": "Especifique a cor de fundo do menu. Padrão: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#FFFFFF"
+      }
+    }
   },
   "Option_userStyles_option_border_color": {
     "message": "Cor da Borda"
@@ -777,16 +783,34 @@
     "message": "Cor do tipo de letra"
   },
   "Option_userStyles_desc_border_color": {
-    "message": "Especifique a cor da borda do menu. Padrão: #F3F4F6"
+    "message": "Especifique a cor da borda do menu. Padrão: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#F3F4F6"
+      }
+    }
   },
   "Option_userStyles_desc_font_color": {
-    "message": "Especificar a cor do tipo de letra. Predefinido: #0F172A"
+    "message": "Especificar a cor do tipo de letra. Predefinido: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#0F172A"
+      }
+    }
   },
   "Option_userStyles_option_icon_color": {
     "message": "Cor do Ícone"
   },
   "Option_userStyles_desc_icon_color": {
-    "message": "Especificar a cor do ícone. Predefinido: #0F172A"
+    "message": "Especificar a cor do ícone. Predefinido: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#0F172A"
+      }
+    }
   },
   "Option_excludeFromGlobalIconColor": {
     "message": "Excluir da cor de ícone global"

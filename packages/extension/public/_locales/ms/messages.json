@@ -768,7 +768,13 @@
     "message": "Warna Latar Belakang"
   },
   "Option_userStyles_desc_background_color": {
-    "message": "Nyatakan warna latar belakang menu. Lalai: #FFFFFF"
+    "message": "Nyatakan warna latar belakang menu. Lalai: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#FFFFFF"
+      }
+    }
   },
   "Option_userStyles_option_border_color": {
     "message": "Warna Sempadan"
@@ -777,16 +783,34 @@
     "message": "Warna fon"
   },
   "Option_userStyles_desc_border_color": {
-    "message": "Nyatakan warna sempadan menu. Lalai: #F3F4F6"
+    "message": "Nyatakan warna sempadan menu. Lalai: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#F3F4F6"
+      }
+    }
   },
   "Option_userStyles_desc_font_color": {
-    "message": "Tentukan warna fon. Lalai: #0F172A"
+    "message": "Tentukan warna fon. Lalai: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#0F172A"
+      }
+    }
   },
   "Option_userStyles_option_icon_color": {
     "message": "Warna Ikon"
   },
   "Option_userStyles_desc_icon_color": {
-    "message": "Tentukan warna ikon. Lalai: #0F172A"
+    "message": "Tentukan warna ikon. Lalai: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#0F172A"
+      }
+    }
   },
   "Option_excludeFromGlobalIconColor": {
     "message": "Kecualikan daripada warna ikon global"

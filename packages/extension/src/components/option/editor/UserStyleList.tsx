@@ -307,7 +307,13 @@ export const UserStyleDialog = ({
                       </Select>
                     )}
                     <FormDescription className="m-1">
-                      {t(`userStyles_desc_${hyphen2Underscore(field.value)}`)}
+                      {/* Color descriptions show the default of the current theme. */}
+                      {t(
+                        `userStyles_desc_${hyphen2Underscore(field.value)}`,
+                        Attributes[field.value] != null
+                          ? [String(getDefaultValue(field.value, isDark))]
+                          : undefined,
+                      )}
                     </FormDescription>
                   </FormItem>
                 )}

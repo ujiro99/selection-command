@@ -768,7 +768,13 @@
     "message": "Цвет фона"
   },
   "Option_userStyles_desc_background_color": {
-    "message": "Укажите цвет фона меню. По умолчанию: #FFFFFF"
+    "message": "Укажите цвет фона меню. По умолчанию: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#FFFFFF"
+      }
+    }
   },
   "Option_userStyles_option_border_color": {
     "message": "Цвет границы"
@@ -777,16 +783,34 @@
     "message": "Цвет шрифта"
   },
   "Option_userStyles_desc_border_color": {
-    "message": "Укажите цвет границы меню. По умолчанию: #F3F4F6"
+    "message": "Укажите цвет границы меню. По умолчанию: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#F3F4F6"
+      }
+    }
   },
   "Option_userStyles_desc_font_color": {
-    "message": "Укажите цвет шрифта. По умолчанию: #0F172A"
+    "message": "Укажите цвет шрифта. По умолчанию: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#0F172A"
+      }
+    }
   },
   "Option_userStyles_option_icon_color": {
     "message": "Цвет иконок"
   },
   "Option_userStyles_desc_icon_color": {
-    "message": "Укажите цвет иконок. По умолчанию: #0F172A"
+    "message": "Укажите цвет иконок. По умолчанию: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#0F172A"
+      }
+    }
   },
   "Option_excludeFromGlobalIconColor": {
     "message": "Исключить из глобального цвета иконок"
