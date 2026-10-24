@@ -28,27 +28,28 @@
   --accent-foreground: 224 71% 4%;
 
   /*
-   * Dark theme defaults. Skipped when any color is set in the user styles:
-   * the user's colors (and the light defaults for the rest) then apply in
-   * both themes, see hasUserColors().
+   * Dark theme defaults. Colors set in the user styles still take precedence
+   * (the font and icon colors come as inline styles), so only the colors left
+   * unset fall back to these dark defaults.
    */
-  &:not([data-custom-colors]) {
-    @variant dark {
-      --sc-bg-color-h: 222deg;
-      --sc-bg-color-s: 14%;
-      --sc-bg-color-l: 16%;
-      --sc-bd-color-h: 220deg;
-      --sc-bd-color-s: 10%;
-      --sc-bd-color-l: 26%;
-      --sc-font-color: #e2e8f0;
-      --sc-icon-color: var(--sc-font-color);
+  @variant dark {
+    --sc-bg-color-h: var(--sc-background-color-h, 222deg);
+    --sc-bg-color-s: var(--sc-background-color-s, 14%);
+    --sc-bg-color-l: var(--sc-background-color-l, 16%);
+    --sc-bd-color-h: var(--sc-border-color-h, 220deg);
+    --sc-bd-color-s: var(--sc-border-color-s, 10%);
+    --sc-bd-color-l: var(--sc-border-color-l, 26%);
+    --sc-font-color: #e2e8f0;
+    --sc-icon-color: var(--sc-font-color);
 
-      --foreground: 213 31% 91%;
-      /* Hover color: lighter than the background, unlike the light theme. */
-      --accent: var(--sc-bg-color-h) var(--sc-bg-color-s)
-        calc(var(--sc-bg-color-l) + 8%);
-      --accent-foreground: 210 40% 98%;
-    }
+    --foreground: 213 31% 91%;
+    /*
+     * Hover color: lighter than a dark background (16% -> 22%), and still
+     * darker than a light custom background (100% -> 94%).
+     */
+    --accent: var(--sc-bg-color-h) var(--sc-bg-color-s)
+      calc(var(--sc-bg-color-l) * 0.86 + 8%);
+    --accent-foreground: 210 40% 98%;
   }
 }
 
