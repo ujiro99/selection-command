@@ -34,10 +34,7 @@ export function HubBanner() {
         onClick={() => sendHubLinkClick(HUB_LINK_ROUTE.BANNER)}
       >
         <img
-          className={cn(
-            css2.banner,
-            "shadow-xl rounded-md px-4 pt-2 pb-1 dark:border",
-          )}
+          className={css2.banner}
           // The image has dark text on a transparent background, so the dark
           // theme uses a variant with the lightness inverted (hue kept).
           src={
