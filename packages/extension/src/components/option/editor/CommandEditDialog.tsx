@@ -613,11 +613,13 @@ const CommandEditDialogInner = ({
                                 {...field}
                                 {...register("searchUrl", {})}
                                 onBlur={(e) => {
+                                  // Validation already accepts the markdown
+                                  // form via the schema; this only updates
+                                  // the displayed value.
                                   const value = e.target.value
                                   const parsedUrl = parseGeminiUrl(value)
                                   if (parsedUrl !== value) {
                                     setValue("searchUrl", parsedUrl)
-                                    clearErrors("searchUrl")
                                   }
                                   field.onBlur()
                                 }}

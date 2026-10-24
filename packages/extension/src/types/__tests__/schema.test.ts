@@ -350,3 +350,42 @@ describe("command title in schemas", () => {
     }
   })
 })
+
+describe("searchUrl in schemas", () => {
+  const searchCmd = (searchUrl: string) => ({
+    id: "test-cmd",
+    openMode: OPEN_MODE.POPUP,
+    title: "Search",
+    iconUrl: "https://example.com/icon.png",
+    searchUrl,
+    openModeSecondary: OPEN_MODE.TAB,
+    spaceEncoding: SPACE_ENCODING.PLUS,
+  })
+
+  const geminiLink =
+    "[https://example.com/search?q=%s](https://www.google.com/search?q=https://example.com/search?q%3D%25s)"
+
+  it("SC-27: accepts a Gemini markdown link and unwraps it to the URL", () => {
+    const res = commandSchema.safeParse(searchCmd(geminiLink))
+    expect(res.success).toBe(true)
+    if (res.success && "searchUrl" in res.data) {
+      expect(res.data.searchUrl).toBe("https://example.com/search?q=%s")
+    }
+  })
+
+  it("SC-28: accepts a Gemini markdown link for an API command", () => {
+    const res = commandSchema.safeParse({
+      id: "api-cmd",
+      openMode: OPEN_MODE.API,
+      title: "API",
+      iconUrl: "https://example.com/icon.png",
+      searchUrl: geminiLink,
+    })
+    expect(res.success).toBe(true)
+  })
+
+  it("SC-29: still rejects a value that is not a URL", () => {
+    const res = commandSchema.safeParse(searchCmd("not a url"))
+    expect(res.success).toBe(false)
+  })
+})
