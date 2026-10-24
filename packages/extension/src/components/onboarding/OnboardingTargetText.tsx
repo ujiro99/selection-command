@@ -55,7 +55,7 @@ export function OnboardingTargetText({
         className={cn(
           "relative max-w-[560px] rounded-lg border px-[26px] py-5 text-left text-base leading-[1.9] text-slate-800 dark:text-slate-200 select-text",
           "border-slate-200 dark:border-slate-800",
-          background === "glow" ? "bg-white dark:bg-gray-900" : "bg-muted/80",
+          background === "glow" ? "bg-white dark:bg-gray-800" : "bg-muted/80",
           !selected &&
           !runDemo &&
           "[--onboarding-ring-color:rgba(8,47,73,0.16)] animate-onboarding-ring motion-reduce:animate-none",
@@ -69,7 +69,7 @@ export function OnboardingTargetText({
             // (see usePrefersReducedMotion() above), so no motion-reduce:
             // variant is needed here.
             runDemo &&
-            "animate-onboarding-highlight rounded-sm dark:[--onboarding-highlight-color:var(--color-sky-900)]",
+            "animate-onboarding-highlight rounded-sm dark:[--onboarding-highlight-color:var(--color-sky-800)]",
           )}
         >
           {text}

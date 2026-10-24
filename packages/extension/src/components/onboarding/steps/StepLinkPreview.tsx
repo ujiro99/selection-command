@@ -189,7 +189,7 @@ export function StepLinkPreview({ onboarding }: Props) {
           delay={phaseDelays.targetText}
         >
           <div
-            className="flex animate-onboarding-ring items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-gray-900 [--onboarding-ring-color:rgba(8,47,73,0.16)] motion-reduce:animate-none"
+            className="flex animate-onboarding-ring items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-gray-800 [--onboarding-ring-color:rgba(8,47,73,0.16)] motion-reduce:animate-none"
             ref={setLinkElm}
           >
             <a
