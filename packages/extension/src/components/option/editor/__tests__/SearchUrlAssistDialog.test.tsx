@@ -101,9 +101,11 @@ vi.mock("@/components/ui/collapsible", () => ({
 }))
 
 // Mock react-hook-form
+const mockSetValue = vi.fn()
 vi.mock("react-hook-form", () => ({
   useForm: () => ({
     control: {},
+    setValue: mockSetValue,
     handleSubmit: (fn: any) => (e?: Event) => {
       e?.preventDefault?.()
       fn({
@@ -316,5 +318,44 @@ describe("SearchUrlAssistDialog", () => {
 
     expect(screen.getByText("Cancel")).toBeInTheDocument()
     expect(screen.getByText("Execute with Gemini")).toBeInTheDocument()
+  })
+
+  it("SUD-06: pre-fills the search result URL with initialSearchResultUrl", () => {
+    render(
+      <SearchUrlAssistDialog
+        open={true}
+        onOpenChange={mockOnOpenChange}
+        initialSearchResultUrl="https://www.google.com/search?q=%s"
+      />,
+    )
+
+    expect(mockSetValue).toHaveBeenCalledWith(
+      "searchResultUrl",
+      "https://www.google.com/search?q=%s",
+    )
+  })
+
+  it("SUD-07: does not overwrite the URL when initialSearchResultUrl is empty", () => {
+    render(
+      <SearchUrlAssistDialog
+        open={true}
+        onOpenChange={mockOnOpenChange}
+        initialSearchResultUrl=""
+      />,
+    )
+
+    expect(mockSetValue).not.toHaveBeenCalled()
+  })
+
+  it("SUD-08: does not pre-fill the URL while the dialog is closed", () => {
+    render(
+      <SearchUrlAssistDialog
+        open={false}
+        onOpenChange={mockOnOpenChange}
+        initialSearchResultUrl="https://www.google.com/search?q=%s"
+      />,
+    )
+
+    expect(mockSetValue).not.toHaveBeenCalled()
   })
 })

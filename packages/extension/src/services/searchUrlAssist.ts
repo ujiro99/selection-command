@@ -3,6 +3,9 @@ import {
   OPEN_MODE,
   PAGE_ACTION_CONTROL,
   PAGE_ACTION_EVENT,
+  PAGE_ACTION_CONDITION_ACTION,
+  PAGE_ACTION_CONDITION_TYPE,
+  PAGE_ACTION_TIMEOUT,
   SelectorType,
 } from "@/const"
 import type { AiService } from "@/types"
@@ -17,6 +20,10 @@ const PROMPT_TEMPLATE =
 // AiService fetched before this field was introduced), so the step never
 // ends up with an empty selector.
 const FALLBACK_COPY_SELECTOR = "copy-button button"
+
+// The copy button only appears after Gemini finishes generating the answer,
+// which often takes longer than the default PAGE_ACTION_TIMEOUT.
+const COPY_WAIT_TIMEOUT = PAGE_ACTION_TIMEOUT * 6
 
 /**
  * Build the Search URL Assist PageAction command for Gemini.
@@ -97,6 +104,13 @@ export const createSearchUrlAssistAction = (service: AiService) => {
             selector: copySelector,
             selectorType: SelectorType.css,
             type: PAGE_ACTION_EVENT.click,
+            condition: {
+              actionType: PAGE_ACTION_CONDITION_ACTION.waitUntil,
+              conditionType: PAGE_ACTION_CONDITION_TYPE.clickable,
+              selector: copySelector,
+              selectorType: SelectorType.css,
+              timeout: COPY_WAIT_TIMEOUT,
+            },
           },
           skipRenderWait: false,
         },

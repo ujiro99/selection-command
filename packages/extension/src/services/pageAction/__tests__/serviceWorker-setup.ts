@@ -49,6 +49,7 @@ vi.mock("@/services/pageAction", () => ({
     initTab: vi.fn(),
     clearTab: vi.fn(),
   },
+  getStepTimeout: vi.fn(() => 1000),
 }))
 
 vi.mock("@/services/commandMetrics", () => ({

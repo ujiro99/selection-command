@@ -20,7 +20,7 @@ import {
 } from "@/const"
 
 import { t } from "@/services/i18n"
-import { isEmpty, isReservedVariableName } from "@/lib/utils"
+import { isEmpty, isReservedVariableName, parseGeminiUrl } from "@/lib/utils"
 import { SEARCH_OPEN_MODE } from "@shared/constants/open-mode"
 import { countHtmlAttachments } from "@/services/pageAction"
 import type { AiPromptCommand } from "@/types"
@@ -37,6 +37,13 @@ export const normalizeCommandTitle = (title: string): string =>
   title.trim().replace(/\s+/g, " ")
 
 // Length is checked after normalization, and the normalized title is saved.
+// Gemini returns URLs as markdown links; unwrap them before validating so a
+// pasted Gemini answer is accepted while typing, not only after blur.
+const searchUrlSchema = z.preprocess(
+  (v) => (typeof v === "string" ? parseGeminiUrl(v) : v),
+  z.string().url({ message: t("Option_zod_url") }),
+)
+
 const commandTitleSchema = z
   .string()
   .transform(normalizeCommandTitle)
@@ -68,7 +75,7 @@ const searchSchema = z.object({
     .string()
     .url({ message: t("Option_zod_url") })
     .max(1000, { message: t("Option_zod_string_max", ["1000"]) }),
-  searchUrl: z.string().url({ message: t("Option_zod_url") }),
+  searchUrl: searchUrlSchema,
   parentFolderId: z.string().optional(),
   openModeSecondary: z.enum(SEARCH_OPEN_MODE),
   spaceEncoding: z.nativeEnum(SPACE_ENCODING),
@@ -104,7 +111,7 @@ const apiSchema = z.object({
     .string()
     .url({ message: t("Option_zod_url") })
     .max(1000, { message: t("Option_zod_string_max", ["1000"]) }),
-  searchUrl: z.string().url({ message: t("Option_zod_url") }),
+  searchUrl: searchUrlSchema,
   parentFolderId: z.string().optional(),
   fetchOptions: z.string().optional(),
   ...commandSourceSchema,

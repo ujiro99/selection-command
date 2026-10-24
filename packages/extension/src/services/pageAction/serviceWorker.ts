@@ -7,7 +7,7 @@ import {
 } from "@/services/ipc"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import type { PageAction } from "@/services/pageAction"
-import { RunningStatus } from "@/services/pageAction"
+import { RunningStatus, getStepTimeout } from "@/services/pageAction"
 import { getScreenSize, ScreenSize } from "@/services/screen"
 import {
   openPopupWindow,
@@ -25,7 +25,6 @@ import {
   PAGE_ACTION_OPEN_MODE,
   PAGE_ACTION_EXEC_STATE as EXEC_STATE,
   PAGE_ACTION_EVENT as EVENT,
-  PAGE_ACTION_TIMEOUT as TIMEOUT,
 } from "@/const"
 import {
   generateRandomID,
@@ -506,7 +505,7 @@ const run = (
         step.id,
         EXEC_STATE.Doing,
         "",
-        TIMEOUT + delay,
+        getStepTimeout(step),
       )
 
       // Wait for the delay time

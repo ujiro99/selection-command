@@ -9,10 +9,10 @@ import {
   PAGE_ACTION_CONTROL,
   PAGE_ACTION_EVENT,
   PAGE_ACTION_OPEN_MODE,
-  PAGE_ACTION_TIMEOUT as TIMEOUT,
 } from "@/const"
 import { generateRandomID, sleep } from "@/lib/utils"
 import type { PageActionStep } from "@/types"
+import { getStepTimeout } from "./status"
 
 /**
  * Run page action steps through a long-lived port connection.
@@ -75,7 +75,7 @@ export const runViaPort = (
           port.onMessage.removeListener(onMsg)
           reject(new Error(`Timeout executing step: ${step.id}`))
         },
-        TIMEOUT + (step.delayMs ?? 0),
+        getStepTimeout(step),
       )
 
       const onMsg = (msg: Record<string, unknown>) => {

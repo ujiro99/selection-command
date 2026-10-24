@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -54,11 +54,14 @@ type AssistFormData = z.infer<typeof assistFormSchema>
 type SearchUrlAssistDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
+  // Pre-fills the search result URL field each time the dialog opens.
+  initialSearchResultUrl?: string
 }
 
 export const SearchUrlAssistDialog = ({
   open,
   onOpenChange,
+  initialSearchResultUrl,
 }: SearchUrlAssistDialogProps) => {
   const [isProcessing, setIsProcessing] = useState(false)
 
@@ -70,6 +73,12 @@ export const SearchUrlAssistDialog = ({
       searchResultUrl: "",
     },
   })
+  const { setValue } = form
+
+  useEffect(() => {
+    if (!open || !initialSearchResultUrl) return
+    setValue("searchResultUrl", initialSearchResultUrl)
+  }, [open, initialSearchResultUrl, setValue])
 
   const handleGeminiExecution = async (data: AssistFormData) => {
     setIsProcessing(true)

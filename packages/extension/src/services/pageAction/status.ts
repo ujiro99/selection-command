@@ -6,7 +6,34 @@ import type {
   PageActionStep,
 } from "@/types"
 import type { PageAction } from "@/services/pageAction"
-import { PAGE_ACTION_TIMEOUT as TIMEOUT, PAGE_ACTION_CONTROL } from "@/const"
+import {
+  PAGE_ACTION_TIMEOUT as TIMEOUT,
+  PAGE_ACTION_CONTROL,
+  PAGE_ACTION_EVENT,
+  PAGE_ACTION_CONDITION_ACTION,
+} from "@/const"
+
+const CLICK_TYPES: string[] = [
+  PAGE_ACTION_EVENT.click,
+  PAGE_ACTION_EVENT.doubleClick,
+  PAGE_ACTION_EVENT.tripleClick,
+]
+
+/**
+ * Upper bound of how long a step may take to execute, including its delay.
+ * A click with a waitUntil condition first polls the condition (up to its own
+ * timeout) and then waits for the target element (up to TIMEOUT), so both
+ * waits are added together.
+ */
+export const getStepTimeout = (step: PageActionStep): number => {
+  const base = TIMEOUT + (step.delayMs ?? 0)
+  if (!CLICK_TYPES.includes(step.param.type)) return base
+  const condition = (step.param as PageAction.Click).condition
+  if (condition?.actionType !== PAGE_ACTION_CONDITION_ACTION.waitUntil) {
+    return base
+  }
+  return base + (condition.timeout ?? TIMEOUT)
+}
 
 /**
  * RunningStatus manages the execution status of page actions across multiple tabs.
