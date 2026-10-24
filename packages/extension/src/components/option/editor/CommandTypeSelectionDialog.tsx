@@ -71,7 +71,7 @@ export const CommandTypeSelectionDialog = ({
                 onClick={() =>
                   sendHubLinkClick(HUB_LINK_ROUTE.COMMAND_TYPE_DIALOG)
                 }
-                className="inline-block rounded-lg border px-3 pt-2 pb-1 transition dark:bg-(--sc-input-bg) dark:border-input hover:shadow-md hover:bg-gray-50 dark:hover:bg-secondary hover:border-gray-300 dark:hover:border-gray-600"
+                className="inline-block rounded-lg border px-3 pt-2 pb-1 transition dark:bg-(--sc-input-bg) dark:border-input hover:shadow-md hover:bg-hover hover:border-gray-300 dark:hover:border-gray-600"
               >
                 <span className="text-sm inline-flex items-center gap-1">
                   <Search className="inline size-4" />

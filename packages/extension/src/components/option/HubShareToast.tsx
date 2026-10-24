@@ -63,7 +63,7 @@ function showHubShareToastNow(
         </div>
         <div className="flex flex-row gap-3">
           <button
-            className="flex-1 h-9 px-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm font-medium transition hover:bg-gray-50 dark:hover:bg-gray-900"
+            className="flex-1 h-9 px-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm font-medium transition hover:bg-hover"
             onClick={() => {
               toast.dismiss(toastId)
               onShown()

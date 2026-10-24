@@ -792,7 +792,7 @@ const CommandEditDialogInner = ({
                     "flex flex-col items-end",
                   )}
                 >
-                  <CollapsibleTrigger className="flex items-center hover:bg-gray-200 dark:hover:bg-gray-700 p-2 py-1.5 rounded-lg text-sm">
+                  <CollapsibleTrigger className="flex items-center hover:bg-hover p-2 py-1.5 rounded-lg text-sm">
                     <ChevronsUpDown
                       size={18}
                       className={cn(css.icon, collapsibleCss.iconUpDown)}

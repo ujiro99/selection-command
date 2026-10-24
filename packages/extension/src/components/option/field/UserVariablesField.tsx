@@ -227,7 +227,10 @@ export const UserVariablesField = ({
                   </button>
                   {suggestion.recommendedBy && (
                     <span className="flex items-center gap-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 px-2 py-1 text-xs text-emerald-700 dark:text-emerald-300">
-                      <Sparkles size={12} className="stroke-emerald-600 dark:stroke-emerald-400" />
+                      <Sparkles
+                        size={12}
+                        className="stroke-emerald-600 dark:stroke-emerald-400"
+                      />
                       {t("userVariable_recommended", [
                         suggestion.recommendedBy,
                       ])}
@@ -240,7 +243,7 @@ export const UserVariablesField = ({
                 <button
                   type="button"
                   onClick={() => addVariable()}
-                  className="inline-flex h-9 items-center gap-1.5 rounded-xl border-2 border-dashed border-gray-200 dark:border-input bg-gray-50 dark:bg-muted px-3 font-mono text-sm text-gray-900 dark:text-gray-100 transition hover:border-gray-300 dark:hover:border-gray-600 hover:bg-gray-100 dark:hover:bg-secondary"
+                  className="inline-flex h-9 items-center gap-1.5 rounded-xl border-2 border-dashed border-gray-200 dark:border-input bg-gray-50 dark:bg-muted px-3 font-mono text-sm text-gray-900 dark:text-gray-100 transition hover:border-gray-300 dark:hover:border-gray-600 hover:bg-hover"
                 >
                   <Plus size={14} />
                   {t("userVariable_add")}

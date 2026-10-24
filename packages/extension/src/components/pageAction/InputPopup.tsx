@@ -311,7 +311,9 @@ export function InputMenu(props: MenuProps): JSX.Element {
         <MenubarTrigger
           className={cn(
             "p-1 pl-1.5 text-sm font-normal font-sans text-gray-700 dark:text-gray-300 cursor-pointer",
-            disabled && "opacity-60 bg-muted cursor-not-allowed",
+            disabled
+              ? "opacity-60 bg-muted cursor-not-allowed"
+              : "hover:bg-hover data-[state=open]:bg-hover",
           )}
           disabled={disabled}
           onMouseEnter={() => onSelectedMenuChange(MENU.INSERT)}
@@ -363,7 +365,7 @@ export function InputMenu(props: MenuProps): JSX.Element {
           {userVariables.map((variable) => (
             <MenubarItem
               key={variable.name}
-              className="m-0.5 px-2.5 py-2 text-sm font-normal font-sans text-gray-700 dark:text-gray-300 cursor-pointer"
+              className="m-0.5 px-2.5 py-2 text-sm font-normal font-sans text-gray-700 dark:text-gray-300 cursor-pointer hover:bg-hover focus:bg-hover"
               onClick={() => onClickVariable(variable.name)}
             >
               <Braces
@@ -382,8 +384,9 @@ export function InputMenu(props: MenuProps): JSX.Element {
             <MenubarTrigger
               className={cn(
                 "p-1 px-1.5 text-sm font-normal font-sans text-gray-700 dark:text-gray-300 cursor-pointer",
-                props.fileAttachDisabled &&
-                  "opacity-60 bg-muted cursor-not-allowed",
+                props.fileAttachDisabled
+                  ? "opacity-60 bg-muted cursor-not-allowed"
+                  : "hover:bg-hover data-[state=open]:bg-hover",
               )}
               disabled={props.fileAttachDisabled}
               onMouseEnter={() => onSelectedMenuChange(MENU.FILE_PASTE)}
@@ -430,7 +433,7 @@ function InputMenuItem(props: ItemProps): JSX.Element {
   return (
     <MenubarItem
       onClick={() => props.onClick(props.value as INSERT)}
-      className="m-0.5 px-2.5 py-2 text-sm font-normal font-sans text-gray-700 dark:text-gray-300 cursor-pointer"
+      className="m-0.5 px-2.5 py-2 text-sm font-normal font-sans text-gray-700 dark:text-gray-300 cursor-pointer hover:bg-hover focus:bg-hover"
     >
       {props.children}
     </MenubarItem>

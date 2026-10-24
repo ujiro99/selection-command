@@ -269,7 +269,7 @@ export const PageRuleList = ({
             <Button
               type="button"
               variant="outline"
-              className="px-2 rounded-md transition font-mono hover:bg-gray-100 dark:hover:bg-gray-800 hover:mr-1 hover:scale-[110%] group"
+              className="px-2 rounded-md transition font-mono hover:bg-hover hover:mr-1 hover:scale-[110%] group"
               onClick={() => setDialogOpen(true)}
               ref={addButtonRef}
               data-testid={TEST_IDS.pageRuleAddButton}
@@ -305,14 +305,18 @@ export const PageRuleList = ({
                 {t("pageRules_sortBy")}
               </span>
               <Select onValueChange={handleSortByChange} value={sortBy}>
-                <SelectTrigger className="text-sm h-8 w-auto min-w-28 rounded-lg">
+                <SelectTrigger className="text-sm h-8 w-auto min-w-28 rounded-lg transition-colors duration-150 hover:bg-hover">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
                     {(["priority", "domain", "createdAt"] as SortBy[]).map(
                       (column) => (
-                        <SelectItem value={column} key={column}>
+                        <SelectItem
+                          value={column}
+                          key={column}
+                          className="hover:bg-hover focus:bg-hover"
+                        >
                           {t(`pageRules_sortBy_${column}`)}
                         </SelectItem>
                       ),
@@ -323,7 +327,7 @@ export const PageRuleList = ({
               <button
                 type="button"
                 onClick={handleSortOrderToggle}
-                className="px-1.5 py-1 border border-input shadow-xs bg-white dark:bg-gray-900 rounded-lg hover:bg-accent transition duration-50 leading-none"
+                className="px-1.5 py-1 border border-input shadow-xs bg-white dark:bg-gray-900 rounded-lg hover:bg-hover transition duration-50 leading-none"
               >
                 <SortByArrow sortBy={sortBy} sortOrder={sortOrder} />
               </button>

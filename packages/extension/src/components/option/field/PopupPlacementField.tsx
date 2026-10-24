@@ -199,6 +199,7 @@ const SideItem = ({ side, current }: { side: SIDE; current: SIDE }) => {
           aria-label={t(`popupPlacement_${side}`)}
           className={cn(
             "relative w-full h-9 shadow-xs text-xs font-mono text-gray-600 dark:text-gray-400 dark:bg-(--sc-input-bg,var(--color-gray-800))",
+            "hover:bg-hover data-[state=on]:bg-selected data-[state=on]:hover:bg-selected",
           )}
         >
           {checked && <Check size={16} className="absolute left-5" />}
@@ -230,6 +231,7 @@ const AlignItem = ({
           className={cn(
             "relative",
             "flex-col gap-0 h-auto w-full py-1 shadow-xs text-xs font-mono text-gray-600 dark:text-gray-400",
+            "hover:bg-hover data-[state=on]:bg-selected data-[state=on]:hover:bg-selected",
           )}
         >
           {checked && <Check size={16} className="absolute left-2" />}

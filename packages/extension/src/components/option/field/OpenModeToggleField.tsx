@@ -162,12 +162,15 @@ const OpenModeItem = ({
             aria-label={t(`openMode_${mode}`)}
             className={cn(
               "relative flex-col gap-0.5 h-full w-full py-1.5 shadow-xs text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300",
-              "border transition-all duration-200 dark:bg-muted dark:hover:bg-secondary",
-              checked && "bg-gray-50 dark:bg-accent dark:hover:bg-accent",
+              "border transition-all duration-200 dark:bg-muted",
+              // Keep the selected background while hovering so it is not
+              // mistaken for the hover state.
+              "data-[state=on]:bg-selected data-[state=on]:hover:bg-selected",
+              !disabled && "hover:bg-hover",
               disabled &&
                 // Override toggleVariants' `disabled:pointer-events-none` so hover
                 // still reaches this element and the reason tooltip can show.
-                "opacity-40 cursor-not-allowed hover:text-gray-600 dark:hover:text-gray-400 disabled:pointer-events-auto",
+                "opacity-40 cursor-not-allowed hover:text-gray-600 dark:hover:text-gray-400 hover:bg-transparent dark:hover:bg-muted disabled:pointer-events-auto",
             )}
           >
             {checked && (

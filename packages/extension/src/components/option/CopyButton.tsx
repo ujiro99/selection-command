@@ -40,7 +40,7 @@ export const CopyButton = ({
         type="button"
         ref={buttonRef}
         className={cn(
-          "outline-gray-200 dark:outline-gray-800 p-2 rounded-md transition hover:bg-gray-100 dark:hover:bg-gray-700/50 hover:scale-125 group/edit-button",
+          "outline-gray-200 dark:outline-gray-800 p-2 rounded-md transition hover:bg-hover hover:scale-125 group/edit-button",
           className,
         )}
         onClick={() => setOpen(true)}

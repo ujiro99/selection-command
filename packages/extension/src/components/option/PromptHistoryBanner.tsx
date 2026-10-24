@@ -58,7 +58,7 @@ export function PromptHistoryBanner() {
         className={cn(
           "absolute top-2 right-2 p-1 rounded-full",
           "bg-transparent border-none cursor-pointer",
-          "text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800",
+          "text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-hover",
           "transition-colors z-1001",
           "focus:outline-2 focus:outline-blue-500 focus:outline-offset-2",
         )}

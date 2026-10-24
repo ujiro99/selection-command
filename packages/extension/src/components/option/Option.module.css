@@ -78,7 +78,7 @@
   cursor: pointer;
 
   &:hover {
-    @apply bg-gray-200 dark:bg-gray-700;
+    @apply bg-hover;
     @apply scale-[110%];
   }
 }
