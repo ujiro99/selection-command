@@ -12,7 +12,6 @@ import { useThemeContext } from "@/hooks/useTheme"
 import { isMac, onHover, cn } from "@/lib/utils"
 import {
   findUserStyleValue,
-  hasUserColors,
   usesIconColor,
   toCssVariables,
 } from "@/services/option/userStyles"
@@ -103,7 +102,6 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
       setDetectSelectionEnabled(!hover)
     }
 
-    const hasCustomColors = hasUserColors(userSettings?.userStyles)
     // The dark theme paints recolorable icons (not favicons or brand icons)
     // in its own icon color, as the global icon color setting would: they
     // are mostly black glyphs that would vanish on the dark background.
@@ -135,7 +133,6 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
               alignOffset={alignOffset}
               className={cn(css.popup, isPreview && "z-10 mt-2")}
               style={userStyles}
-              data-custom-colors={hasCustomColors || undefined}
               {...onHover(handleOnHover, true)}
             >
               {!isContextMenu ? <Menu /> : null}

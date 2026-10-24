@@ -52,12 +52,16 @@ export function Draggable(props: Props) {
         className={cn(
           css.dragHandle,
           "pointer-events-auto absolute px-0.5 py-1 ml-1 top-[50%] translate-x-[2px] translate-y-[-50%]",
-          "rounded-md transition hover:bg-gray-300/50 hover:scale-110",
+          "rounded-md transition hover:bg-gray-300/50 dark:hover:bg-gray-600/50 hover:scale-110",
         )}
         {...listeners}
         {...attributes}
       >
-        <GripVertical size={18} strokeWidth={1.5} className="stroke-gray-500" />
+        <GripVertical
+          size={18}
+          strokeWidth={1.5}
+          className="stroke-gray-500 dark:stroke-gray-400"
+        />
       </button>
     </div>
   )

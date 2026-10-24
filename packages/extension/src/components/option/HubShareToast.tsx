@@ -63,7 +63,7 @@ function showHubShareToastNow(
         </div>
         <div className="flex flex-row gap-3">
           <button
-            className="flex-1 h-9 px-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm font-medium transition hover:bg-gray-50 dark:hover:bg-gray-900"
+            className="flex-1 h-9 px-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm font-medium transition hover:bg-hover"
             onClick={() => {
               toast.dismiss(toastId)
               onShown()
@@ -74,7 +74,7 @@ function showHubShareToastNow(
           <button
             className={cn(
               "flex items-center justify-center gap-2 flex-1 h-9 px-3 rounded-lg transition",
-              "text-base text-white border border-sky-600 bg-sky-500 hover:bg-sky-600 font-medium hover:scale-105",
+              "text-base text-white border border-sky-600 bg-sky-500 hover:bg-sky-600 font-medium hover-grow-lg",
             )}
             onClick={async () => {
               shareCommandToHub(command)

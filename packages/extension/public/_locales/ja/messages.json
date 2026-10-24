@@ -741,7 +741,7 @@
     "message": "テーマ"
   },
   "Option_theme_desc": {
-    "message": "ポップアップメニューや拡張機能の画面の配色です。下のユーザースタイルでポップアップの色を設定している場合、ポップアップメニューはテーマに関わらずその色で表示されます。"
+    "message": "ポップアップメニューや拡張機能の画面の配色です。"
   },
   "Option_theme_system": {
     "message": "システム設定に従う"
@@ -768,7 +768,13 @@
     "message": "背景色"
   },
   "Option_userStyles_desc_background_color": {
-    "message": "メニューの背景色を指定します。デフォルト: #FFFFFF"
+    "message": "メニューの背景色を指定します。デフォルト: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#FFFFFF"
+      }
+    }
   },
   "Option_userStyles_option_border_color": {
     "message": "枠線色"
@@ -777,16 +783,34 @@
     "message": "文字の色"
   },
   "Option_userStyles_desc_border_color": {
-    "message": "メニューの枠線色を指定します。デフォルト: #F3F4F6"
+    "message": "メニューの枠線色を指定します。デフォルト: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#F3F4F6"
+      }
+    }
   },
   "Option_userStyles_desc_font_color": {
-    "message": "文字の色を指定します。デフォルト: #0F172A"
+    "message": "文字の色を指定します。デフォルト: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#0F172A"
+      }
+    }
   },
   "Option_userStyles_option_icon_color": {
     "message": "アイコンの色"
   },
   "Option_userStyles_desc_icon_color": {
-    "message": "アイコンの色を指定します。デフォルト: #0F172A"
+    "message": "アイコンの色を指定します。デフォルト: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#0F172A"
+      }
+    }
   },
   "Option_excludeFromGlobalIconColor": {
     "message": "全体のアイコン色を適用しない"

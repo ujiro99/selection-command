@@ -741,7 +741,7 @@
     "message": "Design"
   },
   "Option_theme_desc": {
-    "message": "Farbschema des Popup-Menüs und der Seiten dieser Erweiterung. Wenn Sie unten in den Benutzerstilen eine Popup-Farbe festlegen, verwendet das Popup-Menü in beiden Designs Ihre Farben."
+    "message": "Farbschema des Popup-Menüs und der Seiten dieser Erweiterung."
   },
   "Option_theme_system": {
     "message": "Systemeinstellung verwenden"
@@ -768,7 +768,13 @@
     "message": "Hintergrundfarbe"
   },
   "Option_userStyles_desc_background_color": {
-    "message": "Geben Sie die Hintergrundfarbe des Menüs an. Standard: #FFFFFF"
+    "message": "Geben Sie die Hintergrundfarbe des Menüs an. Standard: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#FFFFFF"
+      }
+    }
   },
   "Option_userStyles_option_border_color": {
     "message": "Rahmenfarbe"
@@ -777,16 +783,34 @@
     "message": "Schriftfarbe"
   },
   "Option_userStyles_desc_border_color": {
-    "message": "Geben Sie die Rahmenfarbe des Menüs an. Standard: #F3F4F6"
+    "message": "Geben Sie die Rahmenfarbe des Menüs an. Standard: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#F3F4F6"
+      }
+    }
   },
   "Option_userStyles_desc_font_color": {
-    "message": "Geben Sie die Schriftfarbe an. Standard: #0F172A"
+    "message": "Geben Sie die Schriftfarbe an. Standard: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#0F172A"
+      }
+    }
   },
   "Option_userStyles_option_icon_color": {
     "message": "Symbolfarbe"
   },
   "Option_userStyles_desc_icon_color": {
-    "message": "Geben Sie die Symbolfarbe an. Standard: #0F172A"
+    "message": "Geben Sie die Symbolfarbe an. Standard: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#0F172A"
+      }
+    }
   },
   "Option_excludeFromGlobalIconColor": {
     "message": "Von globaler Symbolfarbe ausschließen"

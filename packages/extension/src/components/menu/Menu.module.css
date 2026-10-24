@@ -90,7 +90,7 @@
 }
 
 .apiIconSuccess {
-  color: var(--blue-500);
+  color: var(--color-blue-500);
 }
 
 .apiIconError {

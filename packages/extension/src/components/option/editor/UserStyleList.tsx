@@ -38,7 +38,8 @@ import { userStyleSchema, UserStyleType, UserStylesType } from "@/types/schema"
 
 import { STYLE_VARIABLE } from "@/const"
 import { cn, hyphen2Underscore } from "@/lib/utils"
-import { Attributes } from "@/services/option/userStyles"
+import { Attributes, getDefaultValue } from "@/services/option/userStyles"
+import { useThemeContext } from "@/hooks/useTheme"
 import { t as _t } from "@/services/i18n"
 import { TEST_IDS } from "@/testIds"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
@@ -77,6 +78,7 @@ type UserStyleListProps = {
 }
 
 export const UserStyleList = ({ control }: UserStyleListProps) => {
+  const isDark = useThemeContext() === "dark"
   const [dialogOpen, _setDialogOpen] = useState(false)
   const editorRef = useRef<UserStyleType>(DefaultValue)
   const addButtonRef = useRef<HTMLButtonElement>(null)
@@ -124,11 +126,11 @@ export const UserStyleList = ({ control }: UserStyleListProps) => {
             <Button
               type="button"
               variant="outline"
-              className="absolute bottom-0 left-full translate-x-[-105%] px-2 rounded-md transition font-mono hover:bg-gray-100 dark:hover:bg-gray-800 hover:mr-1 hover:scale-[110%] group"
+              className="absolute bottom-0 left-full translate-x-[-105%] px-2 rounded-md transition font-mono hover:bg-hover hover:mr-1 hover-grow-md group"
               onClick={() => {
                 editorRef.current = {
                   name: defaultName,
-                  value: Attributes[defaultName].default,
+                  value: getDefaultValue(defaultName, isDark),
                 }
                 setDialogOpen(true)
               }}
@@ -234,16 +236,20 @@ export const UserStyleDialog = ({
   const { reset, watch, setValue } = form
   const variableName = watch("name")
   const attr = Attributes[variableName]
+  const isDark = useThemeContext() === "dark"
 
   useEffect(() => {
     reset(variable)
   }, [variable])
 
+  // Re-fill the default when the theme changes too, so that the value matches
+  // the default shown in the description.
   useEffect(() => {
     if (!isUpdate) {
-      setValue("value", Attributes[variableName]?.default)
+      if (Attributes[variableName] == null) return
+      setValue("value", getDefaultValue(variableName, isDark))
     }
-  }, [variableName])
+  }, [variableName, isDark])
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -291,7 +297,7 @@ export const UserStyleDialog = ({
                               <SelectItem
                                 value={opt}
                                 key={opt}
-                                className="hover:bg-gray-100 dark:hover:bg-gray-800"
+                                className="hover:bg-hover focus:bg-hover"
                                 data-value={opt}
                               >
                                 {t(
@@ -303,7 +309,13 @@ export const UserStyleDialog = ({
                       </Select>
                     )}
                     <FormDescription className="m-1">
-                      {t(`userStyles_desc_${hyphen2Underscore(field.value)}`)}
+                      {/* Color descriptions show the default of the current theme. */}
+                      {t(
+                        `userStyles_desc_${hyphen2Underscore(field.value)}`,
+                        Attributes[field.value] != null
+                          ? [String(getDefaultValue(field.value, isDark))]
+                          : undefined,
+                      )}
                     </FormDescription>
                   </FormItem>
                 )}

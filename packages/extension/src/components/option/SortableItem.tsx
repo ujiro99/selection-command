@@ -60,7 +60,7 @@ export function SortableItem(props: SrotabelItemProps) {
     >
       <div
         className={cn(
-          "p-1 py-2 mr-1 hover:bg-gray-100 dark:hover:bg-gray-800 cursor-grab rounded-md transition duration-200",
+          "p-1 py-2 mr-1 hover:bg-hover cursor-grab rounded-md transition duration-200",
           isDragging && "cursor-grabbing",
         )}
         ref={setActivatorNodeRef}

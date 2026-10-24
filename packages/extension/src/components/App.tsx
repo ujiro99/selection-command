@@ -87,7 +87,7 @@ export function App({ rootElm }: Props) {
             <PageActionRunner />
             <PageActionRecorder />
             <CommandUpdateConfirmDialog />
-            <Toaster cssContainer={rootElm} />
+            <Toaster cssContainer={rootElm} theme={theme} />
           </SelectContextProvider>
         </PageActionContextProvider>
       </TabContextProvider>

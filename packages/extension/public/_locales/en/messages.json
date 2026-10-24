@@ -745,7 +745,7 @@
     "message": "Theme"
   },
   "Option_theme_desc": {
-    "message": "Color theme of the pop-up menu and the screens of this extension. If you set a pop-up color in the user styles below, the pop-up menu uses your colors in both themes."
+    "message": "Color theme of the pop-up menu and the screens of this extension."
   },
   "Option_theme_system": {
     "message": "Follow system"
@@ -772,7 +772,13 @@
     "message": "Background Color"
   },
   "Option_userStyles_desc_background_color": {
-    "message": "Specify the background color of the menu. Default: #FFFFFF"
+    "message": "Specify the background color of the menu. Default: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#FFFFFF"
+      }
+    }
   },
   "Option_userStyles_option_border_color": {
     "message": "Border Color"
@@ -781,16 +787,34 @@
     "message": "Font color"
   },
   "Option_userStyles_desc_border_color": {
-    "message": "Specify the border color of the menu. Default: #F3F4F6"
+    "message": "Specify the border color of the menu. Default: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#F3F4F6"
+      }
+    }
   },
   "Option_userStyles_desc_font_color": {
-    "message": "Specify font color. Default: #0F172A"
+    "message": "Specify font color. Default: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#0F172A"
+      }
+    }
   },
   "Option_userStyles_option_icon_color": {
     "message": "Icon Color"
   },
   "Option_userStyles_desc_icon_color": {
-    "message": "Specify icon color. Default: #0F172A"
+    "message": "Specify icon color. Default: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#0F172A"
+      }
+    }
   },
   "Option_excludeFromGlobalIconColor": {
     "message": "Exclude from global icon color"

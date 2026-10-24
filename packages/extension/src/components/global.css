@@ -66,6 +66,11 @@
   --color-card: hsl(var(--card));
   --color-card-foreground: hsl(var(--card-foreground));
 
+  /* Background of clickable elements on hover (`hover:bg-hover`). */
+  --color-hover: hsl(var(--sc-hover));
+  /* Background of selected items, a step stronger than hover. */
+  --color-selected: hsl(var(--sc-selected));
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -363,6 +368,38 @@
   transition-property: width, height;
 }
 
+/*
+ * Grow on hover. A relative scale makes wide elements grow much more than
+ * narrow ones, so pick the size matching the element's width; each one grows
+ * the element by about 6px horizontally. Combine with `transition` to animate.
+ *   sm: icon buttons (~32px)
+ *   md: text buttons (~100px)
+ *   lg: wide elements (~180px, e.g. sidebar menu, full-width buttons)
+ */
+@utility hover-grow-sm {
+  @media (hover: hover) {
+    &:hover {
+      scale: 1.15;
+    }
+  }
+}
+
+@utility hover-grow-md {
+  @media (hover: hover) {
+    &:hover {
+      scale: 1.05;
+    }
+  }
+}
+
+@utility hover-grow-lg {
+  @media (hover: hover) {
+    &:hover {
+      scale: 1.035;
+    }
+  }
+}
+
 @layer base {
 
   :host,
@@ -396,6 +433,10 @@
 
     --ring: 215 20.2% 65.1%;
 
+    /* gray-100 / between gray-100 and gray-200 */
+    --sc-hover: 220 14.3% 95.9%;
+    --sc-selected: 220 13.5% 93.5%;
+
     --radius: 8px;
   }
 
@@ -417,7 +458,8 @@
     --accent: 216 34% 17%;
     --accent-foreground: 210 40% 98%;
 
-    --popover: 224 71% 4%;
+    /* Floating surfaces are lighter than the page to stand out from it. */
+    --popover: 220 20% 16%;
     --popover-foreground: 213 31% 91%;
 
     --border: 216 34% 17%;
@@ -432,10 +474,29 @@
     --secondary: 222.2 47.4% 11.2%;
     --secondary-foreground: 210 40% 98%;
 
-    --destructive: 0 63% 31%;
+    /* Light enough for error text on the dark background. */
+    --destructive: 0 84% 64%;
     --destructive-foreground: 210 40% 98%;
 
-    --ring: 216 34% 17%;
+    --ring: 215 20% 55%;
+
+    /* gray-800 / gray-700. Overlays override them with --sc-overlay-*. */
+    --sc-hover: 215 27.9% 16.9%;
+    --sc-selected: 216.9 19.1% 26.7%;
+
+    /*
+     * Colors for overlay surfaces (dialogs, select and menubar menus), which
+     * are lighter than the page and need lighter controls to stand out.
+     */
+    --sc-overlay-hover: 218 18% 24%;
+    --sc-overlay-selected: 218 18% 30%;
+    --sc-overlay-input: 218 18% 26%;
+
+    /*
+     * Background of interactive controls (Input, Textarea, SelectTrigger...),
+     * slightly lighter than the page. Dialogs override it for their surface.
+     */
+    --sc-input-bg: hsl(222 30% 9%);
 
     --radius: 8px;
   }

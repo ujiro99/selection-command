@@ -70,7 +70,7 @@ const renderOption = (opt: SelectOptionType) => {
       value={opt.value}
       key={opt.value}
       disabled={opt.disabled}
-      className={`${opt.isGroup ? "pointer-events-none" : "hover:bg-gray-100 dark:hover:bg-gray-800"}`}
+      className={`${opt.isGroup ? "pointer-events-none" : "hover:bg-hover focus:bg-hover"}`}
       style={{ paddingLeft }}
       data-testid={TEST_IDS.selectItem(`${opt.value}`)}
     >
@@ -112,7 +112,7 @@ export const SelectField = ({
             >
               <FormControl>
                 <SelectTrigger
-                  className="relative"
+                  className="relative transition-colors duration-150 hover:bg-hover"
                   data-testid={TEST_IDS.selectTrigger(name)}
                 >
                   <SelectValue placeholder={placeholder} />

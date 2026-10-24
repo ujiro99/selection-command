@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button"
 import { NEW_HUB_URL } from "@/const"
 import { sendHubLinkClick, HUB_LINK_ROUTE } from "@/services/analytics"
 import { useHubUser } from "@/hooks/option/useHubUser"
+import { useThemeContext } from "@/hooks/useTheme"
 import { getHubLocale } from "@/services/hubShare"
 import { UTM_SOURCE, UTM_MEDIUM, withUtmParams } from "@shared"
 const UTM_PARAMS = { source: UTM_SOURCE.OPTION_PAGE, medium: UTM_MEDIUM.BUTTON }
@@ -37,6 +38,7 @@ export const CommandTypeSelectionDialog = ({
   onSelect,
 }: CommandTypeSelectionDialogProps) => {
   const hubUser = useHubUser()
+  const isDark = useThemeContext() === "dark"
   const locale = getHubLocale()
   const hubButtonLink = withUtmParams(
     hubUser
@@ -69,18 +71,22 @@ export const CommandTypeSelectionDialog = ({
                 onClick={() =>
                   sendHubLinkClick(HUB_LINK_ROUTE.COMMAND_TYPE_DIALOG)
                 }
-                className="inline-block rounded-lg border px-3 pt-2 pb-1 transition hover:shadow-md hover:bg-gray-50 dark:hover:bg-gray-900 hover:border-gray-300 dark:hover:border-gray-700"
+                className="inline-block rounded-lg border px-3 pt-2 pb-1 transition dark:bg-(--sc-input-bg) dark:border-input hover:shadow-md hover:bg-hover hover:border-gray-300 dark:hover:border-gray-600"
               >
                 <span className="text-sm inline-flex items-center gap-1">
                   <Search className="inline size-4" />
                   {t("commandType_hubLink")}
                 </span>
-                {/* Transparent background with dark text, like HubBanner. */}
+                {/* Dark text on a transparent background, so the dark theme
+                    uses a variant with the lightness inverted, like HubBanner. */}
                 <img
-                  src="/SelectionCommandHub_new.png"
+                  src={
+                    isDark
+                      ? "/SelectionCommandHub_new_dark.png"
+                      : "/SelectionCommandHub_new.png"
+                  }
                   alt="Selection Command Hub"
                   width="200"
-                  className="dark:bg-white dark:rounded-sm"
                 />
               </a>
             </div>

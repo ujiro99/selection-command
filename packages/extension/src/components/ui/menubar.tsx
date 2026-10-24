@@ -23,7 +23,7 @@ const Menubar = React.forwardRef<
   <MenubarPrimitive.Root
     ref={ref}
     className={cn(
-      "flex items-center p-0.5 gap-px border rounded-md bg-background",
+      "flex items-center p-0.5 gap-px border rounded-md bg-background dark:bg-(--sc-input-bg,hsl(var(--background)))",
       className,
     )}
     {...props}
@@ -100,7 +100,7 @@ const MenubarContent = React.forwardRef<
       sideOffset={sideOffset}
       onCloseAutoFocus={noFocus}
       className={cn(
-        "z-2147483647 shadow-xl overflow-hidden rounded-md bg-background foreground data-[state=open]:animate-in data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+        "z-2147483647 shadow-xl overflow-hidden rounded-md bg-background dark:bg-popover dark:[--accent:var(--sc-overlay-hover)] dark:[--sc-hover:var(--sc-overlay-hover)] foreground data-[state=open]:animate-in data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
         className,
       )}
       {...props}

@@ -220,14 +220,17 @@ export const UserVariablesField = ({
                   <button
                     type="button"
                     onClick={() => addVariable(suggestion.name)}
-                    className="inline-flex h-9 items-center gap-1.5 rounded-xl border-2 border-dashed border-emerald-400 bg-emerald-50 px-3 font-mono text-sm text-emerald-700 transition hover:border-emerald-500 hover:bg-emerald-100"
+                    className="inline-flex h-9 items-center gap-1.5 rounded-xl border-2 border-dashed border-emerald-400 dark:border-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 px-3 font-mono text-sm text-emerald-700 dark:text-emerald-300 transition hover:border-emerald-500 hover:bg-emerald-100 dark:hover:bg-emerald-900/50"
                   >
                     <Plus size={14} />
                     {suggestion.name}
                   </button>
                   {suggestion.recommendedBy && (
-                    <span className="flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-1 text-xs text-emerald-700">
-                      <Sparkles size={12} className="stroke-emerald-600" />
+                    <span className="flex items-center gap-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 px-2 py-1 text-xs text-emerald-700 dark:text-emerald-300">
+                      <Sparkles
+                        size={12}
+                        className="stroke-emerald-600 dark:stroke-emerald-400"
+                      />
                       {t("userVariable_recommended", [
                         suggestion.recommendedBy,
                       ])}
@@ -240,7 +243,7 @@ export const UserVariablesField = ({
                 <button
                   type="button"
                   onClick={() => addVariable()}
-                  className="inline-flex h-9 items-center gap-1.5 rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 px-3 font-mono text-sm text-gray-900 dark:text-gray-100 transition hover:border-gray-300 dark:hover:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  className="inline-flex h-9 items-center gap-1.5 rounded-xl border-2 border-dashed border-gray-200 dark:border-input bg-gray-50 dark:bg-muted px-3 font-mono text-sm text-gray-900 dark:text-gray-100 transition hover:border-gray-300 dark:hover:border-gray-600 hover:bg-hover"
                 >
                   <Plus size={14} />
                   {t("userVariable_add")}
@@ -332,7 +335,7 @@ const VariableBadge = ({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <div className="group/variable inline-flex h-9 px-1 max-w-full items-center rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-xs transition hover:border-gray-400 dark:hover:border-gray-600 hover:shadow-sm">
+      <div className="group/variable inline-flex h-9 px-1 max-w-full items-center rounded-xl border border-gray-300 dark:border-input bg-white dark:bg-(--sc-input-bg,var(--color-gray-900)) shadow-xs transition hover:border-gray-400 dark:hover:border-gray-600 hover:shadow-sm">
         <DialogTrigger asChild>
           <button
             type="button"

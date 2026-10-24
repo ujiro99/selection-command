@@ -24,7 +24,16 @@
 :global .pageActionHelp b:before {
   content: "";
   z-index: -1;
-  @apply absolute w-full h-3 -left-1 -bottom-0.5;
+  @apply absolute w-full h-3 -left-0.5 -bottom-0.5;
   @apply bg-blue-100 rounded-sm;
-  @apply box-content px-1;
+  @apply box-content px-0.5;
+}
+
+/*
+ * `@variant dark` would append `:where(...)` after the pseudo-element, which is
+ * an invalid selector, so the dark theme selectors are spelled out.
+ */
+:global :host([data-sc-theme="dark"]) .pageActionHelp b:before,
+:global [data-sc-theme="dark"] .pageActionHelp b:before {
+  @apply bg-sky-800/80;
 }

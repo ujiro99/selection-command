@@ -741,7 +741,7 @@
     "message": "主题"
   },
   "Option_theme_desc": {
-    "message": "弹出菜单和本扩展页面的配色。如果在下方用户样式中设置了弹出菜单的颜色，弹出菜单在两种主题下都会使用您设置的颜色。"
+    "message": "弹出菜单和本扩展页面的配色。"
   },
   "Option_theme_system": {
     "message": "跟随系统"
@@ -768,7 +768,13 @@
     "message": "背景颜色"
   },
   "Option_userStyles_desc_background_color": {
-    "message": "指定菜单的背景颜色。默认：#FFFFFF"
+    "message": "指定菜单的背景颜色。默认：$default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#FFFFFF"
+      }
+    }
   },
   "Option_userStyles_option_border_color": {
     "message": "边框颜色"
@@ -777,16 +783,34 @@
     "message": "字体颜色"
   },
   "Option_userStyles_desc_border_color": {
-    "message": "指定菜单的边框颜色。默认：#F3F4F6"
+    "message": "指定菜单的边框颜色。默认：$default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#F3F4F6"
+      }
+    }
   },
   "Option_userStyles_desc_font_color": {
-    "message": "指定字体颜色。默认值：#0F172A"
+    "message": "指定字体颜色。默认值：$default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#0F172A"
+      }
+    }
   },
   "Option_userStyles_option_icon_color": {
     "message": "图标颜色"
   },
   "Option_userStyles_desc_icon_color": {
-    "message": "指定图标颜色。默认值：#0F172A"
+    "message": "指定图标颜色。默认值：$default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#0F172A"
+      }
+    }
   },
   "Option_excludeFromGlobalIconColor": {
     "message": "从全局图标颜色中排除"

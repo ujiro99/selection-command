@@ -1,0 +1,20 @@
+@reference "../global.css";
+
+/*
+ * In dark mode the default dialog surface is as dark as the page behind it,
+ * so lift the surface and the controls inside it to keep the dialog visible.
+ */
+.content {
+  @variant dark {
+    --background: 222 24% 11%;
+    --border: 218 18% 22%;
+    --input: var(--sc-overlay-input);
+    --secondary: 219 18% 19%;
+    --accent: var(--sc-overlay-hover);
+    --sc-hover: var(--sc-overlay-hover);
+    --sc-selected: var(--sc-overlay-selected);
+    --muted: 220 20% 15%;
+    /* Background of Input, Textarea and SelectTrigger. */
+    --sc-input-bg: hsl(220 20% 15%);
+  }
+}

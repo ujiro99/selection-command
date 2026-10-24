@@ -1,7 +1,7 @@
 @reference "../../global.css";
 
 .icon {
-  @apply stroke-gray-600;
+  @apply stroke-gray-600 dark:stroke-gray-300;
 }
 
 .pageActionStart > div,

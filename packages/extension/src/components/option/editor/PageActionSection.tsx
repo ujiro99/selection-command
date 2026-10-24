@@ -193,7 +193,7 @@ export const PageActionSection = ({
             className={cn(
               "relative left-[50%] translate-x-[-50%] mt-4 px-3 py-1 bg-rose-600 font-mono text-base font-medium text-white inline-flex items-center justify-center gap-0.5 rounded-lg",
               !recDisabled &&
-                "group/record transition hover:opacity-80 hover:scale-[1.05]",
+                "group/record transition hover:opacity-80 hover-grow-md",
               recDisabled &&
                 "opacity-50 cursor-not-allowed bg-gray-400 dark:bg-gray-500",
             )}
