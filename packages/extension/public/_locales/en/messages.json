@@ -745,7 +745,7 @@
     "message": "Theme"
   },
   "Option_theme_desc": {
-    "message": "Color theme of the pop-up menu and the screens of this extension. If you set a pop-up color in the user styles below, the pop-up menu uses your colors in both themes."
+    "message": "Color theme of the pop-up menu and the screens of this extension."
   },
   "Option_theme_system": {
     "message": "Follow system"

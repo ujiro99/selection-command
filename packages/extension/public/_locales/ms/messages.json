@@ -741,7 +741,7 @@
     "message": "Tema"
   },
   "Option_theme_desc": {
-    "message": "Skema warna menu pop timbul dan skrin sambungan ini. Jika anda menetapkan warna pop timbul dalam gaya pengguna di bawah, menu pop timbul menggunakan warna anda dalam kedua-dua tema."
+    "message": "Skema warna menu pop timbul dan skrin sambungan ini."
   },
   "Option_theme_system": {
     "message": "Ikut sistem"

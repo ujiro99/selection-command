@@ -741,7 +741,7 @@
     "message": "Tema"
   },
   "Option_theme_desc": {
-    "message": "Esquema de colores del menú emergente y de las pantallas de esta extensión. Si defines un color del menú emergente en los estilos de usuario de abajo, el menú emergente usa tus colores en ambos temas."
+    "message": "Esquema de colores del menú emergente y de las pantallas de esta extensión."
   },
   "Option_theme_system": {
     "message": "Según el sistema"

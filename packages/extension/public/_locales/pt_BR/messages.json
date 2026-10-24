@@ -741,7 +741,7 @@
     "message": "Tema"
   },
   "Option_theme_desc": {
-    "message": "Esquema de cores do menu pop-up e das telas desta extensão. Se você definir uma cor do pop-up nos estilos do usuário abaixo, o menu pop-up usará suas cores nos dois temas."
+    "message": "Esquema de cores do menu pop-up e das telas desta extensão."
   },
   "Option_theme_system": {
     "message": "Seguir o sistema"

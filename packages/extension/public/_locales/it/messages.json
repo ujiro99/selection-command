@@ -741,7 +741,7 @@
     "message": "Tema"
   },
   "Option_theme_desc": {
-    "message": "Combinazione di colori del menu a comparsa e delle schermate di questa estensione. Se imposti un colore del menu negli stili utente qui sotto, il menu a comparsa usa i tuoi colori in entrambi i temi."
+    "message": "Combinazione di colori del menu a comparsa e delle schermate di questa estensione."
   },
   "Option_theme_system": {
     "message": "Segui il sistema"

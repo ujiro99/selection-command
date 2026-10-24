@@ -741,7 +741,7 @@
     "message": "主题"
   },
   "Option_theme_desc": {
-    "message": "弹出菜单和本扩展页面的配色。如果在下方用户样式中设置了弹出菜单的颜色，弹出菜单在两种主题下都会使用您设置的颜色。"
+    "message": "弹出菜单和本扩展页面的配色。"
   },
   "Option_theme_system": {
     "message": "跟随系统"

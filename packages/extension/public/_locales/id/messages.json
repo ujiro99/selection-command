@@ -741,7 +741,7 @@
     "message": "Tema"
   },
   "Option_theme_desc": {
-    "message": "Skema warna menu pop-up dan layar ekstensi ini. Jika Anda mengatur warna pop-up pada gaya pengguna di bawah, menu pop-up menggunakan warna Anda di kedua tema."
+    "message": "Skema warna menu pop-up dan layar ekstensi ini."
   },
   "Option_theme_system": {
     "message": "Ikuti sistem"
