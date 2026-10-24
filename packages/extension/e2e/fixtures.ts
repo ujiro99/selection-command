@@ -66,15 +66,6 @@ export const test = base.extend<Fixtures>({
     // and its early logs are lost before attachSWConsole is called.
     context.on("serviceworker", (worker) => attachSWConsole(worker))
 
-    // The SW's onInstalled handler resets settings to defaults and then opens
-    // the onboarding tab. Register the waiter early so the tab isn't missed.
-    const isOnboardingPage = (p: Page) => p.url().includes(ONBOARDING_PAGE_PATH)
-    const onboardingPromise = context.pages().some(isOnboardingPage)
-      ? Promise.resolve()
-      : context
-          .waitForEvent("page", { predicate: isOnboardingPage, timeout: 15000 })
-          .then(() => undefined)
-
     // Optionally serve the hub test page from a local build (E2E_HUB_BASE_URL).
     await routeHubToLocal(context)
 
@@ -90,7 +81,22 @@ export const test = base.extend<Fixtures>({
 
     // Wait for the install-time initialization to finish. Otherwise its
     // Settings.reset() may overwrite settings a test has just imported.
-    await onboardingPromise
+    // The SW's onInstalled handler always opens the onboarding tab right
+    // after the reset, so its presence marks the end of initialization.
+    // Poll the URLs instead of matching the "page" event, since a new tab
+    // may still be at about:blank when that event fires.
+    await base.expect
+      .poll(
+        () =>
+          context.pages().some((p) => p.url().includes(ONBOARDING_PAGE_PATH)),
+        {
+          message:
+            "Onboarding tab should be opened after install-time initialization",
+          timeout: 15000,
+          intervals: [100],
+        },
+      )
+      .toBe(true)
 
     await use(context)
     await context.close()

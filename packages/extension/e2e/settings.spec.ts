@@ -121,14 +121,24 @@ test.describe("Settings Page", () => {
     await optionsPage.resetSettings()
     await optionsPage.close()
 
-    // After reset, commands should be different from the imported ones
-    // (defaults are restored). Poll to tolerate storage propagation delay.
+    // After reset, only the default commands should remain. Default commands
+    // carry sourceType "default", while the imported ones don't.
+    // Poll to tolerate storage propagation delay.
     await expect
-      .poll(async () => (await getCommands())?.length, {
-        message: "Commands should be restored to defaults after reset",
-        timeout: 5000,
-        intervals: [40],
-      })
-      .not.toBe(importedCommands.length)
+      .poll(
+        async () => {
+          const commands = (await getCommands()) ?? []
+          return (
+            commands.length > 0 &&
+            commands.every((cmd) => cmd.sourceType === "default")
+          )
+        },
+        {
+          message: "Commands should be restored to defaults after reset",
+          timeout: 5000,
+          intervals: [100, 250, 500],
+        },
+      )
+      .toBe(true)
   })
 })
