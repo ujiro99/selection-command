@@ -48,7 +48,7 @@ export const CommandType = forwardRef<HTMLButtonElement, CommandTypeProps>(
         className={cn(
           "group px-4 py-2 border rounded-lg transition-all duration-200 text-left",
           !disabled &&
-            "dark:bg-(--sc-input-bg) dark:border-input hover:bg-gray-50 dark:hover:bg-secondary hover:border-gray-300 dark:hover:border-gray-600",
+          "dark:bg-(--sc-input-bg) dark:border-input hover:bg-gray-50 dark:hover:bg-secondary hover:border-gray-300 dark:hover:border-gray-600",
           !compact && "hover:shadow-md",
         )}
         onClick={() => onClick(type)}
@@ -64,9 +64,9 @@ export const CommandType = forwardRef<HTMLButtonElement, CommandTypeProps>(
         >
           <div
             className={cn(
-              "rounded-full bg-gray-100 dark:bg-gray-800 transition-colors",
+              "rounded-full bg-gray-100 dark:bg-gray-700/80 transition-colors",
               !disabled &&
-                "group-hover:bg-gray-200 dark:group-hover:bg-gray-700",
+              "group-hover:bg-gray-200 dark:group-hover:bg-gray-600",
               compact ? "p-2" : "p-3",
             )}
           >
@@ -75,7 +75,7 @@ export const CommandType = forwardRef<HTMLButtonElement, CommandTypeProps>(
               className={cn(
                 "text-gray-600 dark:text-gray-400 ",
                 !disabled &&
-                  "group-hover:text-gray-700 dark:group-hover:text-gray-300",
+                "group-hover:text-gray-700 dark:group-hover:text-gray-300",
               )}
             />
           </div>
