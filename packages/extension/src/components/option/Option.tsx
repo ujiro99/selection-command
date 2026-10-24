@@ -4,6 +4,7 @@ import { Toaster } from "sonner"
 import { Settings } from "@/services/settings/settings"
 import { capitalize, scrollToSelector } from "@/lib/utils"
 import { APP_ID, VERSION, SCREEN } from "@/const"
+import { useTheme, themeContext } from "@/hooks/useTheme"
 import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
 
 import { Popup } from "@/components/Popup"
@@ -25,6 +26,8 @@ export function Option() {
   const [popupElm, setPopupElm] = useState<Element | null>(null)
   const [popupHeight, setPopupHeight] = useState(0)
   const hasSentScreenOpenedRef = useRef(false)
+
+  const theme = useTheme(document.documentElement)
 
   useEffect(() => {
     const updateHeight = () => {
@@ -60,59 +63,61 @@ export function Option() {
   }
 
   return (
-    <div>
-      <Toaster />
-      <header className={css.titleHeader}>
-        <h1 className={css.title}>
-          {APP_ID.split("-").map((n) => {
-            return (
-              <span key={n} className={css.titleSpan}>
-                {capitalize(n)}
-              </span>
-            )
-          })}
-        </h1>
-        <span className={css.version}>Version: {VERSION}</span>
-        <div className="ml-auto">
-          <HubUserInfo />
+    <themeContext.Provider value={theme}>
+      <div>
+        <Toaster theme={theme} />
+        <header className={css.titleHeader}>
+          <h1 className={css.title}>
+            {APP_ID.split("-").map((n) => {
+              return (
+                <span key={n} className={css.titleSpan}>
+                  {capitalize(n)}
+                </span>
+              )
+            })}
+          </h1>
+          <span className={css.version}>Version: {VERSION}</span>
+          <div className="ml-auto">
+            <HubUserInfo />
+          </div>
+        </header>
+        <div className="flex m-auto gap-4 justify-center">
+          <aside className="min-w-60">
+            <div className="sticky top-20">
+              <TableOfContents onClick={onClickMenu} />
+              <ImportExport />
+              <UserSupport />
+              <DeveloperSupport />
+              <DevTools />
+            </div>
+          </aside>
+          <main>
+            <SettingForm className="pt-10" />
+          </main>
+          <aside className="pl-10 font-mono min-w-70">
+            <div className="sticky top-20">
+              <div
+                ref={setPreviewElm}
+                style={{ marginBottom: Math.max(popupHeight + 5, 30) }}
+              >
+                <SelectContextProvider>
+                  <Popup
+                    positionElm={previewElm}
+                    isPreview={true}
+                    ref={setPopupElm}
+                  />
+                </SelectContextProvider>
+              </div>
+              <div className="pt-3">
+                <HubBanner />
+              </div>
+              <div>
+                <StorageUsage />
+              </div>
+            </div>
+          </aside>
         </div>
-      </header>
-      <div className="flex m-auto gap-4 justify-center">
-        <aside className="min-w-60">
-          <div className="sticky top-20">
-            <TableOfContents onClick={onClickMenu} />
-            <ImportExport />
-            <UserSupport />
-            <DeveloperSupport />
-            <DevTools />
-          </div>
-        </aside>
-        <main>
-          <SettingForm className="pt-10" />
-        </main>
-        <aside className="pl-10 font-mono min-w-70">
-          <div className="sticky top-20">
-            <div
-              ref={setPreviewElm}
-              style={{ marginBottom: Math.max(popupHeight + 5, 30) }}
-            >
-              <SelectContextProvider>
-                <Popup
-                  positionElm={previewElm}
-                  isPreview={true}
-                  ref={setPopupElm}
-                />
-              </SelectContextProvider>
-            </div>
-            <div className="pt-3">
-              <HubBanner />
-            </div>
-            <div>
-              <StorageUsage />
-            </div>
-          </div>
-        </aside>
       </div>
-    </div>
+    </themeContext.Provider>
   )
 }

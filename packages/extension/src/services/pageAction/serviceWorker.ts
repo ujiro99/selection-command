@@ -7,7 +7,7 @@ import {
 } from "@/services/ipc"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import type { PageAction } from "@/services/pageAction"
-import { RunningStatus } from "@/services/pageAction"
+import { RunningStatus, getStepTimeout } from "@/services/pageAction"
 import { getScreenSize, ScreenSize } from "@/services/screen"
 import {
   openPopupWindow,
@@ -15,6 +15,7 @@ import {
   getCurrentTab,
   OpenPopupProps,
   readClipboard,
+  showClipboardErrorToast,
 } from "@/services/chrome"
 import { incrementCommandExecutionCount } from "@/services/commandMetrics"
 import {
@@ -24,14 +25,13 @@ import {
   PAGE_ACTION_OPEN_MODE,
   PAGE_ACTION_EXEC_STATE as EXEC_STATE,
   PAGE_ACTION_EVENT as EVENT,
-  PAGE_ACTION_TIMEOUT as TIMEOUT,
 } from "@/const"
 import {
   generateRandomID,
-  isEmpty,
   isUrl,
   isUrlParam,
   matchesPageActionUrl,
+  needsClipboard,
   sleep,
 } from "@/lib/utils"
 import type {
@@ -40,9 +40,7 @@ import type {
   PageActionContext,
   PopupOption,
   DeepPartial,
-  ShowToastParam,
 } from "@/types"
-import { t } from "@/services/i18n"
 import { ServiceWorkerData } from "@/services/serviceWorkerData"
 
 ServiceWorkerData.init()
@@ -382,15 +380,11 @@ export const openAndRun = (
       tabId = currentTab.id
 
       // Get clipboard text only when needed.
-      if (isUrlParam(param.url) && param.url.useClipboard) {
+      if (needsClipboard(param.url)) {
         const clipboard = await readClipboard()
         clipboardText = clipboard.clipboardText
         if (clipboard.err) {
-          await Ipc.sendTab<ShowToastParam>(tabId, TabCommand.showToast, {
-            title: t("clipboard_error_title"),
-            description: t("clipboard_error_description"),
-            action: t("clipboard_error_action"),
-          })
+          await showClipboardErrorToast(tabId)
         }
       }
     } else {
@@ -412,13 +406,7 @@ export const openAndRun = (
       return
     }
 
-    // Use clipboard text if selected text is empty and useClipboard is true.
-    // This is for the case for shortcut key.
-    if (
-      isEmpty(selectedText) &&
-      isUrlParam(param.url) &&
-      param.url.useClipboard
-    ) {
+    if (isUrlParam(param.url) && param.url.selectionFromClipboard) {
       selectedText = clipboardText
     }
 
@@ -517,7 +505,7 @@ const run = (
         step.id,
         EXEC_STATE.Doing,
         "",
-        TIMEOUT + delay,
+        getStepTimeout(step),
       )
 
       // Wait for the delay time

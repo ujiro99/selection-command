@@ -737,6 +737,21 @@
   "Option_userStyles_desc": {
     "message": "Sie können die Anzeige des Popup-Menüs anpassen."
   },
+  "Option_theme": {
+    "message": "Design"
+  },
+  "Option_theme_desc": {
+    "message": "Farbschema des Popup-Menüs und der Seiten dieser Erweiterung."
+  },
+  "Option_theme_system": {
+    "message": "Systemeinstellung verwenden"
+  },
+  "Option_theme_light": {
+    "message": "Hell"
+  },
+  "Option_theme_dark": {
+    "message": "Dunkel"
+  },
   "Option_userStyles_add": {
     "message": "Benutzerstil bearbeiten"
   },
@@ -753,7 +768,13 @@
     "message": "Hintergrundfarbe"
   },
   "Option_userStyles_desc_background_color": {
-    "message": "Geben Sie die Hintergrundfarbe des Menüs an. Standard: #FFFFFF"
+    "message": "Geben Sie die Hintergrundfarbe des Menüs an. Standard: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#FFFFFF"
+      }
+    }
   },
   "Option_userStyles_option_border_color": {
     "message": "Rahmenfarbe"
@@ -762,16 +783,34 @@
     "message": "Schriftfarbe"
   },
   "Option_userStyles_desc_border_color": {
-    "message": "Geben Sie die Rahmenfarbe des Menüs an. Standard: #F3F4F6"
+    "message": "Geben Sie die Rahmenfarbe des Menüs an. Standard: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#F3F4F6"
+      }
+    }
   },
   "Option_userStyles_desc_font_color": {
-    "message": "Geben Sie die Schriftfarbe an. Standard: #0F172A"
+    "message": "Geben Sie die Schriftfarbe an. Standard: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#0F172A"
+      }
+    }
   },
   "Option_userStyles_option_icon_color": {
     "message": "Symbolfarbe"
   },
   "Option_userStyles_desc_icon_color": {
-    "message": "Geben Sie die Symbolfarbe an. Standard: #0F172A"
+    "message": "Geben Sie die Symbolfarbe an. Standard: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#0F172A"
+      }
+    }
   },
   "Option_excludeFromGlobalIconColor": {
     "message": "Von globaler Symbolfarbe ausschließen"
@@ -826,6 +865,9 @@
   },
   "Option_shareButton_shared_tooltip": {
     "message": "Bereits geteilt"
+  },
+  "Option_shareButton_modified_tooltip": {
+    "message": "Nicht synchronisierte Änderungen. Zum Synchronisieren klicken"
   },
   "Option_remove_title": {
     "message": "Dies löschen?"

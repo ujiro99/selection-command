@@ -1,6 +1,5 @@
 // Re-export shared utilities
 export {
-  cn,
   isPageActionCommand,
   isSearchCommand,
   capitalize,

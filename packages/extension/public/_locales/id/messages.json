@@ -737,6 +737,21 @@
   "Option_userStyles_desc": {
     "message": "Anda dapat menyesuaikan tampilan menu pop-up."
   },
+  "Option_theme": {
+    "message": "Tema"
+  },
+  "Option_theme_desc": {
+    "message": "Skema warna menu pop-up dan layar ekstensi ini."
+  },
+  "Option_theme_system": {
+    "message": "Ikuti sistem"
+  },
+  "Option_theme_light": {
+    "message": "Terang"
+  },
+  "Option_theme_dark": {
+    "message": "Gelap"
+  },
   "Option_userStyles_add": {
     "message": "Edit Gaya Pengguna"
   },
@@ -753,7 +768,13 @@
     "message": "Warna Latar Belakang"
   },
   "Option_userStyles_desc_background_color": {
-    "message": "Tentukan warna latar belakang menu. Default: #FFFFFF"
+    "message": "Tentukan warna latar belakang menu. Default: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#FFFFFF"
+      }
+    }
   },
   "Option_userStyles_option_border_color": {
     "message": "Warna Border"
@@ -762,16 +783,34 @@
     "message": "Warna font"
   },
   "Option_userStyles_desc_border_color": {
-    "message": "Tentukan warna border menu. Default: #F3F4F6"
+    "message": "Tentukan warna border menu. Default: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#F3F4F6"
+      }
+    }
   },
   "Option_userStyles_desc_font_color": {
-    "message": "Tentukan warna font. Default: #0F172A"
+    "message": "Tentukan warna font. Default: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#0F172A"
+      }
+    }
   },
   "Option_userStyles_option_icon_color": {
     "message": "Warna Ikon"
   },
   "Option_userStyles_desc_icon_color": {
-    "message": "Tentukan warna ikon. Default: #0F172A"
+    "message": "Tentukan warna ikon. Default: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#0F172A"
+      }
+    }
   },
   "Option_excludeFromGlobalIconColor": {
     "message": "Kecualikan dari warna ikon global"
@@ -826,6 +865,9 @@
   },
   "Option_shareButton_shared_tooltip": {
     "message": "Sudah dibagikan"
+  },
+  "Option_shareButton_modified_tooltip": {
+    "message": "Ada perubahan yang belum disinkronkan. Klik untuk menyinkronkan"
   },
   "Option_remove_title": {
     "message": "Hapus ini?"

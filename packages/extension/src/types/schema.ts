@@ -20,10 +20,43 @@ import {
 } from "@/const"
 
 import { t } from "@/services/i18n"
-import { isEmpty, isReservedVariableName } from "@/lib/utils"
+import { isEmpty, isReservedVariableName, parseGeminiUrl } from "@/lib/utils"
 import { SEARCH_OPEN_MODE } from "@shared/constants/open-mode"
 import { countHtmlAttachments } from "@/services/pageAction"
 import type { AiPromptCommand } from "@/types"
+
+export const COMMAND_TITLE_MIN_LENGTH = 2
+export const COMMAND_TITLE_MAX_LENGTH = 100
+
+/**
+ * Normalizes a command title: trims both ends and collapses every whitespace
+ * run (including full-width spaces, tabs and newlines) into one ASCII space.
+ * Must match the Hub's normalization so both sides store the same title.
+ */
+export const normalizeCommandTitle = (title: string): string =>
+  title.trim().replace(/\s+/g, " ")
+
+// Length is checked after normalization, and the normalized title is saved.
+// Gemini returns URLs as markdown links; unwrap them before validating so a
+// pasted Gemini answer is accepted while typing, not only after blur.
+const searchUrlSchema = z.preprocess(
+  (v) => (typeof v === "string" ? parseGeminiUrl(v) : v),
+  z.string().url({ message: t("Option_zod_url") }),
+)
+
+const commandTitleSchema = z
+  .string()
+  .transform(normalizeCommandTitle)
+  .pipe(
+    z
+      .string()
+      .min(COMMAND_TITLE_MIN_LENGTH, {
+        message: t("Option_zod_string_min", [String(COMMAND_TITLE_MIN_LENGTH)]),
+      })
+      .max(COMMAND_TITLE_MAX_LENGTH, {
+        message: t("Option_zod_string_max", [String(COMMAND_TITLE_MAX_LENGTH)]),
+      }),
+  )
 
 const commandSourceSchema = {
   sourceType: z.nativeEnum(COMMAND_SOURCE_TYPE).optional(),
@@ -37,12 +70,12 @@ const commandSourceSchema = {
 const searchSchema = z.object({
   openMode: z.enum(SEARCH_OPEN_MODE),
   id: z.string(),
-  title: z.string().min(3, { message: t("Option_zod_string_min", ["3"]) }),
+  title: commandTitleSchema,
   iconUrl: z
     .string()
     .url({ message: t("Option_zod_url") })
     .max(1000, { message: t("Option_zod_string_max", ["1000"]) }),
-  searchUrl: z.string().url({ message: t("Option_zod_url") }),
+  searchUrl: searchUrlSchema,
   parentFolderId: z.string().optional(),
   openModeSecondary: z.enum(SEARCH_OPEN_MODE),
   spaceEncoding: z.nativeEnum(SPACE_ENCODING),
@@ -73,12 +106,12 @@ export const isSearchType = (data: unknown): data is SearchType => {
 const apiSchema = z.object({
   openMode: z.literal(OPEN_MODE.API),
   id: z.string(),
-  title: z.string().min(3, { message: t("Option_zod_string_min", ["3"]) }),
+  title: commandTitleSchema,
   iconUrl: z
     .string()
     .url({ message: t("Option_zod_url") })
     .max(1000, { message: t("Option_zod_string_max", ["1000"]) }),
-  searchUrl: z.string().url({ message: t("Option_zod_url") }),
+  searchUrl: searchUrlSchema,
   parentFolderId: z.string().optional(),
   fetchOptions: z.string().optional(),
   ...commandSourceSchema,
@@ -99,10 +132,7 @@ const linkPopupSchema = z.object({
   id: z.string(),
   parentFolderId: z.string().optional(),
   ...commandSourceSchema,
-  title: z
-    .string()
-    .min(3, { message: t("Option_zod_string_min", ["3"]) })
-    .default("Link Popup"),
+  title: commandTitleSchema.default("Link Popup"),
   iconUrl: z
     .string()
     .url({ message: t("Option_zod_url") })
@@ -121,10 +151,7 @@ const copySchema = z.object({
   id: z.string(),
   parentFolderId: z.string().optional(),
   ...commandSourceSchema,
-  title: z
-    .string()
-    .min(3, { message: t("Option_zod_string_min", ["3"]) })
-    .default("Copy text"),
+  title: commandTitleSchema.default("Copy text"),
   iconUrl: z
     .string()
     .url({ message: t("Option_zod_url") })
@@ -140,10 +167,7 @@ const textStyleSchema = z.object({
   id: z.string(),
   parentFolderId: z.string().optional(),
   ...commandSourceSchema,
-  title: z
-    .string()
-    .min(3, { message: t("Option_zod_string_min", ["3"]) })
-    .default("Get Text Styles"),
+  title: commandTitleSchema.default("Get Text Styles"),
   iconUrl: z
     .string()
     .url({ message: t("Option_zod_url") })
@@ -309,7 +333,7 @@ const pageActionSchema = z.object({
   id: z.string(),
   parentFolderId: z.string().optional(),
   ...commandSourceSchema,
-  title: z.string().min(3, { message: t("Option_zod_string_min", ["3"]) }),
+  title: commandTitleSchema,
   iconUrl: z
     .string()
     .url({ message: t("Option_zod_url") })
@@ -356,7 +380,7 @@ const aiPromptSchema = z.object({
   id: z.string(),
   parentFolderId: z.string().optional(),
   ...commandSourceSchema,
-  title: z.string().min(3, { message: t("Option_zod_string_min", ["3"]) }),
+  title: commandTitleSchema,
   iconUrl: z
     .string()
     .url({ message: t("Option_zod_url") })

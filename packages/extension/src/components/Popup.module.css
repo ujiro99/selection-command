@@ -1,3 +1,5 @@
+@reference "./global.css";
+
 .popup {
   border: solid 1px var(--sc-bd-color);
   font-family: var(--font-family);
@@ -21,8 +23,34 @@
   --background: var(--sc-bg-color-h) var(--sc-bg-color-s) var(--sc-bg-color-l);
   --foreground: 222.2 47.4% 11.2%;
   --border: var(--sc-bd-color-h) var(--sc-bd-color-s) var(--sc-bd-color-l);
-  --accent: var(--sc-bg-color-h) var(--sc-bg-color-s) calc(var(--sc-bg-color-l) - 6%);
+  --accent: var(--sc-bg-color-h) var(--sc-bg-color-s)
+    calc(var(--sc-bg-color-l) - 6%);
   --accent-foreground: 224 71% 4%;
+
+  /*
+   * Dark theme defaults. Colors set in the user styles still take precedence
+   * (the font and icon colors come as inline styles), so only the colors left
+   * unset fall back to these dark defaults.
+   */
+  @variant dark {
+    --sc-bg-color-h: var(--sc-background-color-h, 222deg);
+    --sc-bg-color-s: var(--sc-background-color-s, 14%);
+    --sc-bg-color-l: var(--sc-background-color-l, 16%);
+    --sc-bd-color-h: var(--sc-border-color-h, 220deg);
+    --sc-bd-color-s: var(--sc-border-color-s, 10%);
+    --sc-bd-color-l: var(--sc-border-color-l, 26%);
+    --sc-font-color: #e2e8f0;
+    --sc-icon-color: var(--sc-font-color);
+
+    --foreground: 213 31% 91%;
+    /*
+     * Hover color: lighter than a dark background (16% -> 22%), and still
+     * darker than a light custom background (100% -> 94%).
+     */
+    --accent: var(--sc-bg-color-h) var(--sc-bg-color-s)
+      calc(var(--sc-bg-color-l) * 0.86 + 8%);
+    --accent-foreground: 210 40% 98%;
+  }
 }
 
 .popup[data-state="open"] {
@@ -36,20 +64,20 @@
 .previewContainer {
   position: relative;
 
-  &>div {
+  & > div {
     transform: translate(0, 0) !important;
   }
 }
 
 .previewLabel {
-  @apply font-mono text-gray-800;
-  font-size: 1.2rem;
+  @apply font-mono text-gray-800 dark:text-gray-200;
+  font-size: 19.2px;
 }
 
 .previewDescription {
   position: absolute;
   width: 200px;
-  font-size: 0.8rem;
+  font-size: 12.8px;
   margin: 10px 0 0;
 }
 

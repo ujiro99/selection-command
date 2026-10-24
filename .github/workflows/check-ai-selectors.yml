@@ -35,7 +35,7 @@ jobs:
       # Must match the @playwright/test version resolved in yarn.lock;
       # otherwise the bundled browsers don't match and launching fails.
       # Keep it in sync with .github/workflows/test.yml.
-      image: mcr.microsoft.com/playwright:v1.62.1-jammy
+      image: mcr.microsoft.com/playwright:v1.64.1-jammy
     outputs:
       broken: ${{ steps.check.outputs.broken }}
       blocked: ${{ steps.check.outputs.blocked }}

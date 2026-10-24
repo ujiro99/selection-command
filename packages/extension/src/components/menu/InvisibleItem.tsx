@@ -17,7 +17,7 @@ type InvisibleItemProps = {
 
 export function InvisibleItem(props: InvisibleItemProps): React.ReactNode {
   const { selectionText, target } = useSelectContext()
-  const { command, setCommand, allowClipboardFallback } = useContextMenu()
+  const { action, clearAction } = useContextMenu()
   const { itemState, result, executeCommand, clearResult } =
     useCommandExecutor()
   const elmRef = useRef<HTMLDivElement>(null)
@@ -62,15 +62,17 @@ export function InvisibleItem(props: InvisibleItemProps): React.ReactNode {
     }
   }, [position])
 
-  if (command != null) {
+  if (action != null) {
     executeCommand({
-      command: command as SelectionCommand,
+      command: action.command as SelectionCommand,
       position,
-      selectionText,
+      // Prefer the selection decided by the sender, which ignores the
+      // selection when another app has focus.
+      selectionText: action.selectionText ?? selectionText,
       target,
-      allowClipboardFallback,
+      selectionFromClipboard: action.selectionFromClipboard,
     })
-    setCommand(null)
+    clearAction()
   }
 
   const visible = result != null
@@ -104,7 +106,7 @@ function IconWithState(props: ImageProps): JSX.Element {
     <div
       className={cn(
         css.iconWithState,
-        "shadow-md border border-gray-200 bg-white w-5 h-5",
+        "shadow-md border border-gray-200 dark:border-border bg-white w-5 h-5",
       )}
     >
       {status === ExecState.EXECUTING && (

@@ -48,7 +48,7 @@ export function StepList(props: Props): JSX.Element {
           className={cn(
             "relative",
             i > 0 &&
-              "after:content-[''] after:z-[-1] after:absolute after:left-[-25%] after:h-[2px] after:w-[50%] after:bg-gray-500/80 after:rounded",
+              "after:content-[''] after:z-[-1] after:absolute after:left-[-25%] after:h-[2px] after:w-[50%] after:bg-gray-500/80 dark:after:bg-gray-400/80 after:rounded-sm",
           )}
         />
       ))}
@@ -58,14 +58,14 @@ export function StepList(props: Props): JSX.Element {
           className={cn(
             "h-[24px] flex-1 flex items-center justify-center relative",
             (steps.length > 0 || i > 0) &&
-              "after:content-[''] after:z-[-1] after:absolute after:left-[-25%] after:h-[2px] after:w-[50%] after:bg-gray-400/70 after:rounded",
+              "after:content-[''] after:z-[-1] after:absolute after:left-[-25%] after:h-[2px] after:w-[50%] after:bg-gray-400/70 dark:after:bg-gray-600/70 after:rounded-sm",
           )}
         >
-          <div className="bg-gray-50 rounded-full h-fit w-fit">
+          <div className="bg-gray-50 dark:bg-gray-800 rounded-full h-fit w-fit">
             <CircleDashed
               size="12"
               strokeWidth={3}
-              className="stroke-gray-400"
+              className="stroke-gray-400 dark:stroke-gray-500"
             />
           </div>
         </li>

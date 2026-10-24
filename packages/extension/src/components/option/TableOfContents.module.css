@@ -1,5 +1,7 @@
+@reference "../global.css";
+
 .container {
-  @apply text-gray-800;
+  @apply text-gray-800 dark:text-gray-200;
   margin: 0;
   padding: 0;
 }

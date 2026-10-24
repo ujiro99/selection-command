@@ -77,7 +77,10 @@ export function ImportExport() {
           type="button"
           data-testid={TEST_IDS.importButton}
         >
-          <Download size={18} className="mr-2 stroke-gray-600" />
+          <Download
+            size={18}
+            className="mr-2 stroke-gray-600 dark:stroke-gray-400"
+          />
           {t("Option_Import")}
         </button>
         <button
@@ -86,7 +89,10 @@ export function ImportExport() {
           type="button"
           data-testid={TEST_IDS.exportButton}
         >
-          <Upload size={18} className="mr-2 stroke-gray-600" />
+          <Upload
+            size={18}
+            className="mr-2 stroke-gray-600 dark:stroke-gray-400"
+          />
           {t("Option_Export")}
         </button>
         <button
@@ -101,7 +107,10 @@ export function ImportExport() {
                 : t("Option_RestoreFromBackup_tooltip")
           }
         >
-          <RotateCcw size={18} className="mr-2 stroke-gray-600" />
+          <RotateCcw
+            size={18}
+            className="mr-2 stroke-gray-600 dark:stroke-gray-400"
+          />
           {t("Option_RestoreFromBackup")}
         </button>
         <button
@@ -110,7 +119,10 @@ export function ImportExport() {
           type="button"
           data-testid={TEST_IDS.resetButton}
         >
-          <Undo2 size={18} className="mr-2 stroke-gray-600" />
+          <Undo2
+            size={18}
+            className="mr-2 stroke-gray-600 dark:stroke-gray-400"
+          />
           {t("Option_Reset")}
         </button>
       </div>
@@ -179,7 +191,7 @@ export function ImportExport() {
                       {getBackupTypeLabel(type)}
                     </label>
                     {backup.info && (
-                      <div className="text-xs text-gray-600 mt-1">
+                      <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">
                         <div>
                           {t("Option_RestoreFromBackup_created")}{" "}
                           {new Date(backup.info.timestamp).toLocaleString()}

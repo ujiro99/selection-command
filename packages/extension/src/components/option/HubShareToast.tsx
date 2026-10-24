@@ -45,7 +45,7 @@ function showHubShareToastNow(
 
   toast.custom(
     (toastId) => (
-      <div className="bg-white border border-gray-200 rounded-lg shadow-lg px-5 py-4 text-gray-800">
+      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg shadow-lg px-5 py-4 text-gray-800 dark:text-gray-200">
         <div className="flex flex-row gap-2 items-center mb-4">
           <img
             src="/party_popper.png"
@@ -63,7 +63,7 @@ function showHubShareToastNow(
         </div>
         <div className="flex flex-row gap-3">
           <button
-            className="flex-1 h-9 px-3 rounded-lg border border-gray-300 bg-white text-sm font-medium transition hover:bg-gray-50"
+            className="flex-1 h-9 px-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm font-medium transition hover:bg-hover"
             onClick={() => {
               toast.dismiss(toastId)
               onShown()
@@ -74,7 +74,7 @@ function showHubShareToastNow(
           <button
             className={cn(
               "flex items-center justify-center gap-2 flex-1 h-9 px-3 rounded-lg transition",
-              "text-base text-white border border-sky-600 bg-sky-500 hover:bg-sky-600 font-medium hover:scale-105",
+              "text-base text-white border border-sky-600 bg-sky-500 hover:bg-sky-600 font-medium hover-grow-lg",
             )}
             onClick={async () => {
               shareCommandToHub(command)

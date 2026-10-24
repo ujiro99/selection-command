@@ -5,7 +5,14 @@ import type {
   PageActionStep,
 } from "@/types"
 import { PAGE_ACTION_EXEC_STATE as EXEC_STATE } from "@/const"
-import { PAGE_ACTION_TIMEOUT as TIMEOUT } from "@/const"
+import {
+  PAGE_ACTION_TIMEOUT as TIMEOUT,
+  PAGE_ACTION_EVENT,
+  PAGE_ACTION_CONDITION_ACTION,
+  PAGE_ACTION_CONDITION_TYPE,
+  SelectorType,
+} from "@/const"
+import type { PageAction } from "@/services/pageAction"
 
 // Mock dependencies
 vi.mock("@/services/storage", () => ({
@@ -29,7 +36,7 @@ const mockConsole = {
 }
 
 // Import modules after mocking
-import { RunningStatus } from "../status"
+import { RunningStatus, getStepTimeout } from "../status"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 
 // Get reference to mocked Storage
@@ -441,3 +448,63 @@ describe("RunningStatus", () => {
 
 // Note: RunningStatus now provides multi-tab support by default
 // All functionality is covered by the test suite above
+
+describe("getStepTimeout", () => {
+  const clickStep = (
+    param: Partial<PageAction.Click> = {},
+    delayMs = 0,
+  ): PageActionStep => ({
+    id: "click",
+    delayMs,
+    skipRenderWait: false,
+    param: {
+      type: PAGE_ACTION_EVENT.click,
+      label: "Click",
+      selector: "button",
+      selectorType: SelectorType.css,
+      ...param,
+    },
+  })
+
+  it("GST-01: returns TIMEOUT plus delay for a step without condition", () => {
+    expect(getStepTimeout(clickStep({}, 200))).toBe(TIMEOUT + 200)
+  })
+
+  it("GST-02: adds the waitUntil condition timeout for a click", () => {
+    const step = clickStep({
+      condition: {
+        actionType: PAGE_ACTION_CONDITION_ACTION.waitUntil,
+        conditionType: PAGE_ACTION_CONDITION_TYPE.clickable,
+        selector: "button",
+        selectorType: SelectorType.css,
+        timeout: 30_000,
+      },
+    })
+    expect(getStepTimeout(step)).toBe(TIMEOUT + 30_000)
+  })
+
+  it("GST-03: falls back to TIMEOUT when the condition has no timeout", () => {
+    const step = clickStep({
+      condition: {
+        actionType: PAGE_ACTION_CONDITION_ACTION.waitUntil,
+        conditionType: PAGE_ACTION_CONDITION_TYPE.clickable,
+        selector: "button",
+        selectorType: SelectorType.css,
+      },
+    })
+    expect(getStepTimeout(step)).toBe(TIMEOUT * 2)
+  })
+
+  it("GST-04: ignores a skip condition", () => {
+    const step = clickStep({
+      condition: {
+        actionType: PAGE_ACTION_CONDITION_ACTION.skip,
+        conditionType: PAGE_ACTION_CONDITION_TYPE.empty,
+        selector: "textarea",
+        selectorType: SelectorType.css,
+        timeout: 30_000,
+      },
+    })
+    expect(getStepTimeout(step)).toBe(TIMEOUT)
+  })
+})

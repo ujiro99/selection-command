@@ -1,8 +1,8 @@
 "use client"
 
 import { Send } from "lucide-react"
-import css from "@/app/page.module.css"
-import { Button } from "@/components/ui/button"
+import layoutCss from "@/app/page.module.css"
+import css from "./test.module.css"
 import dynamic from "next/dynamic"
 import "quill/dist/quill.snow.css"
 import { useSearchParams } from "next/navigation"
@@ -18,7 +18,7 @@ function SearchQuery() {
   const searchParams = useSearchParams()
   const search = searchParams.get("k") ?? ""
   return (
-    <pre className="bg-stone-100 px-3 py-2 rounded-md min-h-10">
+    <pre className={css.query}>
       <code data-testid="searchQuery">{search}</code>
     </pre>
   )
@@ -71,62 +71,62 @@ export default function Page() {
   }
 
   return (
-    <main className={css.main}>
-      <div className="w-full space-y-4">
-        <h2 className="text-lg font-bold">Browser Feature Test</h2>
+    <main className={layoutCss.main}>
+      <div className={css.content}>
+        <h2 className={css.title}>Browser Feature Test</h2>
 
-        <section className="py-4">
-          <h3 className="mb-2 font-bold">Search Query Parameter</h3>
+        <section className={css.section}>
+          <h3 className={css.heading}>Search Query Parameter</h3>
           <Suspense fallback={<div>Loading...</div>}>
             <SearchQuery />
           </Suspense>
         </section>
 
-        <form className="space-y-4">
+        <form className={css.form}>
           <div>
-            <h3 className="mb-2 font-bold">Text</h3>
+            <h3 className={css.heading}>Text</h3>
             <input
-              className="border border-stone-300 rounded-md w-full px-2 py-1"
+              className={`${css.field} ${css.fullWidth}`}
               type="text"
               placeholder="text input"
             />
           </div>
 
           <div>
-            <h3 className="mb-2 font-bold">Password</h3>
+            <h3 className={css.heading}>Password</h3>
             <input
-              className="border border-stone-300 rounded-md w-full px-2 py-1"
+              className={`${css.field} ${css.fullWidth}`}
               type="password"
               placeholder="password input"
             />
           </div>
 
           <div>
-            <h3 className="mb-2 font-bold">Number</h3>
+            <h3 className={css.heading}>Number</h3>
             <input
-              className="border border-stone-300 rounded-md w-full px-2 py-1"
+              className={`${css.field} ${css.fullWidth}`}
               type="number"
               defaultValue={0}
             />
           </div>
 
           <div>
-            <h3 className="mb-2 font-bold">Textarea</h3>
-            <textarea className="border border-stone-300 rounded-md w-full px-2 py-1" />
+            <h3 className={css.heading}>Textarea</h3>
+            <textarea className={`${css.field} ${css.fullWidth}`} />
           </div>
 
           <div>
-            <h3 className="mb-2 font-bold">Checkbox</h3>
-            <div className="flex flex-col gap-1">
-              <label className="flex items-center gap-2">
+            <h3 className={css.heading}>Checkbox</h3>
+            <div className={css.choices}>
+              <label className={css.choice}>
                 <input type="checkbox" defaultChecked />
                 <span>Checkbox 1 (checked)</span>
               </label>
-              <label className="flex items-center gap-2">
+              <label className={css.choice}>
                 <input type="checkbox" />
                 <span>Checkbox 2 (unchecked)</span>
               </label>
-              <label className="flex items-center gap-2">
+              <label className={css.choice}>
                 <input type="checkbox" />
                 <span>Checkbox 3 (unchecked)</span>
               </label>
@@ -134,9 +134,9 @@ export default function Page() {
           </div>
 
           <div>
-            <h3 className="mb-2 font-bold">Radio</h3>
-            <div className="flex flex-col gap-1">
-              <label className="flex items-center gap-2">
+            <h3 className={css.heading}>Radio</h3>
+            <div className={css.choices}>
+              <label className={css.choice}>
                 <input
                   type="radio"
                   name="radio-group"
@@ -145,11 +145,11 @@ export default function Page() {
                 />
                 <span>Option 1</span>
               </label>
-              <label className="flex items-center gap-2">
+              <label className={css.choice}>
                 <input type="radio" name="radio-group" value="option2" />
                 <span>Option 2</span>
               </label>
-              <label className="flex items-center gap-2">
+              <label className={css.choice}>
                 <input type="radio" name="radio-group" value="option3" />
                 <span>Option 3</span>
               </label>
@@ -157,8 +157,8 @@ export default function Page() {
           </div>
 
           <div>
-            <h3 className="mb-2 font-bold">Select</h3>
-            <select className="border border-stone-300 rounded-md w-full px-2 py-1">
+            <h3 className={css.heading}>Select</h3>
+            <select className={`${css.field} ${css.fullWidth}`}>
               <option value="">-- Select an option --</option>
               <option value="apple">Apple</option>
               <option value="banana">Banana</option>
@@ -167,10 +167,10 @@ export default function Page() {
           </div>
 
           <div>
-            <h3 className="mb-2 font-bold">Range</h3>
+            <h3 className={css.heading}>Range</h3>
             <input
               type="range"
-              className="w-full"
+              className={css.fullWidth}
               min={0}
               max={100}
               defaultValue={50}
@@ -178,90 +178,97 @@ export default function Page() {
           </div>
 
           <div>
-            <h3 className="mb-2 font-bold">Color</h3>
+            <h3 className={css.heading}>Color</h3>
             <input type="color" defaultValue="#3b82f6" />
           </div>
 
           <div>
-            <h3 className="mb-2 font-bold">Date</h3>
-            <input
-              className="border border-stone-300 rounded-md px-2 py-1"
-              type="date"
-            />
+            <h3 className={css.heading}>Date</h3>
+            <input className={css.field} type="date" />
           </div>
 
           <div>
-            <h3 className="mb-2 font-bold">Time</h3>
-            <input
-              className="border border-stone-300 rounded-md px-2 py-1"
-              type="time"
-            />
+            <h3 className={css.heading}>Time</h3>
+            <input className={css.field} type="time" />
           </div>
 
           <div>
-            <h3 className="mb-2 font-bold">WYSIWYG Editor Test</h3>
+            <h3 className={css.heading}>WYSIWYG Editor Test</h3>
             <QuillWrapper />
           </div>
 
-          <div className="flex justify-end">
-            <Button
+          <div className={css.actions}>
+            <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-400 text-white rounded-md"
+              className={`${css.button} ${css.submitButton}`}
             >
               <Send size={16} />
               Send
-            </Button>
+            </button>
           </div>
         </form>
 
-        <div className="flex gap-2">
-          <Button onClick={() => window.alert("This is an alert dialog")}>
+        <div className={css.row}>
+          <button
+            className={css.button}
+            onClick={() => window.alert("This is an alert dialog")}
+          >
             alert
-          </Button>
-          <Button onClick={() => window.confirm("This is a confirm dialog")}>
+          </button>
+          <button
+            className={css.button}
+            onClick={() => window.confirm("This is a confirm dialog")}
+          >
             confirm
-          </Button>
-          <Button
+          </button>
+          <button
+            className={css.button}
             onClick={() =>
               window.prompt("This is a prompt dialog", "default value")
             }
           >
             prompt
-          </Button>
+          </button>
         </div>
 
-        <div className="flex gap-2">
+        <div className={css.row}>
           <input type="file" id="fileInput" />
-          <label htmlFor="fileInput" className="cursor-pointer">
+          <label htmlFor="fileInput" className={css.fileLabel}>
             Select File
           </label>
         </div>
 
         <div>
-          <Button onClick={() => window.print()}>Print</Button>
+          <button className={css.button} onClick={() => window.print()}>
+            Print
+          </button>
         </div>
 
         <div>
-          <Button onClick={() => saveFile()}>Save File</Button>
+          <button className={css.button} onClick={() => saveFile()}>
+            Save File
+          </button>
         </div>
 
         <div>
           <a
             href="data:text/plain;charset=utf-8,Download test"
             download="test.txt"
-            className="text-blue-500 underline"
+            className={css.link}
           >
             Download File
           </a>
         </div>
 
         <div>
-          <Button onClick={() => requestGeolocation()}>Get Location</Button>
+          <button className={css.button} onClick={() => requestGeolocation()}>
+            Get Location
+          </button>
         </div>
         <div>
-          <Button onClick={() => requestNotification()}>
+          <button className={css.button} onClick={() => requestNotification()}>
             Request Notification
-          </Button>
+          </button>
         </div>
       </div>
     </main>

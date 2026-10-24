@@ -8,7 +8,7 @@ import {
   SquareTerminal,
   ChevronsUpDown,
   ChevronsDownUp,
-  Share,
+  CloudUpload,
 } from "lucide-react"
 
 import {
@@ -53,7 +53,7 @@ import { CommandType } from "@/components/option/editor/CommandType"
 import { SearchUrlAssistButton } from "@/components/option/editor/SearchUrlAssistButton"
 import { SearchUrlAssistDialog } from "@/components/option/editor/SearchUrlAssistDialog"
 import { hasCommandChanged } from "@/components/option/editor/commandChangedDetector"
-import { MenuImage } from "@/components/menu/MenuImage"
+import { OptionMenuImage } from "@/components/option/OptionMenuImage"
 import { Tooltip } from "@/components/Tooltip"
 import { PageActionStep } from "@/types/schema"
 import { TEST_IDS } from "@/testIds"
@@ -83,7 +83,6 @@ import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
 import { getScreenSize } from "@/services/screen"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
-import { pushEditToHub } from "@/services/hubShare"
 
 import { isEmpty, e2a, cn, parseGeminiUrl, generateId } from "@/lib/utils"
 import { t as _t } from "@/services/i18n"
@@ -275,6 +274,8 @@ type CommandEditDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   onSubmit: (command: SelectionCommand) => void
+  // Saves the command and pushes it to the Hub ("update & share")
+  onSubmitAndShare?: (command: SelectionCommand) => void
   folders: CommandFolder[]
   initialCommand?: SelectionCommand
   selectedType: COMMAND_TYPE
@@ -295,6 +296,7 @@ const CommandEditDialogInner = ({
   open,
   onOpenChange,
   onSubmit,
+  onSubmitAndShare,
   folders,
   initialCommand,
   selectedType,
@@ -593,8 +595,8 @@ const CommandEditDialogInner = ({
                         <div className="w-4/6 relative">
                           <div className="flex-1 relative">
                             {!isEmpty(getValues("iconUrl")) && (
-                              <MenuImage
-                                className="absolute top-[0.7em] left-[0.8em] w-6 h-6 rounded"
+                              <OptionMenuImage
+                                className="absolute top-[0.7em] left-[0.8em] w-6 h-6 rounded-sm"
                                 src={getValues("iconUrl")}
                                 alt="Preview of image"
                               />
@@ -611,11 +613,13 @@ const CommandEditDialogInner = ({
                                 {...field}
                                 {...register("searchUrl", {})}
                                 onBlur={(e) => {
+                                  // Validation already accepts the markdown
+                                  // form via the schema; this only updates
+                                  // the displayed value.
                                   const value = e.target.value
                                   const parsedUrl = parseGeminiUrl(value)
                                   if (parsedUrl !== value) {
                                     setValue("searchUrl", parsedUrl)
-                                    clearErrors("searchUrl")
                                   }
                                   field.onBlur()
                                 }}
@@ -736,13 +740,13 @@ const CommandEditDialogInner = ({
                                     />
                                     <button
                                       type="button"
-                                      className="group transition p-1.5 flex-none rounded-lg hover:bg-red-200 hover:scale-[1.1]"
+                                      className="group transition p-1.5 flex-none rounded-lg hover:bg-red-200 hover-grow-sm"
                                       onClick={() =>
                                         variableArray.remove(index)
                                       }
                                     >
                                       <Trash2
-                                        className="stroke-gray-500 group-hover:stroke-red-500"
+                                        className="stroke-gray-500 dark:stroke-gray-400 group-hover:stroke-red-500"
                                         size={16}
                                       />
                                     </button>
@@ -790,7 +794,7 @@ const CommandEditDialogInner = ({
                     "flex flex-col items-end",
                   )}
                 >
-                  <CollapsibleTrigger className="flex items-center hover:bg-gray-200 p-2 py-1.5 rounded-lg text-sm">
+                  <CollapsibleTrigger className="flex items-center hover:bg-hover p-2 py-1.5 rounded-lg text-sm">
                     <ChevronsUpDown
                       size={18}
                       className={cn(css.icon, collapsibleCss.iconUpDown)}
@@ -892,7 +896,7 @@ const CommandEditDialogInner = ({
                 {t("labelCancel")}
               </Button>
             </DialogClose>
-            {isShared && !isHubEdit && (
+            {isShared && !isHubEdit && onSubmitAndShare && (
               <Button
                 type="button"
                 size="lg"
@@ -900,15 +904,14 @@ const CommandEditDialogInner = ({
                 onClick={form.handleSubmit(
                   (data) => {
                     const processed = processFormData(data)
-                    onSubmit(processed)
-                    pushEditToHub(processed)
+                    onSubmitAndShare(processed)
                     onOpenChange(false)
                     reset(InitialValues)
                   },
                   (err) => console.error(err),
                 )}
               >
-                <Share />
+                <CloudUpload />
                 {t("labelShare")}
               </Button>
             )}
@@ -927,7 +930,7 @@ const CommandEditDialogInner = ({
               )}
               data-testid={TEST_IDS.submitCommandButton}
             >
-              {isHubEdit ? <Share /> : <Save />}
+              {isHubEdit ? <CloudUpload /> : <Save />}
               {isHubEdit
                 ? t("labelShare")
                 : isEdit
@@ -941,6 +944,7 @@ const CommandEditDialogInner = ({
       <SearchUrlAssistDialog
         open={assistDialogOpen}
         onOpenChange={setAssistDialogOpen}
+        initialSearchResultUrl={searchUrl}
       />
     </Dialog>
   )

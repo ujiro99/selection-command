@@ -5,6 +5,7 @@ import { Popup } from "@/components/Popup"
 import { LinkSelector } from "@/components/LinkSelector"
 import { useOnboardingState } from "./useOnboardingState"
 import { useOnboardingVariant } from "./useOnboardingVariant"
+import { useTheme, themeContext } from "@/hooks/useTheme"
 import { OnboardingLayout } from "./OnboardingLayout"
 import { OnboardingWelcome } from "./OnboardingWelcome"
 import { StepIntro } from "./steps/StepIntro"
@@ -20,15 +21,21 @@ import "@/components/App.css"
 
 export function OnboardingPage() {
   const variant = useOnboardingVariant()
+  const theme = useTheme(document.documentElement)
 
-  // Hold a blank canvas until the A/B assignment is known (normally a single
-  // chrome.storage.local read, since the service worker assigns on
-  // install). Rendering a default arm first would flash variant A's INTRO
-  // screen at variant C users.
-  if (variant == null) {
-    return <div className="min-h-screen bg-white" />
-  }
-  return <OnboardingFlow variant={variant} />
+  return (
+    <themeContext.Provider value={theme}>
+      {variant == null ? (
+        // Hold a blank canvas until the A/B assignment is known (normally a
+        // single chrome.storage.local read, since the service worker assigns
+        // on install). Rendering a default arm first would flash variant A's
+        // INTRO screen at variant C users.
+        <div className="min-h-screen bg-white dark:bg-background" />
+      ) : (
+        <OnboardingFlow variant={variant} />
+      )}
+    </themeContext.Provider>
+  )
 }
 
 function OnboardingFlow({ variant }: { variant: ExperimentVariant }) {
@@ -47,6 +54,7 @@ function OnboardingFlow({ variant }: { variant: ExperimentVariant }) {
       <OnboardingLayout
         step={onboarding.step}
         phase={onboarding.phase}
+        background={onboarding.ui.background}
         onSkip={onboarding.skip}
       >
         {!isWelcome && (
@@ -73,7 +81,9 @@ function OnboardingFlow({ variant }: { variant: ExperimentVariant }) {
         )}
       </OnboardingLayout>
 
-      {isWelcome && <OnboardingWelcome onDone={goToExplain} />}
+      {isWelcome && (
+        <OnboardingWelcome onDone={goToExplain} ui={onboarding.ui.welcome} />
+      )}
 
       <SelectAnchor ref={setPositionElm} />
       <Popup positionElm={positionElm} inOnboarding={true} />

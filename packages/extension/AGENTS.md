@@ -77,7 +77,7 @@ This file provides guidance to AI Agent when working with code in this repositor
 - **ビルドシステム**: Vite with `@crxjs/vite-plugin` for Chrome extension development
 - **UIコンポーネント**: Shadcn
 - **フォームとバリデーション**: react-hook-form and zod
-- **スタイリング**: CSS Modules + Tailwind CSS(ver.3)
+- **スタイリング**: CSS Modules + Tailwind CSS(ver.4、`@tailwindcss/vite`。テーマは `src/components/global.css` の `@theme` で定義)
 - **状態管理**: React hooks with Chrome extension storage APIs
 - **テスト**: Vitest with jsdom for unit/integration testing
 - **e2eテスト**: Playwright for browser automation testing
@@ -118,6 +118,24 @@ CSS は `content_script.tsx` の Shadow DOM 初期化時に `insertCss()` で手
 
 > content_script に CSS import を追加する際は、manifest 経由での自動注入が抑制されていることを確認すること。
 > 新たな content_script エントリーを追加した場合も同様に Shadow DOM への手動注入が必要。
+
+**content script のスタイルはユーザーページと相互に干渉させない**
+
+content script はユーザーが閲覧中の任意のページ上で動作するため、ユーザーページへ影響を与えず、
+ユーザーページから影響も受けないようにする（詳細は `docs/design/tailwindcss-v4-migration.md`）。
+
+- **`rem` を使わない**: `rem` は Shadow DOM 内でもユーザーページの root font-size に従う。
+  Tailwind のテーマは `--spacing: 4px` をはじめ、rem で定義されるトークンをすべて px で再定義している。
+  任意値（`w-[2rem]` 等）や CSS Modules でも `rem` は使わず `px` を使うこと。
+  content script の CSS に `rem` が含まれるとビルドが失敗する（`src/lib/findRemUsages.ts`）。
+  素の `rounded` は v4 の組み込みで `0.25rem` 固定のため、代わりに `rounded-sm`（4px）を使う。
+  ブレークポイント（`--breakpoint-*`）も v3 と同じ px で再定義している。
+- **`@property` は Shadow DOM 内で無視される**: Tailwind v4 が `@property` で登録する `--tw-*` の初期値は、
+  `src/lib/postcss-shadow-dom-properties.ts`（PostCSS プラグイン）が Shadow root に注入される CSS 内で宣言している。
+  `@property` をドキュメント（`document.head`）へ注入するなど、Shadow root の外へスタイルを出す方法は取らないこと。
+- **CSS Modules のルールはレイヤー外のため Tailwind のユーティリティ（`@layer utilities`）より常に優先される**:
+  同じ要素に付けるユーティリティ（`hover:bg-accent` 等）と同じプロパティを CSS Modules 側で宣言しないこと（`background: none` 等のリセットも含む）。
+- **CSS Modules で `@apply` を使う場合**は、ファイル先頭に `@reference "<相対パス>/global.css";` を書くこと。
 
 **パスエイリアス**:
 

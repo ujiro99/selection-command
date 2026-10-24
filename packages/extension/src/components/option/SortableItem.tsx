@@ -52,7 +52,7 @@ export function SortableItem(props: SrotabelItemProps) {
         "pl-1 flex items-center cursor-auto",
         props.index === 0 ? "" : "border-t",
         props.index === activeIndex
-          ? "border-y bg-gray-100/80 shadow-lg relative z-10"
+          ? "border-y bg-gray-100/80 dark:bg-gray-800/80 shadow-lg relative z-10"
           : "",
         props.className,
       )}
@@ -60,13 +60,16 @@ export function SortableItem(props: SrotabelItemProps) {
     >
       <div
         className={cn(
-          "p-1 py-2 mr-1 hover:bg-gray-100 cursor-grab rounded-md transition duration-200",
+          "p-1 py-2 mr-1 hover:bg-hover cursor-grab rounded-md transition duration-200",
           isDragging && "cursor-grabbing",
         )}
         ref={setActivatorNodeRef}
         {...listeners}
       >
-        <GripVertical size={18} className="stroke-gray-400" />
+        <GripVertical
+          size={18}
+          className="stroke-gray-400 dark:stroke-gray-500"
+        />
       </div>
       {props.children}
     </li>

@@ -220,14 +220,17 @@ export const UserVariablesField = ({
                   <button
                     type="button"
                     onClick={() => addVariable(suggestion.name)}
-                    className="inline-flex h-9 items-center gap-1.5 rounded-xl border-2 border-dashed border-emerald-400 bg-emerald-50 px-3 font-mono text-sm text-emerald-700 transition hover:border-emerald-500 hover:bg-emerald-100"
+                    className="inline-flex h-9 items-center gap-1.5 rounded-xl border-2 border-dashed border-emerald-400 dark:border-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 px-3 font-mono text-sm text-emerald-700 dark:text-emerald-300 transition hover:border-emerald-500 hover:bg-emerald-100 dark:hover:bg-emerald-900/50"
                   >
                     <Plus size={14} />
                     {suggestion.name}
                   </button>
                   {suggestion.recommendedBy && (
-                    <span className="flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-1 text-xs text-emerald-700">
-                      <Sparkles size={12} className="stroke-emerald-600" />
+                    <span className="flex items-center gap-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 px-2 py-1 text-xs text-emerald-700 dark:text-emerald-300">
+                      <Sparkles
+                        size={12}
+                        className="stroke-emerald-600 dark:stroke-emerald-400"
+                      />
                       {t("userVariable_recommended", [
                         suggestion.recommendedBy,
                       ])}
@@ -240,7 +243,7 @@ export const UserVariablesField = ({
                 <button
                   type="button"
                   onClick={() => addVariable()}
-                  className="inline-flex h-9 items-center gap-1.5 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 px-3 font-mono text-sm text-gray-900 transition hover:border-gray-300 hover:bg-gray-100"
+                  className="inline-flex h-9 items-center gap-1.5 rounded-xl border-2 border-dashed border-gray-200 dark:border-input bg-gray-50 dark:bg-muted px-3 font-mono text-sm text-gray-900 dark:text-gray-100 transition hover:border-gray-300 dark:hover:border-gray-600 hover:bg-hover"
                 >
                   <Plus size={14} />
                   {t("userVariable_add")}
@@ -249,7 +252,7 @@ export const UserVariablesField = ({
             </div>
 
             {isFull && (
-              <p className="text-sm text-gray-500 text-center">
+              <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
                 {t("userVariable_max_reached", [`${MAX_VARIABLES}`])}
               </p>
             )}
@@ -264,7 +267,7 @@ export const UserVariablesField = ({
               description={t("userVariable_remove_inUse", [`${removeCount}`])}
               portal
             >
-              <p className="font-mono text-base text-gray-700">{`{{${removeName}}}`}</p>
+              <p className="font-mono text-base text-gray-700 dark:text-gray-300">{`{{${removeName}}}`}</p>
             </RemoveDialog>
           </div>
         </FormItem>
@@ -332,13 +335,15 @@ const VariableBadge = ({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <div className="group/variable inline-flex h-9 px-1 max-w-full items-center rounded-xl border border-gray-300 bg-white shadow-sm transition hover:border-gray-400 hover:shadow">
+      <div className="group/variable inline-flex h-9 px-1 max-w-full items-center rounded-xl border border-gray-300 dark:border-input bg-white dark:bg-(--sc-input-bg,var(--color-gray-900)) shadow-xs transition hover:border-gray-400 dark:hover:border-gray-600 hover:shadow-sm">
         <DialogTrigger asChild>
           <button
             type="button"
             className={cn(
               "min-w-0 truncate py-1 pl-3 font-mono text-sm flex-1",
-              variableName ? "text-gray-700" : "text-gray-400",
+              variableName
+                ? "text-gray-700 dark:text-gray-300"
+                : "text-gray-400 dark:text-gray-500",
             )}
           >
             {variableName ? `{{${variableName}}}` : t("userVariable_unnamed")}
@@ -356,7 +361,10 @@ const VariableBadge = ({
             "group-hover/variable:basis-auto",
           )}
         >
-          <Trash2 size={14} className="stroke-gray-500 hover:stroke-red-500" />
+          <Trash2
+            size={14}
+            className="stroke-gray-500 dark:stroke-gray-400 hover:stroke-red-500"
+          />
         </button>
       </div>
 

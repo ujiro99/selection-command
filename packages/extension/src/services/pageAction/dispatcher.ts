@@ -139,7 +139,8 @@ export const PageActionDispatcher = {
           if (param.clearBefore) clearInput(element)
           await inputContentEditable(element, value, 10, null)
         } else {
-          value = value.replace(/{/g, "{{") // escape
+          // Treat input text literally instead of user-event keyboard descriptors.
+          value = value.replaceAll("{", "{{").replaceAll("[", "[[")
           const isTextControl =
             element instanceof HTMLInputElement ||
             element instanceof HTMLTextAreaElement

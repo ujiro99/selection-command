@@ -7,7 +7,13 @@ import type {
 } from "./types"
 
 /** Experiment id reported to GA4 as `experiment_id`. */
-export const ONBOARDING_EXPERIMENT_ID = "onboarding_v3"
+export const ONBOARDING_EXPERIMENT_ID = "onboarding_v4"
+
+/** Arm everyone falls back to: experiment disabled, or assignment failed. */
+export const ONBOARDING_CONTROL_VARIANT: ExperimentVariant = "C"
+
+/** Arm assigned to the `allocation` share of users. */
+export const ONBOARDING_TREATMENT_VARIANT: ExperimentVariant = "D"
 
 /**
  * Last resolved assignment, kept in module memory so analytics helpers can
@@ -24,7 +30,7 @@ export const getOnboardingVariantSync = (): ExperimentVariant | null =>
 
 /**
  * dev/e2e only: force a variant for the rest of this page's lifetime without
- * fetching or persisting anything, so `?variant=C` can be used to review a
+ * fetching or persisting anything, so `?variant=D` can be used to review a
  * screen directly. See useOnboardingVariant().
  */
 export const overrideOnboardingAssignment = (
@@ -32,7 +38,7 @@ export const overrideOnboardingAssignment = (
 ): ExperimentAssignment => {
   cachedAssignment = {
     variant,
-    allocation: variant === "C" ? 1 : 0,
+    allocation: variant === ONBOARDING_TREATMENT_VARIANT ? 1 : 0,
     configSource: "fallback",
     assignedAt: Date.now(),
   }
@@ -71,7 +77,9 @@ export const ensureOnboardingAssignment =
       ONBOARDING_EXPERIMENT_ID,
     )
     const variant: ExperimentVariant =
-      config.enabled && Math.random() < config.allocation ? "C" : "A"
+      config.enabled && Math.random() < config.allocation
+        ? ONBOARDING_TREATMENT_VARIANT
+        : ONBOARDING_CONTROL_VARIANT
     const assignment: ExperimentAssignment = {
       variant,
       allocation: config.allocation,

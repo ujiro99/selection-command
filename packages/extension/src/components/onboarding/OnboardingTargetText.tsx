@@ -6,9 +6,13 @@ import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion"
 import { useSelectContext } from "@/hooks/useSelectContext"
 import { useSelectionDemo } from "./useSelectionDemo"
 import { OnboardingCallout } from "./OnboardingCallout"
+import type { OnboardingBackground } from "./onboardingVariantUi"
 
 type Props = {
   text: string
+  // The page background behind the card; on the "glow" background the card
+  // is solid white so it stands out from the blue glow.
+  background: OnboardingBackground
   // True once the user has actually selected the text (any later phase),
   // rendering it as a static, already-selected highlight instead.
   selected: boolean
@@ -24,7 +28,12 @@ type Props = {
 // other "do this next" hint in the onboarding flow (see OnboardingCallout)
 // so first-time users recognize this as something to select rather than
 // something to read.
-export function OnboardingTargetText({ text, selected, calloutDelay }: Props) {
+export function OnboardingTargetText({
+  text,
+  background,
+  selected,
+  calloutDelay,
+}: Props) {
   const prefersReducedMotion = usePrefersReducedMotion()
   const { selectionText } = useSelectContext()
   const textRef = useRef<HTMLSpanElement>(null)
@@ -44,11 +53,12 @@ export function OnboardingTargetText({ text, selected, calloutDelay }: Props) {
       <div
         ref={setCardElm}
         className={cn(
-          "relative max-w-[560px] rounded-lg border px-[26px] py-5 text-left text-base leading-[1.9] text-slate-800 select-text",
-          "border-slate-200 bg-muted/80",
+          "relative max-w-[560px] rounded-lg border px-[26px] py-5 text-left text-base leading-[1.9] text-slate-800 dark:text-slate-200 select-text",
+          "border-slate-200 dark:border-slate-800",
+          background === "glow" ? "bg-white dark:bg-gray-800" : "bg-muted/80",
           !selected &&
-            !runDemo &&
-            "[--onboarding-ring-color:rgba(8,47,73,0.16)] animate-onboarding-ring motion-reduce:animate-none",
+          !runDemo &&
+          "[--onboarding-ring-color:rgba(8,47,73,0.16)] animate-onboarding-ring motion-reduce:animate-none",
         )}
       >
         <span
@@ -58,7 +68,8 @@ export function OnboardingTargetText({ text, selected, calloutDelay }: Props) {
             // `runDemo` is already false when prefers-reduced-motion is on
             // (see usePrefersReducedMotion() above), so no motion-reduce:
             // variant is needed here.
-            runDemo && "animate-onboarding-highlight rounded-sm",
+            runDemo &&
+            "animate-onboarding-highlight rounded-sm dark:[--onboarding-highlight-color:var(--color-sky-800)]",
           )}
         >
           {text}
@@ -68,7 +79,7 @@ export function OnboardingTargetText({ text, selected, calloutDelay }: Props) {
           <span
             ref={cursorRef}
             aria-hidden
-            className="pointer-events-none absolute top-0 left-0 select-none text-slate-900 opacity-0 [filter:drop-shadow(0_0_2px_#fff)_drop-shadow(0_1px_3px_rgba(15,23,42,.35))]"
+            className="pointer-events-none absolute top-0 left-0 select-none text-slate-900 dark:text-slate-100 opacity-0 filter-[drop-shadow(0_0_2px_#fff)_drop-shadow(0_1px_3px_rgba(15,23,42,.35))]"
           >
             <TextCursor className="size-[18px]" strokeWidth={2} />
           </span>

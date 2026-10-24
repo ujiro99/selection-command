@@ -1,5 +1,10 @@
 import { describe, it, expect } from "vitest"
-import { AiPromptOptionSchema, commandSchema, folderSchema } from "../schema"
+import {
+  AiPromptOptionSchema,
+  commandSchema,
+  folderSchema,
+  normalizeCommandTitle,
+} from "../schema"
 import { INSERT, toInsertTemplate } from "@/services/pageAction"
 import { OPEN_MODE } from "@shared/constants/open-mode"
 import { PAGE_ACTION_OPEN_MODE, SPACE_ENCODING } from "@/const"
@@ -266,5 +271,121 @@ describe("PageActionOption in schemas", () => {
         "Explain {{SelectedText}} in detail",
       )
     }
+  })
+})
+
+describe("normalizeCommandTitle", () => {
+  it("SC-19: trims and collapses whitespace runs into one ASCII space", () => {
+    expect(normalizeCommandTitle("  Google  ")).toBe("Google")
+    expect(normalizeCommandTitle("Google   Search")).toBe("Google Search")
+    expect(normalizeCommandTitle("Google\u3000検索")).toBe("Google 検索")
+    expect(normalizeCommandTitle("A\t\nB")).toBe("A B")
+    expect(normalizeCommandTitle("\u3000\u3000検索\u3000")).toBe("検索")
+    expect(normalizeCommandTitle("Google 検索")).toBe("Google 検索")
+  })
+})
+
+describe("command title in schemas", () => {
+  const searchCmd = (title: string) => ({
+    id: "test-cmd",
+    openMode: OPEN_MODE.POPUP,
+    title,
+    iconUrl: "https://example.com/icon.png",
+    searchUrl: "https://example.com/search?q=%s",
+    openModeSecondary: OPEN_MODE.TAB,
+    spaceEncoding: SPACE_ENCODING.PLUS,
+  })
+
+  it("SC-20: accepts a two-character title", () => {
+    const res = commandSchema.safeParse(searchCmd("検索"))
+    expect(res.success).toBe(true)
+  })
+
+  it("SC-21: rejects a one-character title", () => {
+    const res = commandSchema.safeParse(searchCmd("a"))
+    expect(res.success).toBe(false)
+    if (!res.success) {
+      expect(res.error.issues[0].path).toEqual(["title"])
+    }
+  })
+
+  it("SC-25: accepts a 100-character title and rejects a 101-character one", () => {
+    expect(commandSchema.safeParse(searchCmd("a".repeat(100))).success).toBe(
+      true,
+    )
+    const res = commandSchema.safeParse(searchCmd("a".repeat(101)))
+    expect(res.success).toBe(false)
+    if (!res.success) {
+      expect(res.error.issues[0].path).toEqual(["title"])
+    }
+  })
+
+  it("SC-26: checks the max length after normalization", () => {
+    const res = commandSchema.safeParse(searchCmd(` ${"a".repeat(100)}  `))
+    expect(res.success).toBe(true)
+  })
+
+  it("SC-22: returns the normalized title", () => {
+    const res = commandSchema.safeParse(searchCmd(" Google\u3000\u3000検索 "))
+    expect(res.success).toBe(true)
+    if (res.success) {
+      expect(res.data.title).toBe("Google 検索")
+    }
+  })
+
+  it("SC-23: checks the title length after normalization", () => {
+    const res = commandSchema.safeParse(searchCmd(" a\u3000 "))
+    expect(res.success).toBe(false)
+  })
+
+  it("SC-24: keeps the default title when it is omitted", () => {
+    const res = commandSchema.safeParse({
+      id: "copy-cmd",
+      openMode: OPEN_MODE.COPY,
+      iconUrl: "https://example.com/icon.png",
+    })
+    expect(res.success).toBe(true)
+    if (res.success) {
+      expect(res.data.title).toBe("Copy text")
+    }
+  })
+})
+
+describe("searchUrl in schemas", () => {
+  const searchCmd = (searchUrl: string) => ({
+    id: "test-cmd",
+    openMode: OPEN_MODE.POPUP,
+    title: "Search",
+    iconUrl: "https://example.com/icon.png",
+    searchUrl,
+    openModeSecondary: OPEN_MODE.TAB,
+    spaceEncoding: SPACE_ENCODING.PLUS,
+  })
+
+  const geminiLink =
+    "[https://example.com/search?q=%s](https://www.google.com/search?q=https://example.com/search?q%3D%25s)"
+
+  it("SC-27: accepts a Gemini markdown link and unwraps it to the URL", () => {
+    const res = commandSchema.safeParse(searchCmd(geminiLink))
+    expect(res.success).toBe(true)
+    if (res.success && "searchUrl" in res.data) {
+      expect(res.data.searchUrl).toBe("https://example.com/search?q=%s")
+    }
+  })
+
+  it("SC-28: accepts a Gemini markdown link for an API command", () => {
+    const res = commandSchema.safeParse({
+      id: "api-cmd",
+      openMode: OPEN_MODE.API,
+      title: "API",
+      iconUrl: "https://example.com/icon.png",
+      searchUrl: geminiLink,
+    })
+    expect(res.success).toBe(true)
+  })
+
+  it("SC-29: still rejects a value that is not a URL", () => {
+    const res = commandSchema.safeParse(searchCmd("not a url"))
+    expect(res.success).toBe(false)
   })
 })

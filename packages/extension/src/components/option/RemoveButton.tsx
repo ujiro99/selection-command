@@ -35,7 +35,7 @@ export const RemoveButton = ({
       <button
         type="button"
         className={cn(
-          "p-2 rounded-md transition hover:bg-red-100 hover:scale-125 group/remove-button",
+          "p-2 rounded-md transition hover:bg-red-100 dark:hover:bg-red-900/40 hover-grow-sm group/remove-button",
           className,
         )}
         onClick={() => setOpen(true)}
@@ -43,7 +43,7 @@ export const RemoveButton = ({
         data-testid={dataTestId}
       >
         <Trash2
-          className="stroke-gray-500 group-hover/remove-button:stroke-red-500"
+          className="stroke-gray-500 dark:stroke-gray-400 group-hover/remove-button:stroke-red-500 dark:group-hover/remove-button:stroke-red-400"
           size={size}
         />
       </button>

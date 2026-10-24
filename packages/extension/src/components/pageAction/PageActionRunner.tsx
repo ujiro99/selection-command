@@ -67,12 +67,12 @@ export function PageActionRunner(): JSX.Element {
   return (
     <div
       className={cn(
-        "relative fixed z-[2147483647] top-2 right-2 pointer-events-none",
-        "backdrop-blur bg-gray-100/60 rounded-md shadow-md transition-opacity duration-300",
+        "relative fixed z-2147483647 top-2 right-2 pointer-events-none",
+        "backdrop-blur-sm bg-gray-100/60 dark:bg-gray-900/80 rounded-md shadow-md transition-opacity duration-300",
         visible ? "opacity-100" : "opacity-0",
       )}
     >
-      <div className="overflow-hidden rounded-md h-[12px] -mb-[12px]">
+      <div className="overflow-hidden rounded-md h-[12px] mb-[-12px]">
         <Progress
           value={progress}
           className={cn(
@@ -83,13 +83,13 @@ export function PageActionRunner(): JSX.Element {
       </div>
       {hasError && (
         <button
-          className="absolute right-1 top-1.5 pointer-events-auto bg-white/80 rounded-full p-1"
+          className="absolute right-1 top-1.5 pointer-events-auto bg-white/80 dark:bg-gray-700/80 rounded-full p-1"
           onClick={() => setResults([])}
         >
-          <X size={12} className="stroke-gray-500" />
+          <X size={12} className="stroke-gray-500 dark:stroke-gray-400" />
         </button>
       )}
-      <ul className="text-xs text-gray-600 p-2 pt-1.5">
+      <ul className="text-xs text-gray-600 dark:text-gray-300 p-2 pt-1.5">
         {results?.map((result) => (
           <Step key={result.stepId} result={result} />
         ))}
@@ -112,7 +112,11 @@ const Step = ({ result }: { result: PageActiontResult }) => {
       <StatusIcon status={result.status} />
       <TypeIcon
         type={result.type}
-        className={cn(hasMessage ? "stroke-red-500" : "stroke-gray-500")}
+        className={cn(
+          hasMessage
+            ? "stroke-red-500"
+            : "stroke-gray-500 dark:stroke-gray-400",
+        )}
       />
       <span className="font-mono max-w-40 truncate">{result.label}</span>
       {hasMessage && (

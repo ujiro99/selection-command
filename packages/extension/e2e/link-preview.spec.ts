@@ -30,7 +30,7 @@ test.describe("Link Preview", () => {
     const href = await link.getAttribute("href")
     expect(href).toBeTruthy()
 
-    // React 側が ready になってからネイティブ Shift+click
+    // Native Shift+click after the React side is ready
     const [previewPage] = await Promise.all([
       context.waitForEvent("page", { timeout: 5000 }),
       await link.click({

@@ -60,7 +60,9 @@ export function OnboardingRail({
               <ChevronsRight
                 className={cn(
                   lg ? "size-[18px]" : "size-3.5",
-                  chevronWalked ? "text-sky-950" : "text-slate-300",
+                  chevronWalked
+                    ? "text-sky-950 dark:text-sky-200"
+                    : "text-slate-300",
                   lg && "animate-onboarding-rise motion-reduce:animate-none",
                 )}
                 style={lg ? { animationDelay: `${delayMs}ms` } : undefined}
@@ -69,7 +71,7 @@ export function OnboardingRail({
             )}
             <div
               className={cn(
-                "flex items-center font-semibold tracking-wide text-slate-500",
+                "flex items-center font-semibold tracking-wide text-slate-500 dark:text-slate-400",
                 lg ? "gap-2.5 text-[13px]" : "gap-1.5 text-xs",
                 lg && "animate-onboarding-rise motion-reduce:animate-none",
               )}
@@ -80,10 +82,10 @@ export function OnboardingRail({
                   "flex items-center justify-center rounded-full",
                   lg ? "size-6" : "size-[18px]",
                   state === "todo"
-                    ? "bg-slate-200"
+                    ? "bg-slate-200 dark:bg-slate-700"
                     : state === "done"
-                      ? "bg-blue-200 text-blue-800"
-                      : "bg-sky-950/[0.14] text-sky-950",
+                      ? "bg-blue-200 dark:bg-blue-900 text-blue-800 dark:text-blue-300"
+                      : "bg-sky-950/[0.14] text-sky-950 dark:text-sky-200",
                 )}
               >
                 {state === "done" && (
@@ -93,12 +95,16 @@ export function OnboardingRail({
                   />
                 )}
                 {state === "current" && (
-                  <span className="size-2.5 rounded-full bg-sky-950 inline-block">
-                    <span className="w-full h-full rounded-full bg-sky-950 block animate-ping opacity-70" />
+                  <span className="size-2.5 rounded-full bg-sky-950 dark:bg-sky-700 inline-block">
+                    <span className="w-full h-full rounded-full bg-sky-950 dark:bg-sky-700 block animate-ping opacity-70" />
                   </span>
                 )}
               </span>
-              <span className={state === "todo" ? "" : "text-sky-950"}>
+              <span
+                className={
+                  state === "todo" ? "" : "text-sky-950 dark:text-sky-200"
+                }
+              >
                 {label}
               </span>
             </div>

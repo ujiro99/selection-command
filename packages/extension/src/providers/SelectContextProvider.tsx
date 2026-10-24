@@ -1,5 +1,5 @@
-import { useState, ReactNode, useEffect, useCallback } from "react"
-import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
+import { useState, ReactNode, useEffect, useCallback, useRef } from "react"
+import { Ipc, TabCommand } from "@/services/ipc"
 import { getSelectionText } from "@/services/dom"
 import { ContextType, selectContext } from "@/hooks/useSelectContext"
 
@@ -11,17 +11,17 @@ export const SelectContextProvider = ({
   const [selectionText, _setSelectionText] = useState("")
   const [target, setTarget] = useState<Element | null>(null)
   const [detectSelectionEnabled, setDetectSelectionEnabled] = useState(true)
+  const selectionRef = useRef("")
 
-  const setSelectionText = useCallback(async (text: string) => {
+  const setSelectionText = useCallback((text: string) => {
     _setSelectionText(text)
-    await Storage.set<string>(SESSION_STORAGE_KEY.SELECTION_TEXT, text)
+    selectionRef.current = text
   }, [])
 
   useEffect(() => {
-    const onSelectionchange = async () => {
+    const onSelectionchange = () => {
       if (!detectSelectionEnabled) return
-      const text = getSelectionText()
-      await setSelectionText(text)
+      setSelectionText(getSelectionText())
     }
 
     document.addEventListener("selectionchange", onSelectionchange)
@@ -29,6 +29,17 @@ export const SelectContextProvider = ({
       document.removeEventListener("selectionchange", onSelectionchange)
     }
   }, [detectSelectionEnabled, setSelectionText])
+
+  useEffect(() => {
+    Ipc.addListener(TabCommand.getSelection, (_param, _sender, response) => {
+      response(selectionRef.current)
+      return true
+    })
+
+    return () => {
+      Ipc.removeListener(TabCommand.getSelection)
+    }
+  }, [])
 
   const value: ContextType = {
     selectionText,

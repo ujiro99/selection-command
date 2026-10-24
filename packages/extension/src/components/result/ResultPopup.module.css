@@ -1,8 +1,14 @@
+@reference "../global.css";
+
 .resultPopup {
   padding: 10px;
   font-size: 14px;
-  color: var(--gray-600);
+  color: var(--color-gray-600);
   font-family: var(--font-family);
+
+  @variant dark {
+    color: var(--color-gray-300);
+  }
   transition-duration: 150ms;
   transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
 }
@@ -22,24 +28,42 @@
   height: calc(var(--icon-size) + var(--padding) * 2);
   padding: var(--padding);
   font-size: 10px;
-  color: var(--gray-400);
+  color: var(--color-gray-400);
 
   svg {
     width: var(--icon-size);
     height: var(--icon-size);
-    color: var(--gray-400);
+    color: var(--color-gray-400);
+
+    @variant dark {
+      color: var(--color-gray-500);
+    }
   }
 
   &:hover {
-    color: var(--gray-600);
-    background: var(--gray-100);
+    color: var(--color-gray-600);
+    background: var(--color-gray-100);
+
+    @variant dark {
+      color: var(--color-gray-300);
+      background: var(--color-gray-800);
+    }
 
     svg {
-      color: var(--gray-600);
+      color: var(--color-gray-600);
+
+      @variant dark {
+        color: var(--color-gray-300);
+      }
     }
 
     svg.buttonSuccess {
-      color: var(--blue-500);
+      color: var(--color-blue-500);
+
+      /* Restate it so the dark svg color above does not win on specificity. */
+      @variant dark {
+        color: var(--color-blue-400);
+      }
     }
   }
 }
@@ -60,7 +84,11 @@
 }
 
 .resultTableHeader {
-  color: var(--gray-800);
+  color: var(--color-gray-800);
+
+  @variant dark {
+    color: var(--color-gray-200);
+  }
 
   th {
     padding: 0 0 6px;
@@ -80,14 +108,22 @@
 
 td.resultTableProperty {
   padding-right: 12px;
-  color: var(--gray-500);
+  color: var(--color-gray-500);
   text-wrap: nowrap;
+
+  @variant dark {
+    color: var(--color-gray-400);
+  }
 }
 
 .resultTableValue {
   font-family: var(--font-monospace);
-  color: var(--gray-600);
+  color: var(--color-gray-600);
   font-weight: 600;
+
+  @variant dark {
+    color: var(--color-gray-300);
+  }
   text-wrap: nowrap;
 }
 

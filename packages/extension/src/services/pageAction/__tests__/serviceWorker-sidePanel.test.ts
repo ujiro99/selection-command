@@ -267,9 +267,13 @@ describe("serviceWorker.ts - Side Panel Connection", () => {
       )
     })
 
-    it("SP-12: Does not call readClipboard when useClipboard is false", async () => {
+    it("SP-12: Does not call readClipboard when the pending action does not need the clipboard", async () => {
       const port = createMockPort("https://chatgpt.com")
-      const pending = { ...createPendingAction(), useClipboard: false }
+      const pending = {
+        ...createPendingAction(),
+        selectionFromClipboard: false,
+        clipboardForSteps: false,
+      }
       mockStorage.get.mockResolvedValue(pending)
       mockStorage.set.mockResolvedValue(undefined)
 
@@ -278,11 +282,11 @@ describe("serviceWorker.ts - Side Panel Connection", () => {
       expect(mockReadClipboard).not.toHaveBeenCalled()
     })
 
-    it("SP-13: Reads clipboard from service worker context when useClipboard is true", async () => {
+    it("SP-13: Reads clipboard from service worker context when the steps use the clipboard", async () => {
       const port = createMockPort("https://chatgpt.com")
       const pending = {
         ...createPendingAction(),
-        useClipboard: true,
+        clipboardForSteps: true,
         clipboardText: "",
       }
       mockStorage.get.mockResolvedValue(pending)
@@ -300,6 +304,35 @@ describe("serviceWorker.ts - Side Panel Connection", () => {
         expect.objectContaining({
           command: "execPageAction",
           param: expect.objectContaining({
+            selectedText: "test",
+            clipboardText: "clipboard content",
+          }),
+        }),
+      )
+    })
+
+    it("SP-13-b: Uses the clipboard text as selectedText when selectionFromClipboard is true", async () => {
+      const port = createMockPort("https://chatgpt.com")
+      const pending = {
+        ...createPendingAction(),
+        selectedText: "",
+        selectionFromClipboard: true,
+        clipboardText: "",
+      }
+      mockStorage.get.mockResolvedValue(pending)
+      mockStorage.set.mockResolvedValue(undefined)
+      mockReadClipboard.mockResolvedValue({
+        clipboardText: "clipboard content",
+      })
+
+      await handleSidePanelConnect(port as any)
+
+      expect(mockReadClipboard).toHaveBeenCalledTimes(1)
+      expect(port.postMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          command: "execPageAction",
+          param: expect.objectContaining({
+            selectedText: "clipboard content",
             clipboardText: "clipboard content",
           }),
         }),

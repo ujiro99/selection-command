@@ -24,7 +24,7 @@ export const CommandListMenu: React.FC<Props> = ({
 }) => {
   return (
     <div className="relative h-10 flex items-end justify-between pr-2">
-      <span className="text-sm bg-gray-100 px-2 py-0.5 rounded font-mono tracking-tight">
+      <span className="text-sm bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded-sm font-mono tracking-tight">
         {commandCount ?? 0}
         {t("commands_desc_count")}
       </span>
@@ -33,7 +33,7 @@ export const CommandListMenu: React.FC<Props> = ({
           type="button"
           ref={addFolderButtonRef}
           variant="outline"
-          className="px-3 gap-0.5 rounded-md transition hover:bg-gray-100 hover:scale-[110%] group font-mono"
+          className="px-3 gap-0.5 rounded-md transition hover:bg-hover hover-grow-md group font-mono"
           onClick={onAddFolder}
           data-testid={TEST_IDS.addFolderButton}
         >
@@ -48,11 +48,11 @@ export const CommandListMenu: React.FC<Props> = ({
           type="button"
           ref={addCommandButtonRef}
           variant="outline"
-          className="px-3 gap-0.5 rounded-md transition hover:bg-gray-100 hover:scale-[110%] group font-mono"
+          className="px-3 gap-0.5 rounded-md transition hover:bg-hover hover-grow-md group font-mono"
           onClick={onAddCommand}
           data-testid={TEST_IDS.addCommandButton}
         >
-          <Terminal className="stroke-gray-600 group-hover:stroke-gray-700" />
+          <Terminal className="stroke-gray-600 dark:stroke-gray-400 group-hover:stroke-gray-700 dark:group-hover:stroke-gray-300" />
           {t("Command")}
         </Button>
         <Tooltip

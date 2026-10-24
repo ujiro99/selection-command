@@ -2,17 +2,13 @@ import { useState, useEffect } from "react"
 import { Ipc, TabCommand } from "@/services/ipc"
 import type { IpcCallback } from "@/services/ipc"
 import { executeActionProps } from "@/services/contextMenus"
-import { Command } from "@/types"
 
 export function useContextMenu() {
-  const [command, setCommand] = useState<Command | null>(null)
-  const [allowClipboardFallback, setAllowClipboardFallback] =
-    useState<boolean>(false)
+  const [action, setAction] = useState<executeActionProps | null>(null)
 
   useEffect(() => {
     Ipc.addListener(TabCommand.executeAction, ((param: executeActionProps) => {
-      setCommand(param.command)
-      setAllowClipboardFallback(param.allowClipboardFallback ?? false)
+      setAction(param)
       return false
     }) as IpcCallback)
     return () => {
@@ -20,5 +16,7 @@ export function useContextMenu() {
     }
   }, [])
 
-  return { command, setCommand, allowClipboardFallback }
+  const clearAction = () => setAction(null)
+
+  return { action, clearAction }
 }

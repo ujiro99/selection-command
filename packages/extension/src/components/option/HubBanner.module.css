@@ -1,21 +1,22 @@
+@reference "../global.css";
+
 .menuLabel {
-  @apply font-mono text-gray-800;
+  @apply font-mono text-gray-800 dark:text-gray-200;
   font-size: 1.2rem;
 }
 
 .banner {
+  @apply shadow-lg rounded-md px-4 pt-2 pb-1 transition;
+  @apply dark:border dark:bg-(--sc-input-bg) dark:shadow-gray-500/10;
+  @apply hover:opacity-70 dark:hover:opacity-100 dark:hover:brightness-150;
+  @apply hover:shadow-xl dark:hover:shadow-gray-500/10;
   margin-top: 10px;
-  transition: opacity ease-out 0.1s;
   cursor: pointer;
   opacity: 1;
-
-  &:hover {
-    opacity: 0.6;
-  }
 }
 
 .description {
-  @apply font-mono text-gray-800;
+  @apply font-mono text-gray-800 dark:text-gray-200;
   font-size: 0.8rem;
   padding-left: 4px;
 }
@@ -30,6 +31,6 @@
 }
 
 .userName {
-  @apply font-mono text-gray-700;
+  @apply font-mono text-gray-700 dark:text-gray-300;
   font-size: 0.85rem;
 }

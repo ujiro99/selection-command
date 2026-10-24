@@ -161,28 +161,38 @@ const OpenModeItem = ({
             disabled={disabled}
             aria-label={t(`openMode_${mode}`)}
             className={cn(
-              "relative flex-col gap-0.5 h-full w-full py-1.5 shadow-sm text-xs font-medium text-gray-600 hover:text-gray-700",
-              "border transition-all duration-200",
-              checked && "bg-gray-50",
+              "relative flex-col gap-0.5 h-full w-full py-1.5 shadow-xs text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300",
+              "border transition-all duration-200 dark:bg-muted",
+              // Keep the selected background while hovering so it is not
+              // mistaken for the hover state.
+              "data-[state=on]:bg-selected data-[state=on]:hover:bg-selected",
+              !disabled && "hover:bg-hover",
               disabled &&
                 // Override toggleVariants' `disabled:pointer-events-none` so hover
                 // still reaches this element and the reason tooltip can show.
-                "opacity-40 cursor-not-allowed hover:text-gray-600 disabled:pointer-events-auto",
+                "opacity-40 cursor-not-allowed hover:text-gray-600 dark:hover:text-gray-400 hover:bg-transparent dark:hover:bg-muted disabled:pointer-events-auto",
             )}
           >
             {checked && (
               <Check
                 size={18}
-                className="absolute top-2 left-2 text-gray-700"
+                className="absolute top-2 left-2 text-gray-700 dark:text-gray-300"
               />
             )}
-            <img
-              src={iconSrc}
-              alt={mode}
-              className={cn("h-8 w-8 object-contain")}
+            {/* Rendered as a mask so the icon follows the text color in both themes. */}
+            <span
+              role="img"
+              aria-label={mode}
+              className="h-8 w-8 bg-current mask-contain mask-no-repeat mask-center"
+              style={{
+                WebkitMaskImage: `url("${iconSrc}")`,
+                maskImage: `url("${iconSrc}")`,
+              }}
             />
             <span
-              className={cn("text-xs font-normal leading-tight text-gray-600")}
+              className={cn(
+                "text-xs font-normal leading-tight text-gray-600 dark:text-gray-400",
+              )}
             >
               {t(`openMode_${mode}`)}
             </span>

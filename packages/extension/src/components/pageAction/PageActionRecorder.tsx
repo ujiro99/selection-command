@@ -148,7 +148,7 @@ export function PageActionRecorder(): JSX.Element {
 
   return (
     <DndContext onDragEnd={handleDragEnd} modifiers={[restrictToParentElement]}>
-      <div className="fixed inset-0 pointer-events-none z-[2147483647]">
+      <div className="fixed inset-0 pointer-events-none z-2147483647">
         <Draggable id="controller" position={position} className="z-10">
           <Controller
             steps={steps}
@@ -177,13 +177,13 @@ export function PageActionRecorder(): JSX.Element {
               <p className="text-base font-medium font-mono flex items-center gap-1.5">
                 <TypeIcon
                   type={removeStep.param.type}
-                  className="stroke-gray-700"
+                  className="stroke-gray-700 dark:stroke-gray-300"
                   size={20}
                 />
                 {capitalize(removeStep.param.type)}
               </p>
               {hasLabel && (
-                <p className="mt-2 px-3 py-2 rounded-md text-balance whitespace-pre-line text-sm max-h-80 overflow-x-hidden overflow-y-auto bg-gray-100">
+                <p className="mt-2 px-3 py-2 rounded-md text-balance whitespace-pre-line text-sm max-h-80 overflow-x-hidden overflow-y-auto bg-gray-100 dark:bg-gray-800">
                   <span>{removeStep.param.label}</span>
                 </p>
               )}

@@ -737,6 +737,21 @@
   "Option_userStyles_desc": {
     "message": "Puede personalizar la visualización del menú emergente."
   },
+  "Option_theme": {
+    "message": "Tema"
+  },
+  "Option_theme_desc": {
+    "message": "Esquema de colores del menú emergente y de las pantallas de esta extensión."
+  },
+  "Option_theme_system": {
+    "message": "Según el sistema"
+  },
+  "Option_theme_light": {
+    "message": "Claro"
+  },
+  "Option_theme_dark": {
+    "message": "Oscuro"
+  },
   "Option_userStyles_add": {
     "message": "Editar Estilo de Usuario"
   },
@@ -753,7 +768,13 @@
     "message": "Color de Fondo"
   },
   "Option_userStyles_desc_background_color": {
-    "message": "Especifique el color de fondo del menú. Predeterminado: #FFFFFF"
+    "message": "Especifique el color de fondo del menú. Predeterminado: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#FFFFFF"
+      }
+    }
   },
   "Option_userStyles_option_border_color": {
     "message": "Color del Borde"
@@ -762,16 +783,34 @@
     "message": "Color de fuente"
   },
   "Option_userStyles_desc_border_color": {
-    "message": "Especifique el color del borde del menú. Predeterminado: #F3F4F6"
+    "message": "Especifique el color del borde del menú. Predeterminado: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#F3F4F6"
+      }
+    }
   },
   "Option_userStyles_desc_font_color": {
-    "message": "Especificar el color de fuente. Predeterminado: #0F172A"
+    "message": "Especificar el color de fuente. Predeterminado: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#0F172A"
+      }
+    }
   },
   "Option_userStyles_option_icon_color": {
     "message": "Color del icono"
   },
   "Option_userStyles_desc_icon_color": {
-    "message": "Especificar el color del icono. Predeterminado: #0F172A"
+    "message": "Especificar el color del icono. Predeterminado: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#0F172A"
+      }
+    }
   },
   "Option_excludeFromGlobalIconColor": {
     "message": "Excluir del color de icono global"
@@ -826,6 +865,9 @@
   },
   "Option_shareButton_shared_tooltip": {
     "message": "Ya compartido"
+  },
+  "Option_shareButton_modified_tooltip": {
+    "message": "Cambios sin sincronizar. Haz clic para sincronizar"
   },
   "Option_remove_title": {
     "message": "¿Eliminar esto?"

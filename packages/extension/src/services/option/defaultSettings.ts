@@ -7,6 +7,7 @@ import {
   DRAG_OPEN_MODE,
   STARTUP_METHOD,
   STYLE,
+  THEME,
   LINK_COMMAND_ENABLED,
   LINK_COMMAND_STARTUP_METHOD,
   KEYBOARD,
@@ -40,6 +41,7 @@ export const emptySettings: SettingsType = {
   folders: [],
   pageRules: [],
   style: STYLE.HORIZONTAL,
+  theme: THEME.SYSTEM,
   popupPlacement: {
     side: SIDE.top,
     align: ALIGN.start,
@@ -149,6 +151,7 @@ export default {
   ],
   pageRules: [],
   style: STYLE.HORIZONTAL,
+  theme: THEME.SYSTEM,
   startupMethod: {
     method: STARTUP_METHOD.TEXT_SELECTION,
     keepMenuOpenOnFocusChange: false,

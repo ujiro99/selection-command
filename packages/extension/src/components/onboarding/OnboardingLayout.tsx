@@ -1,37 +1,57 @@
 import { ReactNode } from "react"
 import { t } from "@/services/i18n"
 import { getProgress, showsSkip } from "./onboardingProgress"
+import { OnboardingGlow } from "./OnboardingGlow"
+import type { OnboardingBackground } from "./onboardingVariantUi"
 import type { OnboardingStep, StepPhase } from "@/types/onboarding"
-
-const ICON_URL = chrome.runtime.getURL("SelectionCommandLogo.png")
+import { useLogoUrl } from "./onboardingLogo"
 
 type Props = {
   step: OnboardingStep
   phase: StepPhase
+  background: OnboardingBackground
   onSkip: () => void
   children: ReactNode
 }
 
 // Shared chrome around every onboarding step: a constant-strength vignette
 // (unlike the old per-step OnboardingOverlay spotlight, this never changes
-// between screens, so nothing about the background shifts on transition),
-// a header with the brand mark and a 4-segment progress indicator, and a
-// Skip button fixed to the bottom-right corner. Individual step components
+// between screens, so nothing about the background shifts on transition) or,
+// for variant D, the welcome overlay's blue glow kept in place for the whole
+// flow, a header with the brand mark and a 4-segment progress indicator, and
+// a Skip button fixed to the bottom-right corner. Individual step components
 // now render only their own content.
-export function OnboardingLayout({ step, phase, onSkip, children }: Props) {
+export function OnboardingLayout({
+  step,
+  phase,
+  background,
+  onSkip,
+  children,
+}: Props) {
+  const logoUrl = useLogoUrl()
   const progress = getProgress(step, phase)
 
   return (
-    <div className="relative flex min-h-screen flex-col overflow-hidden bg-white">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(56%_50%_at_50%_50%,rgba(15,23,42,0)_0%,rgba(15,23,42,0)_52%,rgba(15,23,42,0.12)_100%)]"
-      />
+    <div className="relative flex min-h-screen flex-col overflow-hidden bg-background">
+      {background === "glow" ? (
+        // Fixed to the viewport, like the welcome overlay, so its center
+        // lines up exactly with the overlay's glow during the handoff.
+        <OnboardingGlow
+          data-testid="onboarding-layout-glow"
+          className="fixed z-0"
+        />
+      ) : (
+        <div
+          aria-hidden
+          data-testid="onboarding-layout-vignette"
+          className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(56%_50%_at_50%_50%,rgba(15,23,42,0)_0%,rgba(15,23,42,0)_52%,rgba(15,23,42,0.12)_100%)]"
+        />
+      )}
 
       <div className="relative z-10 flex items-center justify-between px-10 py-5">
         {progress && (
           <img
-            src={ICON_URL}
+            src={logoUrl}
             className="block h-7"
             alt="Logo of selection command"
             aria-hidden
@@ -45,20 +65,20 @@ export function OnboardingLayout({ step, phase, onSkip, children }: Props) {
                   key={i}
                   className={
                     pill === "todo"
-                      ? "h-1 w-[26px] rounded-full bg-slate-100"
-                      : "h-1 w-[26px] rounded-full bg-sky-950"
+                      ? "h-1 w-6.5 rounded-full bg-slate-100 dark:bg-slate-800"
+                      : "h-1 w-6.5 rounded-full bg-sky-950 dark:bg-sky-700"
                   }
                 />
               ))}
             </div>
-            <span className="text-xs font-bold tracking-wide text-slate-500 [font-variant-numeric:tabular-nums]">
+            <span className="text-xs font-bold tracking-wide text-slate-500 dark:text-slate-400 [font-variant-numeric:tabular-nums]">
               {progress.current} / {progress.total}
             </span>
           </div>
         )}
       </div>
 
-      <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-10 text-center [&>*]:h-[400px]">
+      <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-10 text-center *:h-120">
         {children}
       </div>
 
@@ -66,7 +86,7 @@ export function OnboardingLayout({ step, phase, onSkip, children }: Props) {
         <button
           type="button"
           onClick={onSkip}
-          className="absolute right-[30px] bottom-6 z-20 inline-flex min-h-11 items-center rounded-md px-3.5 text-sm font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-700"
+          className="absolute right-7.5 bottom-6 z-20 inline-flex min-h-11 items-center rounded-md px-3.5 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100/80 dark:hover:bg-slate-800/80 hover:text-slate-700 dark:hover:text-slate-300"
         >
           {t("onboarding_skipButton")}
         </button>

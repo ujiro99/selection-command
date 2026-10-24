@@ -18,15 +18,15 @@ const HUB_SCREEN_URL = chrome.runtime.getURL("onboarding/HubScreen.png")
 // to start a real editing/browsing flow mid-onboarding.
 export function StepCustomize({ onboarding }: Props) {
   return (
-    <div className="flex flex-col items-center gap-10 !h-[540px]">
+    <div className="flex flex-col items-center gap-10 h-[540px]!">
       <OnboardingFadeIn key="title" delay={100}>
-        <h2 className="text-4xl font-bold text-slate-700 flex items-center">
+        <h2 className="text-4xl font-bold text-slate-700 dark:text-slate-300 flex items-center">
           <span className="font-mono">4.</span> {t("onboarding_step4_title")}
         </h2>
       </OnboardingFadeIn>
 
       <OnboardingFadeIn key="explain" delay={300}>
-        <p className="max-w-xl text-xl leading-[1.75] font-semibold text-slate-900">
+        <p className="max-w-xl text-xl leading-[1.75] font-semibold text-slate-900 dark:text-slate-100">
           {t("onboarding_step4Explain")}
           <span
             className="ml-1 inline-block animate-onboarding-pop-2 motion-reduce:animate-none"
@@ -40,13 +40,13 @@ export function StepCustomize({ onboarding }: Props) {
       <div className="grid w-[884px] grid-cols-2 gap-12">
         <OnboardingFadeIn key="option-screen" delay={1000}>
           <div className="flex flex-col gap-2.5">
-            <div className="flex items-center gap-2 text-left text-sm font-bold text-slate-700">
-              <span className="flex size-6 items-center justify-center rounded-md bg-sky-950/[0.1] text-sky-950">
+            <div className="flex items-center gap-2 text-left text-sm font-bold text-slate-700 dark:text-slate-300">
+              <span className="flex size-6 items-center justify-center rounded-md bg-sky-950/10 dark:bg-sky-400/15 text-sky-950 dark:text-sky-200">
                 <Settings className="size-4" strokeWidth={2} />
               </span>
               {t("onboarding_step4SettingsHeading")}
             </div>
-            <div className="h-[226px] overflow-hidden rounded-lg border border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,.04),0_16px_32px_-26px_rgba(15,23,42,.35)]">
+            <div className="h-[226px] overflow-hidden rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-gray-900 shadow-[0_1px_2px_rgba(15,23,42,.04),0_16px_32px_-26px_rgba(15,23,42,.35)]">
               <img
                 src={OPTION_SCREEN_URL}
                 alt=""
@@ -58,13 +58,13 @@ export function StepCustomize({ onboarding }: Props) {
 
         <OnboardingFadeIn key="hub-screen" delay={1200}>
           <div className="flex flex-col gap-2.5">
-            <div className="flex items-center gap-2 text-left text-sm font-bold text-slate-700">
-              <span className="flex size-6 items-center justify-center rounded-md bg-sky-950/[0.1] text-sky-950">
+            <div className="flex items-center gap-2 text-left text-sm font-bold text-slate-700 dark:text-slate-300">
+              <span className="flex size-6 items-center justify-center rounded-md bg-sky-950/10 dark:bg-sky-400/15 text-sky-950 dark:text-sky-200">
                 <Share2 className="size-4" strokeWidth={2} />
               </span>
               {t("onboarding_step4HubHeading")}
             </div>
-            <div className="h-[226px] overflow-hidden rounded-lg border border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,.04),0_16px_32px_-26px_rgba(15,23,42,.35)]">
+            <div className="h-[226px] overflow-hidden rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-gray-900 shadow-[0_1px_2px_rgba(15,23,42,.04),0_16px_32px_-26px_rgba(15,23,42,.35)]">
               <img
                 src={HUB_SCREEN_URL}
                 alt=""
@@ -78,7 +78,7 @@ export function StepCustomize({ onboarding }: Props) {
       <OnboardingFadeIn key="next-button" delay={1400}>
         <button
           type="button"
-          className="mt-4 flex items-center gap-2 min-h-14 rounded-xl bg-sky-950 pl-8 pr-5 text-lg font-semibold text-white shadow-[0_10px_20px_-14px_rgba(15,23,42,.7)] hover:brightness-[1.35]"
+          className="mt-4 flex items-center gap-2 min-h-14 rounded-xl bg-sky-950 dark:bg-sky-700 pl-8 pr-5 text-lg font-semibold text-white shadow-[0_10px_20px_-14px_rgba(15,23,42,.7)] hover:brightness-[1.35]"
           onClick={() => onboarding.goToStep(OnboardingStep.COMPLETE)}
         >
           {t("onboarding_nextButton")}

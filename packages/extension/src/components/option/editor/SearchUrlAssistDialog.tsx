@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -54,11 +54,14 @@ type AssistFormData = z.infer<typeof assistFormSchema>
 type SearchUrlAssistDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
+  // Pre-fills the search result URL field each time the dialog opens.
+  initialSearchResultUrl?: string
 }
 
 export const SearchUrlAssistDialog = ({
   open,
   onOpenChange,
+  initialSearchResultUrl,
 }: SearchUrlAssistDialogProps) => {
   const [isProcessing, setIsProcessing] = useState(false)
 
@@ -70,6 +73,12 @@ export const SearchUrlAssistDialog = ({
       searchResultUrl: "",
     },
   })
+  const { setValue } = form
+
+  useEffect(() => {
+    if (!open || !initialSearchResultUrl) return
+    setValue("searchResultUrl", initialSearchResultUrl)
+  }, [open, initialSearchResultUrl, setValue])
 
   const handleGeminiExecution = async (data: AssistFormData) => {
     setIsProcessing(true)
@@ -87,7 +96,7 @@ export const SearchUrlAssistDialog = ({
         command,
         position: { x: 0, y: 0 },
         useSecondary: false,
-        allowClipboardFallback: false,
+        selectionFromClipboard: false,
         userVariables: [
           { name: "search_keyword", value: data.searchKeyword },
           { name: "search_result_url", value: data.searchResultUrl },
@@ -108,7 +117,10 @@ export const SearchUrlAssistDialog = ({
       <DialogContent className="max-w-xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Sparkles className="text-purple-600" size={20} />
+            <Sparkles
+              className="text-purple-600 dark:text-purple-400"
+              size={20}
+            />
             {t("searchUrlAssist_title")}
           </DialogTitle>
           <DialogDescription>{t("searchUrlAssist_desc")}</DialogDescription>
@@ -158,9 +170,9 @@ export const SearchUrlAssistDialog = ({
               )}
             />
 
-            <div className="bg-blue-50 p-2 rounded-lg text-sm text-blue-800">
+            <div className="bg-blue-50 dark:bg-blue-900/30 p-2 mt-6 rounded-lg text-sm text-blue-800 dark:text-blue-200">
               <Collapsible className={css.collapse}>
-                <CollapsibleTrigger className="flex items-center gap-1 hover:bg-blue-100 px-2 h-[40px] rounded-lg text-sm font-semibold transition">
+                <CollapsibleTrigger className="flex items-center gap-1 hover:bg-blue-100 dark:hover:bg-blue-900/50 px-2 h-[40px] rounded-lg text-sm font-semibold transition">
                   <CircleHelp className="size-4" />
                   {t("searchUrlAssist_howToUse")}
                   <ChevronRight size={16} className={cn(css.iconRight)} />
@@ -172,7 +184,7 @@ export const SearchUrlAssistDialog = ({
                     controls
                     controlsList="nodownload noremoteplayback"
                     disablePictureInPicture
-                    className="rounded-md w-full mx-auto aspect-[3/2]"
+                    className="rounded-md w-full mx-auto aspect-3/2"
                   >
                     <source
                       src="https://github.com/ujiro99/selection-command/raw/refs/heads/main/docs/Search/Search%20URL%20AI%20assist.mp4"
@@ -202,7 +214,7 @@ export const SearchUrlAssistDialog = ({
             type="button"
             onClick={form.handleSubmit(handleGeminiExecution)}
             disabled={isProcessing}
-            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+            className="bg-linear-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 dark:from-[hsl(265_50%_38%)] dark:to-[hsl(222_50%_30%)] dark:hover:from-[hsl(265_40%_46%)] dark:hover:to-[hsl(222_45%_46%)]"
           >
             <Sparkles size={16} className="mr-1.5" />
             {isProcessing

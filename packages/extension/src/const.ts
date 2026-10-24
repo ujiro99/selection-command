@@ -224,6 +224,19 @@ export enum STYLE {
   VERTICAL = "vertical",
 }
 
+export enum THEME {
+  SYSTEM = "system",
+  LIGHT = "light",
+  DARK = "dark",
+}
+
+/**
+ * Attribute that carries the resolved theme ("light" | "dark").
+ * A dedicated name avoids colliding with a host page's own `.dark` class or
+ * `data-theme` attribute.
+ */
+export const THEME_ATTRIBUTE = "data-sc-theme"
+
 export enum FOLDER_STYLE {
   INHERIT = "inherit",
   HORIZONTAL = "horizontal",

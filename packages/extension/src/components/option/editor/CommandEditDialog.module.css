@@ -1,5 +1,7 @@
+@reference "../../global.css";
+
 .icon {
-  @apply stroke-gray-600;
+  @apply stroke-gray-600 dark:stroke-gray-300;
 }
 
 .pageActionStart > div,
@@ -24,5 +26,5 @@
   right: -12px;
   aspect-ratio: cos(70deg);
   clip-path: polygon(0 0, 100% 50%, 0 100%);
-  @apply bg-gradient-to-r from-cyan-500 to-blue-400;
+  @apply bg-linear-to-r from-cyan-500 to-blue-400;
 }

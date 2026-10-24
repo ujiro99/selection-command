@@ -178,13 +178,20 @@ export function StepSearchCommand({ onboarding }: Props) {
       )}
     >
       <OnboardingFadeIn key={"command-type"} delay={phaseDelays.commandType}>
-        <h2 className="text-4xl font-bold text-slate-700 flex items-center">
+        <h2 className="text-4xl font-bold text-slate-700 dark:text-slate-300 flex items-center">
           <span className="font-mono">1.</span>{" "}
           {t("Option_commandType_search_title")}
         </h2>
       </OnboardingFadeIn>
 
-      <div className="flex flex-col items-center gap-4">
+      <div
+        className={cn(
+          "flex flex-col items-center gap-4",
+          // Without the rail (and its own pb-14), the target text's callout
+          // would overlap the explanation above it; keep the room it needs.
+          !onboarding.ui.showRail && !isValueShown && "pb-14",
+        )}
+      >
         <OnboardingFadeIn
           key={
             isValueShown
@@ -196,7 +203,7 @@ export function StepSearchCommand({ onboarding }: Props) {
           className="flex flex-col items-center gap-4"
           delay={phaseDelays.message}
         >
-          <p className="max-w-xl text-xl leading-[1.75] font-semibold text-slate-900">
+          <p className="max-w-xl text-xl leading-[1.75] font-semibold text-slate-900 dark:text-slate-100">
             {isValueShown ? (
               <>
                 <span>{t("onboarding_step1ValueMessage")}</span>
@@ -220,32 +227,39 @@ export function StepSearchCommand({ onboarding }: Props) {
             key="value-submessage"
             delay={phaseDelays.valueSubmessage}
           >
-            <p className="max-w-xl text-lg text-slate-700 text-pretty">
+            <p className="max-w-xl text-lg text-slate-700 dark:text-slate-300 text-pretty">
               {t("onboarding_step1ValueSubmessage")}
             </p>
           </OnboardingFadeIn>
         )}
 
-        <OnboardingFadeIn
-          key={isValueShown ? "rail-complete" : "rail"}
-          delay={phaseDelays.rail}
-          className={isValueShown ? undefined : "pb-14"}
-        >
-          <OnboardingRail
-            selectLabel={t("onboarding_railSelect")}
-            commandLabel={t("onboarding_railCommand")}
-            resultLabel={t("onboarding_railResultSearch")}
-            activeBeat={isValueShown ? -1 : railBeat(phase)}
-            size="lg"
-          />
-        </OnboardingFadeIn>
+        {onboarding.ui.showRail && (
+          <OnboardingFadeIn
+            key={isValueShown ? "rail-complete" : "rail"}
+            delay={phaseDelays.rail}
+            className={isValueShown ? undefined : "pb-14"}
+          >
+            <OnboardingRail
+              selectLabel={t("onboarding_railSelect")}
+              commandLabel={t("onboarding_railCommand")}
+              resultLabel={t("onboarding_railResultSearch")}
+              activeBeat={isValueShown ? -1 : railBeat(phase)}
+              size="lg"
+            />
+          </OnboardingFadeIn>
+        )}
       </div>
 
       {(isExplain || isWaitExecute) && (
         <>
-          <OnboardingFadeIn key={"target-text"} delay={phaseDelays.targetText}>
+          <OnboardingFadeIn
+            key={"target-text"}
+            delay={phaseDelays.targetText}
+            className={cn(!onboarding.ui.showRail && "mt-4")}
+          >
             <OnboardingTargetText
               text={t("onboarding_step1TargetText")}
+              background={onboarding.ui.background}
               selected={!isExplain}
               calloutDelay={phaseDelays.targetTextCallout}
             />
@@ -264,7 +278,7 @@ export function StepSearchCommand({ onboarding }: Props) {
       {isWaitReturn && (
         <>
           <span
-            className="size-8 shrink-0 rounded-full bg-sky-950/[0.14] text-sky-950 animate-onboarding-blink motion-reduce:animate-none"
+            className="size-8 shrink-0 rounded-full bg-sky-950/[0.14] dark:bg-sky-200/25 text-sky-950 dark:text-sky-200 animate-onboarding-blink motion-reduce:animate-none"
             data-testid="onboarding-step1-callout-anchor"
           />
           <OnboardingCallout
@@ -283,7 +297,10 @@ export function StepSearchCommand({ onboarding }: Props) {
           <button
             type="button"
             onClick={() => onboarding.goToStep(OnboardingStep.AI_PROMPT)}
-            className="flex items-center gap-2 min-h-14 rounded-xl bg-sky-950 px-8 text-lg font-semibold text-white shadow-[0_10px_20px_-14px_rgba(15,23,42,.7)] hover:brightness-[1.35]"
+            className={cn(
+              "flex items-center gap-2 min-h-14 rounded-xl bg-sky-950 dark:bg-sky-700 px-8 text-lg font-semibold text-white shadow-[0_10px_20px_-14px_rgba(15,23,42,.7)] hover:brightness-[1.35]",
+              !onboarding.ui.showRail && "mt-4",
+            )}
           >
             {t("onboarding_nextButton")}
             <ChevronRight className="inline-block size-5" />

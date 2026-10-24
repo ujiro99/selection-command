@@ -125,13 +125,13 @@ export function PageActionItem(props: Props): JSX.Element {
       <div
         className={cn(
           "transition relative group-hover:scale-150 p-1 rounded-full",
-          currentId === step.id ? "bg-sky-200" : "",
-          isFailed ? "bg-red-200" : "",
+          currentId === step.id ? "bg-sky-200 dark:bg-sky-800" : "",
+          isFailed ? "bg-red-200 dark:bg-red-900" : "",
         )}
       >
         <TypeIcon
           type={step.param.type}
-          className="stroke-gray-700"
+          className="stroke-gray-700 dark:stroke-gray-300"
           size={14}
         />
       </div>
@@ -142,7 +142,7 @@ export function PageActionItem(props: Props): JSX.Element {
         {shouldRender && (
           <PopoverContent
             className={
-              "border bg-white px-3 pt-4 pb-2 min-w-56 max-w-80 text-gray-600"
+              "border bg-white dark:bg-popover dark:[--sc-input-bg:hsl(220_18%_21%)] px-3 pt-4 pb-2 min-w-56 max-w-80 text-gray-600 dark:text-gray-400"
             }
             side={"top"}
             arrowPadding={-1}
@@ -152,14 +152,16 @@ export function PageActionItem(props: Props): JSX.Element {
             <p className="text-sm font-semibold font-mono flex items-center gap-1.5">
               <TypeIcon
                 type={step.param.type}
-                className="stroke-gray-700"
+                className="stroke-gray-700 dark:stroke-gray-300"
                 size={14}
               />
               {capitalize(step.param.type)}
             </p>
 
             {isFailed && (
-              <p className="text-sm text-red-600">{failedMessage}</p>
+              <p className="text-sm text-red-600 dark:text-red-400">
+                {failedMessage}
+              </p>
             )}
 
             <div className="mt-4 space-y-2">
@@ -184,10 +186,10 @@ export function PageActionItem(props: Props): JSX.Element {
                   </label>
                   <pre
                     className={cn(
-                      "w-2/3 max-h-32 truncate text-xs p-2 bg-gray-100 font-mono rounded whitespace-pre-line",
+                      "w-2/3 max-h-32 truncate text-xs p-2 bg-gray-100 dark:bg-(--sc-input-bg,var(--color-gray-800)) font-mono rounded-sm whitespace-pre-line",
                       isInput &&
                         isEditing &&
-                        "border border-gray-300 shadow cursor-pointer",
+                        "border border-gray-300 dark:border-gray-700 shadow-sm cursor-pointer",
                     )}
                     onClick={handleEditInputValue}
                   >
@@ -220,22 +222,32 @@ export function PageActionItem(props: Props): JSX.Element {
               ) : (
                 <button
                   className={cn(
-                    "outline-gray-200 p-2 rounded-md transition hover:bg-gray-200 hover:scale-125 group/edit-button",
+                    "outline-gray-200 dark:outline-gray-800 p-2 rounded-md transition hover:bg-gray-200 dark:hover:bg-gray-700 hover:scale-125 group/edit-button",
                   )}
                   onClick={handleClickEditFinish}
                 >
-                  <Check className={cn("stroke-gray-500")} size={16} />
+                  <Check
+                    className={cn("stroke-gray-500 dark:stroke-gray-400")}
+                    size={16}
+                  />
                 </button>
               )}
 
               <RemoveButton onClick={handleClickRemove} size={16} />
             </div>
-            <PopoverArrow className="fill-white mt-[-1px]" height={6} />
-            <HoverArea
-              anchorRef={anchorRef}
-              contentRef={contentRef}
-              isHorizontal={true}
+            <PopoverArrow
+              className="fill-white dark:fill-popover -mt-px"
+              height={6}
             />
+            {/* Unmount while closing so the bridge does not capture the
+                pointer during the exit animation. */}
+            {isOpen && (
+              <HoverArea
+                anchorRef={anchorRef}
+                contentRef={contentRef}
+                isHorizontal={true}
+              />
+            )}
           </PopoverContent>
         )}
       </Popover>
@@ -255,13 +267,13 @@ const RemoveButton = ({ onClick, size }: RemoveButtonProps) => {
       <button
         type="button"
         className={
-          "outline-gray-200 p-2 rounded-md transition hover:bg-red-100 hover:scale-125 group/remove-button"
+          "outline-gray-200 dark:outline-gray-800 p-2 rounded-md transition hover:bg-red-100 dark:hover:bg-red-900/40 hover:scale-125 group/remove-button"
         }
         onClick={onClick}
         ref={buttonRef}
       >
         <Trash2
-          className="stroke-gray-500 group-hover/remove-button:stroke-red-500"
+          className="stroke-gray-500 dark:stroke-gray-400 group-hover/remove-button:stroke-red-500"
           size={size}
         />
       </button>

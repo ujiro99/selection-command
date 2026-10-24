@@ -21,14 +21,19 @@ import { CACHE_SECTIONS } from "@/services/settings/settingsCache"
 import * as PageActionServiceWorker from "@/services/pageAction/serviceWorker"
 import { ServiceWorkerData } from "@/services/serviceWorkerData"
 import { ContextMenu } from "@/services/contextMenus"
-import { closeWindow, windowExists, getCurrentTab } from "@/services/chrome"
+import {
+  closeWindow,
+  windowExists,
+  getCurrentTab,
+  openOptionPage,
+} from "@/services/chrome"
 import { WindowStackManager } from "@/services/windowStackManager"
 import { PopupAutoClose } from "@/services/popupAutoClose"
 import { findMatchingPageRule, isEmpty } from "@/lib/utils"
 import { execute } from "@/action/serviceWorker"
 import * as ActionHelper from "@/action/helper"
 import type { WindowType } from "@/types"
-import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
+import { Storage } from "@/services/storage"
 import {
   ANALYTICS_EVENTS,
   sendEvent,
@@ -155,9 +160,9 @@ const commandFuncs = {
   [ServiceWorkerCommand.execApi]: ActionHelper.execApi,
 
   [ServiceWorkerCommand.openOption]: (): boolean => {
-    chrome.tabs.create({
-      url: OPTION_PAGE_PATH,
-    })
+    openOptionPage().catch((e) =>
+      console.error("Failed to open option page", e),
+    )
     return false
   },
 
@@ -174,16 +179,16 @@ const commandFuncs = {
       const pageRules = settings.pageRules ?? []
       const matchingRule = findMatchingPageRule(pageRules, param.url)
       if (matchingRule == null) {
-        chrome.tabs.create({
-          url: `${OPTION_PAGE_PATH}?addPageRule=${encodeURIComponent(param.url)}#pageRules`,
-        })
+        await openOptionPage(
+          `${OPTION_PAGE_PATH}?addPageRule=${encodeURIComponent(param.url)}#pageRules`,
+        )
       } else {
-        chrome.tabs.create({
-          url: `${OPTION_PAGE_PATH}?editPageRule=${encodeURIComponent(matchingRule.urlPattern)}#pageRules`,
-        })
+        await openOptionPage(
+          `${OPTION_PAGE_PATH}?editPageRule=${encodeURIComponent(matchingRule.urlPattern)}#pageRules`,
+        )
       }
     }
-    add()
+    add().catch((e) => console.error("Failed to open option page", e))
     return false
   },
 
@@ -390,28 +395,12 @@ const updateActiveTabId = async (activeTabId?: number) => {
   }
 }
 
-// Clears the selection text unless the user opted to keep the menu open
-// across tab/window changes.
-const clearSelectionTextUnlessKeepOpen = async () => {
-  const settings = await enhancedSettings.getSection(
-    CACHE_SECTIONS.USER_SETTINGS,
-  )
-  if (!settings.startupMethod?.keepMenuOpenOnFocusChange) {
-    await Storage.set(SESSION_STORAGE_KEY.SELECTION_TEXT, "")
-  }
-}
-
 chrome.action.onClicked.addListener(() => {
-  chrome.tabs.create({
-    url: OPTION_PAGE_PATH,
-  })
+  openOptionPage().catch((e) => console.error("Failed to open option page", e))
 })
 
 chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
-  if (windowId === chrome.windows.WINDOW_ID_NONE) {
-    await clearSelectionTextUnlessKeepOpen()
-    return
-  }
+  if (windowId === chrome.windows.WINDOW_ID_NONE) return
 
   // Update active tab ID
   await updateActiveTabId()
@@ -420,11 +409,7 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
   const windowsToClose = await WindowStackManager.getWindowsToClose(windowId)
 
   // Schedule popup windows to close with configured delay.
-  // Run this before the settings fetch below so popup auto-close isn't
-  // delayed behind it and doesn't race with overlapping focus-change events.
   await PopupAutoClose.scheduleClose(windowsToClose)
-
-  await clearSelectionTextUnlessKeepOpen()
 })
 
 chrome.windows.onRemoved.addListener(async (windowId: number) => {
@@ -677,7 +662,7 @@ Settings.addChangedListener(() => ContextMenu.init())
 // )
 
 // Add command processing
-chrome.commands.onCommand.addListener(async (commandName) => {
+async function handleShortcutCommand(commandName: string) {
   try {
     // Get settings
     const settings = await enhancedSettings.get()
@@ -696,12 +681,34 @@ chrome.commands.onCommand.addListener(async (commandName) => {
       return
     }
 
-    const selectionText = await Storage.get<string>(
-      SESSION_STORAGE_KEY.SELECTION_TEXT,
-    )
+    const tab = await getCurrentTab()
+    const enableSendTab =
+      tab?.id &&
+      !tab.url?.startsWith("chrome") &&
+      !tab.url?.includes("chromewebstore.google.com")
 
-    // If no text is selected, handle according to noSelectionBehavior
-    let allowClipboardFallback = false
+    // A global shortcut can be pressed while another app has focus. Then the
+    // selection left in the page is ignored, as the user may have copied
+    // other text in that app. After returning to Chrome, the selection shown
+    // in the page is used. getLastFocused fails when no window is open.
+    const lastFocusedWindow = await chrome.windows
+      .getLastFocused()
+      .catch(() => undefined)
+
+    // Ask the active tab for its latest selection. Tabs without the content
+    // script (e.g. chrome://) are treated as having no selection.
+    let selectionText = ""
+    if (enableSendTab && lastFocusedWindow?.focused) {
+      const selection = await Ipc.sendTab<unknown, string | Error | undefined>(
+        tab.id ?? 0,
+        TabCommand.getSelection,
+      )
+      if (typeof selection === "string") selectionText = selection
+    }
+
+    // This is the only place to decide whether to use the clipboard text as
+    // the selected text. Actions trust this decision and don't re-check.
+    let selectionFromClipboard = false
     if (isEmpty(selectionText)) {
       if (
         shortcut.noSelectionBehavior ===
@@ -712,16 +719,9 @@ chrome.commands.onCommand.addListener(async (commandName) => {
         shortcut.noSelectionBehavior ===
         SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD
       ) {
-        allowClipboardFallback = true
+        selectionFromClipboard = true
       }
     }
-
-    // Get active tab
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
-    const enableSendTab =
-      tab?.id &&
-      !tab.url?.startsWith("chrome") &&
-      !tab.url?.includes("chromewebstore.google.com")
 
     let ret: unknown
     if (enableSendTab) {
@@ -731,7 +731,8 @@ chrome.commands.onCommand.addListener(async (commandName) => {
         TabCommand.executeAction,
         {
           command,
-          allowClipboardFallback,
+          selectionText,
+          selectionFromClipboard,
         },
       )
     }
@@ -748,7 +749,7 @@ chrome.commands.onCommand.addListener(async (commandName) => {
         position,
         selectionText,
         target: null,
-        allowClipboardFallback,
+        selectionFromClipboard,
         pageUrl: tab?.url ?? "",
       })
     }
@@ -762,7 +763,16 @@ chrome.commands.onCommand.addListener(async (commandName) => {
   } catch (error) {
     console.error("Failed to execute shortcut command:", error)
   }
-})
+}
+
+chrome.commands.onCommand.addListener(handleShortcutCommand)
+
+// Expose only in the E2E worker for Playwright evaluation, without a message endpoint.
+if (import.meta.env.MODE === "e2e") {
+  Object.assign(globalThis, {
+    __e2eHandleShortcutCommand: handleShortcutCommand,
+  })
+}
 
 // Side panel is an optional capability (e.g. not available on Opera), so
 // each event is feature-detected individually.

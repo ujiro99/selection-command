@@ -1,5 +1,5 @@
-@import url("global.css");
-@import url("Animation.css");
+@import "./global.css";
+@import "./Animation.css";
 
 :host,
 :root {

@@ -737,6 +737,21 @@
   "Option_userStyles_desc": {
     "message": "Вы можете настроить отображение всплывающего меню."
   },
+  "Option_theme": {
+    "message": "Тема"
+  },
+  "Option_theme_desc": {
+    "message": "Цветовая схема всплывающего меню и страниц этого расширения."
+  },
+  "Option_theme_system": {
+    "message": "Как в системе"
+  },
+  "Option_theme_light": {
+    "message": "Светлая"
+  },
+  "Option_theme_dark": {
+    "message": "Тёмная"
+  },
   "Option_userStyles_add": {
     "message": "Редактировать пользовательский стиль"
   },
@@ -753,7 +768,13 @@
     "message": "Цвет фона"
   },
   "Option_userStyles_desc_background_color": {
-    "message": "Укажите цвет фона меню. По умолчанию: #FFFFFF"
+    "message": "Укажите цвет фона меню. По умолчанию: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#FFFFFF"
+      }
+    }
   },
   "Option_userStyles_option_border_color": {
     "message": "Цвет границы"
@@ -762,16 +783,34 @@
     "message": "Цвет шрифта"
   },
   "Option_userStyles_desc_border_color": {
-    "message": "Укажите цвет границы меню. По умолчанию: #F3F4F6"
+    "message": "Укажите цвет границы меню. По умолчанию: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#F3F4F6"
+      }
+    }
   },
   "Option_userStyles_desc_font_color": {
-    "message": "Укажите цвет шрифта. По умолчанию: #0F172A"
+    "message": "Укажите цвет шрифта. По умолчанию: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#0F172A"
+      }
+    }
   },
   "Option_userStyles_option_icon_color": {
     "message": "Цвет иконок"
   },
   "Option_userStyles_desc_icon_color": {
-    "message": "Укажите цвет иконок. По умолчанию: #0F172A"
+    "message": "Укажите цвет иконок. По умолчанию: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#0F172A"
+      }
+    }
   },
   "Option_excludeFromGlobalIconColor": {
     "message": "Исключить из глобального цвета иконок"
@@ -826,6 +865,9 @@
   },
   "Option_shareButton_shared_tooltip": {
     "message": "Уже опубликовано"
+  },
+  "Option_shareButton_modified_tooltip": {
+    "message": "Есть несинхронизированные изменения. Нажмите, чтобы синхронизировать"
   },
   "Option_remove_title": {
     "message": "Вы уверены, что хотите удалить это?"

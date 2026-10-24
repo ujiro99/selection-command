@@ -32,6 +32,7 @@ import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 import {
   STYLE,
+  THEME,
   STARTUP_METHOD,
   KEYBOARD,
   DRAG_OPEN_MODE,
@@ -98,6 +99,7 @@ const formSchema = z
       })
       .strict(),
     style: z.nativeEnum(STYLE),
+    theme: z.nativeEnum(THEME),
     commands: z.array(commandSchema).min(1),
     folders: z.array(folderSchema),
     linkCommand: z
@@ -150,6 +152,7 @@ export function SettingForm({ className }: { className?: string }) {
       popupPlacement: emptySettings.popupPlacement,
       windowOption: emptySettings.windowOption,
       style: emptySettings.style,
+      theme: emptySettings.theme,
       commands: [], // Empty array to avoid type conflicts
       folders: emptySettings.folders,
       linkCommand: emptySettings.linkCommand,
@@ -195,6 +198,8 @@ export function SettingForm({ className }: { className?: string }) {
       }
     }
     settings.commands = settings.commands.filter(isMenuCommand)
+    // Settings saved before the theme option existed lack it.
+    settings.theme = settings.theme ?? THEME.SYSTEM
     return settings as FormValues
   }
 
@@ -258,13 +263,19 @@ export function SettingForm({ className }: { className?: string }) {
         ...current,
         ...settings,
       })
-      await sleep(1000)
     } catch (e) {
       console.error("Failed to update settings!", settings)
       console.error(e)
     } finally {
-      setIsSaving(false)
+      // Keep the saving indicator for a while without delaying the caller.
+      window.setTimeout(() => setIsSaving(false), 1000)
     }
+  }
+
+  // Saves the form right away, taking over the pending debounced save.
+  const saveNow = async () => {
+    clearTimeout(saveToRef.current)
+    await updateSettings(structuredClone(getValues()) as SettingsFormType)
   }
 
   const handlePopupPlacementSubmit = async (data: any) => {
@@ -419,13 +430,16 @@ export function SettingForm({ className }: { className?: string }) {
       <form
         id="InputForm"
         className={cn(
-          "space-y-10 w-[600px] mx-auto pb-20 text-gray-700",
+          "space-y-10 w-[600px] mx-auto pb-20 text-gray-700 dark:text-gray-300",
           className,
         )}
       >
         <section id="startupMethod" className="space-y-3">
           <h3 className="text-xl font-semibold flex items-center">
-            <MessageSquareMore size={22} className="mr-2 stroke-gray-600" />
+            <MessageSquareMore
+              size={22}
+              className="mr-2 stroke-gray-600 dark:stroke-gray-400"
+            />
             {t("startupMethod")}
           </h3>
           <p className="text-base">{t("startupMethod_desc")}</p>
@@ -507,11 +521,14 @@ export function SettingForm({ className }: { className?: string }) {
         <hr />
         <section id="commands" className="space-y-3">
           <h3 className="text-xl font-semibold flex items-center">
-            <SquareTerminal size={22} className="mr-2 stroke-gray-600" />
+            <SquareTerminal
+              size={22}
+              className="mr-2 stroke-gray-600 dark:stroke-gray-400"
+            />
             {t("commands")}
           </h3>
           <p className="text-base">{t("commands_desc")}</p>
-          <CommandList control={form.control} />
+          <CommandList control={form.control} saveNow={saveNow} />
         </section>
         <hr />
 
@@ -522,7 +539,10 @@ export function SettingForm({ className }: { className?: string }) {
 
         <section id="linkCommand" className="space-y-3">
           <h3 className="text-xl font-semibold flex items-center">
-            <Eye size={22} className="mr-2 stroke-gray-600" />
+            <Eye
+              size={22}
+              className="mr-2 stroke-gray-600 dark:stroke-gray-400"
+            />
             {t("linkCommand")}
           </h3>
           <p className="text-base">{t("linkCommand_desc")}</p>
@@ -635,7 +655,10 @@ export function SettingForm({ className }: { className?: string }) {
 
         <section id="windowSettings" className="space-y-3">
           <h3 className="text-xl font-semibold flex items-center">
-            <AppWindow size={22} className="mr-2 stroke-gray-600" />
+            <AppWindow
+              size={22}
+              className="mr-2 stroke-gray-600 dark:stroke-gray-400"
+            />
             {t("windowSettings")}
           </h3>
           <p className="text-base">{t("windowSettings_desc")}</p>
@@ -671,7 +694,10 @@ export function SettingForm({ className }: { className?: string }) {
 
         <section id="pageRules" className="space-y-3">
           <h3 className="text-xl font-semibold flex items-center">
-            <BookOpen size={22} className="mr-2 stroke-gray-600" />
+            <BookOpen
+              size={22}
+              className="mr-2 stroke-gray-600 dark:stroke-gray-400"
+            />
             {t("pageRules")}
           </h3>
           <p className="text-base">{t("pageRules_desc")}</p>
@@ -683,10 +709,23 @@ export function SettingForm({ className }: { className?: string }) {
         <hr />
         <section id="userStyles" className="space-y-3">
           <h3 className="text-xl font-semibold flex items-center">
-            <Paintbrush size={22} className="mr-2 stroke-gray-600" />
+            <Paintbrush
+              size={22}
+              className="mr-2 stroke-gray-600 dark:stroke-gray-400"
+            />
             {t("userStyles")}
           </h3>
           <p className="text-base">{t("userStyles_desc")}</p>
+          <SelectField
+            control={form.control}
+            name="theme"
+            formLabel={t("theme")}
+            description={t("theme_desc")}
+            options={e2a(THEME).map((theme) => ({
+              name: t(`theme_${theme}`),
+              value: theme,
+            }))}
+          />
           <UserStyleList control={form.control} />
         </section>
       </form>

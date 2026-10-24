@@ -8,6 +8,7 @@ import { VERSION } from "@/const"
 import { closeOnboardingTab } from "./onboardingWindow"
 import { getOnboardingAssignmentSync } from "@/services/experiments"
 import type { ExperimentVariant } from "@/services/experiments"
+import { getVariantUi } from "./onboardingVariantUi"
 
 export type UseOnboardingState = ReturnType<typeof useOnboardingState>
 
@@ -36,22 +37,23 @@ function readStepAndPhaseOverride(): {
   return { step, phase }
 }
 
-// Where the flow opens, per A/B variant: the control keeps the INTRO step,
-// while variant C drops it and starts on the first real step behind a short
-// welcome overlay (see OnboardingWelcome).
+// Where the flow opens, per A/B variant: variant A keeps the INTRO step,
+// while variants C and D drop it and start on the first real step behind a
+// short welcome overlay (see OnboardingWelcome).
 function initialStepAndPhase(variant: ExperimentVariant): {
   step: OnboardingStep
   phase: StepPhase
 } {
-  return variant === "C"
-    ? { step: OnboardingStep.SEARCH, phase: StepPhase.WELCOME }
-    : { step: OnboardingStep.INTRO, phase: StepPhase.EXPLAIN }
+  return variant === "A"
+    ? { step: OnboardingStep.INTRO, phase: StepPhase.EXPLAIN }
+    : { step: OnboardingStep.SEARCH, phase: StepPhase.WELCOME }
 }
 
 export function useOnboardingState(variant: ExperimentVariant) {
   const [initial] = useState(
     () => readStepAndPhaseOverride() ?? initialStepAndPhase(variant),
   )
+  const ui = getVariantUi(variant)
   const [step, setStep] = useState<OnboardingStep>(initial.step)
   const [phase, _setPhase] = useState<StepPhase>(initial.phase)
   const startedAtRef = useRef<number>(Date.now())
@@ -168,6 +170,7 @@ export function useOnboardingState(variant: ExperimentVariant) {
   return {
     step,
     phase,
+    ui,
     setPhase,
     goToStep,
     skip,

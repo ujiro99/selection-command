@@ -6,6 +6,7 @@ import type {
   ALIGN,
   STYLE,
   FOLDER_STYLE,
+  THEME,
   KEYBOARD,
   STARTUP_METHOD,
   SPACE_ENCODING,
@@ -206,6 +207,8 @@ export type UserSettings = {
   folders: Array<CommandFolder>
   pageRules: Array<PageRule>
   style: STYLE
+  /** Color theme. Settings saved before this option existed lack it. */
+  theme?: THEME
   userStyles: Array<StyleVariable>
   shortcuts: ShortcutSettings
   windowOption: WindowOption
@@ -249,13 +252,19 @@ export type ExecuteCommandParams = {
   target?: Element | null
   useSecondary?: boolean
   /**
-   * Allows the clipboard text to be used in place of an empty selection
-   * (e.g. a shortcut key run without a selection). Each action decides whether
-   * it actually needs the clipboard, and requests it via UrlParam.useClipboard.
+   * Use the clipboard text as the selected text. This is decided only once,
+   * where the command is triggered (e.g. a shortcut key run without a
+   * selection), so selectionText is always empty when this is true and
+   * actions must not check selectionText again.
    */
-  allowClipboardFallback?: boolean
+  selectionFromClipboard?: boolean
   changeState?: (state: ExecState, message?: string) => void
   pageUrl?: string
+}
+
+/** Parameters each action receives. The executor fills in the defaults. */
+export type ActionExecuteParams = ExecuteCommandParams & {
+  selectionFromClipboard: boolean
 }
 
 export type ActionTypes = PAGE_ACTION_EVENT | PAGE_ACTION_CONTROL
@@ -321,8 +330,17 @@ export type UrlParam = {
   searchUrl: string
   selectionText: string
   spaceEncoding?: SPACE_ENCODING
-  useClipboard?: boolean
   pageUrl?: string
+  /**
+   * Replace the selected text in searchUrl with the clipboard text.
+   * See ExecuteCommandParams.selectionFromClipboard.
+   */
+  selectionFromClipboard?: boolean
+  /**
+   * Set when page action steps reference {{Clipboard}}. The clipboard text is
+   * read when opening the page and passed to the steps.
+   */
+  clipboardForSteps?: boolean
   /**
    * Set when selectionText is a prompt template (AI prompt query URL) that
    * still contains {{Clipboard}} / {{SelectedText}} placeholders. They are

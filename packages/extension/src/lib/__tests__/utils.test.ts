@@ -4,6 +4,7 @@ import {
   toUrl,
   matchesPageActionUrl,
   getCommandTargetUrl,
+  needsClipboard,
 } from "../utils"
 import { OPEN_MODE, PAGE_ACTION_OPEN_MODE, SPACE_ENCODING } from "@/const"
 import type { UrlParam } from "@/types"
@@ -124,11 +125,11 @@ describe("toUrl", () => {
     expect(toUrl(param)).toBe("https://example.com/search?q=hello%2Fworld")
   })
 
-  it("TU-06: uses clipboard text when useClipboard is true and selectionText is empty", () => {
+  it("TU-06: uses clipboard text when selectionFromClipboard is true", () => {
     const param: UrlParam = {
       searchUrl: "https://example.com/search?q=%s",
       selectionText: "",
-      useClipboard: true,
+      selectionFromClipboard: true,
     }
     const clipboardText = "clipboard content"
     expect(toUrl(param, clipboardText)).toBe(
@@ -136,11 +137,10 @@ describe("toUrl", () => {
     )
   })
 
-  it("TU-07: prefers selectionText over clipboard when both are present", () => {
+  it("TU-07: uses selectionText when selectionFromClipboard is not set even if clipboard text is given", () => {
     const param: UrlParam = {
       searchUrl: "https://example.com/search?q=%s",
       selectionText: "selection",
-      useClipboard: true,
     }
     const clipboardText = "clipboard"
     expect(toUrl(param, clipboardText)).toBe(
@@ -148,11 +148,11 @@ describe("toUrl", () => {
     )
   })
 
-  it("TU-08: uses empty string when useClipboard is true but clipboard is undefined", () => {
+  it("TU-08: uses empty string when selectionFromClipboard is true but clipboard is undefined", () => {
     const param: UrlParam = {
       searchUrl: "https://example.com/search?q=%s",
       selectionText: "",
-      useClipboard: true,
+      selectionFromClipboard: true,
     }
     expect(toUrl(param)).toBe("https://example.com/search?q=")
   })
@@ -161,7 +161,6 @@ describe("toUrl", () => {
     const param: UrlParam = {
       searchUrl: "https://example.com/?prompt=%s",
       selectionText: "Explain: {{SelectedText}} / {{Clipboard}}",
-      useClipboard: true,
       clipboardTemplate: {},
     }
     expect(toUrl(param, "clip")).toBe(
@@ -173,7 +172,6 @@ describe("toUrl", () => {
     const param: UrlParam = {
       searchUrl: "https://example.com/?prompt=%s",
       selectionText: "{{Unknown}} {{Clipboard}}",
-      useClipboard: true,
       clipboardTemplate: {},
     }
     expect(toUrl(param, "clip")).toBe(
@@ -185,7 +183,6 @@ describe("toUrl", () => {
     const param: UrlParam = {
       searchUrl: "https://example.com/?prompt=%s",
       selectionText: "Explain: {{SelectedText}}",
-      useClipboard: true,
       clipboardTemplate: {},
     }
     expect(toUrl(param)).toBe("https://example.com/?prompt=Explain%3A+")
@@ -196,7 +193,6 @@ describe("toUrl", () => {
       searchUrl: "https://example.com/?q=%s",
       selectionText: "[https://a.com](https://a.com) {{Clipboard}}",
       spaceEncoding: SPACE_ENCODING.PERCENT,
-      useClipboard: true,
       clipboardTemplate: { urlToMarkdown: true },
     }
     // Already-converted links in the template are not converted twice.
@@ -208,16 +204,14 @@ describe("toUrl", () => {
     )
   })
 
-  it("TU-08-e: ignores clipboardTemplate when useClipboard is false", () => {
+  it("TU-08-e: does not check selectionText again when selectionFromClipboard is true", () => {
+    // Whether to use the clipboard is decided by the caller only once.
     const param: UrlParam = {
-      searchUrl: "https://example.com/?prompt=%s",
-      selectionText: "{{Clipboard}}",
-      useClipboard: false,
-      clipboardTemplate: {},
+      searchUrl: "https://example.com/search?q=%s",
+      selectionText: "selection",
+      selectionFromClipboard: true,
     }
-    expect(toUrl(param, "clip")).toBe(
-      "https://example.com/?prompt=%7B%7BClipboard%7D%7D",
-    )
+    expect(toUrl(param, "clip")).toBe("https://example.com/search?q=clip")
   })
 
   it("TU-09: URL encodes special characters", () => {
@@ -307,6 +301,33 @@ describe("toUrl", () => {
     expect(toUrl(param)).toBe(
       "https://example.com/share?url=https%3A%2F%2Fsource.example.com%2Fsearch%3Fq%3Da%26b%3D1%23section",
     )
+  })
+})
+
+describe("needsClipboard", () => {
+  const base: UrlParam = {
+    searchUrl: "https://example.com/search?q=%s",
+    selectionText: "",
+  }
+
+  it("NC-01: returns false for a plain string url", () => {
+    expect(needsClipboard("https://example.com")).toBe(false)
+  })
+
+  it("NC-02: returns false when no part of the url uses the clipboard", () => {
+    expect(needsClipboard(base)).toBe(false)
+  })
+
+  it("NC-03: returns true when selectionFromClipboard is true", () => {
+    expect(needsClipboard({ ...base, selectionFromClipboard: true })).toBe(true)
+  })
+
+  it("NC-04: returns true when clipboardForSteps is true", () => {
+    expect(needsClipboard({ ...base, clipboardForSteps: true })).toBe(true)
+  })
+
+  it("NC-05: returns true when clipboardTemplate is set", () => {
+    expect(needsClipboard({ ...base, clipboardTemplate: {} })).toBe(true)
   })
 })
 

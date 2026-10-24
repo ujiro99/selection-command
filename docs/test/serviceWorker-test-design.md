@@ -130,7 +130,8 @@
 
 **テキスト処理:**
 
-- ✅ SWD-44: 正常系: selectedTextが空でuseClipboardがtrueの場合、clipboardTextを使用
+- ✅ SWD-44: 正常系: selectionFromClipboardがtrueの場合、clipboardTextをselectedTextとして使用
+- ✅ SWD-44-b: 正常系: ステップのみがクリップボードを使う場合（clipboardForSteps）、selectedTextは空のまま
 - ✅ SWD-45: 正常系: selectedTextが存在する場合はそのまま使用
 - ✅ SWD-46: 正常系: userVariablesが正しく渡される
 

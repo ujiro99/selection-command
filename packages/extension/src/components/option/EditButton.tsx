@@ -29,7 +29,7 @@ export const EditButton = ({
       <button
         ref={buttonRef}
         className={cn(
-          "outline-gray-200 p-2 rounded-md transition hover:bg-sky-100 hover:scale-125 group/edit-button",
+          "outline-gray-200 dark:outline-gray-800 p-2 rounded-md transition hover:bg-sky-100 dark:hover:bg-sky-900/40 hover-grow-sm group/edit-button",
           className,
         )}
         onClick={handleClick}
@@ -37,7 +37,7 @@ export const EditButton = ({
       >
         <Pencil
           className={cn(
-            "stroke-gray-500 group-hover/edit-button:stroke-sky-500",
+            "stroke-gray-500 dark:stroke-gray-400 group-hover/edit-button:stroke-sky-500 dark:group-hover/edit-button:stroke-sky-400",
             classNameIcon,
           )}
           size={size}

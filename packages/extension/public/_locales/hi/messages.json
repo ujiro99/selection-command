@@ -737,6 +737,21 @@
   "Option_userStyles_desc": {
     "message": "आप पॉपअप मेनू के प्रदर्शन को कस्टमाइज़ कर सकते हैं।"
   },
+  "Option_theme": {
+    "message": "थीम"
+  },
+  "Option_theme_desc": {
+    "message": "पॉप-अप मेनू और इस एक्सटेंशन की स्क्रीन की रंग योजना।"
+  },
+  "Option_theme_system": {
+    "message": "सिस्टम सेटिंग के अनुसार"
+  },
+  "Option_theme_light": {
+    "message": "लाइट"
+  },
+  "Option_theme_dark": {
+    "message": "डार्क"
+  },
   "Option_userStyles_add": {
     "message": "उपयोगकर्ता स्टाइल संपादित करें"
   },
@@ -753,7 +768,13 @@
     "message": "पृष्ठभूमि रंग"
   },
   "Option_userStyles_desc_background_color": {
-    "message": "मेनू का पृष्ठभूमि रंग निर्दिष्ट करें। डिफ़ॉल्ट: #FFFFFF"
+    "message": "मेनू का पृष्ठभूमि रंग निर्दिष्ट करें। डिफ़ॉल्ट: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#FFFFFF"
+      }
+    }
   },
   "Option_userStyles_option_border_color": {
     "message": "बॉर्डर रंग"
@@ -762,16 +783,34 @@
     "message": "फ़ॉन्ट का रंग"
   },
   "Option_userStyles_desc_border_color": {
-    "message": "मेनू का बॉर्डर रंग निर्दिष्ट करें। डिफ़ॉल्ट: #F3F4F6"
+    "message": "मेनू का बॉर्डर रंग निर्दिष्ट करें। डिफ़ॉल्ट: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#F3F4F6"
+      }
+    }
   },
   "Option_userStyles_desc_font_color": {
-    "message": "फ़ॉन्ट का रंग निर्दिष्ट करें। डिफ़ॉल्ट: #0F172A"
+    "message": "फ़ॉन्ट का रंग निर्दिष्ट करें। डिफ़ॉल्ट: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#0F172A"
+      }
+    }
   },
   "Option_userStyles_option_icon_color": {
     "message": "आइकन का रंग"
   },
   "Option_userStyles_desc_icon_color": {
-    "message": "आइकन का रंग निर्दिष्ट करें। डिफ़ॉल्ट: #0F172A"
+    "message": "आइकन का रंग निर्दिष्ट करें। डिफ़ॉल्ट: $default$",
+    "placeholders": {
+      "default": {
+        "content": "$1",
+        "example": "#0F172A"
+      }
+    }
   },
   "Option_excludeFromGlobalIconColor": {
     "message": "वैश्विक आइकन रंग से बाहर रखें"
@@ -826,6 +865,9 @@
   },
   "Option_shareButton_shared_tooltip": {
     "message": "पहले से साझा किया गया"
+  },
+  "Option_shareButton_modified_tooltip": {
+    "message": "बदलाव सिंक नहीं हुए। सिंक करने के लिए क्लिक करें"
   },
   "Option_remove_title": {
     "message": "क्या आप वाकई इसे हटाना चाहते हैं?"
