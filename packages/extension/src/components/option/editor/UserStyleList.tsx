@@ -38,7 +38,8 @@ import { userStyleSchema, UserStyleType, UserStylesType } from "@/types/schema"
 
 import { STYLE_VARIABLE } from "@/const"
 import { cn, hyphen2Underscore } from "@/lib/utils"
-import { Attributes } from "@/services/option/userStyles"
+import { Attributes, getDefaultValue } from "@/services/option/userStyles"
+import { useThemeContext } from "@/hooks/useTheme"
 import { t as _t } from "@/services/i18n"
 import { TEST_IDS } from "@/testIds"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
@@ -77,6 +78,7 @@ type UserStyleListProps = {
 }
 
 export const UserStyleList = ({ control }: UserStyleListProps) => {
+  const isDark = useThemeContext() === "dark"
   const [dialogOpen, _setDialogOpen] = useState(false)
   const editorRef = useRef<UserStyleType>(DefaultValue)
   const addButtonRef = useRef<HTMLButtonElement>(null)
@@ -128,7 +130,7 @@ export const UserStyleList = ({ control }: UserStyleListProps) => {
               onClick={() => {
                 editorRef.current = {
                   name: defaultName,
-                  value: Attributes[defaultName].default,
+                  value: getDefaultValue(defaultName, isDark),
                 }
                 setDialogOpen(true)
               }}
@@ -234,6 +236,7 @@ export const UserStyleDialog = ({
   const { reset, watch, setValue } = form
   const variableName = watch("name")
   const attr = Attributes[variableName]
+  const isDark = useThemeContext() === "dark"
 
   useEffect(() => {
     reset(variable)
@@ -241,7 +244,8 @@ export const UserStyleDialog = ({
 
   useEffect(() => {
     if (!isUpdate) {
-      setValue("value", Attributes[variableName]?.default)
+      if (Attributes[variableName] == null) return
+      setValue("value", getDefaultValue(variableName, isDark))
     }
   }, [variableName])
 

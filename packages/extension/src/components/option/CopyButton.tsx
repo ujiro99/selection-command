@@ -40,13 +40,13 @@ export const CopyButton = ({
         type="button"
         ref={buttonRef}
         className={cn(
-          "outline-gray-200 dark:outline-gray-800 p-2 rounded-md transition hover:bg-gray-100 dark:hover:bg-gray-800 hover:scale-125 group/edit-button",
+          "outline-gray-200 dark:outline-gray-800 p-2 rounded-md transition hover:bg-gray-100 dark:hover:bg-gray-700/50 hover:scale-125 group/edit-button",
           className,
         )}
         onClick={() => setOpen(true)}
       >
         <Copy
-          className="stroke-gray-500 dark:stroke-gray-400 group-hover/edit-button:stroke-gray-500"
+          className="stroke-gray-500 dark:stroke-gray-400 group-hover/edit-button:stroke-gray-500 dark:group-hover/edit-button:stroke-gray-200"
           size={size}
         />
       </button>

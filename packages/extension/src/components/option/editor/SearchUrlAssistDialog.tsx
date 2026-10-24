@@ -205,7 +205,7 @@ export const SearchUrlAssistDialog = ({
             type="button"
             onClick={form.handleSubmit(handleGeminiExecution)}
             disabled={isProcessing}
-            className="bg-linear-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 dark:from-purple-500 dark:to-blue-500 dark:hover:from-purple-600 dark:hover:to-blue-600"
+            className="bg-linear-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 dark:from-[hsl(265_50%_38%)] dark:to-[hsl(222_50%_30%)] dark:hover:from-[hsl(265_40%_46%)] dark:hover:to-[hsl(222_45%_46%)]"
           >
             <Sparkles size={16} className="mr-1.5" />
             {isProcessing

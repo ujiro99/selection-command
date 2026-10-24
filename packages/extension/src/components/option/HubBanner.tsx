@@ -4,6 +4,7 @@ import { t } from "@/services/i18n"
 import { cn } from "@/lib/utils"
 import { NEW_HUB_URL } from "@/const"
 import { useHubUser } from "@/hooks/option/useHubUser"
+import { useThemeContext } from "@/hooks/useTheme"
 import { getHubLocale } from "@/services/hubShare"
 import { sendHubLinkClick, HUB_LINK_ROUTE } from "@/services/analytics"
 import { UTM_SOURCE, UTM_MEDIUM, withUtmParams } from "@shared"
@@ -12,6 +13,7 @@ const UTM_PARAMS = { source: UTM_SOURCE.OPTION_PAGE, medium: UTM_MEDIUM.BANNER }
 
 export function HubBanner() {
   const hubUser = useHubUser()
+  const isDark = useThemeContext() === "dark"
   const locale = getHubLocale()
   const hubBannerLink = withUtmParams(
     hubUser
@@ -33,10 +35,16 @@ export function HubBanner() {
       >
         <img
           className={cn(
-            css2.banner, // The banner image has a transparent background and dark text.
-            "shadow-xl rounded-md px-4 pt-2 pb-1 dark:bg-white",
+            css2.banner,
+            "shadow-xl rounded-md px-4 pt-2 pb-1 dark:border",
           )}
-          src="/SelectionCommandHub.png"
+          // The image has dark text on a transparent background, so the dark
+          // theme uses a variant with the lightness inverted (hue kept).
+          src={
+            isDark
+              ? "/SelectionCommandHub_dark.png"
+              : "/SelectionCommandHub.png"
+          }
           alt="Selection Command"
           width="230"
         />

@@ -116,8 +116,8 @@ export const ShareButton = ({
   const iconClassName = cn(
     "stroke-gray-500 dark:stroke-gray-400",
     shareState === "modified"
-      ? "group-hover/share-btn:stroke-orange-600"
-      : "group-hover/share-btn:stroke-green-600",
+      ? "group-hover/share-btn:stroke-orange-600 dark:group-hover/share-btn:stroke-orange-400"
+      : "group-hover/share-btn:stroke-green-600 dark:group-hover/share-btn:stroke-green-400",
     status === "error" && "stroke-red-500",
   )
 
@@ -142,9 +142,10 @@ export const ShareButton = ({
         type="button"
         disabled={status !== "idle"}
         className={cn(
-          "outline-gray-200 dark:outline-gray-800 p-2 rounded-md transition hover:bg-green-100 hover:scale-125 group/share-btn",
+          "outline-gray-200 dark:outline-gray-800 p-2 rounded-md transition hover:bg-green-100 dark:hover:bg-green-900/40 hover:scale-125 group/share-btn",
           "disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none",
-          shareState === "modified" && "bg-orange-50 hover:bg-orange-100",
+          shareState === "modified" &&
+          "bg-orange-50 hover:bg-orange-100 dark:bg-orange-900/40 dark:hover:bg-orange-800/40",
         )}
         onClick={handleClick}
         ref={buttonRef}

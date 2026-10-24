@@ -6,6 +6,8 @@ import type { StyleVariable } from "@/types"
 type AttributesType = {
   type: "string" | "number" | "color"
   default: string | number
+  /** Default in the dark theme, matching the popup's own dark colors. */
+  darkDefault?: string
   max?: number
   min?: number
   step?: number
@@ -17,10 +19,12 @@ export const Attributes: AttributeMap = {
   [STYLE_VARIABLE.BACKGROUND_COLOR]: {
     type: "color",
     default: "#FFFFFF",
+    darkDefault: "#23272F",
   },
   [STYLE_VARIABLE.BORDER_COLOR]: {
     type: "color",
     default: "#F3F4F6",
+    darkDefault: "#3C4049",
   },
   [STYLE_VARIABLE.FONT_SCALE]: {
     type: "number",
@@ -32,10 +36,12 @@ export const Attributes: AttributeMap = {
   [STYLE_VARIABLE.FONT_COLOR]: {
     type: "color",
     default: "#0F172A",
+    darkDefault: "#E2E8F0",
   },
   [STYLE_VARIABLE.ICON_COLOR]: {
     type: "color",
     default: "#0F172A",
+    darkDefault: "#E2E8F0",
   },
   [STYLE_VARIABLE.IMAGE_SCALE]: {
     type: "number",
@@ -65,6 +71,15 @@ export const Attributes: AttributeMap = {
     min: 0,
     step: 10,
   },
+}
+
+/** Returns the initial value of a style variable for the current theme. */
+export function getDefaultValue(
+  name: STYLE_VARIABLE,
+  isDark: boolean,
+): string | number {
+  const attr = Attributes[name]
+  return (isDark ? attr.darkDefault : undefined) ?? attr.default
 }
 
 /** Style variables that are also exposed as separate HSL components. */
