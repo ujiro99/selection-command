@@ -8,11 +8,11 @@
   @variant dark {
     --background: 222 24% 11%;
     --border: 218 18% 22%;
-    --input: 218 18% 26%;
+    --input: var(--sc-overlay-input);
     --secondary: 219 18% 19%;
-    --accent: 218 18% 24%;
-    --sc-hover: 218 18% 24%;
-    --sc-selected: 218 18% 30%;
+    --accent: var(--sc-overlay-hover);
+    --sc-hover: var(--sc-overlay-hover);
+    --sc-selected: var(--sc-overlay-selected);
     --muted: 220 20% 15%;
     /* Background of Input, Textarea and SelectTrigger. */
     --sc-input-bg: hsl(220 20% 15%);

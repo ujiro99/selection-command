@@ -242,12 +242,14 @@ export const UserStyleDialog = ({
     reset(variable)
   }, [variable])
 
+  // Re-fill the default when the theme changes too, so that the value matches
+  // the default shown in the description.
   useEffect(() => {
     if (!isUpdate) {
       if (Attributes[variableName] == null) return
       setValue("value", getDefaultValue(variableName, isDark))
     }
-  }, [variableName])
+  }, [variableName, isDark])
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

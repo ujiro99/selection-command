@@ -480,9 +480,17 @@
 
     --ring: 215 20% 55%;
 
-    /* gray-800 / gray-700. Dialogs and select menus override them. */
+    /* gray-800 / gray-700. Overlays override them with --sc-overlay-*. */
     --sc-hover: 215 27.9% 16.9%;
     --sc-selected: 216.9 19.1% 26.7%;
+
+    /*
+     * Colors for overlay surfaces (dialogs, select and menubar menus), which
+     * are lighter than the page and need lighter controls to stand out.
+     */
+    --sc-overlay-hover: 218 18% 24%;
+    --sc-overlay-selected: 218 18% 30%;
+    --sc-overlay-input: 218 18% 26%;
 
     /*
      * Background of interactive controls (Input, Textarea, SelectTrigger...),
