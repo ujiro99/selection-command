@@ -274,10 +274,15 @@ export class OptionsPage {
       `[data-testid="${TEST_IDS.optionDialogOk}"]`,
     )
     await okButton.waitFor({ state: "visible", timeout: 5000 })
-    const reloadPromise = this.page.waitForLoadState("domcontentloaded")
+
+    // The page reloads only after Settings.reset() has finished writing to
+    // storage, so wait for that actual navigation. waitForLoadState() would
+    // resolve immediately here (see importSettings), letting the caller close
+    // the page while the reset is still in flight.
+    const navPromise = this.page.waitForEvent("framenavigated")
     await okButton.click()
-    await reloadPromise
-    await this.page.waitForTimeout(100)
+    await navPromise
+    await this.page.waitForLoadState("domcontentloaded")
   }
 
   async createCommandAndShare(): Promise<void> {

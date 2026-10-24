@@ -122,10 +122,13 @@ test.describe("Settings Page", () => {
     await optionsPage.close()
 
     // After reset, commands should be different from the imported ones
-    // (defaults are restored)
-    const resetCommands = await getCommands()
-    expect(resetCommands).not.toBeNull()
-    // Default command count is less than the test settings count
-    expect(resetCommands.length).not.toBe(importedCommands.length)
+    // (defaults are restored). Poll to tolerate storage propagation delay.
+    await expect
+      .poll(async () => (await getCommands())?.length, {
+        message: "Commands should be restored to defaults after reset",
+        timeout: 5000,
+        intervals: [40],
+      })
+      .not.toBe(importedCommands.length)
   })
 })
