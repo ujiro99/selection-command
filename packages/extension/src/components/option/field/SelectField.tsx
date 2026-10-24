@@ -112,7 +112,7 @@ export const SelectField = ({
             >
               <FormControl>
                 <SelectTrigger
-                  className="relative transition-color duration-150 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  className="relative transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-gray-800"
                   data-testid={TEST_IDS.selectTrigger(name)}
                 >
                   <SelectValue placeholder={placeholder} />
