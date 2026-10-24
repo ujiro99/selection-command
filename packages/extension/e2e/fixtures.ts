@@ -15,6 +15,7 @@ import {
   CMD_PREFIX,
 } from "@/services/storage/const"
 import { NEW_HUB_URL } from "./const"
+import { ONBOARDING_PAGE_PATH } from "@/const"
 
 import type { UserSettings, Command } from "@/types"
 import type { CommandMetadata } from "@/types/command"
@@ -65,6 +66,15 @@ export const test = base.extend<Fixtures>({
     // and its early logs are lost before attachSWConsole is called.
     context.on("serviceworker", (worker) => attachSWConsole(worker))
 
+    // The SW's onInstalled handler resets settings to defaults and then opens
+    // the onboarding tab. Register the waiter early so the tab isn't missed.
+    const isOnboardingPage = (p: Page) => p.url().includes(ONBOARDING_PAGE_PATH)
+    const onboardingPromise = context.pages().some(isOnboardingPage)
+      ? Promise.resolve()
+      : context
+          .waitForEvent("page", { predicate: isOnboardingPage, timeout: 15000 })
+          .then(() => undefined)
+
     // Optionally serve the hub test page from a local build (E2E_HUB_BASE_URL).
     await routeHubToLocal(context)
 
@@ -77,6 +87,10 @@ export const test = base.extend<Fixtures>({
       // SW was already running when the listener was registered; attach manually
       attachSWConsole(sw)
     }
+
+    // Wait for the install-time initialization to finish. Otherwise its
+    // Settings.reset() may overwrite settings a test has just imported.
+    await onboardingPromise
 
     await use(context)
     await context.close()
