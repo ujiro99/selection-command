@@ -279,10 +279,13 @@ export class OptionsPage {
     // storage, so wait for that actual navigation. waitForLoadState() would
     // resolve immediately here (see importSettings), letting the caller close
     // the page while the reset is still in flight.
-    const navPromise = this.page.waitForEvent("framenavigated")
+    const page = this.page
+    const navPromise = page.waitForEvent("framenavigated", {
+      predicate: (frame) => frame === page.mainFrame(),
+    })
     await okButton.click()
     await navPromise
-    await this.page.waitForLoadState("domcontentloaded")
+    await page.waitForLoadState("domcontentloaded")
   }
 
   async createCommandAndShare(): Promise<void> {
