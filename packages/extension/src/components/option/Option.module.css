@@ -30,7 +30,7 @@
   margin: 0;
 }
 
-.titleSpan + .titleSpan {
+.titleSpan+.titleSpan {
   margin-left: 4px;
 }
 
@@ -72,14 +72,13 @@
   padding: 6px 8px;
   border-radius: 4px;
   transition:
-    background-color,
-    ease-out 0.2s,
-    scale ease-out 0.2s;
+    background-color 0.15s ease-out,
+    scale 0.15s ease-out;
   cursor: pointer;
+  @apply hover-grow-lg;
 
   &:hover {
     @apply bg-hover;
-    @apply scale-[110%];
   }
 }
 
@@ -100,14 +99,14 @@
 
 .bgHatching {
   background-color: #fff;
+
   @variant dark {
     background-color: var(--color-gray-900);
   }
-  background-image: repeating-linear-gradient(
-    45deg,
+
+  background-image: repeating-linear-gradient(45deg,
     #6b7280,
     #6b7280 1px,
     transparent 1px,
-    transparent 4px
-  );
+    transparent 4px);
 }

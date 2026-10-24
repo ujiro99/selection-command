@@ -74,7 +74,7 @@ function showHubShareToastNow(
           <button
             className={cn(
               "flex items-center justify-center gap-2 flex-1 h-9 px-3 rounded-lg transition",
-              "text-base text-white border border-sky-600 bg-sky-500 hover:bg-sky-600 font-medium hover:scale-105",
+              "text-base text-white border border-sky-600 bg-sky-500 hover:bg-sky-600 font-medium hover-grow-lg",
             )}
             onClick={async () => {
               shareCommandToHub(command)

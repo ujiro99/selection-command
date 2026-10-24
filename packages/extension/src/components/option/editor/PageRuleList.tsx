@@ -269,7 +269,7 @@ export const PageRuleList = ({
             <Button
               type="button"
               variant="outline"
-              className="px-2 rounded-md transition font-mono hover:bg-hover hover:mr-1 hover:scale-[110%] group"
+              className="px-2 rounded-md transition font-mono hover:bg-hover hover:mr-1 hover-grow-md group"
               onClick={() => setDialogOpen(true)}
               ref={addButtonRef}
               data-testid={TEST_IDS.pageRuleAddButton}

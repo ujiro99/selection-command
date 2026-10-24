@@ -738,7 +738,7 @@ const CommandEditDialogInner = ({
                                     />
                                     <button
                                       type="button"
-                                      className="group transition p-1.5 flex-none rounded-lg hover:bg-red-200 hover:scale-[1.1]"
+                                      className="group transition p-1.5 flex-none rounded-lg hover:bg-red-200 hover-grow-sm"
                                       onClick={() =>
                                         variableArray.remove(index)
                                       }

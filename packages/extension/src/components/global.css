@@ -84,21 +84,15 @@
   --animate-marquee2: marquee2 var(--marquee-duration) linear infinite;
   --animate-spin-slow: spin 3s linear infinite;
   --animate-popup: popup 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-  --animate-onboarding-rise: onboarding-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1)
-    both;
-  --animate-onboarding-blur-in: onboarding-blur-in 0.8s
-    cubic-bezier(0.16, 1, 0.3, 1) both;
-  --animate-onboarding-blur-out: onboarding-blur-out 0.32s
-    cubic-bezier(0.4, 0, 1, 1) both;
-  --animate-onboarding-glow-in: onboarding-glow-in 1.6s
-    cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-onboarding-rise: onboarding-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-onboarding-blur-in: onboarding-blur-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-onboarding-blur-out: onboarding-blur-out 0.32s cubic-bezier(0.4, 0, 1, 1) both;
+  --animate-onboarding-glow-in: onboarding-glow-in 1.6s cubic-bezier(0.16, 1, 0.3, 1) both;
   --animate-onboarding-ring: onboarding-ring 2.4s ease-in-out 0.6s infinite;
   --animate-onboarding-blink: onboarding-blink 1.5s ease-in-out 0.3s infinite;
   --animate-onboarding-highlight: onboarding-highlight 4s ease-in-out infinite;
-  --animate-onboarding-pop: onboarding-pop 0.36s
-    cubic-bezier(0.34, 1.4, 0.64, 1) both;
-  --animate-onboarding-pop-2: onboarding-pop-2 0.36s
-    cubic-bezier(0.34, 1.4, 0.64, 1) both;
+  --animate-onboarding-pop: onboarding-pop 0.36s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+  --animate-onboarding-pop-2: onboarding-pop-2 0.36s cubic-bezier(0.34, 1.4, 0.64, 1) both;
   --animate-onboarding-float: onboarding-float 1.4s ease-in-out infinite;
 
   @keyframes accordion-down {
@@ -204,6 +198,7 @@
   }
 
   @keyframes onboarding-ring {
+
     0%,
     100% {
       box-shadow: 0 0 0 0 var(--onboarding-ring-color);
@@ -215,6 +210,7 @@
   }
 
   @keyframes onboarding-blink {
+
     0%,
     100% {
       opacity: 1;
@@ -227,6 +223,7 @@
 
   /* --onboarding-highlight-color lets dark mode use a darker highlight. */
   @keyframes onboarding-highlight {
+
     0%,
     10% {
       background-color: transparent;
@@ -268,6 +265,7 @@
   }
 
   @keyframes onboarding-float {
+
     0%,
     100% {
       translate: 0 0;
@@ -344,6 +342,7 @@
 
 /* Restore v3 defaults that the v4 preflight changed. */
 @layer base {
+
   input::placeholder,
   textarea::placeholder {
     color: var(--color-gray-400);
@@ -369,7 +368,40 @@
   transition-property: width, height;
 }
 
+/*
+ * Grow on hover. A relative scale makes wide elements grow much more than
+ * narrow ones, so pick the size matching the element's width; each one grows
+ * the element by about 6px horizontally. Combine with `transition` to animate.
+ *   sm: icon buttons (~32px)
+ *   md: text buttons (~100px)
+ *   lg: wide elements (~180px, e.g. sidebar menu, full-width buttons)
+ */
+@utility hover-grow-sm {
+  @media (hover: hover) {
+    &:hover {
+      scale: 1.15;
+    }
+  }
+}
+
+@utility hover-grow-md {
+  @media (hover: hover) {
+    &:hover {
+      scale: 1.05;
+    }
+  }
+}
+
+@utility hover-grow-lg {
+  @media (hover: hover) {
+    &:hover {
+      scale: 1.035;
+    }
+  }
+}
+
 @layer base {
+
   :host,
   :root {
     --background: 0 0% 100%;

@@ -35,7 +35,7 @@ export const RemoveButton = ({
       <button
         type="button"
         className={cn(
-          "p-2 rounded-md transition hover:bg-red-100 dark:hover:bg-red-900/40 hover:scale-125 group/remove-button",
+          "p-2 rounded-md transition hover:bg-red-100 dark:hover:bg-red-900/40 hover-grow-sm group/remove-button",
           className,
         )}
         onClick={() => setOpen(true)}

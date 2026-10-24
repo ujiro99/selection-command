@@ -33,7 +33,7 @@ export const CommandListMenu: React.FC<Props> = ({
           type="button"
           ref={addFolderButtonRef}
           variant="outline"
-          className="px-3 gap-0.5 rounded-md transition hover:bg-hover hover:scale-[110%] group font-mono"
+          className="px-3 gap-0.5 rounded-md transition hover:bg-hover hover-grow-md group font-mono"
           onClick={onAddFolder}
           data-testid={TEST_IDS.addFolderButton}
         >
@@ -48,7 +48,7 @@ export const CommandListMenu: React.FC<Props> = ({
           type="button"
           ref={addCommandButtonRef}
           variant="outline"
-          className="px-3 gap-0.5 rounded-md transition hover:bg-hover hover:scale-[110%] group font-mono"
+          className="px-3 gap-0.5 rounded-md transition hover:bg-hover hover-grow-md group font-mono"
           onClick={onAddCommand}
           data-testid={TEST_IDS.addCommandButton}
         >
