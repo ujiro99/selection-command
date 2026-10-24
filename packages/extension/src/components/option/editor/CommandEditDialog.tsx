@@ -942,6 +942,7 @@ const CommandEditDialogInner = ({
       <SearchUrlAssistDialog
         open={assistDialogOpen}
         onOpenChange={setAssistDialogOpen}
+        initialSearchResultUrl={searchUrl}
       />
     </Dialog>
   )
