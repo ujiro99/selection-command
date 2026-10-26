@@ -338,6 +338,9 @@
   "Option_openMode_linkPopup": {
     "message": "リンクを開く"
   },
+  "Option_openMode_openUrl": {
+    "message": "URLを開く"
+  },
   "Option_openMode_copy": {
     "message": "テキストコピー"
   },
@@ -391,6 +394,12 @@
   },
   "Option_commandType_linkPopup_desc": {
     "message": "選択したテキスト内のリンクを一括で開きます"
+  },
+  "Option_commandType_openUrl_title": {
+    "message": "URLを開く"
+  },
+  "Option_commandType_openUrl_desc": {
+    "message": "選択範囲に含まれるURLを開きます"
   },
   "Option_commandType_getTextStyles_title": {
     "message": "スタイル取得"
@@ -1251,6 +1260,9 @@
   "Option_displayMode_desc": {
     "message": "ウィンドウの表示方法です。"
   },
+  "Option_openUrl_displayMode_desc": {
+    "message": "選択したテキストのURLを開く方法です。"
+  },
   "Option_openModeSecondary_desc": {
     "message": "メニューをCtrl + クリックしたときの動作です。"
   },
@@ -1424,6 +1436,18 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "このページでは実行できません（ページURLが一致しません）"
+  },
+  "Menu_disabled_notUrl": {
+    "message": "選択範囲にURLが見つかりません"
+  },
+  "Menu_disabled_multipleUrls": {
+    "message": "選択範囲に$count$個のURLがあるため開けません",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
   },
   "hub_login": {
     "message": "Hubへログイン"

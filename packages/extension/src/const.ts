@@ -21,6 +21,7 @@ export enum COMMAND_TYPE {
   AI_PROMPT = "aiPrompt",
   COPY = "copy",
   LINK_POPUP = "linkPopup",
+  OPEN_URL = "openUrl",
   GET_TEXT_STYLES = "getTextStyles",
   API = "api",
   OPTION = "option",
@@ -36,6 +37,7 @@ export const OPEN_MODE_TYPE_MAP = {
   [OPEN_MODE.PAGE_ACTION]: COMMAND_TYPE.PAGE_ACTION,
   [OPEN_MODE.AI_PROMPT]: COMMAND_TYPE.AI_PROMPT,
   [OPEN_MODE.LINK_POPUP]: COMMAND_TYPE.LINK_POPUP,
+  [OPEN_MODE.OPEN_URL]: COMMAND_TYPE.OPEN_URL,
   [OPEN_MODE.COPY]: COMMAND_TYPE.COPY,
   [OPEN_MODE.GET_TEXT_STYLES]: COMMAND_TYPE.GET_TEXT_STYLES,
   [OPEN_MODE.OPTION]: COMMAND_TYPE.OPTION,
@@ -55,10 +57,15 @@ export const COMMAND_TYPE_OPEN_MODES_MAP = {
   [COMMAND_TYPE.PAGE_ACTION]: [OPEN_MODE.PAGE_ACTION],
   [COMMAND_TYPE.AI_PROMPT]: [OPEN_MODE.AI_PROMPT],
   [COMMAND_TYPE.LINK_POPUP]: [OPEN_MODE.LINK_POPUP],
+  [COMMAND_TYPE.OPEN_URL]: [OPEN_MODE.OPEN_URL],
   [COMMAND_TYPE.COPY]: [OPEN_MODE.COPY],
   [COMMAND_TYPE.GET_TEXT_STYLES]: [OPEN_MODE.GET_TEXT_STYLES],
   [COMMAND_TYPE.OPTION]: [OPEN_MODE.OPTION, OPEN_MODE.ADD_PAGE_RULE],
 } as const
+
+// Default icon for the "Open URL" command
+export const OPEN_URL_ICON_URL =
+  "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWV4dGVybmFsLWxpbmsgcHJldmlldy1pY29uIj48cGF0aCBkPSJNMTUgM2g2djYiLz48cGF0aCBkPSJNMTAgMTQgMjEgMyIvPjxwYXRoIGQ9Ik0xOCAxM3Y2YTIgMiAwIDAgMS0yIDJINWEyIDIgMCAwIDEtMi0yVjhhMiAyIDAgMCAxIDItMmg2Ii8+PC9zdmc+"
 
 // Metadata for command types
 export const COMMAND_TYPE_METADATA = {
@@ -86,6 +93,11 @@ export const COMMAND_TYPE_METADATA = {
     iconName: "Link",
     titleKey: "commandType_linkPopup_title",
     descKey: "commandType_linkPopup_desc",
+  },
+  [COMMAND_TYPE.OPEN_URL]: {
+    iconName: "ExternalLink",
+    titleKey: "commandType_openUrl_title",
+    descKey: "commandType_openUrl_desc",
   },
   [COMMAND_TYPE.GET_TEXT_STYLES]: {
     iconName: "Paintbrush",
@@ -120,6 +132,7 @@ export const COMMAND_TYPE_GROUPS = [
     types: [
       COMMAND_TYPE.COPY,
       COMMAND_TYPE.LINK_POPUP,
+      COMMAND_TYPE.OPEN_URL,
       COMMAND_TYPE.GET_TEXT_STYLES,
     ],
   },

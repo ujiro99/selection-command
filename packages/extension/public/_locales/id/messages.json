@@ -338,6 +338,9 @@
   "Option_openMode_linkPopup": {
     "message": "Pop-up Tautan"
   },
+  "Option_openMode_openUrl": {
+    "message": "Buka URL"
+  },
   "Option_openMode_copy": {
     "message": "Salin teks"
   },
@@ -391,6 +394,12 @@
   },
   "Option_commandType_linkPopup_desc": {
     "message": "Buka tautan dalam teks yang dipilih secara massal"
+  },
+  "Option_commandType_openUrl_title": {
+    "message": "Buka URL"
+  },
+  "Option_commandType_openUrl_desc": {
+    "message": "Buka URL yang ditemukan dalam pilihan"
   },
   "Option_commandType_getTextStyles_title": {
     "message": "Dapatkan Gaya"
@@ -1257,6 +1266,9 @@
   "Option_displayMode_desc": {
     "message": "Metode tampilan jendela."
   },
+  "Option_openUrl_displayMode_desc": {
+    "message": "Cara membuka URL pada teks yang dipilih."
+  },
   "Option_openModeSecondary_desc": {
     "message": "Perilaku saat Ctrl + klik menu."
   },
@@ -1430,6 +1442,18 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "Tidak dapat dijalankan di halaman ini (URL Halaman tidak cocok)"
+  },
+  "Menu_disabled_notUrl": {
+    "message": "Tidak ada URL dalam pilihan"
+  },
+  "Menu_disabled_multipleUrls": {
+    "message": "Tidak dapat dibuka: ditemukan $count$ URL dalam pilihan",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
   },
   "hub_login": {
     "message": "Masuk ke Hub"

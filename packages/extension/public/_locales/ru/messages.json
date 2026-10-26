@@ -338,6 +338,9 @@
   "Option_openMode_linkPopup": {
     "message": "Всплывающее окно ссылки"
   },
+  "Option_openMode_openUrl": {
+    "message": "Открыть URL"
+  },
   "Option_openMode_copy": {
     "message": "Копировать текст"
   },
@@ -391,6 +394,12 @@
   },
   "Option_commandType_linkPopup_desc": {
     "message": "Открыть ссылки в выбранном тексте в пакетном режиме"
+  },
+  "Option_commandType_openUrl_title": {
+    "message": "Открыть URL"
+  },
+  "Option_commandType_openUrl_desc": {
+    "message": "Открывает URL, найденный в выделении"
   },
   "Option_commandType_getTextStyles_title": {
     "message": "Получить стили"
@@ -1254,6 +1263,9 @@
   "Option_displayMode_desc": {
     "message": "Способ отображения окна."
   },
+  "Option_openUrl_displayMode_desc": {
+    "message": "Способ открытия URL из выделенного текста."
+  },
   "Option_openModeSecondary_desc": {
     "message": "Поведение при Ctrl + клике по меню."
   },
@@ -1427,6 +1439,18 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "Невозможно выполнить на этой странице (URL страницы не совпадает)"
+  },
+  "Menu_disabled_notUrl": {
+    "message": "В выделении не найден URL"
+  },
+  "Menu_disabled_multipleUrls": {
+    "message": "Невозможно открыть: в выделении найдено URL: $count$",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
   },
   "hub_login": {
     "message": "Войти в Hub"

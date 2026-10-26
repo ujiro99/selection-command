@@ -7,6 +7,7 @@ import {
   getPageHtml,
   isInputOrTextarea,
   isEditable,
+  urlsInSelection,
 } from "../index"
 
 describe("getSelectionText", () => {
@@ -366,5 +367,105 @@ describe("isEditable", () => {
   it("IE-03: returns false for non-HTMLElement", () => {
     expect(isEditable("string")).toBe(false)
     expect(isEditable(null)).toBe(false)
+  })
+})
+
+describe("urlsInSelection", () => {
+  afterEach(() => {
+    document.body.innerHTML = ""
+    window.getSelection()?.removeAllRanges()
+  })
+
+  const selectContents = (el: Node) => {
+    const range = document.createRange()
+    range.selectNodeContents(el)
+    const selection = window.getSelection()
+    selection?.removeAllRanges()
+    selection?.addRange(range)
+    return selection?.toString() ?? ""
+  }
+
+  it("US-01: finds a URL written in the selected text", () => {
+    const p = document.createElement("p")
+    p.textContent = "詳細はhttps://example.com/aを参照"
+    document.body.appendChild(p)
+    const text = selectContents(p)
+
+    expect(urlsInSelection(text)).toEqual(["https://example.com/a"])
+  })
+
+  it("US-02: finds the href of a selected hyperlink", () => {
+    const p = document.createElement("p")
+    p.innerHTML = 'Visit <a href="https://example.com/a">our site</a> now'
+    document.body.appendChild(p)
+    const text = selectContents(p)
+
+    expect(urlsInSelection(text)).toEqual(["https://example.com/a"])
+  })
+
+  it("US-03: uses the href when the selection is inside a hyperlink", () => {
+    const p = document.createElement("p")
+    p.innerHTML = '<a href="https://example.com/a">click here</a>'
+    document.body.appendChild(p)
+    const text = selectContents(p.querySelector("a")!.firstChild!)
+
+    expect(urlsInSelection(text)).toEqual(["https://example.com/a"])
+  })
+
+  it("US-04: ignores the text of a hyperlink whose href differs", () => {
+    const p = document.createElement("p")
+    p.innerHTML =
+      '<a href="https://short.example/x">https://example.com/long</a>'
+    document.body.appendChild(p)
+    const text = selectContents(p)
+
+    expect(urlsInSelection(text)).toEqual(["https://short.example/x"])
+  })
+
+  it("US-05: merges a hyperlink and the same URL in the text", () => {
+    const p = document.createElement("p")
+    p.innerHTML =
+      '<a href="https://example.com/a">link</a> https://example.com/a'
+    document.body.appendChild(p)
+    const text = selectContents(p)
+
+    expect(urlsInSelection(text)).toEqual(["https://example.com/a"])
+  })
+
+  it("US-06: returns all URLs from hyperlinks and the text", () => {
+    const p = document.createElement("p")
+    p.innerHTML = '<a href="https://example.com/a">link</a> www.example.org'
+    document.body.appendChild(p)
+    const text = selectContents(p)
+
+    expect(urlsInSelection(text)).toEqual([
+      "https://example.com/a",
+      "https://www.example.org/",
+    ])
+  })
+
+  it("US-07: ignores a hyperlink that is not http(s)", () => {
+    const p = document.createElement("p")
+    p.innerHTML = '<a href="mailto:a@example.com">mail</a>'
+    document.body.appendChild(p)
+    const text = selectContents(p)
+
+    expect(urlsInSelection(text)).toEqual([])
+  })
+
+  it("US-08: falls back to the given text without a DOM selection", () => {
+    expect(urlsInSelection("https://example.com/a")).toEqual([
+      "https://example.com/a",
+    ])
+  })
+
+  it("US-09: uses the given text for a selection inside a textarea", () => {
+    const textarea = document.createElement("textarea")
+    textarea.value = "go to https://example.com/a"
+    document.body.appendChild(textarea)
+    textarea.focus()
+    textarea.setSelectionRange(0, textarea.value.length)
+
+    expect(urlsInSelection(textarea.value)).toEqual(["https://example.com/a"])
   })
 })

@@ -338,6 +338,9 @@
   "Option_openMode_linkPopup": {
     "message": "Pop-up de Link"
   },
+  "Option_openMode_openUrl": {
+    "message": "Abrir URL"
+  },
   "Option_openMode_copy": {
     "message": "Copiar texto"
   },
@@ -391,6 +394,12 @@
   },
   "Option_commandType_linkPopup_desc": {
     "message": "Abrir links no texto selecionado em lote"
+  },
+  "Option_commandType_openUrl_title": {
+    "message": "Abrir URL"
+  },
+  "Option_commandType_openUrl_desc": {
+    "message": "Abre a URL encontrada na seleção"
   },
   "Option_commandType_getTextStyles_title": {
     "message": "Obter Estilos"
@@ -1257,6 +1266,9 @@
   "Option_displayMode_desc": {
     "message": "Método de exibição de janela."
   },
+  "Option_openUrl_displayMode_desc": {
+    "message": "Como abrir a URL do texto selecionado."
+  },
   "Option_openModeSecondary_desc": {
     "message": "Comportamento ao fazer Ctrl + clique no menu."
   },
@@ -1430,6 +1442,18 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "Não é possível executar nesta página (URL da página não corresponde)"
+  },
+  "Menu_disabled_notUrl": {
+    "message": "Nenhuma URL encontrada na seleção"
+  },
+  "Menu_disabled_multipleUrls": {
+    "message": "Não é possível abrir: $count$ URLs encontradas na seleção",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
   },
   "hub_login": {
     "message": "Entrar no Hub"

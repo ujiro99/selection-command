@@ -338,6 +338,9 @@
   "Option_openMode_linkPopup": {
     "message": "Link-Popup"
   },
+  "Option_openMode_openUrl": {
+    "message": "URL öffnen"
+  },
   "Option_openMode_copy": {
     "message": "Text kopieren"
   },
@@ -391,6 +394,12 @@
   },
   "Option_commandType_linkPopup_desc": {
     "message": "Links im ausgewählten Text in einem Rutsch öffnen"
+  },
+  "Option_commandType_openUrl_title": {
+    "message": "URL öffnen"
+  },
+  "Option_commandType_openUrl_desc": {
+    "message": "Öffnet die in der Auswahl gefundene URL"
   },
   "Option_commandType_getTextStyles_title": {
     "message": "Stile abrufen"
@@ -1254,6 +1263,9 @@
   "Option_displayMode_desc": {
     "message": "Fenster-Anzeigemethode."
   },
+  "Option_openUrl_displayMode_desc": {
+    "message": "Wie die URL im ausgewählten Text geöffnet wird."
+  },
   "Option_openModeSecondary_desc": {
     "message": "Verhalten beim Strg + Klicken des Menüs."
   },
@@ -1427,6 +1439,18 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "Kann auf dieser Seite nicht ausgeführt werden (Seiten-URL stimmt nicht überein)"
+  },
+  "Menu_disabled_notUrl": {
+    "message": "Keine URL in der Auswahl gefunden"
+  },
+  "Menu_disabled_multipleUrls": {
+    "message": "Kann nicht geöffnet werden: $count$ URLs in der Auswahl gefunden",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
   },
   "hub_login": {
     "message": "Beim Hub anmelden"

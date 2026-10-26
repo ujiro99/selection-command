@@ -173,6 +173,109 @@ export function isUrl(str: string | undefined): boolean {
   return /^https?:\/\//.test(str)
 }
 
+// Upper bound of the text length to search URLs in, so that a huge
+// selection does not slow down rendering the menu.
+const MAX_URL_TEXT_LENGTH = 100_000
+
+// Characters allowed in a URL (RFC 3986), excluding non-ASCII characters.
+const URL_CHARS = "[\\w\\-.~:/?#\\[\\]@!$&'()*+,;=%]"
+
+// Matches http(s) URLs, and scheme-less URLs that start with "www." or
+// consist of a host name and a path (e.g. "example.com/foo").
+// The lookbehind prevents matching inside an email address or a path.
+const URL_IN_TEXT = new RegExp(
+  `https?://${URL_CHARS}+` +
+    `|(?<![\\w.@/-])(?:www\\.${URL_CHARS}+` +
+    `|(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z]{2,}(?::\\d+)?[/?#]${URL_CHARS}*)`,
+  "gi",
+)
+
+// Bracket and quote pairs that commonly enclose a URL in a sentence.
+const URL_BRACKET_PAIRS: Record<string, string> = {
+  "(": ")",
+  "[": "]",
+  "'": "'",
+}
+
+// Punctuation and opening brackets that follow a URL in a sentence but are
+// unlikely part of it.
+const URL_TRAILING_CHARS = /[.,;:!?([]+$/
+
+const countChar = (str: string, ch: string): number => str.split(ch).length - 1
+
+/**
+ * Remove trailing characters that are unlikely part of a URL.
+ * A trailing closing bracket is kept when it is balanced within the URL,
+ * e.g. "https://en.wikipedia.org/wiki/Foo_(bar)".
+ */
+const trimUrlTail = (url: string): string => {
+  let str = url
+  let prev = ""
+  while (str !== prev) {
+    prev = str
+    str = str.replace(URL_TRAILING_CHARS, "")
+    const last = str.charAt(str.length - 1)
+    const open = Object.keys(URL_BRACKET_PAIRS).find(
+      (k) => URL_BRACKET_PAIRS[k] === last,
+    )
+    if (
+      open != null &&
+      (open === last || countChar(str, last) > countChar(str, open))
+    ) {
+      str = str.slice(0, -1)
+    }
+  }
+  return str
+}
+
+/**
+ * Convert a string to a normalized http(s) URL.
+ * @param {string} str The string to convert.
+ * @returns {string | null} The normalized URL, or null if it is not a http(s) URL.
+ */
+export function toHttpUrl(str: string | undefined): string | null {
+  if (!str) return null
+  try {
+    const url = new URL(str)
+    if (url.protocol !== "http:" && url.protocol !== "https:") return null
+    if (isEmpty(url.hostname)) return null
+    return url.href
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Extract http(s) URLs written in a text.
+ *
+ * - Full-width ASCII characters are converted to half-width.
+ * - Trailing punctuation and unbalanced closing brackets are removed.
+ * - "https://" is prepended to a scheme-less URL that starts with "www." or
+ *   consists of a host name and a path (e.g. "example.com/foo").
+ * - Non-ASCII characters are treated as the end of a URL, so that a URL
+ *   followed by Japanese text without a space can be extracted.
+ *
+ * @param {string} text The text to search.
+ * @returns {string[]} The normalized URLs without duplicates.
+ */
+export function extractUrlsFromText(text: string | undefined): string[] {
+  if (!text || text.length > MAX_URL_TEXT_LENGTH) return []
+
+  // Convert full-width ASCII characters (U+FF01-U+FF5E) to half-width.
+  const halfWidth = text.replace(/[\uFF01-\uFF5E]/g, (c) =>
+    String.fromCharCode(c.charCodeAt(0) - 0xfee0),
+  )
+
+  const urls: string[] = []
+  for (const match of halfWidth.matchAll(URL_IN_TEXT)) {
+    const str = trimUrlTail(match[0])
+    const withScheme = /^https?:\/\//i.test(str) ? str : `https://${str}`
+    const url = toHttpUrl(withScheme)
+    if (url != null) urls.push(url)
+  }
+  return unique(urls)
+}
+
 /**
  * Check if the string is a valid SVG.
  */

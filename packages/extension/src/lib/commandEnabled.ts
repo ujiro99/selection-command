@@ -1,5 +1,5 @@
 import { OPEN_MODE, PAGE_ACTION_OPEN_MODE } from "@/const"
-import { linksInSelection } from "@/services/dom"
+import { linksInSelection, urlsInSelection } from "@/services/dom"
 import { isPageActionCommand, matchesPageActionUrl } from "@/lib/utils"
 import { t } from "@/services/i18n"
 import type { Command } from "@/types"
@@ -12,17 +12,36 @@ export type CommandEnabled = {
 /**
  * Determines whether a command can be executed in the current context.
  * - LINK_POPUP: checks if there are links in the selection
+ * - OPEN_URL: checks if exactly one URL is found in the selection
  * - PAGE_ACTION (CURRENT_TAB): checks if the current page URL matches the command's pageUrl pattern
  */
 export function getCommandEnabled(
   command: Command,
   currentUrl: string = location.href,
+  selectionText: string = "",
 ): CommandEnabled {
   const { openMode, title } = command
 
   if (openMode === OPEN_MODE.LINK_POPUP) {
     const links = linksInSelection()
     return { enabled: links.length > 0, message: `${links.length} links` }
+  }
+
+  if (openMode === OPEN_MODE.OPEN_URL) {
+    const urls = urlsInSelection(selectionText)
+    if (urls.length === 0) {
+      return {
+        enabled: false,
+        message: `${title}\n${t("Menu_disabled_notUrl")}`,
+      }
+    }
+    if (urls.length > 1) {
+      return {
+        enabled: false,
+        message: `${title}\n${t("Menu_disabled_multipleUrls", [String(urls.length)])}`,
+      }
+    }
+    return { enabled: true, message: `${title}\n${urls[0]}` }
   }
 
   if (openMode === OPEN_MODE.PAGE_ACTION && isPageActionCommand(command)) {

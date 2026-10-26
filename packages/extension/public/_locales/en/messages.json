@@ -341,6 +341,9 @@
   "Option_openMode_linkPopup": {
     "message": "Link Popup"
   },
+  "Option_openMode_openUrl": {
+    "message": "Open URL"
+  },
   "Option_openMode_copy": {
     "message": "Copy text"
   },
@@ -394,6 +397,12 @@
   },
   "Option_commandType_linkPopup_desc": {
     "message": "Open links in selected text in bulk"
+  },
+  "Option_commandType_openUrl_title": {
+    "message": "Open URL"
+  },
+  "Option_commandType_openUrl_desc": {
+    "message": "Open the URL found in the selection"
   },
   "Option_commandType_getTextStyles_title": {
     "message": "Get Styles"
@@ -1273,6 +1282,9 @@
   "Option_displayMode_desc": {
     "message": "Window display method."
   },
+  "Option_openUrl_displayMode_desc": {
+    "message": "How to open the URL in the selected text."
+  },
   "Option_openModeSecondary_desc": {
     "message": "Behavior when Ctrl + clicking the menu."
   },
@@ -1446,6 +1458,18 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "Cannot run on this page (page URL does not match)"
+  },
+  "Menu_disabled_notUrl": {
+    "message": "No URL found in the selection"
+  },
+  "Menu_disabled_multipleUrls": {
+    "message": "Cannot open: $count$ URLs found in the selection",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
   },
   "hub_login": {
     "message": "Login to Hub"

@@ -6,6 +6,7 @@ import { BackgroundTab } from "./backgroundTab"
 import { SidePanel } from "./sidePanel"
 import { Api } from "./api"
 import { SelectedLinkPopup } from "./selectedLinkPopup"
+import { OpenUrl } from "./openUrl"
 import { Copy } from "./copy"
 import { PageAction } from "./pageAction"
 import { AiPrompt } from "./aiPrompt"
@@ -23,6 +24,7 @@ export const actions = {
   [OPEN_MODE.SIDE_PANEL]: SidePanel,
   [OPEN_MODE.API]: Api,
   [OPEN_MODE.LINK_POPUP]: SelectedLinkPopup,
+  [OPEN_MODE.OPEN_URL]: OpenUrl,
   [OPEN_MODE.COPY]: Copy,
   [OPEN_MODE.PAGE_ACTION]: PageAction,
   [OPEN_MODE.AI_PROMPT]: AiPrompt,

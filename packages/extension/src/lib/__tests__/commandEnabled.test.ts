@@ -5,11 +5,13 @@ import type { PageActionCommand, SearchCommand } from "@/types"
 
 vi.mock("@/services/dom", () => ({
   linksInSelection: vi.fn(),
+  urlsInSelection: vi.fn(),
 }))
 
-import { linksInSelection } from "@/services/dom"
+import { linksInSelection, urlsInSelection } from "@/services/dom"
 
 const mockLinksInSelection = vi.mocked(linksInSelection)
+const mockUrlsInSelection = vi.mocked(urlsInSelection)
 
 // Base command fixture (non-PAGE_ACTION, non-LINK_POPUP)
 const baseCommand: SearchCommand = {
@@ -60,6 +62,39 @@ describe("getCommandEnabled", () => {
       const result = getCommandEnabled(command)
       expect(result.enabled).toBe(false)
       expect(result.message).toBe("0 links")
+    })
+  })
+
+  describe("OPEN_URL", () => {
+    const command = { ...baseCommand, openMode: OPEN_MODE.OPEN_URL }
+
+    it("GCE-10: enabled when one URL is found in the selection", () => {
+      mockUrlsInSelection.mockReturnValue(["https://www.example.com/"])
+      const result = getCommandEnabled(
+        command,
+        "https://any.com",
+        "see www.example.com",
+      )
+      expect(mockUrlsInSelection).toHaveBeenCalledWith("see www.example.com")
+      expect(result.enabled).toBe(true)
+      expect(result.message).toBe("Test Command\nhttps://www.example.com/")
+    })
+
+    it("GCE-11: disabled when no URL is found in the selection", () => {
+      mockUrlsInSelection.mockReturnValue([])
+      const result = getCommandEnabled(command, "https://any.com", "hello")
+      expect(result.enabled).toBe(false)
+      expect(result.message).toBe("Test Command\nMenu_disabled_notUrl")
+    })
+
+    it("GCE-12: disabled when multiple URLs are found in the selection", () => {
+      mockUrlsInSelection.mockReturnValue([
+        "https://example.com/a",
+        "https://example.com/b",
+      ])
+      const result = getCommandEnabled(command, "https://any.com", "a b")
+      expect(result.enabled).toBe(false)
+      expect(result.message).toBe("Test Command\nMenu_disabled_multipleUrls")
     })
   })
 

@@ -1,6 +1,6 @@
 import type { Point } from "@/types"
 
-import { isEmpty } from "@/lib/utils"
+import { isEmpty, extractUrlsFromText, toHttpUrl } from "@/lib/utils"
 import { APP_ID, PAGE_HTML_MAX_CHARS } from "@/const"
 
 export function toDataURL(src: string, outputFormat?: string): Promise<string> {
@@ -65,6 +65,42 @@ function linksInRange(range: Range): string[] {
     links.push(a.href)
   }
   return links
+}
+
+/**
+ * Find http(s) URLs in the selection, from both the hyperlinks and the text.
+ * The text of a hyperlink is ignored in favor of its href, so that a link
+ * whose text differs from its href (e.g. a shortened URL) counts as one URL.
+ * @param {string} selectionText The selected text, used when the selection is
+ * not available in the DOM (e.g. inside <input> or <textarea>).
+ * @returns {string[]} The normalized URLs without duplicates.
+ */
+export function urlsInSelection(selectionText: string): string[] {
+  const selection = document.getSelection()
+  if (
+    !selection ||
+    selection.rangeCount === 0 ||
+    selection.isCollapsed ||
+    isInputOrTextarea(document.activeElement)
+  ) {
+    return extractUrlsFromText(selectionText)
+  }
+
+  const range = selection.getRangeAt(0)
+  const links = linksInSelection()
+    .map(toHttpUrl)
+    .filter((url): url is string => url != null)
+
+  let text = ""
+  if (toHttpUrl(linkAtContainer(range)) == null) {
+    const fragment = range.cloneContents()
+    fragment.querySelectorAll("a").forEach((a) => {
+      if (toHttpUrl(a.href) != null) a.remove()
+    })
+    text = fragment.textContent ?? ""
+  }
+
+  return uniq([...links, ...extractUrlsFromText(text)])
 }
 
 export type ScreenSize = {

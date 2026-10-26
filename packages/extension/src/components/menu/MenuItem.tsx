@@ -28,7 +28,11 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
   const { iconUrl, title, preserveOriginalColor } = props.command
   const { isPreview, inTransition, inOnboarding } = usePopupContext()
   const { selectionText, target } = useSelectContext()
-  const { enabled, message: defaultMessage } = getCommandEnabled(props.command)
+  const { enabled, message: defaultMessage } = getCommandEnabled(
+    props.command,
+    location.href,
+    selectionText,
+  )
   const message = itemState.message || defaultMessage
 
   function handleClick(e: React.MouseEvent) {

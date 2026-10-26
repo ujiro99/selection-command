@@ -39,7 +39,12 @@ export type Point = {
 export type Command = SelectionCommand | LinkCommand
 
 export type SelectionCommand =
-  SearchCommand | CopyCommand | ApiCommand | PageActionCommand | AiPromptCommand
+  | SearchCommand
+  | CopyCommand
+  | ApiCommand
+  | PageActionCommand
+  | AiPromptCommand
+  | OpenUrlCommand
 
 export type SearchCommand = {
   id: string
@@ -83,6 +88,14 @@ export type AiPromptOption = {
 
 export type AiPromptCommand = SearchCommand & {
   aiPromptOption: AiPromptOption
+}
+
+export type OpenUrlOption = {
+  openMode: OPEN_MODE
+}
+
+export type OpenUrlCommand = SearchCommand & {
+  openUrlOption: OpenUrlOption
 }
 
 export type LinkCommand = Omit<SelectionCommand, "openMode"> & {

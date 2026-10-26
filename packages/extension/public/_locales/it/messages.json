@@ -338,6 +338,9 @@
   "Option_openMode_linkPopup": {
     "message": "Pop-up link"
   },
+  "Option_openMode_openUrl": {
+    "message": "Apri URL"
+  },
   "Option_openMode_copy": {
     "message": "Copia testo"
   },
@@ -391,6 +394,12 @@
   },
   "Option_commandType_linkPopup_desc": {
     "message": "Apri i link nel testo selezionato in blocco"
+  },
+  "Option_commandType_openUrl_title": {
+    "message": "Apri URL"
+  },
+  "Option_commandType_openUrl_desc": {
+    "message": "Apre l'URL trovato nella selezione"
   },
   "Option_commandType_getTextStyles_title": {
     "message": "Ottieni Stili"
@@ -1254,6 +1263,9 @@
   "Option_displayMode_desc": {
     "message": "Metodo di visualizzazione finestra."
   },
+  "Option_openUrl_displayMode_desc": {
+    "message": "Come aprire l'URL del testo selezionato."
+  },
   "Option_openModeSecondary_desc": {
     "message": "Comportamento quando si fa Ctrl + clic sul menu."
   },
@@ -1427,6 +1439,18 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "Impossibile eseguire su questa pagina (l'URL della pagina non corrisponde)"
+  },
+  "Menu_disabled_notUrl": {
+    "message": "Nessun URL trovato nella selezione"
+  },
+  "Menu_disabled_multipleUrls": {
+    "message": "Impossibile aprire: trovati $count$ URL nella selezione",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
   },
   "hub_login": {
     "message": "Accedi all'Hub"

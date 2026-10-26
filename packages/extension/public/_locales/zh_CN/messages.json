@@ -338,6 +338,9 @@
   "Option_openMode_linkPopup": {
     "message": "链接弹出窗口"
   },
+  "Option_openMode_openUrl": {
+    "message": "打开网址"
+  },
   "Option_openMode_copy": {
     "message": "复制文本"
   },
@@ -391,6 +394,12 @@
   },
   "Option_commandType_linkPopup_desc": {
     "message": "批量打开选中文本中的链接"
+  },
+  "Option_commandType_openUrl_title": {
+    "message": "打开网址"
+  },
+  "Option_commandType_openUrl_desc": {
+    "message": "打开所选内容中的网址"
   },
   "Option_commandType_getTextStyles_title": {
     "message": "获取样式"
@@ -1254,6 +1263,9 @@
   "Option_displayMode_desc": {
     "message": "窗口显示方式。"
   },
+  "Option_openUrl_displayMode_desc": {
+    "message": "打开所选文本中网址的方式。"
+  },
   "Option_openModeSecondary_desc": {
     "message": "Ctrl + 点击菜单时的行为。"
   },
@@ -1427,6 +1439,18 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "无法在此页面运行（页面URL不匹配）"
+  },
+  "Menu_disabled_notUrl": {
+    "message": "所选内容中未找到网址"
+  },
+  "Menu_disabled_multipleUrls": {
+    "message": "无法打开：所选内容中有 $count$ 个网址",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
   },
   "hub_login": {
     "message": "登录 Hub"

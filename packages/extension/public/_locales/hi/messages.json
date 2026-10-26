@@ -338,6 +338,9 @@
   "Option_openMode_linkPopup": {
     "message": "लिंक पॉपअप"
   },
+  "Option_openMode_openUrl": {
+    "message": "URL खोलें"
+  },
   "Option_openMode_copy": {
     "message": "टेक्स्ट कॉपी करें"
   },
@@ -391,6 +394,12 @@
   },
   "Option_commandType_linkPopup_desc": {
     "message": "चयनित टेक्स्ट में लिंक्स को बल्क में खोलें"
+  },
+  "Option_commandType_openUrl_title": {
+    "message": "URL खोलें"
+  },
+  "Option_commandType_openUrl_desc": {
+    "message": "चयन में मिले URL को खोलें"
   },
   "Option_commandType_getTextStyles_title": {
     "message": "स्टाइल प्राप्त करें"
@@ -1254,6 +1263,9 @@
   "Option_displayMode_desc": {
     "message": "विंडो प्रदर्शन विधि।"
   },
+  "Option_openUrl_displayMode_desc": {
+    "message": "चयनित टेक्स्ट के URL को खोलने का तरीका।"
+  },
   "Option_openModeSecondary_desc": {
     "message": "मेन्यू पर Ctrl + क्लिक करने पर व्यवहार।"
   },
@@ -1427,6 +1439,18 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "इस पेज पर नहीं चला सकते (पृष्ठ URL मेल नहीं खाता)"
+  },
+  "Menu_disabled_notUrl": {
+    "message": "चयन में कोई URL नहीं मिला"
+  },
+  "Menu_disabled_multipleUrls": {
+    "message": "नहीं खोला जा सकता: चयन में $count$ URL मिले",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
   },
   "hub_login": {
     "message": "Hub में लॉगिन करें"

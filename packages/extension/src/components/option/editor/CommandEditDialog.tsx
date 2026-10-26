@@ -72,6 +72,7 @@ import {
   WINDOW_STATE,
   COMMAND_SOURCE_TYPE,
   COMMAND_SOURCE_ID,
+  OPEN_URL_ICON_URL,
 } from "@/const"
 
 import { FaviconEvent } from "@/context/faviconContext"
@@ -211,6 +212,24 @@ const getDefault = (
       popupOption: {
         width: POPUP_OPTION.width,
         height: POPUP_OPTION.height,
+      },
+    }
+  }
+  if (openMode === OPEN_MODE.OPEN_URL) {
+    return {
+      ...base,
+      ...sourceDefaults,
+      title: "Open URL",
+      iconUrl: OPEN_URL_ICON_URL,
+      openMode: OPEN_MODE.OPEN_URL as const,
+      parentFolderId: ROOT_FOLDER,
+      popupOption: {
+        width: POPUP_OPTION.width,
+        height: POPUP_OPTION.height,
+      },
+      windowState: WINDOW_STATE.NORMAL,
+      openUrlOption: {
+        openMode: OPEN_MODE.TAB as (typeof SEARCH_OPEN_MODE)[number],
       },
     }
   }
@@ -394,6 +413,11 @@ const CommandEditDialogInner = ({
   const pageActionOption = useWatch({
     control: form.control,
     name: "pageActionOption",
+  })
+
+  const openUrlOpenMode = useWatch({
+    control: form.control,
+    name: "openUrlOption.openMode",
   })
 
   const aiPromptPrompt = useWatch({
@@ -774,6 +798,16 @@ const CommandEditDialogInner = ({
                   </>
                 )}
 
+                {openMode === OPEN_MODE.OPEN_URL && (
+                  <OpenModeToggleField
+                    control={form.control}
+                    name="openUrlOption.openMode"
+                    formLabel={t("displayMode")}
+                    type="search"
+                    description={t("openUrl_displayMode_desc")}
+                  />
+                )}
+
                 {openMode === OPEN_MODE.COPY && (
                   <SelectField
                     control={form.control}
@@ -842,7 +876,9 @@ const CommandEditDialogInner = ({
                       />
                     )}
 
-                    {openMode === OPEN_MODE.WINDOW && (
+                    {(openMode === OPEN_MODE.WINDOW ||
+                      (openMode === OPEN_MODE.OPEN_URL &&
+                        openUrlOpenMode === OPEN_MODE.WINDOW)) && (
                       <SelectField
                         control={form.control}
                         name="windowState"
