@@ -60,7 +60,27 @@ describe("getCommandEnabled", () => {
       ])
       const result = getCommandEnabled(makeLinkPopupCommand())
       expect(result.enabled).toBe(true)
-      expect(result.detail).toBe("2 links")
+      expect(result.detail).toBe("1. https://example.com\n2. https://example.org")
+    })
+
+    it("GCE-14: shortens long URLs in the detail to 80 characters", () => {
+      const longUrl = `https://example.com/${"a".repeat(100)}/end`
+      mockUrlsInSelection.mockReturnValue([longUrl])
+      const result = getCommandEnabled(makeLinkPopupCommand())
+      expect(result.detail).toHaveLength(80)
+      expect(result.detail?.startsWith("https://example.com/")).toBe(true)
+      expect(result.detail?.endsWith("/end")).toBe(true)
+      expect(result.detail).toContain("...")
+    })
+
+    it("GCE-15: shortens each long URL in the numbered list", () => {
+      const longUrl = `https://example.com/${"a".repeat(100)}`
+      mockUrlsInSelection.mockReturnValue([longUrl, "https://example.org/"])
+      const result = getCommandEnabled(makeLinkPopupCommand())
+      const lines = result.detail?.split("\n") ?? []
+      expect(lines).toHaveLength(2)
+      expect(lines[0]).toBe(`1. ${longUrl.slice(0, 39)}...${longUrl.slice(-38)}`)
+      expect(lines[1]).toBe("2. https://example.org/")
     })
 
     it("GCE-02: disabled when no URL is found in the selection", () => {

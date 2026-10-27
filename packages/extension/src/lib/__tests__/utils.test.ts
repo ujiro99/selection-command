@@ -7,6 +7,7 @@ import {
   needsClipboard,
   extractUrlsFromText,
   toHttpUrl,
+  truncateMiddle,
 } from "../utils"
 import { OPEN_MODE, PAGE_ACTION_OPEN_MODE, SPACE_ENCODING } from "@/const"
 import type { UrlParam } from "@/types"
@@ -499,6 +500,35 @@ describe("extractUrlsFromText", () => {
       "https://example.com/a www.example.org",
       ["https://example.com/a", "https://www.example.org/"],
     ],
+    // A closing bracket without a matching opening one ends the URL
+    [
+      "EU-24",
+      "- [a](https://example.com/a?x=1)- [b](https://example.com/b)",
+      ["https://example.com/a?x=1", "https://example.com/b"],
+    ],
+    [
+      "EU-25",
+      "[a](https://example.com/a)[b](https://example.com/b)",
+      ["https://example.com/a", "https://example.com/b"],
+    ],
+    [
+      "EU-26",
+      "(see https://en.wikipedia.org/wiki/Foo_(bar)-baz)",
+      ["https://en.wikipedia.org/wiki/Foo_(bar)-baz"],
+    ],
+    ["EU-27", "[https://example.com/a]", ["https://example.com/a"]],
+    // Markdown links on separate lines
+    [
+      "EU-28",
+      [
+        "- [Trelloエクスポート](https://example.sharepoint.com/sites/x/Lists/Trello/AllItems.aspx?env=WebViewList)",
+        "- [コースマスタ](https://example.sharepoint.com/sites/x/Lists/List2?env=WebViewList)",
+      ].join("\n"),
+      [
+        "https://example.sharepoint.com/sites/x/Lists/Trello/AllItems.aspx?env=WebViewList",
+        "https://example.sharepoint.com/sites/x/Lists/List2?env=WebViewList",
+      ],
+    ],
   ])("%s: extracts URLs from %s", (_, input, expected) => {
     expect(extractUrlsFromText(input)).toEqual(expected)
   })
@@ -532,4 +562,30 @@ describe("toHttpUrl", () => {
       expect(toHttpUrl(input)).toBeNull()
     },
   )
+})
+
+describe("truncateMiddle", () => {
+  it("TM-01: returns the string as it is when it is not longer than the max", () => {
+    expect(truncateMiddle("abcdefghij", 10)).toBe("abcdefghij")
+  })
+
+  it("TM-02: omits the middle to fit the max length", () => {
+    const result = truncateMiddle("abcdefghijklmnopqrstuvwxyz", 10)
+    expect(result).toBe("abcd...xyz")
+    expect(result).toHaveLength(10)
+  })
+
+  it("TM-03: keeps the beginning and the end of a long URL", () => {
+    const url = `https://example.com/${"a".repeat(100)}/last-segment`
+    const result = truncateMiddle(url, 50)
+    expect(result).toHaveLength(50)
+    expect(result.startsWith("https://example.com/")).toBe(true)
+    expect(result.endsWith("/last-segment")).toBe(true)
+  })
+
+  it("TM-04: uses the given separator", () => {
+    expect(truncateMiddle("abcdefghijklmnopqrstuvwxyz", 10, "…")).toBe(
+      "abcde…wxyz",
+    )
+  })
 })

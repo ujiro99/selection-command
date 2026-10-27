@@ -71,8 +71,9 @@ function linksInRange(range: Range): string[] {
  * Find http(s) URLs in the selection, from both the hyperlinks and the text.
  * The text of a hyperlink is ignored in favor of its href, so that a link
  * whose text differs from its href (e.g. a shortened URL) counts as one URL.
- * @param {string} selectionText The selected text, used when the selection is
- * not available in the DOM (e.g. inside <input> or <textarea>).
+ * @param {string} selectionText The selected text. URLs in the text are
+ * searched in it rather than in the DOM, since it keeps the line breaks
+ * between block elements (e.g. list items or lines in a code editor).
  * @returns {string[]} The normalized URLs without duplicates.
  */
 export function urlsInSelection(selectionText: string): string[] {
@@ -91,16 +92,28 @@ export function urlsInSelection(selectionText: string): string[] {
     .map(toHttpUrl)
     .filter((url): url is string => url != null)
 
-  let text = ""
-  if (toHttpUrl(linkAtContainer(range)) == null) {
-    const fragment = range.cloneContents()
-    fragment.querySelectorAll("a").forEach((a) => {
-      if (toHttpUrl(a.href) != null) a.remove()
-    })
-    text = fragment.textContent ?? ""
+  // The whole selection is inside a hyperlink, so only its href is used.
+  if (toHttpUrl(linkAtContainer(range)) != null) {
+    return uniq(links)
   }
 
-  return uniq([...links, ...extractUrlsFromText(text)])
+  // URLs written in the text of the selected hyperlinks, which are excluded
+  // from the URLs found in the text.
+  const linkTextUrls = new Set<string>()
+  range
+    .cloneContents()
+    .querySelectorAll("a")
+    .forEach((a) => {
+      if (toHttpUrl(a.href) == null) return
+      extractUrlsFromText(a.textContent ?? "").forEach((url) =>
+        linkTextUrls.add(url),
+      )
+    })
+  const textUrls = extractUrlsFromText(selectionText).filter(
+    (url) => !linkTextUrls.has(url),
+  )
+
+  return uniq([...links, ...textUrls])
 }
 
 export type ScreenSize = {

@@ -204,6 +204,27 @@ const URL_TRAILING_CHARS = /[.,;:!?([]+$/
 const countChar = (str: string, ch: string): number => str.split(ch).length - 1
 
 /**
+ * Cut a URL at the first closing bracket that has no matching opening bracket
+ * before it, e.g. "https://example.com/a)- [next](" becomes
+ * "https://example.com/a". Such a bracket closes the text enclosing the URL,
+ * like a Markdown link, rather than being part of the URL.
+ */
+const cutAtUnbalancedBracket = (url: string): string => {
+  const depth: Record<string, number> = { "(": 0, "[": 0 }
+  for (let i = 0; i < url.length; i++) {
+    const ch = url[i]
+    if (ch in depth) {
+      depth[ch]++
+    } else if (ch === ")" || ch === "]") {
+      const open = ch === ")" ? "(" : "["
+      if (depth[open] === 0) return url.slice(0, i)
+      depth[open]--
+    }
+  }
+  return url
+}
+
+/**
  * Remove trailing characters that are unlikely part of a URL.
  * A trailing closing bracket is kept when it is balanced within the URL,
  * e.g. "https://en.wikipedia.org/wiki/Foo_(bar)".
@@ -267,8 +288,14 @@ export function extractUrlsFromText(text: string | undefined): string[] {
   )
 
   const urls: string[] = []
-  for (const match of halfWidth.matchAll(URL_IN_TEXT)) {
-    const str = trimUrlTail(match[0])
+  const regex = new RegExp(URL_IN_TEXT)
+  let match: RegExpExecArray | null
+  while ((match = regex.exec(halfWidth)) != null) {
+    const cut = cutAtUnbalancedBracket(match[0])
+    // Resume searching after the cut, as the rest may contain another URL,
+    // e.g. "https://example.com/a)[b](https://example.com/b)".
+    regex.lastIndex = match.index + Math.max(cut.length, 1)
+    const str = trimUrlTail(cut)
     const withScheme = /^https?:\/\//i.test(str) ? str : `https://${str}`
     const url = toHttpUrl(withScheme)
     if (url != null) urls.push(url)
@@ -530,6 +557,30 @@ export function truncate(
   }
   // Truncate the string to (maxLength - suffix.length) and append the suffix
   return str.slice(0, maxLength - suffix.length) + suffix
+}
+
+/**
+ * Truncates a string to a specified maximum length by omitting its middle,
+ * so that both the beginning and the end remain (e.g. the host and the last
+ * path segment of a URL).
+ * @param str - The string to truncate
+ * @param maxLength - Maximum length of the string including the separator
+ * @param separator - String to insert in place of the omitted part (default: '...')
+ * @return The truncated string
+ */
+export function truncateMiddle(
+  str: string,
+  maxLength: number,
+  separator: string = "...",
+): string {
+  if (str.length <= maxLength) {
+    return str
+  }
+  const keep = maxLength - separator.length
+  // Keep one more character at the beginning when the length is odd.
+  const head = Math.ceil(keep / 2)
+  const tail = keep - head
+  return str.slice(0, head) + separator + (tail > 0 ? str.slice(-tail) : "")
 }
 
 /**

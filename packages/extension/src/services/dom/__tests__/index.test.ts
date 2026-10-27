@@ -453,6 +453,37 @@ describe("urlsInSelection", () => {
     expect(urlsInSelection(text)).toEqual([])
   })
 
+  it("US-10: searches URLs in the given text that keeps line breaks", () => {
+    // Each line is a separate element, so the DOM text has no line breaks.
+    const div = document.createElement("div")
+    div.innerHTML =
+      "<div>[a](https://example.com/a)</div><div>https://example.com/b</div>"
+    document.body.appendChild(div)
+    selectContents(div)
+
+    expect(
+      urlsInSelection("[a](https://example.com/a)\nhttps://example.com/b"),
+    ).toEqual(["https://example.com/a", "https://example.com/b"])
+  })
+
+  it("US-11: excludes a partially selected URL in the text of a hyperlink", () => {
+    const p = document.createElement("p")
+    p.innerHTML =
+      'go <a href="https://short.example/x">https://example.com/long</a>'
+    document.body.appendChild(p)
+    const link = p.querySelector("a")!.firstChild!
+    const range = document.createRange()
+    range.setStart(p.firstChild!, 0)
+    range.setEnd(link, "https://example.com/lo".length)
+    const selection = window.getSelection()
+    selection?.removeAllRanges()
+    selection?.addRange(range)
+
+    expect(urlsInSelection(selection?.toString() ?? "")).toEqual([
+      "https://short.example/x",
+    ])
+  })
+
   it("US-08: falls back to the given text without a DOM selection", () => {
     expect(urlsInSelection("https://example.com/a")).toEqual([
       "https://example.com/a",

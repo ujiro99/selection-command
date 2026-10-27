@@ -1,8 +1,27 @@
 import { OPEN_MODE, PAGE_ACTION_OPEN_MODE } from "@/const"
 import { urlsInSelection } from "@/services/dom"
-import { isPageActionCommand, matchesPageActionUrl } from "@/lib/utils"
+import {
+  isPageActionCommand,
+  matchesPageActionUrl,
+  truncateMiddle,
+} from "@/lib/utils"
 import { t } from "@/services/i18n"
 import type { Command, LinkPopupCommand } from "@/types"
+
+// Maximum length of each URL shown in the tooltip.
+const TOOLTIP_URL_MAX_LENGTH = 80
+
+/**
+ * Format URLs for the tooltip: a single URL as it is, and multiple URLs as a
+ * numbered list. Long URLs are shortened by omitting their middle.
+ */
+const formatUrls = (urls: string[]): string => {
+  const shortened = urls.map((url) =>
+    truncateMiddle(url, TOOLTIP_URL_MAX_LENGTH),
+  )
+  if (shortened.length === 1) return shortened[0]
+  return shortened.map((url, i) => `${i + 1}. ${url}`).join("\n")
+}
 
 export type CommandEnabled = {
   enabled: boolean
@@ -41,7 +60,7 @@ export function getCommandEnabled(
     }
     return {
       enabled: true,
-      detail: urls.length === 1 ? urls[0] : `${urls.length} links`,
+      detail: formatUrls(urls),
     }
   }
 
