@@ -1,5 +1,4 @@
 import { describe, it, expect } from "vitest"
-import { isLinkCommand } from "@/lib/commandGuards"
 import {
   DefaultCommands,
   getDefaultCommands,
@@ -9,6 +8,7 @@ import { INSERT, toInsertTemplate } from "@/services/pageAction"
 import { getAiServicesFallback } from "@/services/aiPrompt"
 import { COMMAND_SOURCE_TYPE, COMMAND_SOURCE_ID } from "@/const"
 import { ONBOARDING_AI_PROMPT_COMMAND_ID } from "@/components/onboarding/onboardingCommand"
+import { isLinkCommand } from "@/lib/commandGuards"
 
 const SYM_SELECTED_TEXT = toInsertTemplate(INSERT.SELECTED_TEXT)
 const SYM_URL = toInsertTemplate(INSERT.URL)

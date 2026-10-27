@@ -1,5 +1,4 @@
 import React from "react"
-import { isSelectionCommand, isPageActionCommand } from "@/lib/commandGuards"
 import { SortableItem } from "@/components/option/SortableItem"
 import { EditButton } from "@/components/option/EditButton"
 import { CopyButton } from "@/components/option/CopyButton"
@@ -9,6 +8,7 @@ import { OptionMenuImage } from "@/components/option/OptionMenuImage"
 import type { FlattenNode } from "@/services/option/commandTree"
 import type { CommandFolder } from "@/types"
 import { isFolder } from "@/services/option/commandUtils"
+import { isSelectionCommand, isPageActionCommand } from "@/lib/commandGuards"
 import { calcLevel } from "@/services/option/commandTree"
 import { hasUnpushedEdits } from "@/services/hub/commandContent"
 

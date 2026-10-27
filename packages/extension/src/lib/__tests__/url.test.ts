@@ -4,9 +4,13 @@ import {
   toUrl,
   matchesPageActionUrl,
   needsClipboard,
+  convertUrlsToMarkdown,
+  findMatchingPageRule,
+  isUrl,
+  isUrlParam,
 } from "../url"
 import { SPACE_ENCODING } from "@/const"
-import type { UrlParam } from "@/types"
+import type { PageRule, UrlParam } from "@/types"
 
 describe("parseGeminiMarkdownUrl", () => {
   it("PMU-01: extracts URL from markdown link format", () => {
@@ -398,5 +402,125 @@ describe("matchesPageActionUrl", () => {
         "https://example.com/path",
       ),
     ).toBe(true)
+  })
+})
+
+describe("convertUrlsToMarkdown", () => {
+  it("CU-01: should convert a bare URL to Markdown link format", () => {
+    expect(convertUrlsToMarkdown("https://example.com")).toBe(
+      "[https://example.com](https://example.com)",
+    )
+  })
+
+  it("CU-02: should convert multiple bare URLs in text", () => {
+    const result = convertUrlsToMarkdown(
+      "Check https://example.com and https://other.com for details",
+    )
+    expect(result).toBe(
+      "Check [https://example.com](https://example.com) and [https://other.com](https://other.com) for details",
+    )
+  })
+
+  it("CU-03: should not double-convert URLs already in Markdown format", () => {
+    const input = "[https://example.com](https://example.com)"
+    expect(convertUrlsToMarkdown(input)).toBe(input)
+  })
+
+  it("CU-03b: should not convert Markdown links with non-URL text labels", () => {
+    const input = "[Example Site](https://example.com)"
+    expect(convertUrlsToMarkdown(input)).toBe(input)
+  })
+
+  it("CU-04: should handle text with no URLs unchanged", () => {
+    expect(convertUrlsToMarkdown("hello world")).toBe("hello world")
+  })
+
+  it("CU-05: should convert http URLs as well as https", () => {
+    expect(convertUrlsToMarkdown("http://example.com")).toBe(
+      "[http://example.com](http://example.com)",
+    )
+  })
+
+  it("CU-06: should strip trailing comma from URL", () => {
+    const result = convertUrlsToMarkdown("Check https://example.com, please")
+    expect(result).toBe(
+      "Check [https://example.com](https://example.com), please",
+    )
+  })
+
+  it("CU-07: should strip trailing period from URL", () => {
+    const result = convertUrlsToMarkdown("See https://example.com.")
+    expect(result).toBe("See [https://example.com](https://example.com).")
+  })
+})
+
+describe("isUrl", () => {
+  it.each(["https://example.com", "http://example.com/path"])(
+    "IU-01: returns true for %s",
+    (input) => {
+      expect(isUrl(input)).toBe(true)
+    },
+  )
+
+  it.each([
+    undefined,
+    "",
+    "example.com",
+    "ftp://example.com",
+    " https://a.com",
+  ])("IU-02: returns false for %s", (input) => {
+    expect(isUrl(input)).toBe(false)
+  })
+})
+
+describe("isUrlParam", () => {
+  it("IUP-01: returns true for a UrlParam", () => {
+    expect(
+      isUrlParam({ searchUrl: "https://example.com/?q=%s", selectionText: "" }),
+    ).toBe(true)
+  })
+
+  it("IUP-02: returns false for a string url", () => {
+    expect(isUrlParam("https://example.com")).toBe(false)
+  })
+
+  it("IUP-03: returns false for an object without selectionText", () => {
+    expect(
+      isUrlParam({ searchUrl: "https://example.com" } as unknown as UrlParam),
+    ).toBe(false)
+  })
+})
+
+describe("findMatchingPageRule", () => {
+  const rule = (urlPattern: string) => ({ urlPattern }) as PageRule
+
+  it("FPR-01: returns the first rule whose pattern matches the url", () => {
+    const rules = [
+      rule("https://other\\.com"),
+      rule("https://example\\.com/a"),
+      rule("https://example\\.com"),
+    ]
+    expect(findMatchingPageRule(rules, "https://example.com/a/b")).toBe(
+      rules[1],
+    )
+  })
+
+  it("FPR-02: returns undefined when no rule matches", () => {
+    expect(
+      findMatchingPageRule(
+        [rule("https://other\\.com")],
+        "https://example.com",
+      ),
+    ).toBeUndefined()
+  })
+
+  it("FPR-03: ignores rules with an empty pattern", () => {
+    const rules = [rule(""), rule("example")]
+    expect(findMatchingPageRule(rules, "https://example.com")).toBe(rules[1])
+  })
+
+  it("FPR-04: ignores rules with an invalid regular expression", () => {
+    const rules = [rule("("), rule("example")]
+    expect(findMatchingPageRule(rules, "https://example.com")).toBe(rules[1])
   })
 })

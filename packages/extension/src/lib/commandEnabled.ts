@@ -1,7 +1,7 @@
 import { OPEN_MODE, PAGE_ACTION_OPEN_MODE } from "@/const"
-import { isPageActionCommand } from "@/lib/commandGuards"
 import { linksInSelection } from "@/services/dom"
 import { matchesPageActionUrl } from "@/lib/url"
+import { isPageActionCommand } from "@/lib/commandGuards"
 import { t } from "@/services/i18n"
 import type { Command } from "@/types"
 

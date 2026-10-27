@@ -1,9 +1,4 @@
 import { useEffect, useState, useMemo } from "react"
-import {
-  isAiPromptCommand,
-  isSearchCommand,
-  isPageActionCommand,
-} from "@/lib/commandGuards"
 import { useFieldArray, useWatch, useFormContext } from "react-hook-form"
 import { Keyboard, SquareArrowOutUpRight } from "lucide-react"
 import { SelectField } from "@/components/option/field/SelectField"
@@ -24,6 +19,11 @@ import {
   calcLevel,
 } from "@/services/option/commandTree"
 import { cn } from "@/lib/utils"
+import {
+  isAiPromptCommand,
+  isSearchCommand,
+  isPageActionCommand,
+} from "@/lib/commandGuards"
 import css from "./ShortcutList.module.css"
 import { INSERT, toInsertTemplate } from "@/services/pageAction"
 import { paramToStr } from "@/services/pageAction/helper"

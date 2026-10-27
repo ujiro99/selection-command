@@ -3,9 +3,9 @@ import {
   ServiceWorkerCommand,
   SidePanelPendingAction,
 } from "@/services/ipc"
-import { isAiPromptCommand } from "@/lib/commandGuards"
 import { getWindowPosition } from "@/services/screen"
 import { isValidString, generateRandomID, safeInterpolate } from "@/lib/utils"
+import { isAiPromptCommand } from "@/lib/commandGuards"
 import { toUrl, convertUrlsToMarkdown } from "@/lib/url"
 import {
   OPEN_MODE,
@@ -32,9 +32,6 @@ import { INSERT, InsertSymbol, toInsertTemplate } from "@/services/pageAction"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { getUILanguage } from "@/services/i18n"
 import { getSelectionHtml, getPageHtml } from "@/services/dom"
-
-// Moved to lib/url so that toUrl() can reuse it in the service worker.
-export { convertUrlsToMarkdown }
 
 // Map OPEN_MODE to PAGE_ACTION_OPEN_MODE for openAndRun
 const toPageActionMode = (mode: OPEN_MODE): PAGE_ACTION_OPEN_MODE => {

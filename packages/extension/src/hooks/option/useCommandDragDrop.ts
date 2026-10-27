@@ -1,8 +1,8 @@
 import { useCallback } from "react"
-import { isSelectionCommand } from "@/lib/commandGuards"
 import type { DragEndEvent } from "@dnd-kit/core"
 import type { Command, CommandFolder } from "@/types"
 import { isFolder } from "@/services/option/commandUtils"
+import { isSelectionCommand } from "@/lib/commandGuards"
 import {
   isValidDragTarget,
   calculateFolderToFolderPosition,

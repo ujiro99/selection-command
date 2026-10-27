@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef, useMemo } from "react"
-import { isSearchCommand, isPageActionCommand } from "@/lib/commandGuards"
 import { useForm, useFieldArray, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
@@ -86,12 +85,16 @@ import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
 
 import { isEmpty, e2a, cn, generateId } from "@/lib/utils"
+import {
+  isSearchCommand,
+  isPageActionCommand,
+  isSearchOpenMode,
+} from "@/lib/commandGuards"
 import { parseGeminiUrl } from "@/lib/url"
 import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
 import { SEARCH_OPEN_MODE } from "@shared/constants/open-mode"
-import { isSearchOpenMode } from "@shared/utils/type-guards"
 
 import { commandSchema, CommandSchemaType } from "@/types/schema"
 import type {

@@ -1,9 +1,9 @@
 import type { Active, Over } from "@dnd-kit/core"
-import { isSelectionCommand } from "@/lib/commandGuards"
 import type { Command, CommandFolder } from "@/types"
 import type { CommandTreeNode } from "@/services/option/commandTree"
 import { findNodeInTree, findFirstCommand } from "@/services/option/commandTree"
 import { isFolder, isCircularReference } from "@/services/option/commandUtils"
+import { isSelectionCommand } from "@/lib/commandGuards"
 import { ROOT_FOLDER } from "@/const"
 
 /**

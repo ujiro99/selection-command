@@ -1,6 +1,6 @@
 import { sleep, isEmpty } from "@/lib/utils"
-import { getSelectionText } from "@/services/dom"
 import { isCopyCommand } from "@/lib/commandGuards"
+import { getSelectionText } from "@/services/dom"
 import type { ExecuteCommandParams } from "@/types"
 import { ExecState } from "@/const"
 

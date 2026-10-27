@@ -6,11 +6,11 @@ import { cn, capitalize, isEmpty, sleep } from "@shared"
 // Re-export for other files to use
 export { cn, capitalize, isEmpty, sleep }
 import { APP_ID } from "@/const"
-import { isPageActionCommand } from "@/lib/commandGuards"
 // Imported from the standalone module (not the barrel) to avoid a cycle back
 // into this file through @/services/pageAction.
 import { InsertSymbol } from "@/services/pageAction/insertSymbols"
 import type { Version, Command } from "@/types"
+import { isPageActionCommand } from "@/lib/commandGuards"
 
 // cn function is now imported from shared package
 

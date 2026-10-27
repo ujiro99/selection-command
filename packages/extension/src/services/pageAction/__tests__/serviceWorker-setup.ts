@@ -63,11 +63,14 @@ vi.mock("@/lib/utils", () => ({
   sleep: vi.fn(),
 }))
 
-vi.mock("@/lib/commandGuards", () => ({
+// Replace only the functions the tests control, keeping the others real.
+vi.mock("@/lib/commandGuards", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/lib/commandGuards")>()),
   isPageActionCommand: vi.fn(),
 }))
 
-vi.mock("@/lib/url", () => ({
+vi.mock("@/lib/url", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/lib/url")>()),
   isUrl: vi.fn(),
   isUrlParam: vi.fn(),
   matchesPageActionUrl: vi.fn(),

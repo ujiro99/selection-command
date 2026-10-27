@@ -1,9 +1,9 @@
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
-import { isSelectionCommand } from "@/lib/commandGuards"
 import type { SettingsType, Command } from "@/types"
 import { OPTION_FOLDER, STARTUP_METHOD } from "@/const"
 import { Ipc, TabCommand } from "@/services/ipc"
 import { capitalize } from "@/lib/utils"
+import { isSelectionCommand } from "@/lib/commandGuards"
 import { APP_ID } from "@/const"
 import {
   toCommandTree,

@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from "react"
-import { isSelectionCommand } from "@/lib/commandGuards"
 import { flushSync } from "react-dom"
 import { useFieldArray } from "react-hook-form"
 
@@ -62,6 +61,7 @@ import { useSharedCommandIds } from "@/hooks/option/useSharedCommandIds"
 import { CommandListMenu } from "./CommandListMenu"
 import { CommandTreeRenderer } from "./CommandTreeRenderer"
 import { generateId } from "@/lib/utils"
+import { isSelectionCommand } from "@/lib/commandGuards"
 
 // Drag filtering utilities
 

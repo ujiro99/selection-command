@@ -1,5 +1,4 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
-import { isLinkCommand } from "@/lib/commandGuards"
 import { Settings, migrate } from "../settings"
 import { Storage, STORAGE_KEY } from "../../storage"
 import { OptionSettings } from "../../option/optionSettings"
@@ -12,6 +11,7 @@ import { toDataURL } from "../../dom"
 import { OPTION_FOLDER, VERSION, OPEN_MODE } from "@/const"
 import type { Command, SettingsType, Star } from "@/types"
 import * as utils from "@/lib/utils"
+import { isLinkCommand } from "@/lib/commandGuards"
 
 // Mock dependencies
 vi.mock("../../storage")

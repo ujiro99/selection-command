@@ -1,8 +1,3 @@
-import {
-  isSearchCommand as _isSearchCommand,
-  isPageActionCommand as _isPageActionCommand,
-  isAiPromptCommand as _isAiPromptCommand,
-} from "@shared"
 import { OPEN_MODE, DRAG_OPEN_MODE, SEARCH_OPEN_MODE } from "@/const"
 import type {
   SelectionCommand,
@@ -13,15 +8,13 @@ import type {
   CopyCommand,
 } from "@/types"
 
-// The guards shared with the Hub narrow to the shared types, whose options
-// are unknown. The ones below narrow to the extension's types instead.
-//
-// Every command type extends SearchCommand, so each guard also narrows
-// openMode to its own modes. Otherwise a false result would rule out all the
-// command types, e.g. after `if (isSearchCommand(cmd)) return`, cmd would no
-// longer be considered a PageActionCommand.
-
 type SearchOpenMode = (typeof SEARCH_OPEN_MODE)[number]
+
+// Every command type extends SearchCommand, so the guards of each command
+// type below also narrow openMode to its own modes. Otherwise a false result
+// would rule out all the command types, e.g. after
+// `if (isSearchCommand(cmd)) return`, cmd would no longer be considered a
+// PageActionCommand.
 type WithOpenMode<T, M> = T & { openMode: M }
 
 const OpenModes: string[] = Object.values(OPEN_MODE)
@@ -29,6 +22,13 @@ const DragOpenModes: string[] = Object.values(DRAG_OPEN_MODE)
 
 const hasOpenMode = (data: unknown): data is { openMode: unknown } =>
   data != null && typeof data === "object" && "openMode" in data
+
+/**
+ * Check if the mode is an open mode of search commands.
+ */
+export function isSearchOpenMode(mode: unknown): mode is SearchOpenMode {
+  return SEARCH_OPEN_MODE.includes(mode as SearchOpenMode)
+}
 
 /**
  * Check if the data is a command shown in the selection menu (not a folder
@@ -48,19 +48,19 @@ export function isLinkCommand(data: unknown): data is LinkCommand {
 export function isSearchCommand(
   data: unknown,
 ): data is WithOpenMode<SearchCommand, SearchOpenMode> {
-  return _isSearchCommand(data)
+  return hasOpenMode(data) && isSearchOpenMode(data.openMode)
 }
 
 export function isPageActionCommand(
   data: unknown,
 ): data is WithOpenMode<PageActionCommand, OPEN_MODE.PAGE_ACTION> {
-  return _isPageActionCommand(data)
+  return hasOpenMode(data) && data.openMode === OPEN_MODE.PAGE_ACTION
 }
 
 export function isAiPromptCommand(
   data: unknown,
 ): data is WithOpenMode<AiPromptCommand, OPEN_MODE.AI_PROMPT> {
-  return _isAiPromptCommand(data)
+  return hasOpenMode(data) && data.openMode === OPEN_MODE.AI_PROMPT
 }
 
 export function isCopyCommand(

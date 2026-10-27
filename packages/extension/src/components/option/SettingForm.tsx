@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react"
-import { isSelectionCommand, isLinkCommand } from "@/lib/commandGuards"
 import { CSSTransition } from "react-transition-group"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -43,6 +42,7 @@ import {
 } from "@/const"
 import type { UserSettings } from "@/types"
 import { isMac, isEmpty, sleep, e2a, cn } from "@/lib/utils"
+import { isSelectionCommand, isLinkCommand } from "@/lib/commandGuards"
 import { toCommandTree, toFlatten } from "@/services/option/commandTree"
 import { removeUnstoredParam } from "@/services/option/commandUtils"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"

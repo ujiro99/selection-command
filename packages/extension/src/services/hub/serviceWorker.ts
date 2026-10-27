@@ -1,9 +1,4 @@
 import { createClient } from "@supabase/supabase-js"
-import {
-  isSearchCommand,
-  isPageActionCommand,
-  isAiPromptCommand,
-} from "@/lib/commandGuards"
 import type { SupportedStorage } from "@supabase/supabase-js"
 import {
   NEW_HUB_URL,
@@ -27,6 +22,11 @@ import {
 } from "@/services/analytics"
 import { PopupOption } from "@/services/option/defaultSettings"
 import { generateId } from "@/lib/utils"
+import {
+  isSearchCommand,
+  isPageActionCommand,
+  isAiPromptCommand,
+} from "@/lib/commandGuards"
 import { toSyncInstalledCommand } from "@/services/hub/installedCommands"
 import {
   applyHubContent,

@@ -1,10 +1,10 @@
 import { useRef, useState } from "react"
-import { isSelectionCommand } from "@/lib/commandGuards"
 
 import { STYLE, SIDE } from "@/const"
 import { TEST_IDS } from "@/testIds"
 import { useSettingsWithImageCache } from "@/hooks/useSettingsWithImageCache"
 import { cn } from "@/lib/utils"
+import { isSelectionCommand } from "@/lib/commandGuards"
 import { toCommandTree } from "@/services/option/commandTree"
 import css from "./Menu.module.css"
 import { MenuTreeNode } from "./MenuFolder"
