@@ -20,7 +20,8 @@ import {
 } from "@/const"
 
 import { t } from "@/services/i18n"
-import { isEmpty, isReservedVariableName, parseGeminiUrl } from "@/lib/utils"
+import { isEmpty, isReservedVariableName } from "@/lib/utils"
+import { parseGeminiUrl } from "@/lib/url"
 import { SEARCH_OPEN_MODE } from "@shared/constants/open-mode"
 import { countHtmlAttachments } from "@/services/pageAction"
 import type { AiPromptCommand } from "@/types"

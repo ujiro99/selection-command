@@ -13,7 +13,7 @@ import {
   SelectorType,
 } from "@/const"
 import { INSERT, toInsertTemplate } from "@/services/pageAction"
-import { needsClipboard } from "@/lib/utils"
+import { needsClipboard } from "@/lib/url"
 import type { AiService } from "@/types"
 
 vi.mock("@/services/ipc", () => ({

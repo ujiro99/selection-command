@@ -84,7 +84,8 @@ import { getScreenSize } from "@/services/screen"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
 
-import { isEmpty, e2a, cn, parseGeminiUrl, generateId } from "@/lib/utils"
+import { isEmpty, e2a, cn, generateId } from "@/lib/utils"
+import { parseGeminiUrl } from "@/lib/url"
 import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 

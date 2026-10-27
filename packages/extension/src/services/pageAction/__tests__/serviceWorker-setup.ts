@@ -61,11 +61,14 @@ vi.mock("@/lib/utils", () => ({
   isEmpty: vi.fn(),
   isPageActionCommand: vi.fn(),
   isServiceWorker: vi.fn(() => true),
+  sleep: vi.fn(),
+}))
+
+vi.mock("@/lib/url", () => ({
   isUrl: vi.fn(),
   isUrlParam: vi.fn(),
   matchesPageActionUrl: vi.fn(),
   needsClipboard: vi.fn(),
-  sleep: vi.fn(),
 }))
 
 vi.mock("@/const", async () => {
@@ -120,12 +123,14 @@ import {
   generateRandomID,
   isEmpty,
   isPageActionCommand,
+  sleep,
+} from "@/lib/utils"
+import {
   isUrl,
   isUrlParam,
   matchesPageActionUrl,
   needsClipboard,
-  sleep,
-} from "@/lib/utils"
+} from "@/lib/url"
 import { resetLastUrl } from "../serviceWorker"
 
 // Get references to mocked functions

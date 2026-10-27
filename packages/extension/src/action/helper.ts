@@ -1,4 +1,5 @@
-import { escapeJson, toUrl } from "@/lib/utils"
+import { escapeJson } from "@/lib/utils"
+import { toUrl } from "@/lib/url"
 import {
   openPopupWindow,
   openPopupWindowMultiple,

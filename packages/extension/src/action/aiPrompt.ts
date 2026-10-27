@@ -4,13 +4,8 @@ import {
   SidePanelPendingAction,
 } from "@/services/ipc"
 import { getWindowPosition } from "@/services/screen"
-import {
-  isValidString,
-  generateRandomID,
-  safeInterpolate,
-  toUrl,
-  convertUrlsToMarkdown,
-} from "@/lib/utils"
+import { isValidString, generateRandomID, safeInterpolate } from "@/lib/utils"
+import { toUrl, convertUrlsToMarkdown } from "@/lib/url"
 import {
   OPEN_MODE,
   PAGE_ACTION_OPEN_MODE,
@@ -38,7 +33,7 @@ import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { getUILanguage } from "@/services/i18n"
 import { getSelectionHtml, getPageHtml } from "@/services/dom"
 
-// Moved to lib/utils so that toUrl() can reuse it in the service worker.
+// Moved to lib/url so that toUrl() can reuse it in the service worker.
 export { convertUrlsToMarkdown }
 
 // Map OPEN_MODE to PAGE_ACTION_OPEN_MODE for openAndRun
