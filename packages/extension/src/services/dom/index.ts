@@ -1,6 +1,7 @@
 import type { Point } from "@/types"
 
-import { isEmpty, extractUrlsFromText, toHttpUrl } from "@/lib/utils"
+import { isEmpty } from "@/lib/utils"
+import { extractUrlsFromText, toHttpUrl } from "@/lib/urlExtractor"
 import { APP_ID, PAGE_HTML_MAX_CHARS } from "@/const"
 
 export function toDataURL(src: string, outputFormat?: string): Promise<string> {
