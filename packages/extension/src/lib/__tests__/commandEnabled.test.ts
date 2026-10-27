@@ -60,7 +60,7 @@ describe("getCommandEnabled", () => {
       ])
       const result = getCommandEnabled(makeLinkPopupCommand())
       expect(result.enabled).toBe(true)
-      expect(result.message).toBe("2 links")
+      expect(result.detail).toBe("2 links")
     })
 
     it("GCE-02: disabled when no URL is found in the selection", () => {
@@ -71,7 +71,7 @@ describe("getCommandEnabled", () => {
         "hello",
       )
       expect(result.enabled).toBe(false)
-      expect(result.message).toBe("Test Command\nMenu_disabled_notUrl")
+      expect(result.detail).toBe("Menu_disabled_notUrl")
     })
 
     it("GCE-10: enabled with the URL when one URL is found in the selection", () => {
@@ -83,7 +83,7 @@ describe("getCommandEnabled", () => {
       )
       expect(mockUrlsInSelection).toHaveBeenCalledWith("see www.example.com")
       expect(result.enabled).toBe(true)
-      expect(result.message).toBe("https://www.example.com/")
+      expect(result.detail).toBe("https://www.example.com/")
     })
 
     it("GCE-11: enabled for the side panel when one URL is found", () => {
@@ -107,7 +107,7 @@ describe("getCommandEnabled", () => {
         "a b",
       )
       expect(result.enabled).toBe(false)
-      expect(result.message).toBe("Test Command\nMenu_disabled_multipleUrls")
+      expect(result.detail).toBe("Menu_disabled_multipleUrls")
     })
 
     it.each([
@@ -142,7 +142,7 @@ describe("getCommandEnabled", () => {
       const command = makePageActionCommand("https://example.com/page")
       const result = getCommandEnabled(command, "https://other.com/page")
       expect(result.enabled).toBe(false)
-      expect(result.message).toBe("Test Command\nMenu_disabled_urlNotMatch")
+      expect(result.detail).toBe("Menu_disabled_urlNotMatch")
     })
 
     it("GCE-06: enabled when pageUrl is empty string", () => {
@@ -165,7 +165,7 @@ describe("getCommandEnabled", () => {
     it("GCE-08: enabled for TAB mode", () => {
       const result = getCommandEnabled(baseCommand, "https://any.com")
       expect(result.enabled).toBe(true)
-      expect(result.message).toBe(baseCommand.title)
+      expect(result.detail).toBeUndefined()
     })
 
     it("GCE-09: enabled for POPUP mode", () => {

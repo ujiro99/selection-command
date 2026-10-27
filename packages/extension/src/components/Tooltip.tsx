@@ -15,6 +15,8 @@ type PopupProps = {
   disabled?: boolean
   delay?: number
   className?: string
+  // Overrides the side where the tooltip is shown.
+  side?: SIDE
 }
 
 export function Tooltip(props: PopupProps) {
@@ -64,7 +66,7 @@ export function Tooltip(props: PopupProps) {
             "bg-gray-800 dark:bg-gray-600 min-w-4 px-2 py-1.5 shadow-md",
             props.className,
           )}
-          side={side === SIDE.bottom ? SIDE.bottom : "top"}
+          side={props.side ?? (side === SIDE.bottom ? SIDE.bottom : "top")}
           arrowPadding={-1}
         >
           <p className="text-xs text-white whitespace-pre-wrap">{props.text}</p>

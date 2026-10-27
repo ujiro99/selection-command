@@ -6,7 +6,9 @@ import type { Command, LinkPopupCommand } from "@/types"
 
 export type CommandEnabled = {
   enabled: boolean
-  message: string
+  // Additional information shown with the command title in the tooltip,
+  // e.g. the URLs to open or the reason why the command is disabled.
+  detail?: string
 }
 
 /**
@@ -20,7 +22,7 @@ export function getCommandEnabled(
   currentUrl: string = location.href,
   selectionText: string = "",
 ): CommandEnabled {
-  const { openMode, title } = command
+  const { openMode } = command
 
   if (openMode === OPEN_MODE.LINK_POPUP) {
     const { linkPopupOption } = command as LinkPopupCommand
@@ -28,18 +30,18 @@ export function getCommandEnabled(
     if (urls.length === 0) {
       return {
         enabled: false,
-        message: `${title}\n${t("Menu_disabled_notUrl")}`,
+        detail: t("Menu_disabled_notUrl"),
       }
     }
     if (linkPopupOption?.openMode === OPEN_MODE.SIDE_PANEL && urls.length > 1) {
       return {
         enabled: false,
-        message: `${title}\n${t("Menu_disabled_multipleUrls", [String(urls.length)])}`,
+        detail: t("Menu_disabled_multipleUrls", [String(urls.length)]),
       }
     }
     return {
       enabled: true,
-      message: urls.length === 1 ? urls[0] : `${urls.length} links`,
+      detail: urls.length === 1 ? urls[0] : `${urls.length} links`,
     }
   }
 
@@ -52,10 +54,10 @@ export function getCommandEnabled(
     ) {
       return {
         enabled: false,
-        message: `${title}\n${t("Menu_disabled_urlNotMatch")}`,
+        detail: t("Menu_disabled_urlNotMatch"),
       }
     }
   }
 
-  return { enabled: true, message: title }
+  return { enabled: true }
 }
