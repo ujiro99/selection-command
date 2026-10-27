@@ -752,6 +752,12 @@
   "Option_theme_dark": {
     "message": "ダーク"
   },
+  "Option_followBrowserZoom": {
+    "message": "ブラウザのズームに追従"
+  },
+  "Option_followBrowserZoom_desc": {
+    "message": "オフにすると、ページのズーム倍率に関係なくポップアップメニューを同じ大きさで表示します。"
+  },
   "Option_userStyles_add": {
     "message": "ユーザースタイル編集"
   },

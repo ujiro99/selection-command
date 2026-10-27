@@ -752,6 +752,12 @@
   "Option_theme_dark": {
     "message": "Dunkel"
   },
+  "Option_followBrowserZoom": {
+    "message": "Browser-Zoom folgen"
+  },
+  "Option_followBrowserZoom_desc": {
+    "message": "Wenn deaktiviert, behält das Pop-up-Menü unabhängig vom Seitenzoom dieselbe Größe."
+  },
   "Option_userStyles_add": {
     "message": "Benutzerstil bearbeiten"
   },

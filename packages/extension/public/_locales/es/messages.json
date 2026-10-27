@@ -752,6 +752,12 @@
   "Option_theme_dark": {
     "message": "Oscuro"
   },
+  "Option_followBrowserZoom": {
+    "message": "Seguir el zoom del navegador"
+  },
+  "Option_followBrowserZoom_desc": {
+    "message": "Si se desactiva, el menú emergente mantiene el mismo tamaño independientemente del zoom de la página."
+  },
   "Option_userStyles_add": {
     "message": "Editar Estilo de Usuario"
   },

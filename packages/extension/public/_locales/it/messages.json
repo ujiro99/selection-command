@@ -752,6 +752,12 @@
   "Option_theme_dark": {
     "message": "Scuro"
   },
+  "Option_followBrowserZoom": {
+    "message": "Segui lo zoom del browser"
+  },
+  "Option_followBrowserZoom_desc": {
+    "message": "Se disattivato, il menu a comparsa mantiene la stessa dimensione indipendentemente dallo zoom della pagina."
+  },
   "Option_userStyles_add": {
     "message": "Modifica stile utente"
   },

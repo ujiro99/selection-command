@@ -752,6 +752,12 @@
   "Option_theme_dark": {
     "message": "Escuro"
   },
+  "Option_followBrowserZoom": {
+    "message": "Acompanhar o zoom do navegador"
+  },
+  "Option_followBrowserZoom_desc": {
+    "message": "Quando desativado, o menu pop-up mantém o mesmo tamanho independentemente do zoom da página."
+  },
   "Option_userStyles_add": {
     "message": "Editar Estilo do Utilizador"
   },

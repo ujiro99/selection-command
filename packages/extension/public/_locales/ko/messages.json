@@ -752,6 +752,12 @@
   "Option_theme_dark": {
     "message": "다크"
   },
+  "Option_followBrowserZoom": {
+    "message": "브라우저 확대/축소 따르기"
+  },
+  "Option_followBrowserZoom_desc": {
+    "message": "끄면 페이지 확대/축소 배율과 관계없이 팝업 메뉴가 같은 크기로 표시됩니다."
+  },
   "Option_userStyles_add": {
     "message": "사용자 스타일 편집"
   },

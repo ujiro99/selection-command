@@ -1,4 +1,4 @@
-import { useState, useEffect, forwardRef } from "react"
+import { useState, useEffect, forwardRef, type CSSProperties } from "react"
 import { Popover, PopoverContent, PopoverAnchor } from "@/components/ui/popover"
 import { Menu } from "@/components/menu/Menu"
 import { useUserSettings } from "@/hooks/useSettings"
@@ -9,6 +9,7 @@ import { useSidePanelAutoClose } from "@/hooks/useSidePanelAutoClose"
 import { useSelectContext } from "@/hooks/useSelectContext"
 import { popupContext } from "@/hooks/usePopupContext"
 import { useThemeContext } from "@/hooks/useTheme"
+import { usePageZoom } from "@/hooks/usePageZoom"
 import { isMac, onHover, cn } from "@/lib/utils"
 import {
   findUserStyleValue,
@@ -50,7 +51,18 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
     const sideOffset = isPreview ? 0 : (placement?.sideOffset ?? 0)
     const alignOffset = isPreview ? 0 : (placement?.alignOffset ?? 0)
 
-    const userStyles = toCssVariables(userSettings?.userStyles)
+    // When the popup should not follow the browser zoom, scale the menu
+    // sizes by the inverse zoom factor. CSS `zoom` is not used: floating-ui
+    // does not account for it, which misplaces the folder submenus.
+    // The preview on the options page keeps the zoom of the options page.
+    const zoomFactor = usePageZoom(
+      !isPreview && userSettings?.followBrowserZoom === false,
+    )
+    const zoomCompensation = 1 / zoomFactor
+    const userStyles = {
+      ...toCssVariables(userSettings?.userStyles),
+      "--sc-zoom-compensation": zoomCompensation,
+    } as CSSProperties
 
     useEffect(() => {
       let transitionTimer: NodeJS.Timeout
@@ -129,8 +141,8 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
               ref={ref}
               side={side}
               align={align}
-              sideOffset={sideOffset}
-              alignOffset={alignOffset}
+              sideOffset={sideOffset * zoomCompensation}
+              alignOffset={alignOffset * zoomCompensation}
               className={cn(css.popup, isPreview && "z-10 mt-2")}
               style={userStyles}
               {...onHover(handleOnHover, true)}

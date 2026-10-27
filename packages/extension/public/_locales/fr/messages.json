@@ -752,6 +752,12 @@
   "Option_theme_dark": {
     "message": "Sombre"
   },
+  "Option_followBrowserZoom": {
+    "message": "Suivre le zoom du navigateur"
+  },
+  "Option_followBrowserZoom_desc": {
+    "message": "Si désactivé, le menu contextuel conserve la même taille quel que soit le zoom de la page."
+  },
   "Option_userStyles_add": {
     "message": "Modifier le Style Utilisateur"
   },

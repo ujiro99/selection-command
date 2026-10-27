@@ -12,10 +12,17 @@
   --sc-bd-color-h: var(--sc-border-color-h, 220deg);
   --sc-bd-color-s: var(--sc-border-color-s, 14%);
   --sc-bd-color-l: var(--sc-border-color-l, 96%);
-  --sc-font-size: calc(var(--sc-font-scale, 1) * 12px);
+  /* --sc-zoom-compensation cancels the browser zoom (see Popup.tsx). */
+  --sc-font-size: calc(
+    var(--sc-font-scale, 1) * var(--sc-zoom-compensation, 1) * 12px
+  );
   --sc-font-color: #0f172a;
-  --sc-image-size: calc(var(--sc-image-scale, 1) * 16px);
-  --sc-padding: calc(var(--sc-padding-scale, 1) * 4px);
+  --sc-image-size: calc(
+    var(--sc-image-scale, 1) * var(--sc-zoom-compensation, 1) * 16px
+  );
+  --sc-padding: calc(
+    var(--sc-padding-scale, 1) * var(--sc-zoom-compensation, 1) * 4px
+  );
   --sc-delay: calc(var(--sc-popup-delay, 250) * 1ms);
   --sc-duration: calc(var(--sc-popup-duration, 150) * 1ms);
 

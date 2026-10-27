@@ -752,6 +752,12 @@
   "Option_theme_dark": {
     "message": "Тёмная"
   },
+  "Option_followBrowserZoom": {
+    "message": "Учитывать масштаб браузера"
+  },
+  "Option_followBrowserZoom_desc": {
+    "message": "Если выключено, всплывающее меню сохраняет один и тот же размер независимо от масштаба страницы."
+  },
   "Option_userStyles_add": {
     "message": "Редактировать пользовательский стиль"
   },

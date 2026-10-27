@@ -756,6 +756,12 @@
   "Option_theme_dark": {
     "message": "Dark"
   },
+  "Option_followBrowserZoom": {
+    "message": "Follow browser zoom"
+  },
+  "Option_followBrowserZoom_desc": {
+    "message": "When off, the pop-up menu keeps the same size regardless of the page zoom."
+  },
   "Option_userStyles_add": {
     "message": "Edit User Style"
   },

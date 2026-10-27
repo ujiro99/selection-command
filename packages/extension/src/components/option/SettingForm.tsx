@@ -100,6 +100,7 @@ const formSchema = z
       .strict(),
     style: z.nativeEnum(STYLE),
     theme: z.nativeEnum(THEME),
+    followBrowserZoom: z.boolean(),
     commands: z.array(commandSchema).min(1),
     folders: z.array(folderSchema),
     linkCommand: z
@@ -153,6 +154,7 @@ export function SettingForm({ className }: { className?: string }) {
       windowOption: emptySettings.windowOption,
       style: emptySettings.style,
       theme: emptySettings.theme,
+      followBrowserZoom: emptySettings.followBrowserZoom,
       commands: [], // Empty array to avoid type conflicts
       folders: emptySettings.folders,
       linkCommand: emptySettings.linkCommand,
@@ -200,6 +202,8 @@ export function SettingForm({ className }: { className?: string }) {
     settings.commands = settings.commands.filter(isMenuCommand)
     // Settings saved before the theme option existed lack it.
     settings.theme = settings.theme ?? THEME.SYSTEM
+    // Settings saved before the zoom option existed lack it.
+    settings.followBrowserZoom = settings.followBrowserZoom ?? true
     return settings as FormValues
   }
 
@@ -725,6 +729,12 @@ export function SettingForm({ className }: { className?: string }) {
               name: t(`theme_${theme}`),
               value: theme,
             }))}
+          />
+          <SwitchField
+            control={form.control}
+            name="followBrowserZoom"
+            formLabel={t("followBrowserZoom")}
+            description={t("followBrowserZoom_desc")}
           />
           <UserStyleList control={form.control} />
         </section>

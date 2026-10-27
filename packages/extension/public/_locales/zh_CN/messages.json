@@ -752,6 +752,12 @@
   "Option_theme_dark": {
     "message": "深色"
   },
+  "Option_followBrowserZoom": {
+    "message": "跟随浏览器缩放"
+  },
+  "Option_followBrowserZoom_desc": {
+    "message": "关闭后，无论页面缩放比例如何，弹出菜单都保持相同大小。"
+  },
   "Option_userStyles_add": {
     "message": "编辑用户样式"
   },

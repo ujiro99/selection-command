@@ -752,6 +752,12 @@
   "Option_theme_dark": {
     "message": "Gelap"
   },
+  "Option_followBrowserZoom": {
+    "message": "Ikut zum pelayar"
+  },
+  "Option_followBrowserZoom_desc": {
+    "message": "Apabila dimatikan, menu pop timbul kekal pada saiz yang sama tanpa mengira zum halaman."
+  },
   "Option_userStyles_add": {
     "message": "Edit Gaya Pengguna"
   },
