@@ -336,7 +336,7 @@
     "message": "API"
   },
   "Option_openMode_linkPopup": {
-    "message": "Pop-up de Link"
+    "message": "Abrir ligações"
   },
   "Option_openMode_copy": {
     "message": "Copiar texto"
@@ -387,10 +387,10 @@
     "message": "Copiar texto selecionado para a área de transferência"
   },
   "Option_commandType_linkPopup_title": {
-    "message": "Pop-up de Link"
+    "message": "Abrir ligações"
   },
   "Option_commandType_linkPopup_desc": {
-    "message": "Abrir links no texto selecionado em lote"
+    "message": "Abre as ligações e URLs da seleção"
   },
   "Option_commandType_getTextStyles_title": {
     "message": "Obter Estilos"
@@ -1257,6 +1257,9 @@
   "Option_displayMode_desc": {
     "message": "Método de exibição de janela."
   },
+  "Option_linkPopup_displayMode_desc": {
+    "message": "Como abrir as ligações e URLs da seleção."
+  },
   "Option_openModeSecondary_desc": {
     "message": "Comportamento ao fazer Ctrl + clique no menu."
   },
@@ -1430,6 +1433,49 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "Não é possível executar nesta página (URL da página não corresponde)"
+  },
+  "Menu_disabled_notUrl": {
+    "message": "Nenhum URL encontrado na seleção"
+  },
+  "Menu_disabled_multipleUrls": {
+    "message": "O painel lateral não pode abrir vários URLs ($count$ encontrados)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Menu_linkPopup_tooManyUrls": {
+    "message": "São abertos até $max$ URLs ($count$ encontrados)",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "20"
+      },
+      "count": {
+        "content": "$2",
+        "example": "25"
+      }
+    }
+  },
+  "Menu_linkPopup_sidePanelClick": {
+    "message": "O clique não pode abrir vários URLs no painel lateral ($count$ encontrados). Utilize Ctrl + clique",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Menu_linkPopup_sidePanelCtrlClick": {
+    "message": "Ctrl + clique não pode abrir vários URLs no painel lateral ($count$ encontrados)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
   },
   "hub_login": {
     "message": "Iniciar sessão no Hub"

@@ -336,7 +336,7 @@
     "message": "API"
   },
   "Option_openMode_linkPopup": {
-    "message": "लिंक पॉपअप"
+    "message": "लिंक खोलें"
   },
   "Option_openMode_copy": {
     "message": "टेक्स्ट कॉपी करें"
@@ -387,10 +387,10 @@
     "message": "चयनित टेक्स्ट को क्लिपबोर्ड में कॉपी करें"
   },
   "Option_commandType_linkPopup_title": {
-    "message": "लिंक पॉपअप"
+    "message": "लिंक खोलें"
   },
   "Option_commandType_linkPopup_desc": {
-    "message": "चयनित टेक्स्ट में लिंक्स को बल्क में खोलें"
+    "message": "चयन में मौजूद लिंक और URL खोलें"
   },
   "Option_commandType_getTextStyles_title": {
     "message": "स्टाइल प्राप्त करें"
@@ -1254,6 +1254,9 @@
   "Option_displayMode_desc": {
     "message": "विंडो प्रदर्शन विधि।"
   },
+  "Option_linkPopup_displayMode_desc": {
+    "message": "चयन में मौजूद लिंक और URL खोलने का तरीका।"
+  },
   "Option_openModeSecondary_desc": {
     "message": "मेन्यू पर Ctrl + क्लिक करने पर व्यवहार।"
   },
@@ -1427,6 +1430,49 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "इस पेज पर नहीं चला सकते (पृष्ठ URL मेल नहीं खाता)"
+  },
+  "Menu_disabled_notUrl": {
+    "message": "चयन में कोई URL नहीं मिला"
+  },
+  "Menu_disabled_multipleUrls": {
+    "message": "साइड पैनल एक से अधिक URL नहीं खोल सकता ($count$ मिले)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Menu_linkPopup_tooManyUrls": {
+    "message": "अधिकतम $max$ URL खोले जाते हैं ($count$ मिले)",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "20"
+      },
+      "count": {
+        "content": "$2",
+        "example": "25"
+      }
+    }
+  },
+  "Menu_linkPopup_sidePanelClick": {
+    "message": "क्लिक से साइड पैनल में कई URL नहीं खोले जा सकते ($count$ मिले)। Ctrl + क्लिक का उपयोग करें",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Menu_linkPopup_sidePanelCtrlClick": {
+    "message": "Ctrl + क्लिक से साइड पैनल में कई URL नहीं खोले जा सकते ($count$ मिले)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
   },
   "hub_login": {
     "message": "Hub में लॉगिन करें"

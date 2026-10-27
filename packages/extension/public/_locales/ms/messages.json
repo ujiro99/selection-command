@@ -336,7 +336,7 @@
     "message": "API"
   },
   "Option_openMode_linkPopup": {
-    "message": "Pop-up Pautan"
+    "message": "Buka pautan"
   },
   "Option_openMode_copy": {
     "message": "Salin teks"
@@ -387,10 +387,10 @@
     "message": "Salin teks yang dipilih ke papan klip"
   },
   "Option_commandType_linkPopup_title": {
-    "message": "Pop-up Pautan"
+    "message": "Buka pautan"
   },
   "Option_commandType_linkPopup_desc": {
-    "message": "Buka pautan dalam teks yang dipilih secara pukal"
+    "message": "Buka pautan dan URL dalam pilihan"
   },
   "Option_commandType_getTextStyles_title": {
     "message": "Dapatkan Gaya"
@@ -1257,6 +1257,9 @@
   "Option_displayMode_desc": {
     "message": "Kaedah paparan tetingkap."
   },
+  "Option_linkPopup_displayMode_desc": {
+    "message": "Cara membuka pautan dan URL dalam pilihan."
+  },
   "Option_openModeSecondary_desc": {
     "message": "Tingkah laku semasa Ctrl + klik menu."
   },
@@ -1430,6 +1433,49 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "Tidak boleh dijalankan pada halaman ini (URL Halaman tidak sepadan)"
+  },
+  "Menu_disabled_notUrl": {
+    "message": "Tiada URL ditemui dalam pilihan"
+  },
+  "Menu_disabled_multipleUrls": {
+    "message": "Panel sisi tidak dapat membuka berbilang URL ($count$ ditemui)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Menu_linkPopup_tooManyUrls": {
+    "message": "Sehingga $max$ URL dibuka ($count$ ditemui)",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "20"
+      },
+      "count": {
+        "content": "$2",
+        "example": "25"
+      }
+    }
+  },
+  "Menu_linkPopup_sidePanelClick": {
+    "message": "Klik tidak boleh membuka berbilang URL dalam panel sisi ($count$ ditemui). Gunakan Ctrl + Klik",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Menu_linkPopup_sidePanelCtrlClick": {
+    "message": "Ctrl + Klik tidak boleh membuka berbilang URL dalam panel sisi ($count$ ditemui)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
   },
   "hub_login": {
     "message": "Log masuk ke Hub"

@@ -17,13 +17,14 @@ import {
   WINDOW_STATE,
   FOLDER_STYLE,
   COMMAND_SOURCE_TYPE,
+  LINK_POPUP_ICON_URL,
 } from "@/const"
 
 import { t } from "@/services/i18n"
 import { isEmpty, isReservedVariableName, parseGeminiUrl } from "@/lib/utils"
 import { SEARCH_OPEN_MODE } from "@shared/constants/open-mode"
 import { countHtmlAttachments } from "@/services/pageAction"
-import type { AiPromptCommand } from "@/types"
+import type { AiPromptCommand, LinkPopupCommand } from "@/types"
 
 export const COMMAND_TITLE_MIN_LENGTH = 2
 export const COMMAND_TITLE_MAX_LENGTH = 100
@@ -132,19 +133,34 @@ const linkPopupSchema = z.object({
   id: z.string(),
   parentFolderId: z.string().optional(),
   ...commandSourceSchema,
-  title: commandTitleSchema.default("Link Popup"),
+  title: commandTitleSchema.default("Open Links"),
   iconUrl: z
     .string()
     .url({ message: t("Option_zod_url") })
     .max(1000, { message: t("Option_zod_string_max", ["1000"]) })
-    .default(
-      "https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/folder-archive-document-archives-fold-1024.png",
-    ),
+    .default(LINK_POPUP_ICON_URL),
   popupOption: z.object({
     width: z.number().min(1),
     height: z.number().min(1),
   }),
+  windowState: z.nativeEnum(WINDOW_STATE).optional(),
+  linkPopupOption: z
+    .object({
+      openMode: z.enum(SEARCH_OPEN_MODE),
+      openModeSecondary: z.enum(SEARCH_OPEN_MODE).optional(),
+    })
+    .optional(),
 })
+
+export const isLinkPopupType = (data: unknown): data is LinkPopupCommand => {
+  if (!data || typeof data !== "object") {
+    return false
+  }
+  if (!("openMode" in data)) {
+    return false
+  }
+  return data.openMode === OPEN_MODE.LINK_POPUP
+}
 
 const copySchema = z.object({
   openMode: z.enum([OPEN_MODE.COPY]),

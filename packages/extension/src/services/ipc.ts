@@ -49,6 +49,7 @@ export enum ServiceWorkerCommand {
   openPopups = "openPopups",
   openPopupAndClick = "openPopupAndClick",
   openTab = "openTab",
+  openTabs = "openTabs",
   openSidePanel = "openSidePanel",
   closeSidePanel = "closeSidePanel",
   navigateSidePanel = "navigateSidePanel",

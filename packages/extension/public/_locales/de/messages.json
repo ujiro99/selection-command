@@ -336,7 +336,7 @@
     "message": "API"
   },
   "Option_openMode_linkPopup": {
-    "message": "Link-Popup"
+    "message": "Links öffnen"
   },
   "Option_openMode_copy": {
     "message": "Text kopieren"
@@ -387,10 +387,10 @@
     "message": "Ausgewählten Text in die Zwischenablage kopieren"
   },
   "Option_commandType_linkPopup_title": {
-    "message": "Link-Popup"
+    "message": "Links öffnen"
   },
   "Option_commandType_linkPopup_desc": {
-    "message": "Links im ausgewählten Text in einem Rutsch öffnen"
+    "message": "Öffnet die Links und URLs in der Auswahl"
   },
   "Option_commandType_getTextStyles_title": {
     "message": "Stile abrufen"
@@ -1254,6 +1254,9 @@
   "Option_displayMode_desc": {
     "message": "Fenster-Anzeigemethode."
   },
+  "Option_linkPopup_displayMode_desc": {
+    "message": "Wie die Links und URLs in der Auswahl geöffnet werden."
+  },
   "Option_openModeSecondary_desc": {
     "message": "Verhalten beim Strg + Klicken des Menüs."
   },
@@ -1427,6 +1430,49 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "Kann auf dieser Seite nicht ausgeführt werden (Seiten-URL stimmt nicht überein)"
+  },
+  "Menu_disabled_notUrl": {
+    "message": "Keine URL in der Auswahl gefunden"
+  },
+  "Menu_disabled_multipleUrls": {
+    "message": "Das Seitenpanel kann nicht mehrere URLs öffnen ($count$ gefunden)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Menu_linkPopup_tooManyUrls": {
+    "message": "Es werden bis zu $max$ URLs geöffnet ($count$ gefunden)",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "20"
+      },
+      "count": {
+        "content": "$2",
+        "example": "25"
+      }
+    }
+  },
+  "Menu_linkPopup_sidePanelClick": {
+    "message": "Ein Klick kann nicht mehrere URLs im Seitenbereich öffnen ($count$ gefunden). Verwenden Sie Strg + Klick",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Menu_linkPopup_sidePanelCtrlClick": {
+    "message": "Strg + Klick kann nicht mehrere URLs im Seitenbereich öffnen ($count$ gefunden)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
   },
   "hub_login": {
     "message": "Beim Hub anmelden"
