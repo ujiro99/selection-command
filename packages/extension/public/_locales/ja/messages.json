@@ -1440,6 +1440,37 @@
       }
     }
   },
+  "Menu_linkPopup_tooManyUrls": {
+    "message": "$max$件までです（$count$件中）",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "20"
+      },
+      "count": {
+        "content": "$2",
+        "example": "25"
+      }
+    }
+  },
+  "Menu_linkPopup_sidePanelClick": {
+    "message": "クリックではサイドパネルに複数のURLを開けません（$count$個）。Ctrl + クリックで開けます",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Menu_linkPopup_sidePanelCtrlClick": {
+    "message": "Ctrl + クリックではサイドパネルに複数のURLを開けません（$count$個）",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "hub_login": {
     "message": "Hubへログイン"
   },

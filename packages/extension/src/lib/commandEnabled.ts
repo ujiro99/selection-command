@@ -1,4 +1,4 @@
-import { OPEN_MODE, PAGE_ACTION_OPEN_MODE } from "@/const"
+import { OPEN_MODE, PAGE_ACTION_OPEN_MODE, LINK_POPUP_MAX_URLS } from "@/const"
 import { urlsInSelection } from "@/services/dom"
 import {
   isPageActionCommand,
@@ -12,15 +12,37 @@ import type { Command, LinkPopupCommand } from "@/types"
 const TOOLTIP_URL_MAX_LENGTH = 80
 
 /**
+ * Decode percent-encoded characters of a URL to show it in a readable form,
+ * e.g. "https://example.com/%E6%9D%B1" becomes "https://example.com/東".
+ */
+const decodeForDisplay = (url: string): string => {
+  try {
+    return decodeURI(url)
+  } catch {
+    return url
+  }
+}
+
+/**
  * Format URLs for the tooltip: a single URL as it is, and multiple URLs as a
  * numbered list. Long URLs are shortened by omitting their middle.
+ * URLs over the limit are omitted with a note, as they are not opened.
  */
 const formatUrls = (urls: string[]): string => {
-  const shortened = urls.map((url) =>
-    truncateMiddle(url, TOOLTIP_URL_MAX_LENGTH),
-  )
+  const shortened = urls
+    .slice(0, LINK_POPUP_MAX_URLS)
+    .map((url) => truncateMiddle(decodeForDisplay(url), TOOLTIP_URL_MAX_LENGTH))
   if (shortened.length === 1) return shortened[0]
-  return shortened.map((url, i) => `${i + 1}. ${url}`).join("\n")
+  const lines = shortened.map((url, i) => `${i + 1}. ${url}`)
+  if (urls.length > LINK_POPUP_MAX_URLS) {
+    lines.push(
+      t("Menu_linkPopup_tooManyUrls", [
+        String(LINK_POPUP_MAX_URLS),
+        String(urls.length),
+      ]),
+    )
+  }
+  return lines.join("\n")
 }
 
 export type CommandEnabled = {
@@ -33,7 +55,8 @@ export type CommandEnabled = {
 /**
  * Determines whether a command can be executed in the current context.
  * - LINK_POPUP: checks if there are hyperlinks or URLs in the selection, and
- *   only one is found when the side panel is used
+ *   only one is found when the side panel is used by both the click and the
+ *   Ctrl + click
  * - PAGE_ACTION (CURRENT_TAB): checks if the current page URL matches the command's pageUrl pattern
  */
 export function getCommandEnabled(
@@ -52,15 +75,29 @@ export function getCommandEnabled(
         detail: t("Menu_disabled_notUrl"),
       }
     }
-    if (linkPopupOption?.openMode === OPEN_MODE.SIDE_PANEL && urls.length > 1) {
+    // The side panel can show only one page. The Ctrl + click uses the
+    // primary open mode when the secondary one is not set.
+    const primary = linkPopupOption?.openMode ?? OPEN_MODE.POPUP
+    const secondary = linkPopupOption?.openModeSecondary ?? primary
+    const canOpen = (mode: OPEN_MODE) =>
+      mode !== OPEN_MODE.SIDE_PANEL || urls.length === 1
+    if (!canOpen(primary) && !canOpen(secondary)) {
       return {
         enabled: false,
         detail: t("Menu_disabled_multipleUrls", [String(urls.length)]),
       }
     }
+    // Either the click or the Ctrl + click can open the URLs, so the command
+    // is enabled with a note on the other one.
+    const notes = []
+    if (!canOpen(primary)) {
+      notes.push(t("Menu_linkPopup_sidePanelClick", [String(urls.length)]))
+    } else if (!canOpen(secondary)) {
+      notes.push(t("Menu_linkPopup_sidePanelCtrlClick", [String(urls.length)]))
+    }
     return {
       enabled: true,
-      detail: formatUrls(urls),
+      detail: [formatUrls(urls), ...notes].join("\n"),
     }
   }
 

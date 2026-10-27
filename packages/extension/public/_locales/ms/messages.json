@@ -1446,6 +1446,37 @@
       }
     }
   },
+  "Menu_linkPopup_tooManyUrls": {
+    "message": "Sehingga $max$ URL dibuka ($count$ ditemui)",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "20"
+      },
+      "count": {
+        "content": "$2",
+        "example": "25"
+      }
+    }
+  },
+  "Menu_linkPopup_sidePanelClick": {
+    "message": "Klik tidak boleh membuka berbilang URL dalam panel sisi ($count$ ditemui). Gunakan Ctrl + Klik",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Menu_linkPopup_sidePanelCtrlClick": {
+    "message": "Ctrl + Klik tidak boleh membuka berbilang URL dalam panel sisi ($count$ ditemui)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "hub_login": {
     "message": "Log masuk ke Hub"
   },

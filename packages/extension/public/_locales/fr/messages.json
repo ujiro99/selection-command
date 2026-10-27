@@ -1443,6 +1443,37 @@
       }
     }
   },
+  "Menu_linkPopup_tooManyUrls": {
+    "message": "Jusqu'à $max$ URL sont ouvertes ($count$ trouvées)",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "20"
+      },
+      "count": {
+        "content": "$2",
+        "example": "25"
+      }
+    }
+  },
+  "Menu_linkPopup_sidePanelClick": {
+    "message": "Le clic ne peut pas ouvrir plusieurs URL dans le panneau latéral ($count$ trouvées). Utilisez Ctrl + clic",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Menu_linkPopup_sidePanelCtrlClick": {
+    "message": "Ctrl + clic ne peut pas ouvrir plusieurs URL dans le panneau latéral ($count$ trouvées)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "hub_login": {
     "message": "Se connecter au Hub"
   },

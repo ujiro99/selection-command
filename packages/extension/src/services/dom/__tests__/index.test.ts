@@ -387,7 +387,7 @@ describe("urlsInSelection", () => {
 
   it("US-01: finds a URL written in the selected text", () => {
     const p = document.createElement("p")
-    p.textContent = "詳細はhttps://example.com/aを参照"
+    p.textContent = "詳細は https://example.com/a を参照"
     document.body.appendChild(p)
     const text = selectContents(p)
 

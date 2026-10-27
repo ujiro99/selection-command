@@ -4,16 +4,23 @@ import { isEmpty, unique } from "@/lib/utils"
 // selection does not slow down rendering the menu.
 const MAX_URL_TEXT_LENGTH = 100_000
 
-// Characters allowed in a URL (RFC 3986), excluding non-ASCII characters.
-const URL_CHARS = "[\\w\\-.~:/?#\\[\\]@!$&'()*+,;=%]"
+// Characters allowed in a URL: the ASCII ones of RFC 3986, and non-ASCII
+// characters for IDN hosts and paths (e.g. "https://ja.wikipedia.org/wiki/東京").
+// Non-ASCII spaces, punctuation and brackets end a URL, e.g. "、", "。", "「",
+// "（" and "…", as they are unlikely part of it.
+const URL_CHARS =
+  "(?:[\\w\\-.~:/?#\\[\\]@!$&'()*+,;=%]" +
+  "|[^\\x00-\\x7F\\s\\u00A0-\\u00BF\\u2000-\\u206F\\u3000-\\u303F\\uFE30-\\uFE6F\\uFF00-\\uFFEF])"
 
 // Matches http(s) URLs, and scheme-less URLs that start with "www." or
 // consist of a host name and a path (e.g. "example.com/foo").
+// A scheme-less host name must be followed by "/", so that a word like
+// "Node.js?" or "README.md#install" is not taken as a URL.
 // The lookbehind prevents matching inside an email address or a path.
 const URL_IN_TEXT = new RegExp(
   `https?://${URL_CHARS}+` +
     `|(?<![\\w.@/-])(?:www\\.${URL_CHARS}+` +
-    `|(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z]{2,}(?::\\d+)?[/?#]${URL_CHARS}*)`,
+    `|(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z]{2,}(?::\\d+)?/${URL_CHARS}*)`,
   "gi",
 )
 
@@ -23,9 +30,15 @@ const URL_TRAILING_CHARS = /[.,;:!?([']+$/
 
 /**
  * Convert full-width ASCII characters (U+FF01-U+FF5E) to half-width.
+ * Full-width brackets and quotes are kept, so that they end a URL as other
+ * full-width punctuation does, e.g. "www.example.com（日本語）".
  */
 const toHalfWidth = (text: string): string =>
-  text.replace(/[！-～]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xfee0))
+  text.replace(/[！-～]/g, (c) =>
+    "（）［］｛｝＜＞＂＇".includes(c)
+      ? c
+      : String.fromCharCode(c.charCodeAt(0) - 0xfee0),
+  )
 
 /**
  * Cut a URL at the first closing bracket that has no matching opening bracket
@@ -85,13 +98,15 @@ export function toLinkUrl(str: string | undefined): string | null {
 /**
  * Extract http(s) URLs written in a text.
  *
- * - Full-width ASCII characters are converted to half-width.
- * - A URL ends at a closing bracket without a matching opening one, and
- *   trailing punctuation is removed.
+ * - Full-width ASCII characters except brackets and quotes are converted to
+ *   half-width.
+ * - A URL may contain non-ASCII characters, and ends at a space, non-ASCII
+ *   punctuation or bracket (e.g. "、", "。", "「" or "（").
+ * - A URL ends at a closing bracket without a matching opening one, so that
+ *   a URL in a Markdown link like "[東京](https://example.com/東京)です" is
+ *   extracted without the following text. Trailing punctuation is removed.
  * - "https://" is prepended to a scheme-less URL that starts with "www." or
  *   consists of a host name and a path (e.g. "example.com/foo").
- * - Non-ASCII characters are treated as the end of a URL, so that a URL
- *   followed by Japanese text without a space can be extracted.
  *
  * @param {string} text The text to search.
  * @returns {string[]} The normalized URLs without duplicates.

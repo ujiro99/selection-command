@@ -1443,6 +1443,37 @@
       }
     }
   },
+  "Menu_linkPopup_tooManyUrls": {
+    "message": "最多打开 $max$ 个 URL（共找到 $count$ 个）",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "20"
+      },
+      "count": {
+        "content": "$2",
+        "example": "25"
+      }
+    }
+  },
+  "Menu_linkPopup_sidePanelClick": {
+    "message": "单击无法在侧边栏中打开多个 URL（$count$ 个）。请使用 Ctrl + 单击",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Menu_linkPopup_sidePanelCtrlClick": {
+    "message": "Ctrl + 单击无法在侧边栏中打开多个 URL（$count$ 个）",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "hub_login": {
     "message": "登录 Hub"
   },

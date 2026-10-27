@@ -186,4 +186,16 @@ describe("SelectedLinkPopup", () => {
       expect.objectContaining({ type: POPUP_TYPE.POPUP }),
     )
   })
+
+  it("SLP-14: opens up to 20 URLs", async () => {
+    const urls = Array.from(
+      { length: 25 },
+      (_, i) => `https://example.com/${i}`,
+    )
+    await execute(OPEN_MODE.TAB, urls)
+    expect(Ipc.send).toHaveBeenCalledWith(ServiceWorkerCommand.openTabs, {
+      urls: urls.slice(0, 20),
+      active: true,
+    })
+  })
 })

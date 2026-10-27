@@ -6,7 +6,7 @@ import {
   OpenTabsProps,
   OpenSidePanelProps,
 } from "@/services/chrome"
-import { OPEN_MODE, POPUP_TYPE } from "@/const"
+import { OPEN_MODE, POPUP_TYPE, LINK_POPUP_MAX_URLS } from "@/const"
 import { isLinkPopupType } from "@/types/schema"
 import type { ExecuteCommandParams } from "@/types"
 
@@ -24,7 +24,7 @@ export const SelectedLinkPopup = {
 
     // The menu item is disabled when no URL is found, but a shortcut can
     // still execute this command with any selection.
-    const urls = urlsInSelection(selectionText)
+    const urls = urlsInSelection(selectionText).slice(0, LINK_POPUP_MAX_URLS)
     if (urls.length === 0) {
       console.warn("no URL is found in the selection.")
       return

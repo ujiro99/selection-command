@@ -398,6 +398,9 @@ export const PAGE_ACTION_MAX = 12 // 10 actions + 1 start + 1 end
 
 export const PAGE_ACTION_TIMEOUT = 5_000 // milliseconds
 
+/** Maximum number of URLs that a Link Popup command opens at once. */
+export const LINK_POPUP_MAX_URLS = 20
+
 /** Maximum number of characters to include from HTML attachments (pageHtml/selectionHtml) before truncation (≈1MB). */
 export const PAGE_HTML_MAX_CHARS = 1_000_000
 

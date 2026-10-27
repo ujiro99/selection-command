@@ -1443,6 +1443,37 @@
       }
     }
   },
+  "Menu_linkPopup_tooManyUrls": {
+    "message": "Открывается не более $max$ URL (найдено: $count$)",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "20"
+      },
+      "count": {
+        "content": "$2",
+        "example": "25"
+      }
+    }
+  },
+  "Menu_linkPopup_sidePanelClick": {
+    "message": "Щелчок не может открыть несколько URL на боковой панели (найдено: $count$). Используйте Ctrl + щелчок",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Menu_linkPopup_sidePanelCtrlClick": {
+    "message": "Ctrl + щелчок не может открыть несколько URL на боковой панели (найдено: $count$)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "hub_login": {
     "message": "Войти в Hub"
   },

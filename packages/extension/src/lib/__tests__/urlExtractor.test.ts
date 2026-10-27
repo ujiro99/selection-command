@@ -38,7 +38,7 @@ describe("extractUrlsFromText", () => {
     // URLs in a sentence
     [
       "EU-17",
-      "詳細はhttps://example.com/aを参照してください。",
+      "詳細は https://example.com/a を参照してください。",
       ["https://example.com/a"],
     ],
     [
@@ -98,6 +98,72 @@ describe("extractUrlsFromText", () => {
         "https://example.com/sites/demo/Lists/Docs?view=list",
       ],
     ],
+    // Non-ASCII characters in a URL
+    [
+      "EU-50",
+      "https://ja.wikipedia.org/wiki/東京",
+      ["https://ja.wikipedia.org/wiki/%E6%9D%B1%E4%BA%AC"],
+    ],
+    ["EU-51", "https://日本語.jp/", ["https://xn--wgv71a119e.jp/"]],
+    [
+      "EU-52",
+      "example.com/東京 と www.example.com/大阪",
+      [
+        "https://example.com/%E6%9D%B1%E4%BA%AC",
+        "https://www.example.com/%E5%A4%A7%E9%98%AA",
+      ],
+    ],
+    // Non-ASCII punctuation and brackets end a URL
+    [
+      "EU-53",
+      "「https://example.com/東京」、https://example.com/大阪。",
+      [
+        "https://example.com/%E6%9D%B1%E4%BA%AC",
+        "https://example.com/%E5%A4%A7%E9%98%AA",
+      ],
+    ],
+    [
+      "EU-54",
+      "（https://example.com/東京）【https://example.com/大阪】",
+      [
+        "https://example.com/%E6%9D%B1%E4%BA%AC",
+        "https://example.com/%E5%A4%A7%E9%98%AA",
+      ],
+    ],
+    [
+      "EU-55",
+      "https://example.com/東京　次",
+      ["https://example.com/%E6%9D%B1%E4%BA%AC"],
+    ],
+    // URLs in Markdown links
+    [
+      "EU-56",
+      "[東京](https://ja.wikipedia.org/wiki/東京)について",
+      ["https://ja.wikipedia.org/wiki/%E6%9D%B1%E4%BA%AC"],
+    ],
+    [
+      "EU-57",
+      '[東京](https://example.com/東京 "タイトル")',
+      ["https://example.com/%E6%9D%B1%E4%BA%AC"],
+    ],
+    [
+      "EU-58",
+      "[東京](<https://example.com/東京>)",
+      ["https://example.com/%E6%9D%B1%E4%BA%AC"],
+    ],
+    [
+      "EU-59",
+      "[https://example.com/東京](https://example.com/大阪)",
+      [
+        "https://example.com/%E6%9D%B1%E4%BA%AC",
+        "https://example.com/%E5%A4%A7%E9%98%AA",
+      ],
+    ],
+    [
+      "EU-60",
+      "[参考]: https://example.com/東京",
+      ["https://example.com/%E6%9D%B1%E4%BA%AC"],
+    ],
   ])("%s: extracts URLs from %s", (_, input, expected) => {
     expect(extractUrlsFromText(input)).toEqual(expected)
   })
@@ -115,6 +181,10 @@ describe("extractUrlsFromText", () => {
     ["EU-39", "ftp://example.com/file"],
     ["EU-40", "https://"],
     ["EU-41", `https://example.com/ ${"a".repeat(100_001)}`],
+    // A host name and a word that are not followed by "/"
+    ["EU-42", "Have you tried Node.js?"],
+    ["EU-43", "see README.md#install"],
+    ["EU-44", "example.com?q=1"],
   ])("%s: finds no URL in %s", (_, input) => {
     expect(extractUrlsFromText(input)).toEqual([])
   })

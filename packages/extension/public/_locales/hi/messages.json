@@ -1443,6 +1443,37 @@
       }
     }
   },
+  "Menu_linkPopup_tooManyUrls": {
+    "message": "अधिकतम $max$ URL खोले जाते हैं ($count$ मिले)",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "20"
+      },
+      "count": {
+        "content": "$2",
+        "example": "25"
+      }
+    }
+  },
+  "Menu_linkPopup_sidePanelClick": {
+    "message": "क्लिक से साइड पैनल में कई URL नहीं खोले जा सकते ($count$ मिले)। Ctrl + क्लिक का उपयोग करें",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Menu_linkPopup_sidePanelCtrlClick": {
+    "message": "Ctrl + क्लिक से साइड पैनल में कई URL नहीं खोले जा सकते ($count$ मिले)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "hub_login": {
     "message": "Hub में लॉगिन करें"
   },
