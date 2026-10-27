@@ -336,7 +336,7 @@
     "message": "API"
   },
   "Option_openMode_linkPopup": {
-    "message": "링크 팝업"
+    "message": "링크 열기"
   },
   "Option_openMode_copy": {
     "message": "텍스트 복사"
@@ -387,10 +387,10 @@
     "message": "선택한 텍스트를 클립보드에 복사합니다"
   },
   "Option_commandType_linkPopup_title": {
-    "message": "링크 팝업"
+    "message": "링크 열기"
   },
   "Option_commandType_linkPopup_desc": {
-    "message": "선택한 텍스트의 링크를 일괄로 엽니다"
+    "message": "선택 영역의 링크와 URL을 한꺼번에 엽니다"
   },
   "Option_commandType_getTextStyles_title": {
     "message": "스타일 가져오기"
@@ -1254,6 +1254,9 @@
   "Option_displayMode_desc": {
     "message": "창 표시 방법."
   },
+  "Option_linkPopup_displayMode_desc": {
+    "message": "선택 영역의 링크와 URL을 여는 방법입니다."
+  },
   "Option_openModeSecondary_desc": {
     "message": "메뉴를 Ctrl + 클릭했을 때의 동작입니다."
   },
@@ -1427,6 +1430,49 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "이 페이지에서 실행할 수 없습니다 (페이지 URL이 일치하지 않습니다)"
+  },
+  "Menu_disabled_notUrl": {
+    "message": "선택 영역에서 URL을 찾을 수 없습니다"
+  },
+  "Menu_disabled_multipleUrls": {
+    "message": "사이드 패널에서는 여러 URL을 열 수 없습니다 ($count$개)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Menu_linkPopup_tooManyUrls": {
+    "message": "최대 $max$개의 URL까지 열립니다 ($count$개 발견)",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "20"
+      },
+      "count": {
+        "content": "$2",
+        "example": "25"
+      }
+    }
+  },
+  "Menu_linkPopup_sidePanelClick": {
+    "message": "클릭으로는 사이드 패널에서 여러 URL을 열 수 없습니다 ($count$개). Ctrl + 클릭으로 열 수 있습니다",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Menu_linkPopup_sidePanelCtrlClick": {
+    "message": "Ctrl + 클릭으로는 사이드 패널에서 여러 URL을 열 수 없습니다 ($count$개)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
   },
   "hub_login": {
     "message": "Hub에 로그인"

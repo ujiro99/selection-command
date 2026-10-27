@@ -273,6 +273,30 @@ export function truncate(
 }
 
 /**
+ * Truncates a string to a specified maximum length by omitting its middle,
+ * so that both the beginning and the end remain (e.g. the host and the last
+ * path segment of a URL).
+ * @param str - The string to truncate
+ * @param maxLength - Maximum length of the string including the separator
+ * @param separator - String to insert in place of the omitted part (default: '...')
+ * @return The truncated string
+ */
+export function truncateMiddle(
+  str: string,
+  maxLength: number,
+  separator: string = "...",
+): string {
+  if (str.length <= maxLength) {
+    return str
+  }
+  const keep = maxLength - separator.length
+  // Keep one more character at the beginning when the length is odd.
+  const head = Math.ceil(keep / 2)
+  const tail = keep - head
+  return str.slice(0, head) + separator + (tail > 0 ? str.slice(-tail) : "")
+}
+
+/**
  * Check if the string exceeds a specified byte size.
  * @param str - The string to check.
  * @param byte - The byte size to check against.

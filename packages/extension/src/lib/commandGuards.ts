@@ -5,6 +5,7 @@ import type {
   SearchCommand,
   PageActionCommand,
   AiPromptCommand,
+  LinkPopupCommand,
   CopyCommand,
 } from "@/types"
 
@@ -61,6 +62,12 @@ export function isAiPromptCommand(
   data: unknown,
 ): data is WithOpenMode<AiPromptCommand, OPEN_MODE.AI_PROMPT> {
   return hasOpenMode(data) && data.openMode === OPEN_MODE.AI_PROMPT
+}
+
+export function isLinkPopupCommand(
+  data: unknown,
+): data is WithOpenMode<LinkPopupCommand, OPEN_MODE.LINK_POPUP> {
+  return hasOpenMode(data) && data.openMode === OPEN_MODE.LINK_POPUP
 }
 
 export function isCopyCommand(

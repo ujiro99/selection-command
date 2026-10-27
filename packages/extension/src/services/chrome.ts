@@ -127,6 +127,7 @@ export type OpenPopupsProps = {
   width: number | undefined
   height: number | undefined
   type: POPUP_TYPE
+  windowState?: WINDOW_STATE
 }
 
 export type OpenPopupAndClickProps = OpenPopupProps & {
@@ -135,6 +136,12 @@ export type OpenPopupAndClickProps = OpenPopupProps & {
 
 export type OpenTabProps = {
   url: string | UrlParam
+  active: boolean
+}
+
+export type OpenTabsProps = {
+  urls: string[]
+  // Activates the first tab when true.
   active: boolean
 }
 
@@ -356,6 +363,53 @@ export const showClipboardErrorToast = async (tabId: number): Promise<void> => {
   })
 }
 
+/**
+ * Resolve the size, position and state of a window to create.
+ * A maximized or fullscreen window ignores the size and position.
+ */
+const toWindowBounds = (
+  windowState: WINDOW_STATE | undefined,
+  bounds: { top: number; left: number; width?: number; height?: number },
+): Pick<
+  chrome.windows.CreateData,
+  "top" | "left" | "width" | "height" | "state"
+> => {
+  const state =
+    windowState === WINDOW_STATE.FULLSCREEN
+      ? "fullscreen"
+      : windowState === WINDOW_STATE.MAXIMIZED
+        ? "maximized"
+        : undefined
+  if (state) {
+    return {
+      top: undefined,
+      left: undefined,
+      width: undefined,
+      height: undefined,
+      state,
+    }
+  }
+  return { ...bounds, state }
+}
+
+/**
+ * Reapply fullscreen to the created windows, as macOS may require it after
+ * window creation.
+ */
+const reapplyFullscreen = async (
+  windows: chrome.windows.Window[],
+  windowState: WINDOW_STATE | undefined,
+): Promise<void> => {
+  if (windowState !== WINDOW_STATE.FULLSCREEN) return
+  await Promise.all(
+    windows.map((w) =>
+      chrome.windows
+        .update(w.id!, { state: "fullscreen" })
+        .catch((e) => console.error(e)),
+    ),
+  )
+}
+
 export const openPopupWindow = async (
   param: OpenPopupProps,
 ): Promise<OpenResult> => {
@@ -371,42 +425,16 @@ export const openPopupWindow = async (
   const screenSize = await getScreenSize({ top, left })
 
   const type = param.type ?? POPUP_TYPE.POPUP
-  const isFullscreen = param.windowState === WINDOW_STATE.FULLSCREEN
-  const isMaximized = param.windowState === WINDOW_STATE.MAXIMIZED
-  const { top: at, left: al } = adjustWindowPosition(
-    top,
-    left,
-    width,
-    height,
-    screenSize,
-  )
-
-  const usesWindowState = isFullscreen || isMaximized
-  const windowState = isFullscreen
-    ? "fullscreen"
-    : isMaximized
-      ? "maximized"
-      : undefined
+  const position = adjustWindowPosition(top, left, width, height, screenSize)
 
   const clipboard = await readClipboardIfNeeded(url)
   const window = (await chrome.windows.create({
     url: toUrl(url, clipboard.clipboardText),
     type,
-    width: usesWindowState ? undefined : width,
-    height: usesWindowState ? undefined : height,
-    top: usesWindowState ? undefined : at,
-    left: usesWindowState ? undefined : al,
-    state: windowState,
+    ...toWindowBounds(param.windowState, { ...position, width, height }),
     incognito: current.incognito,
   }))!
-  try {
-    if (isFullscreen) {
-      // macOS may require reapplying fullscreen after window creation.
-      await chrome.windows.update(window.id!, { state: "fullscreen" })
-    }
-  } catch (e) {
-    console.error(e)
-  }
+  await reapplyFullscreen([window], param.windowState)
 
   if (clipboard.err) {
     await showClipboardErrorToast(window.tabs?.[0].id as number)
@@ -441,7 +469,7 @@ export const openPopupWindowMultiple = async (
     param.urls
       .reverse()
       .map((url, idx) => {
-        const { top: t, left: l } = adjustWindowPosition(
+        const position = adjustWindowPosition(
           top,
           left,
           width,
@@ -451,16 +479,14 @@ export const openPopupWindowMultiple = async (
         )
         return chrome.windows.create({
           url,
-          width,
-          height,
-          top: t,
-          left: l,
+          ...toWindowBounds(param.windowState, { ...position, width, height }),
           type,
           incognito: current.incognito,
         })
       })
       .filter((p): p is Promise<chrome.windows.Window> => p !== null),
   )
+  await reapplyFullscreen(windows, param.windowState)
 
   await updateServiceWorkerData(windows, param.commandId, current.id, type)
 
@@ -470,6 +496,37 @@ export const openPopupWindowMultiple = async (
   }, [] as number[])
   updateRules(tabIds)
 
+  return tabIds
+}
+
+/**
+ * Open multiple tabs next to the current tab, keeping the order of the urls.
+ * @returns {Promise<number[]>} The IDs of the opened tabs.
+ */
+export const openTabs = async (param: OpenTabsProps): Promise<number[]> => {
+  const { urls, active } = param
+
+  let currentTab: chrome.tabs.Tab | undefined
+  try {
+    currentTab = await getCurrentTab()
+  } catch (e) {
+    console.warn("Failed to get current tab:", e)
+  }
+
+  const tabIds: number[] = []
+  for (const [idx, url] of urls.entries()) {
+    // Create tabs sequentially so that their order follows the urls.
+    const tab = await chrome.tabs.create({
+      url,
+      active: active && idx === 0,
+      windowId: currentTab?.windowId,
+      index:
+        currentTab?.index !== undefined
+          ? currentTab.index + 1 + idx
+          : undefined,
+    })
+    if (tab.id != null) tabIds.push(tab.id)
+  }
   return tabIds
 }
 

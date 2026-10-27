@@ -138,6 +138,7 @@ const commandFuncs = {
   [ServiceWorkerCommand.openPopups]: ActionHelper.openPopups,
   [ServiceWorkerCommand.openPopupAndClick]: ActionHelper.openPopupAndClick,
   [ServiceWorkerCommand.openTab]: ActionHelper.openTab,
+  [ServiceWorkerCommand.openTabs]: ActionHelper.openTabs,
   [ServiceWorkerCommand.openSidePanel]: (
     param: Parameters<typeof ActionHelper.openSidePanel>[0],
     sender: Sender,

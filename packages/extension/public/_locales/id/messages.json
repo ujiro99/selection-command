@@ -336,7 +336,7 @@
     "message": "API"
   },
   "Option_openMode_linkPopup": {
-    "message": "Pop-up Tautan"
+    "message": "Buka tautan"
   },
   "Option_openMode_copy": {
     "message": "Salin teks"
@@ -387,10 +387,10 @@
     "message": "Salin teks yang dipilih ke papan klip"
   },
   "Option_commandType_linkPopup_title": {
-    "message": "Pop-up Tautan"
+    "message": "Buka tautan"
   },
   "Option_commandType_linkPopup_desc": {
-    "message": "Buka tautan dalam teks yang dipilih secara massal"
+    "message": "Buka tautan dan URL dalam pilihan"
   },
   "Option_commandType_getTextStyles_title": {
     "message": "Dapatkan Gaya"
@@ -1257,6 +1257,9 @@
   "Option_displayMode_desc": {
     "message": "Metode tampilan jendela."
   },
+  "Option_linkPopup_displayMode_desc": {
+    "message": "Cara membuka tautan dan URL dalam pilihan."
+  },
   "Option_openModeSecondary_desc": {
     "message": "Perilaku saat Ctrl + klik menu."
   },
@@ -1430,6 +1433,49 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "Tidak dapat dijalankan di halaman ini (URL Halaman tidak cocok)"
+  },
+  "Menu_disabled_notUrl": {
+    "message": "Tidak ada URL dalam pilihan"
+  },
+  "Menu_disabled_multipleUrls": {
+    "message": "Panel samping tidak dapat membuka beberapa URL ($count$ ditemukan)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Menu_linkPopup_tooManyUrls": {
+    "message": "Hingga $max$ URL dibuka ($count$ ditemukan)",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "20"
+      },
+      "count": {
+        "content": "$2",
+        "example": "25"
+      }
+    }
+  },
+  "Menu_linkPopup_sidePanelClick": {
+    "message": "Klik tidak dapat membuka beberapa URL di panel samping ($count$ ditemukan). Gunakan Ctrl + Klik",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Menu_linkPopup_sidePanelCtrlClick": {
+    "message": "Ctrl + Klik tidak dapat membuka beberapa URL di panel samping ($count$ ditemukan)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
   },
   "hub_login": {
     "message": "Masuk ke Hub"

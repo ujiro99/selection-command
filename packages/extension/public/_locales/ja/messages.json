@@ -387,10 +387,10 @@
     "message": "選択テキストをクリップボードにコピーします"
   },
   "Option_commandType_linkPopup_title": {
-    "message": "リンクポップアップ"
+    "message": "リンクを開く"
   },
   "Option_commandType_linkPopup_desc": {
-    "message": "選択したテキスト内のリンクを一括で開きます"
+    "message": "選択範囲内のリンクやURLをまとめて開きます"
   },
   "Option_commandType_getTextStyles_title": {
     "message": "スタイル取得"
@@ -1251,6 +1251,9 @@
   "Option_displayMode_desc": {
     "message": "ウィンドウの表示方法です。"
   },
+  "Option_linkPopup_displayMode_desc": {
+    "message": "選択範囲内のリンクやURLを開く方法です。"
+  },
   "Option_openModeSecondary_desc": {
     "message": "メニューをCtrl + クリックしたときの動作です。"
   },
@@ -1424,6 +1427,49 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "このページでは実行できません（ページURLが一致しません）"
+  },
+  "Menu_disabled_notUrl": {
+    "message": "選択範囲にURLが見つかりません"
+  },
+  "Menu_disabled_multipleUrls": {
+    "message": "サイドパネルでは複数のURLを開けません（$count$個）",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Menu_linkPopup_tooManyUrls": {
+    "message": "$max$件までです（$count$件中）",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "20"
+      },
+      "count": {
+        "content": "$2",
+        "example": "25"
+      }
+    }
+  },
+  "Menu_linkPopup_sidePanelClick": {
+    "message": "クリックではサイドパネルに複数のURLを開けません（$count$個）。Ctrl + クリックで開けます",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Menu_linkPopup_sidePanelCtrlClick": {
+    "message": "Ctrl + クリックではサイドパネルに複数のURLを開けません（$count$個）",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
   },
   "hub_login": {
     "message": "Hubへログイン"

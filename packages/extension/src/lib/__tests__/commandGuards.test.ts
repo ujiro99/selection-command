@@ -5,6 +5,7 @@ import {
   isSearchCommand,
   isPageActionCommand,
   isAiPromptCommand,
+  isLinkPopupCommand,
   isCopyCommand,
 } from "../commandGuards"
 import { OPEN_MODE, DRAG_OPEN_MODE } from "@/const"
@@ -72,6 +73,7 @@ describe("command type guards by openMode", () => {
     ],
     ["isPageActionCommand", isPageActionCommand, [OPEN_MODE.PAGE_ACTION]],
     ["isAiPromptCommand", isAiPromptCommand, [OPEN_MODE.AI_PROMPT]],
+    ["isLinkPopupCommand", isLinkPopupCommand, [OPEN_MODE.LINK_POPUP]],
     ["isCopyCommand", isCopyCommand, [OPEN_MODE.COPY]],
   ] as const)(
     "CG-07: %s returns true only for its open modes",
@@ -88,6 +90,7 @@ describe("command type guards by openMode", () => {
     isSearchCommand,
     isPageActionCommand,
     isAiPromptCommand,
+    isLinkPopupCommand,
     isCopyCommand,
   ])("CG-08: returns false for non-command values", (guard) => {
     for (const data of nonCommands) {
