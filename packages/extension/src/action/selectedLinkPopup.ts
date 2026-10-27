@@ -11,7 +11,12 @@ import { isLinkPopupType } from "@/types/schema"
 import type { ExecuteCommandParams } from "@/types"
 
 export const SelectedLinkPopup = {
-  async execute({ command, position, selectionText }: ExecuteCommandParams) {
+  async execute({
+    command,
+    position,
+    selectionText,
+    useSecondary,
+  }: ExecuteCommandParams) {
     if (!isLinkPopupType(command)) {
       console.error("command is not for SelectedLinkPopup.")
       return
@@ -25,8 +30,13 @@ export const SelectedLinkPopup = {
       return
     }
 
-    // Commands created before the open mode option was added use popups.
-    const openMode = command.linkPopupOption?.openMode ?? OPEN_MODE.POPUP
+    // Commands created before the open mode option was added use popups,
+    // and the primary open mode when the secondary one is not set.
+    const option = command.linkPopupOption
+    const openMode =
+      (useSecondary ? option?.openModeSecondary : undefined) ??
+      option?.openMode ??
+      OPEN_MODE.POPUP
     switch (openMode) {
       case OPEN_MODE.TAB:
       case OPEN_MODE.BACKGROUND_TAB:

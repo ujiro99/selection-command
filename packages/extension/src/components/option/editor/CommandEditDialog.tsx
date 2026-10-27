@@ -97,6 +97,7 @@ import {
   commandSchema,
   CommandSchemaType,
   isPageActionType,
+  isLinkPopupType,
 } from "@/types/schema"
 import type {
   SelectionCommand,
@@ -119,6 +120,7 @@ const LINK_POPUP_OPTION_DEFAULTS = {
   windowState: WINDOW_STATE.NORMAL,
   linkPopupOption: {
     openMode: OPEN_MODE.POPUP as (typeof SEARCH_OPEN_MODE)[number],
+    openModeSecondary: OPEN_MODE.TAB as (typeof SEARCH_OPEN_MODE)[number],
   },
 }
 
@@ -411,6 +413,11 @@ const CommandEditDialogInner = ({
     name: "linkPopupOption.openMode",
   })
 
+  const linkPopupOpenModeSecondary = useWatch({
+    control: form.control,
+    name: "linkPopupOption.openModeSecondary",
+  })
+
   const aiPromptPrompt = useWatch({
     control: form.control,
     name: "aiPromptOption.prompt",
@@ -452,8 +459,15 @@ const CommandEditDialogInner = ({
       if (isEmpty(initialCommand.parentFolderId)) {
         initialCommand.parentFolderId = ROOT_FOLDER
       }
-      if (initialCommand.openMode === OPEN_MODE.LINK_POPUP) {
-        reset({ ...LINK_POPUP_OPTION_DEFAULTS, ...(initialCommand as any) })
+      if (isLinkPopupType(initialCommand)) {
+        reset({
+          ...LINK_POPUP_OPTION_DEFAULTS,
+          ...initialCommand,
+          linkPopupOption: {
+            ...LINK_POPUP_OPTION_DEFAULTS.linkPopupOption,
+            ...initialCommand.linkPopupOption,
+          },
+        } as CommandSchemaType)
         return
       }
       reset((initialCommand as any) ?? InitialValues)
@@ -840,6 +854,19 @@ const CommandEditDialogInner = ({
                       "w-full space-y-3 py-2",
                     )}
                   >
+                    {openMode === OPEN_MODE.LINK_POPUP && (
+                      <SelectField
+                        control={form.control}
+                        name="linkPopupOption.openModeSecondary"
+                        formLabel={t("openModeSecondary")}
+                        description={t("openModeSecondary_desc")}
+                        options={SEARCH_OPEN_MODE.map((mode) => ({
+                          name: t(`openMode_${mode}`),
+                          value: mode,
+                        }))}
+                      />
+                    )}
+
                     <IconField
                       control={form.control}
                       nameUrl="iconUrl"
@@ -873,7 +900,9 @@ const CommandEditDialogInner = ({
 
                     {(openMode === OPEN_MODE.WINDOW ||
                       (openMode === OPEN_MODE.LINK_POPUP &&
-                        linkPopupOpenMode === OPEN_MODE.WINDOW)) && (
+                        (linkPopupOpenMode === OPEN_MODE.WINDOW ||
+                          linkPopupOpenModeSecondary ===
+                            OPEN_MODE.WINDOW))) && (
                       <SelectField
                         control={form.control}
                         name="windowState"

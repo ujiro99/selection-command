@@ -147,6 +147,7 @@ const linkPopupSchema = z.object({
   linkPopupOption: z
     .object({
       openMode: z.enum(SEARCH_OPEN_MODE),
+      openModeSecondary: z.enum(SEARCH_OPEN_MODE).optional(),
     })
     .optional(),
 })

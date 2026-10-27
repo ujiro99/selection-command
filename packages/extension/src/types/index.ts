@@ -92,6 +92,8 @@ export type AiPromptCommand = SearchCommand & {
 
 export type LinkPopupOption = {
   openMode: OPEN_MODE
+  // Open mode used when the menu item is clicked with Ctrl (Cmd) key.
+  openModeSecondary?: OPEN_MODE
 }
 
 export type LinkPopupCommand = SearchCommand & {

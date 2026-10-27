@@ -24,14 +24,16 @@ vi.mock("@/services/screen", () => ({
   getWindowPosition: vi.fn().mockResolvedValue({ top: 10, left: 20 }),
 }))
 
-const createCommand = (openMode?: OPEN_MODE): LinkPopupCommand => ({
+const createCommand = (
+  linkPopupOption?: LinkPopupCommand["linkPopupOption"],
+): LinkPopupCommand => ({
   id: "link-popup",
   title: "Open Links",
   iconUrl: "",
   openMode: OPEN_MODE.LINK_POPUP,
   popupOption: { width: 800, height: 600 },
   windowState: WINDOW_STATE.MAXIMIZED,
-  ...(openMode ? { linkPopupOption: { openMode } } : {}),
+  ...(linkPopupOption ? { linkPopupOption } : {}),
 })
 
 const execute = (
@@ -41,9 +43,21 @@ const execute = (
 ) => {
   vi.mocked(urlsInSelection).mockReturnValue(urls)
   return SelectedLinkPopup.execute({
-    command: createCommand(openMode),
+    command: createCommand(openMode ? { openMode } : undefined),
     selectionText: "selected text",
     position,
+  })
+}
+
+const executeWithCtrl = (
+  linkPopupOption?: LinkPopupCommand["linkPopupOption"],
+) => {
+  vi.mocked(urlsInSelection).mockReturnValue(["https://example.com/a"])
+  return SelectedLinkPopup.execute({
+    command: createCommand(linkPopupOption),
+    selectionText: "selected text",
+    position: { x: 100, y: 200 },
+    useSecondary: true,
   })
 }
 
@@ -127,5 +141,49 @@ describe("SelectedLinkPopup", () => {
   it("SLP-09: does not open popups without a position", async () => {
     await execute(OPEN_MODE.POPUP, ["https://example.com/a"], null)
     expect(Ipc.send).not.toHaveBeenCalled()
+  })
+
+  it("SLP-10: uses the secondary open mode when clicked with Ctrl", async () => {
+    await executeWithCtrl({
+      openMode: OPEN_MODE.POPUP,
+      openModeSecondary: OPEN_MODE.BACKGROUND_TAB,
+    })
+    expect(Ipc.send).toHaveBeenCalledWith(ServiceWorkerCommand.openTabs, {
+      urls: ["https://example.com/a"],
+      active: false,
+    })
+  })
+
+  it("SLP-11: uses the primary open mode without Ctrl", async () => {
+    vi.mocked(urlsInSelection).mockReturnValue(["https://example.com/a"])
+    await SelectedLinkPopup.execute({
+      command: createCommand({
+        openMode: OPEN_MODE.TAB,
+        openModeSecondary: OPEN_MODE.SIDE_PANEL,
+      }),
+      selectionText: "selected text",
+      position: { x: 100, y: 200 },
+      useSecondary: false,
+    })
+    expect(Ipc.send).toHaveBeenCalledWith(
+      ServiceWorkerCommand.openTabs,
+      expect.objectContaining({ active: true }),
+    )
+  })
+
+  it("SLP-12: uses the primary open mode when the secondary one is not set", async () => {
+    await executeWithCtrl({ openMode: OPEN_MODE.TAB })
+    expect(Ipc.send).toHaveBeenCalledWith(
+      ServiceWorkerCommand.openTabs,
+      expect.objectContaining({ active: true }),
+    )
+  })
+
+  it("SLP-13: uses popups with Ctrl for a command without the option", async () => {
+    await executeWithCtrl(undefined)
+    expect(Ipc.send).toHaveBeenCalledWith(
+      ServiceWorkerCommand.openPopups,
+      expect.objectContaining({ type: POPUP_TYPE.POPUP }),
+    )
   })
 })
