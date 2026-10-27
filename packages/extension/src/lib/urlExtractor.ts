@@ -67,6 +67,22 @@ export function toHttpUrl(str: string | undefined): string | null {
 }
 
 /**
+ * Convert the href of a hyperlink to a normalized URL that can be opened.
+ * In addition to http(s) URLs, data URLs are accepted, e.g. a download link.
+ * @param {string} str The href to convert.
+ * @returns {string | null} The normalized URL, or null if it cannot be opened.
+ */
+export function toLinkUrl(str: string | undefined): string | null {
+  if (!str) return null
+  try {
+    if (new URL(str).protocol === "data:") return str
+  } catch {
+    return null
+  }
+  return toHttpUrl(str)
+}
+
+/**
  * Extract http(s) URLs written in a text.
  *
  * - Full-width ASCII characters are converted to half-width.

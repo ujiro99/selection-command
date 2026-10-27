@@ -1,7 +1,7 @@
 import type { Point } from "@/types"
 
 import { isEmpty } from "@/lib/utils"
-import { extractUrlsFromText, toHttpUrl } from "@/lib/urlExtractor"
+import { extractUrlsFromText, toLinkUrl } from "@/lib/urlExtractor"
 import { APP_ID, PAGE_HTML_MAX_CHARS } from "@/const"
 
 export function toDataURL(src: string, outputFormat?: string): Promise<string> {
@@ -69,7 +69,9 @@ function linksInRange(range: Range): string[] {
 }
 
 /**
- * Find http(s) URLs in the selection, from both the hyperlinks and the text.
+ * Find URLs in the selection, from both the hyperlinks and the text.
+ * Hyperlinks to http(s) and data URLs are used, while only http(s) URLs are
+ * searched in the text.
  * The text of a hyperlink is ignored in favor of its href, so that a link
  * whose text differs from its href (e.g. a shortened URL) counts as one URL.
  * @param {string} selectionText The selected text. URLs in the text are
@@ -90,11 +92,11 @@ export function urlsInSelection(selectionText: string): string[] {
 
   const range = selection.getRangeAt(0)
   const links = linksInSelection()
-    .map(toHttpUrl)
+    .map(toLinkUrl)
     .filter((url): url is string => url != null)
 
   // The whole selection is inside a hyperlink, so only its href is used.
-  if (toHttpUrl(linkAtContainer(range)) != null) {
+  if (toLinkUrl(linkAtContainer(range)) != null) {
     return uniq(links)
   }
 
@@ -105,7 +107,7 @@ export function urlsInSelection(selectionText: string): string[] {
     .cloneContents()
     .querySelectorAll("a")
     .forEach((a) => {
-      if (toHttpUrl(a.href) == null) return
+      if (toLinkUrl(a.href) == null) return
       extractUrlsFromText(a.textContent ?? "").forEach((url) =>
         linkTextUrls.add(url),
       )

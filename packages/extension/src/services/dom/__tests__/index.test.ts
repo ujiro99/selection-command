@@ -453,6 +453,18 @@ describe("urlsInSelection", () => {
     expect(urlsInSelection(text)).toEqual([])
   })
 
+  it("US-12: finds the href of a selected hyperlink to a data URL", () => {
+    const p = document.createElement("p")
+    p.innerHTML =
+      '<a href="data:text/plain;charset=utf-8,Download test">download</a>'
+    document.body.appendChild(p)
+    const text = selectContents(p.querySelector("a")!.firstChild!)
+
+    expect(urlsInSelection(text)).toEqual([
+      "data:text/plain;charset=utf-8,Download test",
+    ])
+  })
+
   it("US-10: searches URLs in the given text that keeps line breaks", () => {
     // Each line is a separate element, so the DOM text has no line breaks.
     const div = document.createElement("div")

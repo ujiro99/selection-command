@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { extractUrlsFromText, toHttpUrl } from "../urlExtractor"
+import { extractUrlsFromText, toHttpUrl, toLinkUrl } from "../urlExtractor"
 
 describe("extractUrlsFromText", () => {
   it.each([
@@ -129,6 +129,24 @@ describe("toHttpUrl", () => {
     "TH-02: returns null for %s",
     (input) => {
       expect(toHttpUrl(input)).toBeNull()
+    },
+  )
+})
+
+describe("toLinkUrl", () => {
+  it("TL-01: normalizes a http(s) URL", () => {
+    expect(toLinkUrl("https://EXAMPLE.com")).toBe("https://example.com/")
+  })
+
+  it("TL-02: accepts a data URL as it is", () => {
+    const url = "data:text/plain;charset=utf-8,Download test"
+    expect(toLinkUrl(url)).toBe(url)
+  })
+
+  it.each([undefined, "", "mailto:a@example.com", "javascript:void(0)", "abc"])(
+    "TL-03: returns null for %s",
+    (input) => {
+      expect(toLinkUrl(input)).toBeNull()
     },
   )
 })
