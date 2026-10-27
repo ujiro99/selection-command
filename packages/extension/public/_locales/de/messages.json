@@ -336,10 +336,7 @@
     "message": "API"
   },
   "Option_openMode_linkPopup": {
-    "message": "Link-Popup"
-  },
-  "Option_openMode_openUrl": {
-    "message": "URL öffnen"
+    "message": "Links öffnen"
   },
   "Option_openMode_copy": {
     "message": "Text kopieren"
@@ -390,16 +387,10 @@
     "message": "Ausgewählten Text in die Zwischenablage kopieren"
   },
   "Option_commandType_linkPopup_title": {
-    "message": "Link-Popup"
+    "message": "Links öffnen"
   },
   "Option_commandType_linkPopup_desc": {
-    "message": "Links im ausgewählten Text in einem Rutsch öffnen"
-  },
-  "Option_commandType_openUrl_title": {
-    "message": "URL öffnen"
-  },
-  "Option_commandType_openUrl_desc": {
-    "message": "Öffnet die in der Auswahl gefundene URL"
+    "message": "Öffnet die Links und URLs in der Auswahl"
   },
   "Option_commandType_getTextStyles_title": {
     "message": "Stile abrufen"
@@ -1263,8 +1254,8 @@
   "Option_displayMode_desc": {
     "message": "Fenster-Anzeigemethode."
   },
-  "Option_openUrl_displayMode_desc": {
-    "message": "Wie die URL im ausgewählten Text geöffnet wird."
+  "Option_linkPopup_displayMode_desc": {
+    "message": "Wie die Links und URLs in der Auswahl geöffnet werden."
   },
   "Option_openModeSecondary_desc": {
     "message": "Verhalten beim Strg + Klicken des Menüs."
@@ -1444,7 +1435,7 @@
     "message": "Keine URL in der Auswahl gefunden"
   },
   "Menu_disabled_multipleUrls": {
-    "message": "Kann nicht geöffnet werden: $count$ URLs in der Auswahl gefunden",
+    "message": "Das Seitenpanel kann nicht mehrere URLs öffnen ($count$ gefunden)",
     "placeholders": {
       "count": {
         "content": "$1",

@@ -336,10 +336,7 @@
     "message": "API"
   },
   "Option_openMode_linkPopup": {
-    "message": "लिंक पॉपअप"
-  },
-  "Option_openMode_openUrl": {
-    "message": "URL खोलें"
+    "message": "लिंक खोलें"
   },
   "Option_openMode_copy": {
     "message": "टेक्स्ट कॉपी करें"
@@ -390,16 +387,10 @@
     "message": "चयनित टेक्स्ट को क्लिपबोर्ड में कॉपी करें"
   },
   "Option_commandType_linkPopup_title": {
-    "message": "लिंक पॉपअप"
+    "message": "लिंक खोलें"
   },
   "Option_commandType_linkPopup_desc": {
-    "message": "चयनित टेक्स्ट में लिंक्स को बल्क में खोलें"
-  },
-  "Option_commandType_openUrl_title": {
-    "message": "URL खोलें"
-  },
-  "Option_commandType_openUrl_desc": {
-    "message": "चयन में मिले URL को खोलें"
+    "message": "चयन में मौजूद लिंक और URL खोलें"
   },
   "Option_commandType_getTextStyles_title": {
     "message": "स्टाइल प्राप्त करें"
@@ -1263,8 +1254,8 @@
   "Option_displayMode_desc": {
     "message": "विंडो प्रदर्शन विधि।"
   },
-  "Option_openUrl_displayMode_desc": {
-    "message": "चयनित टेक्स्ट के URL को खोलने का तरीका।"
+  "Option_linkPopup_displayMode_desc": {
+    "message": "चयन में मौजूद लिंक और URL खोलने का तरीका।"
   },
   "Option_openModeSecondary_desc": {
     "message": "मेन्यू पर Ctrl + क्लिक करने पर व्यवहार।"
@@ -1444,7 +1435,7 @@
     "message": "चयन में कोई URL नहीं मिला"
   },
   "Menu_disabled_multipleUrls": {
-    "message": "नहीं खोला जा सकता: चयन में $count$ URL मिले",
+    "message": "साइड पैनल एक से अधिक URL नहीं खोल सकता ($count$ मिले)",
     "placeholders": {
       "count": {
         "content": "$1",

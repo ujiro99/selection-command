@@ -336,10 +336,7 @@
     "message": "API"
   },
   "Option_openMode_linkPopup": {
-    "message": "Pop-up link"
-  },
-  "Option_openMode_openUrl": {
-    "message": "Apri URL"
+    "message": "Apri link"
   },
   "Option_openMode_copy": {
     "message": "Copia testo"
@@ -390,16 +387,10 @@
     "message": "Copia il testo selezionato negli appunti"
   },
   "Option_commandType_linkPopup_title": {
-    "message": "Popup Link"
+    "message": "Apri link"
   },
   "Option_commandType_linkPopup_desc": {
-    "message": "Apri i link nel testo selezionato in blocco"
-  },
-  "Option_commandType_openUrl_title": {
-    "message": "Apri URL"
-  },
-  "Option_commandType_openUrl_desc": {
-    "message": "Apre l'URL trovato nella selezione"
+    "message": "Apre i link e gli URL nella selezione"
   },
   "Option_commandType_getTextStyles_title": {
     "message": "Ottieni Stili"
@@ -1263,8 +1254,8 @@
   "Option_displayMode_desc": {
     "message": "Metodo di visualizzazione finestra."
   },
-  "Option_openUrl_displayMode_desc": {
-    "message": "Come aprire l'URL del testo selezionato."
+  "Option_linkPopup_displayMode_desc": {
+    "message": "Come aprire i link e gli URL nella selezione."
   },
   "Option_openModeSecondary_desc": {
     "message": "Comportamento quando si fa Ctrl + clic sul menu."
@@ -1444,7 +1435,7 @@
     "message": "Nessun URL trovato nella selezione"
   },
   "Menu_disabled_multipleUrls": {
-    "message": "Impossibile aprire: trovati $count$ URL nella selezione",
+    "message": "Il pannello laterale non può aprire più URL ($count$ trovati)",
     "placeholders": {
       "count": {
         "content": "$1",

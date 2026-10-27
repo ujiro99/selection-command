@@ -339,10 +339,7 @@
     "message": "API"
   },
   "Option_openMode_linkPopup": {
-    "message": "Link Popup"
-  },
-  "Option_openMode_openUrl": {
-    "message": "Open URL"
+    "message": "Open Links"
   },
   "Option_openMode_copy": {
     "message": "Copy text"
@@ -393,16 +390,10 @@
     "message": "Copy selected text to clipboard"
   },
   "Option_commandType_linkPopup_title": {
-    "message": "Link Popup"
+    "message": "Open Links"
   },
   "Option_commandType_linkPopup_desc": {
-    "message": "Open links in selected text in bulk"
-  },
-  "Option_commandType_openUrl_title": {
-    "message": "Open URL"
-  },
-  "Option_commandType_openUrl_desc": {
-    "message": "Open the URL found in the selection"
+    "message": "Open the links and URLs in the selection"
   },
   "Option_commandType_getTextStyles_title": {
     "message": "Get Styles"
@@ -1282,8 +1273,8 @@
   "Option_displayMode_desc": {
     "message": "Window display method."
   },
-  "Option_openUrl_displayMode_desc": {
-    "message": "How to open the URL in the selected text."
+  "Option_linkPopup_displayMode_desc": {
+    "message": "How to open the links and URLs in the selection."
   },
   "Option_openModeSecondary_desc": {
     "message": "Behavior when Ctrl + clicking the menu."
@@ -1463,7 +1454,7 @@
     "message": "No URL found in the selection"
   },
   "Menu_disabled_multipleUrls": {
-    "message": "Cannot open: $count$ URLs found in the selection",
+    "message": "The side panel cannot open multiple URLs ($count$ found)",
     "placeholders": {
       "count": {
         "content": "$1",

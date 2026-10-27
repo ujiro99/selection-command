@@ -44,7 +44,7 @@ export type SelectionCommand =
   | ApiCommand
   | PageActionCommand
   | AiPromptCommand
-  | OpenUrlCommand
+  | LinkPopupCommand
 
 export type SearchCommand = {
   id: string
@@ -90,12 +90,14 @@ export type AiPromptCommand = SearchCommand & {
   aiPromptOption: AiPromptOption
 }
 
-export type OpenUrlOption = {
+export type LinkPopupOption = {
   openMode: OPEN_MODE
 }
 
-export type OpenUrlCommand = SearchCommand & {
-  openUrlOption: OpenUrlOption
+export type LinkPopupCommand = SearchCommand & {
+  // Optional for commands created before this option was added,
+  // which are opened in popups.
+  linkPopupOption?: LinkPopupOption
 }
 
 export type LinkCommand = Omit<SelectionCommand, "openMode"> & {

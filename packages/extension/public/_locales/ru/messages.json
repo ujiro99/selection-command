@@ -336,10 +336,7 @@
     "message": "API"
   },
   "Option_openMode_linkPopup": {
-    "message": "Всплывающее окно ссылки"
-  },
-  "Option_openMode_openUrl": {
-    "message": "Открыть URL"
+    "message": "Открыть ссылки"
   },
   "Option_openMode_copy": {
     "message": "Копировать текст"
@@ -390,16 +387,10 @@
     "message": "Копировать выбранный текст в буфер обмена"
   },
   "Option_commandType_linkPopup_title": {
-    "message": "Всплывающее окно ссылки"
+    "message": "Открыть ссылки"
   },
   "Option_commandType_linkPopup_desc": {
-    "message": "Открыть ссылки в выбранном тексте в пакетном режиме"
-  },
-  "Option_commandType_openUrl_title": {
-    "message": "Открыть URL"
-  },
-  "Option_commandType_openUrl_desc": {
-    "message": "Открывает URL, найденный в выделении"
+    "message": "Открывает ссылки и URL из выделения"
   },
   "Option_commandType_getTextStyles_title": {
     "message": "Получить стили"
@@ -1263,8 +1254,8 @@
   "Option_displayMode_desc": {
     "message": "Способ отображения окна."
   },
-  "Option_openUrl_displayMode_desc": {
-    "message": "Способ открытия URL из выделенного текста."
+  "Option_linkPopup_displayMode_desc": {
+    "message": "Способ открытия ссылок и URL из выделения."
   },
   "Option_openModeSecondary_desc": {
     "message": "Поведение при Ctrl + клике по меню."
@@ -1444,7 +1435,7 @@
     "message": "В выделении не найден URL"
   },
   "Menu_disabled_multipleUrls": {
-    "message": "Невозможно открыть: в выделении найдено URL: $count$",
+    "message": "Боковая панель не может открыть несколько URL (найдено: $count$)",
     "placeholders": {
       "count": {
         "content": "$1",

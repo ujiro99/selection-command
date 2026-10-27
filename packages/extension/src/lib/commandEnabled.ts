@@ -1,8 +1,8 @@
 import { OPEN_MODE, PAGE_ACTION_OPEN_MODE } from "@/const"
-import { linksInSelection, urlsInSelection } from "@/services/dom"
+import { urlsInSelection } from "@/services/dom"
 import { isPageActionCommand, matchesPageActionUrl } from "@/lib/utils"
 import { t } from "@/services/i18n"
-import type { Command } from "@/types"
+import type { Command, LinkPopupCommand } from "@/types"
 
 export type CommandEnabled = {
   enabled: boolean
@@ -11,8 +11,8 @@ export type CommandEnabled = {
 
 /**
  * Determines whether a command can be executed in the current context.
- * - LINK_POPUP: checks if there are links in the selection
- * - OPEN_URL: checks if exactly one URL is found in the selection
+ * - LINK_POPUP: checks if there are hyperlinks or URLs in the selection, and
+ *   only one is found when the side panel is used
  * - PAGE_ACTION (CURRENT_TAB): checks if the current page URL matches the command's pageUrl pattern
  */
 export function getCommandEnabled(
@@ -23,11 +23,7 @@ export function getCommandEnabled(
   const { openMode, title } = command
 
   if (openMode === OPEN_MODE.LINK_POPUP) {
-    const links = linksInSelection()
-    return { enabled: links.length > 0, message: `${links.length} links` }
-  }
-
-  if (openMode === OPEN_MODE.OPEN_URL) {
+    const { linkPopupOption } = command as LinkPopupCommand
     const urls = urlsInSelection(selectionText)
     if (urls.length === 0) {
       return {
@@ -35,13 +31,16 @@ export function getCommandEnabled(
         message: `${title}\n${t("Menu_disabled_notUrl")}`,
       }
     }
-    if (urls.length > 1) {
+    if (linkPopupOption?.openMode === OPEN_MODE.SIDE_PANEL && urls.length > 1) {
       return {
         enabled: false,
         message: `${title}\n${t("Menu_disabled_multipleUrls", [String(urls.length)])}`,
       }
     }
-    return { enabled: true, message: `${title}\n${urls[0]}` }
+    return {
+      enabled: true,
+      message: urls.length === 1 ? urls[0] : `${urls.length} links`,
+    }
   }
 
   if (openMode === OPEN_MODE.PAGE_ACTION && isPageActionCommand(command)) {

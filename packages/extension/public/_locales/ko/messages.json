@@ -336,10 +336,7 @@
     "message": "API"
   },
   "Option_openMode_linkPopup": {
-    "message": "링크 팝업"
-  },
-  "Option_openMode_openUrl": {
-    "message": "URL 열기"
+    "message": "링크 열기"
   },
   "Option_openMode_copy": {
     "message": "텍스트 복사"
@@ -390,16 +387,10 @@
     "message": "선택한 텍스트를 클립보드에 복사합니다"
   },
   "Option_commandType_linkPopup_title": {
-    "message": "링크 팝업"
+    "message": "링크 열기"
   },
   "Option_commandType_linkPopup_desc": {
-    "message": "선택한 텍스트의 링크를 일괄로 엽니다"
-  },
-  "Option_commandType_openUrl_title": {
-    "message": "URL 열기"
-  },
-  "Option_commandType_openUrl_desc": {
-    "message": "선택 영역에 포함된 URL을 엽니다"
+    "message": "선택 영역의 링크와 URL을 한꺼번에 엽니다"
   },
   "Option_commandType_getTextStyles_title": {
     "message": "스타일 가져오기"
@@ -1263,8 +1254,8 @@
   "Option_displayMode_desc": {
     "message": "창 표시 방법."
   },
-  "Option_openUrl_displayMode_desc": {
-    "message": "선택한 텍스트의 URL을 여는 방법입니다."
+  "Option_linkPopup_displayMode_desc": {
+    "message": "선택 영역의 링크와 URL을 여는 방법입니다."
   },
   "Option_openModeSecondary_desc": {
     "message": "메뉴를 Ctrl + 클릭했을 때의 동작입니다."
@@ -1444,7 +1435,7 @@
     "message": "선택 영역에서 URL을 찾을 수 없습니다"
   },
   "Menu_disabled_multipleUrls": {
-    "message": "선택 영역에 URL이 $count$개 있어 열 수 없습니다",
+    "message": "사이드 패널에서는 여러 URL을 열 수 없습니다 ($count$개)",
     "placeholders": {
       "count": {
         "content": "$1",

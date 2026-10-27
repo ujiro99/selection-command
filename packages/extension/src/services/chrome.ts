@@ -126,6 +126,7 @@ export type OpenPopupsProps = {
   width: number | undefined
   height: number | undefined
   type: POPUP_TYPE
+  windowState?: WINDOW_STATE
 }
 
 export type OpenPopupAndClickProps = OpenPopupProps & {
@@ -134,6 +135,12 @@ export type OpenPopupAndClickProps = OpenPopupProps & {
 
 export type OpenTabProps = {
   url: string | UrlParam
+  active: boolean
+}
+
+export type OpenTabsProps = {
+  urls: string[]
+  // Activates the first tab when true.
   active: boolean
 }
 
@@ -435,6 +442,14 @@ export const openPopupWindowMultiple = async (
 
   const type = param.type ?? POPUP_TYPE.POPUP
   const screenSize = await getScreenSize({ top, left })
+  const isFullscreen = param.windowState === WINDOW_STATE.FULLSCREEN
+  const isMaximized = param.windowState === WINDOW_STATE.MAXIMIZED
+  const usesWindowState = isFullscreen || isMaximized
+  const windowState = isFullscreen
+    ? "fullscreen"
+    : isMaximized
+      ? "maximized"
+      : undefined
 
   const windows = await Promise.all(
     param.urls
@@ -450,16 +465,27 @@ export const openPopupWindowMultiple = async (
         )
         return chrome.windows.create({
           url,
-          width,
-          height,
-          top: t,
-          left: l,
+          width: usesWindowState ? undefined : width,
+          height: usesWindowState ? undefined : height,
+          top: usesWindowState ? undefined : t,
+          left: usesWindowState ? undefined : l,
+          state: windowState,
           type,
           incognito: current.incognito,
         })
       })
       .filter((p): p is Promise<chrome.windows.Window> => p !== null),
   )
+  if (isFullscreen) {
+    // macOS may require reapplying fullscreen after window creation.
+    await Promise.all(
+      windows.map((w) =>
+        chrome.windows
+          .update(w.id!, { state: "fullscreen" })
+          .catch((e) => console.error(e)),
+      ),
+    )
+  }
 
   await updateServiceWorkerData(windows, param.commandId, current.id, type)
 
@@ -469,6 +495,37 @@ export const openPopupWindowMultiple = async (
   }, [] as number[])
   updateRules(tabIds)
 
+  return tabIds
+}
+
+/**
+ * Open multiple tabs next to the current tab, keeping the order of the urls.
+ * @returns {Promise<number[]>} The IDs of the opened tabs.
+ */
+export const openTabs = async (param: OpenTabsProps): Promise<number[]> => {
+  const { urls, active } = param
+
+  let currentTab: chrome.tabs.Tab | undefined
+  try {
+    currentTab = await getCurrentTab()
+  } catch (e) {
+    console.warn("Failed to get current tab:", e)
+  }
+
+  const tabIds: number[] = []
+  for (const [idx, url] of urls.entries()) {
+    // Create tabs sequentially so that their order follows the urls.
+    const tab = await chrome.tabs.create({
+      url,
+      active: active && idx === 0,
+      windowId: currentTab?.windowId,
+      index:
+        currentTab?.index !== undefined
+          ? currentTab.index + 1 + idx
+          : undefined,
+    })
+    if (tab.id != null) tabIds.push(tab.id)
+  }
   return tabIds
 }
 

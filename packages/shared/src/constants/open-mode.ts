@@ -11,7 +11,6 @@ export enum OPEN_MODE {
   PAGE_ACTION = "pageAction",
   AI_PROMPT = "aiPrompt",
   LINK_POPUP = "linkPopup",
-  OPEN_URL = "openUrl",
   COPY = "copy",
   GET_TEXT_STYLES = "getTextStyles",
   OPTION = "option",
@@ -27,7 +26,7 @@ export const SEARCH_OPEN_MODE = [
   OPEN_MODE.BACKGROUND_TAB,
   OPEN_MODE.WINDOW,
   OPEN_MODE.SIDE_PANEL,
-] as const
+] as const;
 
 export enum SPACE_ENCODING {
   PLUS = "plus",

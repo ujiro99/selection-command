@@ -58,7 +58,7 @@ const referencesPlaceholder = (
     return hasPlaceholder(command.aiPromptOption.prompt)
   }
 
-  // copy / getTextStyles / linkPopup / openUrl always operate on the current selection.
+  // copy / getTextStyles / linkPopup always operate on the current selection.
   return true
 }
 

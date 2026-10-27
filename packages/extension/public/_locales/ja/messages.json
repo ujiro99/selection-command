@@ -338,9 +338,6 @@
   "Option_openMode_linkPopup": {
     "message": "リンクを開く"
   },
-  "Option_openMode_openUrl": {
-    "message": "URLを開く"
-  },
   "Option_openMode_copy": {
     "message": "テキストコピー"
   },
@@ -390,16 +387,10 @@
     "message": "選択テキストをクリップボードにコピーします"
   },
   "Option_commandType_linkPopup_title": {
-    "message": "リンクポップアップ"
+    "message": "リンクを開く"
   },
   "Option_commandType_linkPopup_desc": {
-    "message": "選択したテキスト内のリンクを一括で開きます"
-  },
-  "Option_commandType_openUrl_title": {
-    "message": "URLを開く"
-  },
-  "Option_commandType_openUrl_desc": {
-    "message": "選択範囲に含まれるURLを開きます"
+    "message": "選択範囲内のリンクやURLをまとめて開きます"
   },
   "Option_commandType_getTextStyles_title": {
     "message": "スタイル取得"
@@ -1260,8 +1251,8 @@
   "Option_displayMode_desc": {
     "message": "ウィンドウの表示方法です。"
   },
-  "Option_openUrl_displayMode_desc": {
-    "message": "選択したテキストのURLを開く方法です。"
+  "Option_linkPopup_displayMode_desc": {
+    "message": "選択範囲内のリンクやURLを開く方法です。"
   },
   "Option_openModeSecondary_desc": {
     "message": "メニューをCtrl + クリックしたときの動作です。"
@@ -1441,7 +1432,7 @@
     "message": "選択範囲にURLが見つかりません"
   },
   "Menu_disabled_multipleUrls": {
-    "message": "選択範囲に$count$個のURLがあるため開けません",
+    "message": "サイドパネルでは複数のURLを開けません（$count$個）",
     "placeholders": {
       "count": {
         "content": "$1",

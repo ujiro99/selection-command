@@ -72,7 +72,7 @@ import {
   WINDOW_STATE,
   COMMAND_SOURCE_TYPE,
   COMMAND_SOURCE_ID,
-  OPEN_URL_ICON_URL,
+  LINK_POPUP_ICON_URL,
 } from "@/const"
 
 import { FaviconEvent } from "@/context/faviconContext"
@@ -112,6 +112,15 @@ const EmptyFolder = {
   id: ROOT_FOLDER,
   title: t("Command_rootFolder"),
 } as CommandFolder
+
+// Defaults of the options added to the Link Popup command later. Also used to
+// fill them in when editing a command created before they were added.
+const LINK_POPUP_OPTION_DEFAULTS = {
+  windowState: WINDOW_STATE.NORMAL,
+  linkPopupOption: {
+    openMode: OPEN_MODE.POPUP as (typeof SEARCH_OPEN_MODE)[number],
+  },
+}
 
 const getDefault = (
   openMode: OPEN_MODE,
@@ -204,33 +213,15 @@ const getDefault = (
     return {
       ...base,
       ...sourceDefaults,
-      title: "Link Popup",
-      iconUrl:
-        "https://cdn3.iconfinder.com/data/icons/fluent-regular-24px-vol-5/24/ic_fluent_open_24_regular-1024.png",
+      title: "Open Links",
+      iconUrl: LINK_POPUP_ICON_URL,
       openMode: OPEN_MODE.LINK_POPUP as const,
       parentFolderId: ROOT_FOLDER,
       popupOption: {
         width: POPUP_OPTION.width,
         height: POPUP_OPTION.height,
       },
-    }
-  }
-  if (openMode === OPEN_MODE.OPEN_URL) {
-    return {
-      ...base,
-      ...sourceDefaults,
-      title: "Open URL",
-      iconUrl: OPEN_URL_ICON_URL,
-      openMode: OPEN_MODE.OPEN_URL as const,
-      parentFolderId: ROOT_FOLDER,
-      popupOption: {
-        width: POPUP_OPTION.width,
-        height: POPUP_OPTION.height,
-      },
-      windowState: WINDOW_STATE.NORMAL,
-      openUrlOption: {
-        openMode: OPEN_MODE.TAB as (typeof SEARCH_OPEN_MODE)[number],
-      },
+      ...LINK_POPUP_OPTION_DEFAULTS,
     }
   }
   if (openMode === OPEN_MODE.COPY) {
@@ -415,9 +406,9 @@ const CommandEditDialogInner = ({
     name: "pageActionOption",
   })
 
-  const openUrlOpenMode = useWatch({
+  const linkPopupOpenMode = useWatch({
     control: form.control,
-    name: "openUrlOption.openMode",
+    name: "linkPopupOption.openMode",
   })
 
   const aiPromptPrompt = useWatch({
@@ -460,6 +451,10 @@ const CommandEditDialogInner = ({
       // edit mode
       if (isEmpty(initialCommand.parentFolderId)) {
         initialCommand.parentFolderId = ROOT_FOLDER
+      }
+      if (initialCommand.openMode === OPEN_MODE.LINK_POPUP) {
+        reset({ ...LINK_POPUP_OPTION_DEFAULTS, ...(initialCommand as any) })
+        return
       }
       reset((initialCommand as any) ?? InitialValues)
     } else {
@@ -798,13 +793,13 @@ const CommandEditDialogInner = ({
                   </>
                 )}
 
-                {openMode === OPEN_MODE.OPEN_URL && (
+                {openMode === OPEN_MODE.LINK_POPUP && (
                   <OpenModeToggleField
                     control={form.control}
-                    name="openUrlOption.openMode"
+                    name="linkPopupOption.openMode"
                     formLabel={t("displayMode")}
                     type="search"
-                    description={t("openUrl_displayMode_desc")}
+                    description={t("linkPopup_displayMode_desc")}
                   />
                 )}
 
@@ -877,8 +872,8 @@ const CommandEditDialogInner = ({
                     )}
 
                     {(openMode === OPEN_MODE.WINDOW ||
-                      (openMode === OPEN_MODE.OPEN_URL &&
-                        openUrlOpenMode === OPEN_MODE.WINDOW)) && (
+                      (openMode === OPEN_MODE.LINK_POPUP &&
+                        linkPopupOpenMode === OPEN_MODE.WINDOW)) && (
                       <SelectField
                         control={form.control}
                         name="windowState"

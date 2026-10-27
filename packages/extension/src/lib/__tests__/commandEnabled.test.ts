@@ -1,16 +1,18 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { getCommandEnabled } from "../commandEnabled"
 import { OPEN_MODE, PAGE_ACTION_OPEN_MODE } from "@/const"
-import type { PageActionCommand, SearchCommand } from "@/types"
+import type {
+  LinkPopupCommand,
+  PageActionCommand,
+  SearchCommand,
+} from "@/types"
 
 vi.mock("@/services/dom", () => ({
-  linksInSelection: vi.fn(),
   urlsInSelection: vi.fn(),
 }))
 
-import { linksInSelection, urlsInSelection } from "@/services/dom"
+import { urlsInSelection } from "@/services/dom"
 
-const mockLinksInSelection = vi.mocked(linksInSelection)
 const mockUrlsInSelection = vi.mocked(urlsInSelection)
 
 // Base command fixture (non-PAGE_ACTION, non-LINK_POPUP)
@@ -45,56 +47,81 @@ describe("getCommandEnabled", () => {
   })
 
   describe("LINK_POPUP", () => {
-    it("GCE-01: enabled when links exist in selection", () => {
-      mockLinksInSelection.mockReturnValue([
+    const makeLinkPopupCommand = (openMode?: OPEN_MODE): LinkPopupCommand => ({
+      ...baseCommand,
+      openMode: OPEN_MODE.LINK_POPUP,
+      ...(openMode ? { linkPopupOption: { openMode } } : {}),
+    })
+
+    it("GCE-01: enabled when multiple URLs are found in the selection", () => {
+      mockUrlsInSelection.mockReturnValue([
         "https://example.com",
         "https://example.org",
       ])
-      const command = { ...baseCommand, openMode: OPEN_MODE.LINK_POPUP }
-      const result = getCommandEnabled(command)
+      const result = getCommandEnabled(makeLinkPopupCommand())
       expect(result.enabled).toBe(true)
       expect(result.message).toBe("2 links")
     })
 
-    it("GCE-02: disabled when no links in selection", () => {
-      mockLinksInSelection.mockReturnValue([])
-      const command = { ...baseCommand, openMode: OPEN_MODE.LINK_POPUP }
-      const result = getCommandEnabled(command)
+    it("GCE-02: disabled when no URL is found in the selection", () => {
+      mockUrlsInSelection.mockReturnValue([])
+      const result = getCommandEnabled(
+        makeLinkPopupCommand(),
+        "https://any.com",
+        "hello",
+      )
       expect(result.enabled).toBe(false)
-      expect(result.message).toBe("0 links")
+      expect(result.message).toBe("Test Command\nMenu_disabled_notUrl")
     })
-  })
 
-  describe("OPEN_URL", () => {
-    const command = { ...baseCommand, openMode: OPEN_MODE.OPEN_URL }
-
-    it("GCE-10: enabled when one URL is found in the selection", () => {
+    it("GCE-10: enabled with the URL when one URL is found in the selection", () => {
       mockUrlsInSelection.mockReturnValue(["https://www.example.com/"])
       const result = getCommandEnabled(
-        command,
+        makeLinkPopupCommand(OPEN_MODE.TAB),
         "https://any.com",
         "see www.example.com",
       )
       expect(mockUrlsInSelection).toHaveBeenCalledWith("see www.example.com")
       expect(result.enabled).toBe(true)
-      expect(result.message).toBe("Test Command\nhttps://www.example.com/")
+      expect(result.message).toBe("https://www.example.com/")
     })
 
-    it("GCE-11: disabled when no URL is found in the selection", () => {
-      mockUrlsInSelection.mockReturnValue([])
-      const result = getCommandEnabled(command, "https://any.com", "hello")
-      expect(result.enabled).toBe(false)
-      expect(result.message).toBe("Test Command\nMenu_disabled_notUrl")
+    it("GCE-11: enabled for the side panel when one URL is found", () => {
+      mockUrlsInSelection.mockReturnValue(["https://example.com/a"])
+      const result = getCommandEnabled(
+        makeLinkPopupCommand(OPEN_MODE.SIDE_PANEL),
+        "https://any.com",
+        "https://example.com/a",
+      )
+      expect(result.enabled).toBe(true)
     })
 
-    it("GCE-12: disabled when multiple URLs are found in the selection", () => {
+    it("GCE-12: disabled for the side panel when multiple URLs are found", () => {
       mockUrlsInSelection.mockReturnValue([
         "https://example.com/a",
         "https://example.com/b",
       ])
-      const result = getCommandEnabled(command, "https://any.com", "a b")
+      const result = getCommandEnabled(
+        makeLinkPopupCommand(OPEN_MODE.SIDE_PANEL),
+        "https://any.com",
+        "a b",
+      )
       expect(result.enabled).toBe(false)
       expect(result.message).toBe("Test Command\nMenu_disabled_multipleUrls")
+    })
+
+    it.each([
+      OPEN_MODE.POPUP,
+      OPEN_MODE.WINDOW,
+      OPEN_MODE.TAB,
+      OPEN_MODE.BACKGROUND_TAB,
+    ])("GCE-13: enabled for %s when multiple URLs are found", (openMode) => {
+      mockUrlsInSelection.mockReturnValue([
+        "https://example.com/a",
+        "https://example.com/b",
+      ])
+      const result = getCommandEnabled(makeLinkPopupCommand(openMode))
+      expect(result.enabled).toBe(true)
     })
   })
 

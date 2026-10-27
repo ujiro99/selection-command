@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import { openPopupWindow } from "../chrome"
+import { openPopupWindow, openPopupWindowMultiple } from "../chrome"
 import { readOffscreenClipboard } from "../offscreenClipboard"
 import { Ipc } from "../ipc"
 import { POPUP_TYPE, WINDOW_STATE } from "@/const"
@@ -104,5 +104,83 @@ describe("openPopupWindow", () => {
       connection.mockRestore()
       sendTab.mockRestore()
     }
+  })
+})
+
+describe("openPopupWindowMultiple", () => {
+  const multipleParams = {
+    commandId: "test",
+    urls: ["https://example.com/a", "https://example.com/b"],
+    type: POPUP_TYPE.NORMAL,
+    top: 10,
+    left: 20,
+    width: 600,
+    height: 700,
+  }
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    let id = 2
+    vi.stubGlobal("chrome", {
+      ...chrome,
+      windows: {
+        ...chrome.windows,
+        getCurrent: vi.fn().mockResolvedValue({ id: 1, incognito: false }),
+        create: vi.fn().mockImplementation(() => {
+          const windowId = id++
+          return Promise.resolve({ id: windowId, tabs: [{ id: windowId * 10 }] })
+        }),
+        update: vi.fn().mockResolvedValue(undefined),
+      },
+      declarativeNetRequest: {
+        ...chrome.declarativeNetRequest,
+        RuleActionType: { MODIFY_HEADERS: "modifyHeaders" },
+        HeaderOperation: { REMOVE: "remove", SET: "set" },
+        ResourceType: { MAIN_FRAME: "main_frame" },
+        getSessionRules: vi.fn().mockResolvedValue([]),
+        updateSessionRules: vi.fn().mockResolvedValue(undefined),
+      },
+    })
+  })
+  afterEach(() => vi.unstubAllGlobals())
+
+  it("COPM-01: 正常系: 状態指定なしでは位置とサイズを指定して全URLのウィンドウを作成する", async () => {
+    await openPopupWindowMultiple({ ...multipleParams })
+    expect(chrome.windows.create).toHaveBeenCalledTimes(2)
+    expect(chrome.windows.create).toHaveBeenCalledWith(
+      expect.objectContaining({ width: 600, height: 700, state: undefined }),
+    )
+    expect(chrome.windows.update).not.toHaveBeenCalled()
+  })
+
+  it("COPM-02: 正常系: maximizedでは座標とサイズを渡さずに作成する", async () => {
+    await openPopupWindowMultiple({
+      ...multipleParams,
+      windowState: WINDOW_STATE.MAXIMIZED,
+    })
+    expect(chrome.windows.create).toHaveBeenCalledTimes(2)
+    expect(chrome.windows.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        state: "maximized",
+        top: undefined,
+        left: undefined,
+        width: undefined,
+        height: undefined,
+      }),
+    )
+    expect(chrome.windows.update).not.toHaveBeenCalled()
+  })
+
+  it("COPM-03: 正常系: fullscreenでは作成後に全ウィンドウへ状態を再適用する", async () => {
+    await openPopupWindowMultiple({
+      ...multipleParams,
+      windowState: WINDOW_STATE.FULLSCREEN,
+    })
+    expect(chrome.windows.update).toHaveBeenCalledWith(2, {
+      state: "fullscreen",
+    })
+    expect(chrome.windows.update).toHaveBeenCalledWith(3, {
+      state: "fullscreen",
+    })
   })
 })

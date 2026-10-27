@@ -336,10 +336,7 @@
     "message": "API"
   },
   "Option_openMode_linkPopup": {
-    "message": "Pop-up de Lien"
-  },
-  "Option_openMode_openUrl": {
-    "message": "Ouvrir l'URL"
+    "message": "Ouvrir les liens"
   },
   "Option_openMode_copy": {
     "message": "Copier le texte"
@@ -390,16 +387,10 @@
     "message": "Copier le texte sélectionné dans le presse-papiers"
   },
   "Option_commandType_linkPopup_title": {
-    "message": "Pop-up de Lien"
+    "message": "Ouvrir les liens"
   },
   "Option_commandType_linkPopup_desc": {
-    "message": "Ouvrir les liens dans le texte sélectionné en lot"
-  },
-  "Option_commandType_openUrl_title": {
-    "message": "Ouvrir l'URL"
-  },
-  "Option_commandType_openUrl_desc": {
-    "message": "Ouvre l'URL trouvée dans la sélection"
+    "message": "Ouvre les liens et URL de la sélection"
   },
   "Option_commandType_getTextStyles_title": {
     "message": "Obtenir les Styles"
@@ -1263,8 +1254,8 @@
   "Option_displayMode_desc": {
     "message": "Méthode d'affichage de fenêtre."
   },
-  "Option_openUrl_displayMode_desc": {
-    "message": "Comment ouvrir l'URL du texte sélectionné."
+  "Option_linkPopup_displayMode_desc": {
+    "message": "Comment ouvrir les liens et URL de la sélection."
   },
   "Option_openModeSecondary_desc": {
     "message": "Comportement lors du Ctrl + clic sur le menu."
@@ -1444,7 +1435,7 @@
     "message": "Aucune URL trouvée dans la sélection"
   },
   "Menu_disabled_multipleUrls": {
-    "message": "Impossible d'ouvrir : $count$ URL trouvées dans la sélection",
+    "message": "Le panneau latéral ne peut pas ouvrir plusieurs URL ($count$ trouvées)",
     "placeholders": {
       "count": {
         "content": "$1",
