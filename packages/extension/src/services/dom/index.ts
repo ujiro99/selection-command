@@ -1,7 +1,11 @@
 import type { Point } from "@/types"
 
-import { isEmpty } from "@/lib/utils"
-import { extractUrlsFromText, toLinkUrl } from "@/lib/urlExtractor"
+import { isEmpty, unique } from "@/lib/utils"
+import {
+  extractUrlsFromText,
+  findUrlsInText,
+  toLinkUrl,
+} from "@/lib/urlExtractor"
 import { APP_ID, PAGE_HTML_MAX_CHARS } from "@/const"
 
 export function toDataURL(src: string, outputFormat?: string): Promise<string> {
@@ -27,10 +31,6 @@ export function toDataURL(src: string, outputFormat?: string): Promise<string> {
   })
 }
 
-function uniq<T>(array: Array<T>): Array<T> {
-  return array.filter((elem, index, self) => self.indexOf(elem) === index)
-}
-
 export function linksInSelection(): string[] {
   const selection = document.getSelection()
   if (!selection || selection.rangeCount === 0) {
@@ -43,7 +43,7 @@ export function linksInSelection(): string[] {
   const link = linkAtContainer(range)
   let links = linksInRange(range)
   links = link ? [link, ...links] : links
-  return uniq(links)
+  return unique(links)
 }
 
 function linkAtContainer(range: Range): string | undefined {
@@ -91,32 +91,37 @@ export function urlsInSelection(selectionText: string): string[] {
   }
 
   const range = selection.getRangeAt(0)
-  const links = linksInSelection()
-    .map(toLinkUrl)
-    .filter((url): url is string => url != null)
 
   // The whole selection is inside a hyperlink, so only its href is used.
-  if (toLinkUrl(linkAtContainer(range)) != null) {
-    return uniq(links)
+  const container = toLinkUrl(linkAtContainer(range))
+  if (container != null) {
+    return [container]
   }
 
-  // URLs written in the text of the selected hyperlinks, which are excluded
-  // from the URLs found in the text.
-  const linkTextUrls = new Set<string>()
+  // Clone the selected contents once to collect both the hrefs of the
+  // hyperlinks and the URLs written in their text.
+  const links: string[] = []
+  const linkTextUrls: string[] = []
   range
     .cloneContents()
     .querySelectorAll("a")
     .forEach((a) => {
-      if (toLinkUrl(a.href) == null) return
-      extractUrlsFromText(a.textContent ?? "").forEach((url) =>
-        linkTextUrls.add(url),
-      )
+      const url = toLinkUrl(a.href)
+      if (url == null) return
+      links.push(url)
+      linkTextUrls.push(...findUrlsInText(a.textContent ?? ""))
     })
-  const textUrls = extractUrlsFromText(selectionText).filter(
-    (url) => !linkTextUrls.has(url),
-  )
 
-  return uniq([...links, ...textUrls])
+  // Exclude the URLs written in the text of the hyperlinks from the URLs
+  // found in the text, one occurrence each, so that the same URL written
+  // elsewhere in the selection is still found.
+  const textUrls = findUrlsInText(selectionText)
+  linkTextUrls.forEach((url) => {
+    const index = textUrls.indexOf(url)
+    if (index !== -1) textUrls.splice(index, 1)
+  })
+
+  return unique([...links, ...textUrls])
 }
 
 export type ScreenSize = {

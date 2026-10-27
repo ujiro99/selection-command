@@ -112,6 +112,16 @@ export function toLinkUrl(str: string | undefined): string | null {
  * @returns {string[]} The normalized URLs without duplicates.
  */
 export function extractUrlsFromText(text: string | undefined): string[] {
+  return unique(findUrlsInText(text))
+}
+
+/**
+ * Find http(s) URLs written in a text in the same way as extractUrlsFromText,
+ * keeping duplicates so that the occurrences of each URL can be counted.
+ * @param {string} text The text to search.
+ * @returns {string[]} The normalized URLs in order of appearance.
+ */
+export function findUrlsInText(text: string | undefined): string[] {
   if (!text || text.length > MAX_URL_TEXT_LENGTH) return []
 
   const halfWidth = toHalfWidth(text)
@@ -128,5 +138,5 @@ export function extractUrlsFromText(text: string | undefined): string[] {
     const url = toHttpUrl(withScheme)
     if (url != null) urls.push(url)
   }
-  return unique(urls)
+  return urls
 }

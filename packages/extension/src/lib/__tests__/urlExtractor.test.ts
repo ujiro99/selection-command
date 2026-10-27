@@ -1,5 +1,10 @@
 import { describe, it, expect } from "vitest"
-import { extractUrlsFromText, toHttpUrl, toLinkUrl } from "../urlExtractor"
+import {
+  extractUrlsFromText,
+  findUrlsInText,
+  toHttpUrl,
+  toLinkUrl,
+} from "../urlExtractor"
 
 describe("extractUrlsFromText", () => {
   it.each([
@@ -187,6 +192,20 @@ describe("extractUrlsFromText", () => {
     ["EU-44", "example.com?q=1"],
   ])("%s: finds no URL in %s", (_, input) => {
     expect(extractUrlsFromText(input)).toEqual([])
+  })
+})
+
+describe("findUrlsInText", () => {
+  it("FU-01: keeps duplicated URLs in order of appearance", () => {
+    expect(
+      findUrlsInText(
+        "https://example.com/a https://example.com/b https://example.com/a",
+      ),
+    ).toEqual([
+      "https://example.com/a",
+      "https://example.com/b",
+      "https://example.com/a",
+    ])
   })
 })
 

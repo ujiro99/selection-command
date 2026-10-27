@@ -1,4 +1,4 @@
-import React, { useRef } from "react"
+import React, { useMemo, useRef } from "react"
 import clsx from "clsx"
 import { usePopupContext } from "@/hooks/usePopupContext"
 import { Tooltip } from "../Tooltip"
@@ -29,10 +29,11 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
   const { iconUrl, title, preserveOriginalColor } = props.command
   const { isPreview, inTransition, inOnboarding } = usePopupContext()
   const { selectionText, target } = useSelectContext()
-  const { enabled, detail } = getCommandEnabled(
-    props.command,
-    location.href,
-    selectionText,
+  // Searching URLs in a large selection is costly, so the result is kept
+  // while the command and the selection are unchanged.
+  const { enabled, detail } = useMemo(
+    () => getCommandEnabled(props.command, location.href, selectionText),
+    [props.command, selectionText],
   )
   // A vertical item shows its title, so the tooltip shows only the detail,
   // and is hidden when there is no detail.

@@ -496,6 +496,19 @@ describe("urlsInSelection", () => {
     ])
   })
 
+  it("US-13: finds a URL in the text that is also written in a hyperlink text", () => {
+    const p = document.createElement("p")
+    p.innerHTML =
+      '<a href="https://short.example/x">https://example.com/b</a> and https://example.com/b'
+    document.body.appendChild(p)
+    const text = selectContents(p)
+
+    expect(urlsInSelection(text)).toEqual([
+      "https://short.example/x",
+      "https://example.com/b",
+    ])
+  })
+
   it("US-08: falls back to the given text without a DOM selection", () => {
     expect(urlsInSelection("https://example.com/a")).toEqual([
       "https://example.com/a",
