@@ -1,9 +1,10 @@
 import { useRef, useState } from "react"
+import { isSelectionCommand } from "@/lib/commandGuards"
 
 import { STYLE, SIDE } from "@/const"
 import { TEST_IDS } from "@/testIds"
 import { useSettingsWithImageCache } from "@/hooks/useSettingsWithImageCache"
-import { cn, isMenuCommand } from "@/lib/utils"
+import { cn } from "@/lib/utils"
 import { toCommandTree } from "@/services/option/commandTree"
 import css from "./Menu.module.css"
 import { MenuTreeNode } from "./MenuFolder"
@@ -16,7 +17,10 @@ export function Menu(): JSX.Element {
   const isHorizontal = userSettings.style === STYLE.HORIZONTAL
   const side = userSettings.popupPlacement?.side ?? SIDE.top
 
-  const commandTree = toCommandTree(commands.filter(isMenuCommand), folders)
+  const commandTree = toCommandTree(
+    commands.filter(isSelectionCommand),
+    folders,
+  )
   const activeFolder = hoverTrigger || hoverContent
 
   return (

@@ -1,8 +1,9 @@
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
+import { isSelectionCommand } from "@/lib/commandGuards"
 import type { SettingsType, Command } from "@/types"
 import { OPTION_FOLDER, STARTUP_METHOD } from "@/const"
 import { Ipc, TabCommand } from "@/services/ipc"
-import { isMenuCommand, capitalize } from "@/lib/utils"
+import { capitalize } from "@/lib/utils"
 import { APP_ID } from "@/const"
 import {
   toCommandTree,
@@ -81,7 +82,7 @@ export const ContextMenu = {
 
   addMenus: (settings: SettingsType) => {
     const contexts = ["selection"] as Contexts
-    const commands = settings.commands.filter(isMenuCommand)
+    const commands = settings.commands.filter(isSelectionCommand)
     const folders = settings.folders
 
     // Add the root menu using app name.
@@ -154,7 +155,7 @@ export const ContextMenu = {
     try {
       const settings = await enhancedSettings.get()
       if (settings.startupMethod.method === STARTUP_METHOD.CONTEXT_MENU) {
-        const commands = settings.commands.filter(isMenuCommand)
+        const commands = settings.commands.filter(isSelectionCommand)
         const folders = settings.folders
 
         // Create hierarchical tree structure

@@ -1,7 +1,8 @@
 import { useCallback } from "react"
+import { isSelectionCommand } from "@/lib/commandGuards"
 import type { DragEndEvent } from "@dnd-kit/core"
 import type { Command, CommandFolder } from "@/types"
-import { isFolder, isCommand } from "@/services/option/commandUtils"
+import { isFolder } from "@/services/option/commandUtils"
 import {
   isValidDragTarget,
   calculateFolderToFolderPosition,
@@ -45,7 +46,7 @@ export const useCommandDragDrop = (
       }
 
       // Folder to Command drag
-      if (isFolder(activeContent) && isCommand(overContent)) {
+      if (isFolder(activeContent) && isSelectionCommand(overContent)) {
         const { distIndex, firstChildIndex } = calculateFolderToCommandPosition(
           active,
           over,
@@ -62,7 +63,7 @@ export const useCommandDragDrop = (
       }
 
       // Command to Folder drag
-      if (isCommand(activeContent) && isFolder(overContent)) {
+      if (isSelectionCommand(activeContent) && isFolder(overContent)) {
         const { distIndex, newParentId } = calculateCommandToFolderPosition(
           active,
           over,
@@ -74,7 +75,10 @@ export const useCommandDragDrop = (
       }
 
       // Command to Command drag
-      if (isCommand(activeContent) && isCommand(overContent)) {
+      if (
+        isSelectionCommand(activeContent) &&
+        isSelectionCommand(overContent)
+      ) {
         const activeIndex = commands.findIndex(
           (cmd) => cmd.id === activeContent.id,
         )

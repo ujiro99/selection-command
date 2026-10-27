@@ -1,4 +1,9 @@
 import { useEffect, useState, useMemo } from "react"
+import {
+  isAiPromptCommand,
+  isSearchCommand,
+  isPageActionCommand,
+} from "@/lib/commandGuards"
 import { useFieldArray, useWatch, useFormContext } from "react-hook-form"
 import { Keyboard, SquareArrowOutUpRight } from "lucide-react"
 import { SelectField } from "@/components/option/field/SelectField"
@@ -20,7 +25,6 @@ import {
 } from "@/services/option/commandTree"
 import { cn } from "@/lib/utils"
 import css from "./ShortcutList.module.css"
-import { isAiPromptType, isSearchType, isPageActionType } from "@/types/schema"
 import { INSERT, toInsertTemplate } from "@/services/pageAction"
 import { paramToStr } from "@/services/pageAction/helper"
 
@@ -44,17 +48,17 @@ const referencesPlaceholder = (
   command: Command,
   hasPlaceholder: (text: string) => boolean,
 ): boolean => {
-  if (isSearchType(command) || command.openMode === OPEN_MODE.API) {
+  if (isSearchCommand(command) || command.openMode === OPEN_MODE.API) {
     return command.searchUrl?.includes("%s") ?? false
   }
 
-  if (isPageActionType(command)) {
+  if (isPageActionCommand(command)) {
     return command.pageActionOption.steps.some((step) =>
       hasPlaceholder(paramToStr(step.param)),
     )
   }
 
-  if (isAiPromptType(command)) {
+  if (isAiPromptCommand(command)) {
     return hasPlaceholder(command.aiPromptOption.prompt)
   }
 
@@ -71,20 +75,20 @@ const willUseClipboard = (command: Command): boolean =>
 const isTextSelectionOnly = (command: Command) => {
   const { openMode } = command
 
-  if (isSearchType(command)) {
+  if (isSearchCommand(command)) {
     // Clipboard access doesn't work in SidePanel mode, so a selection is
     // required only when the command actually needs text (%s).
     return openMode === OPEN_MODE.SIDE_PANEL && willUseClipboard(command)
   }
 
-  if (isPageActionType(command)) {
+  if (isPageActionCommand(command)) {
     return (
       command.pageActionOption.openMode === PAGE_ACTION_OPEN_MODE.CURRENT_TAB &&
       willUseClipboard(command)
     )
   }
 
-  if (isAiPromptType(command)) {
+  if (isAiPromptCommand(command)) {
     return (
       command.aiPromptOption.openMode === OPEN_MODE.SIDE_PANEL &&
       willUseClipboard(command)

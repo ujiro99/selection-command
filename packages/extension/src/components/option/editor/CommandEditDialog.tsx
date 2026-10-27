@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from "react"
+import { isSearchCommand, isPageActionCommand } from "@/lib/commandGuards"
 import { useForm, useFieldArray, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
@@ -92,12 +93,7 @@ const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 import { SEARCH_OPEN_MODE } from "@shared/constants/open-mode"
 import { isSearchOpenMode } from "@shared/utils/type-guards"
 
-import {
-  isSearchType,
-  commandSchema,
-  CommandSchemaType,
-  isPageActionType,
-} from "@/types/schema"
+import { commandSchema, CommandSchemaType } from "@/types/schema"
 import type {
   SelectionCommand,
   CommandFolder,
@@ -135,7 +131,7 @@ const getDefault = (
       // Staying in search mode: add default windowState when switching to WINDOW
       if (
         openMode === OPEN_MODE.WINDOW &&
-        isSearchType(base) &&
+        isSearchCommand(base) &&
         base.windowState == null
       ) {
         return { ...base, ...sourceDefaults, windowState: WINDOW_STATE.NORMAL }
@@ -145,7 +141,7 @@ const getDefault = (
 
     // Switching from non-search mode (e.g. PAGE_ACTION) to search mode
     let searchUrl = ""
-    if (base && isPageActionType(base) && base.pageActionOption.startUrl) {
+    if (base && isPageActionCommand(base) && base.pageActionOption.startUrl) {
       searchUrl = base.pageActionOption.startUrl
     }
 
@@ -341,7 +337,7 @@ const CommandEditDialogInner = ({
     if (d.parentFolderId === ROOT_FOLDER) {
       d.parentFolderId = undefined
     }
-    if (isSearchType(d)) {
+    if (isSearchCommand(d)) {
       if (d.popupOption != null) {
         d.popupOption = {
           width: Number(d.popupOption.width),

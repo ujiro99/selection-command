@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react"
+import { isLinkCommand } from "@/lib/commandGuards"
 import {
   MOUSE,
   KEYBOARD,
@@ -13,7 +14,7 @@ import { useUserSettings, useSection } from "@/hooks/useSettings"
 import { CACHE_SECTIONS } from "@/services/settings/settingsCache"
 import { useLeftClickHold } from "@/hooks/useLeftClickHold"
 import Default, { PopupOption } from "@/services/option/defaultSettings"
-import { isPopup, isLinkCommand, isMac } from "@/lib/utils"
+import { isPopup, isMac } from "@/lib/utils"
 import {
   isClickableElement,
   findAnchorElement,

@@ -59,9 +59,12 @@ vi.mock("@/services/commandMetrics", () => ({
 vi.mock("@/lib/utils", () => ({
   generateRandomID: vi.fn(() => "test-id"),
   isEmpty: vi.fn(),
-  isPageActionCommand: vi.fn(),
   isServiceWorker: vi.fn(() => true),
   sleep: vi.fn(),
+}))
+
+vi.mock("@/lib/commandGuards", () => ({
+  isPageActionCommand: vi.fn(),
 }))
 
 vi.mock("@/lib/url", () => ({
@@ -119,12 +122,8 @@ import {
 import { ServiceWorkerData } from "@/services/serviceWorkerData"
 import { RunningStatus } from "@/services/pageAction"
 import { incrementCommandExecutionCount } from "@/services/commandMetrics"
-import {
-  generateRandomID,
-  isEmpty,
-  isPageActionCommand,
-  sleep,
-} from "@/lib/utils"
+import { generateRandomID, isEmpty, sleep } from "@/lib/utils"
+import { isPageActionCommand } from "@/lib/commandGuards"
 import {
   isUrl,
   isUrlParam,

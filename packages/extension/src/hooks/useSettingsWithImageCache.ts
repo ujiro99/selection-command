@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from "react"
+import { isAiPromptCommand } from "@/lib/commandGuards"
 import { CACHE_SECTIONS } from "@/services/settings/settingsCache"
 import { getAiServicesFallback } from "@/services/aiPromptFallback"
 import { useSection, useUserSettings } from "./useSettings"
 import { Ipc, IpcTimeoutError, ServiceWorkerCommand } from "@/services/ipc"
 import type { IconColorQuery } from "@/services/ipc"
 import { sendEvent, ANALYTICS_EVENTS } from "@/services/analytics"
-import { getCommandTargetUrl, isAiPromptCommand, isEmpty } from "@/lib/utils"
+import { getCommandTargetUrl, isEmpty } from "@/lib/utils"
 import type { Command, CommandFolder } from "@/types"
 
 /**

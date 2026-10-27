@@ -1,10 +1,10 @@
 import { describe, it, expect } from "vitest"
+import { isLinkCommand } from "@/lib/commandGuards"
 import {
   DefaultCommands,
   getDefaultCommands,
   COMMAND_SEARCH_ID,
 } from "../defaultSettings"
-import { isLinkCommand } from "@/lib/utils"
 import { INSERT, toInsertTemplate } from "@/services/pageAction"
 import { getAiServicesFallback } from "@/services/aiPrompt"
 import { COMMAND_SOURCE_TYPE, COMMAND_SOURCE_ID } from "@/const"

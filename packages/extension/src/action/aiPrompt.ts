@@ -3,6 +3,7 @@ import {
   ServiceWorkerCommand,
   SidePanelPendingAction,
 } from "@/services/ipc"
+import { isAiPromptCommand } from "@/lib/commandGuards"
 import { getWindowPosition } from "@/services/screen"
 import { isValidString, generateRandomID, safeInterpolate } from "@/lib/utils"
 import { toUrl, convertUrlsToMarkdown } from "@/lib/url"
@@ -27,7 +28,6 @@ import type {
 import type { OpenAndRunProps } from "@/services/pageAction/serviceWorker"
 import type { OpenSidePanelProps } from "@/services/chrome"
 import { findAiService } from "@/services/aiPrompt"
-import { isAiPromptType } from "@/types/schema"
 import { INSERT, InsertSymbol, toInsertTemplate } from "@/services/pageAction"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { getUILanguage } from "@/services/i18n"
@@ -468,7 +468,7 @@ export const AiPrompt = {
     selectionFromClipboard,
     pageUrl,
   }: ActionExecuteParams) {
-    if (!isAiPromptType(command)) {
+    if (!isAiPromptCommand(command)) {
       console.error("command is not for AiPrompt.")
       return
     }

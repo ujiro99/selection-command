@@ -6,8 +6,8 @@ import {
   IS_SUPPORT_BUILD,
   type NewHubLocale,
 } from "@/const"
+import { isAiPromptCommand, isPageActionCommand } from "@/lib/commandGuards"
 import { getAiServicesFallback } from "@/services/aiPromptFallback"
-import { isAiPromptCommand, isPageActionCommand } from "@/lib/utils"
 import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
 import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
 import type { SelectionCommand, SearchCommand } from "@/types"

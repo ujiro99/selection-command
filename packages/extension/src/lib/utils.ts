@@ -1,29 +1,16 @@
 import { v7 } from "uuid"
 
 // Import and re-export shared utilities
-import {
-  cn,
-  isPageActionCommand as _isPageActionCommand,
-  isSearchCommand,
-  capitalize,
-  isEmpty,
-  sleep,
-} from "@shared"
+import { cn, capitalize, isEmpty, sleep } from "@shared"
 
 // Re-export for other files to use
-export { cn, isSearchCommand, capitalize, isEmpty, sleep }
-import { APP_ID, OPEN_MODE, DRAG_OPEN_MODE } from "@/const"
+export { cn, capitalize, isEmpty, sleep }
+import { APP_ID } from "@/const"
+import { isPageActionCommand } from "@/lib/commandGuards"
 // Imported from the standalone module (not the barrel) to avoid a cycle back
 // into this file through @/services/pageAction.
 import { InsertSymbol } from "@/services/pageAction/insertSymbols"
-import type {
-  Version,
-  Command,
-  SelectionCommand,
-  LinkCommand,
-  PageActionCommand,
-  AiPromptCommand,
-} from "@/types"
+import type { Version, Command } from "@/types"
 
 // cn function is now imported from shared package
 
@@ -83,33 +70,6 @@ export function isValidString(val: unknown): val is string {
 }
 
 /**
- * Check if the command is made for the popup menu.
- * @param {Command} command The command to check.
- * @returns {boolean} True if the command is made for the popup menu.
- */
-const OpenModes = Object.values(OPEN_MODE)
-export function isMenuCommand(command: Command): command is SelectionCommand {
-  return OpenModes.includes(command.openMode as OPEN_MODE)
-}
-
-/**
- * Check if the command is link command.
- * @param {Command|LinkCommand} command The command to check.
- * @returns {boolean} True if the command is link command.
- */
-const DragOpenModes = Object.values(DRAG_OPEN_MODE)
-export function isLinkCommand(command: Command): command is LinkCommand {
-  return DragOpenModes.includes(command.openMode as DRAG_OPEN_MODE)
-}
-
-/**
- * Check if the command is a page action command.
- */
-export function isPageActionCommand(cmd: unknown): cmd is PageActionCommand {
-  return _isPageActionCommand(cmd)
-}
-
-/**
  * Returns the website a command targets, or undefined when it has none.
  * Lives here rather than in favicon.ts so callers can name a command's target
  * without pulling in the Public Suffix List that module carries.
@@ -119,13 +79,6 @@ export function getCommandTargetUrl(command: Command): string | undefined {
     return command.pageActionOption?.startUrl
   }
   return command.searchUrl
-}
-
-export function isAiPromptCommand(cmd: unknown): cmd is AiPromptCommand {
-  if (!cmd || typeof cmd !== "object") {
-    return false
-  }
-  return (cmd as AiPromptCommand).openMode === OPEN_MODE.AI_PROMPT
 }
 
 export function isPopup(elm: Element): boolean {

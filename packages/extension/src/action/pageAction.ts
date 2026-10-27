@@ -3,10 +3,11 @@ import {
   ServiceWorkerCommand,
   SidePanelPendingAction,
 } from "@/services/ipc"
+import { isPageActionCommand } from "@/lib/commandGuards"
 import type { OpenSidePanelProps } from "@/services/chrome"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { getWindowPosition } from "@/services/screen"
-import { isValidString, isPageActionCommand } from "@/lib/utils"
+import { isValidString } from "@/lib/utils"
 import { PAGE_ACTION_OPEN_MODE, PAGE_ACTION_EVENT } from "@/const"
 import { resolvePopupSize } from "@/services/option/defaultSettings"
 import type { ActionExecuteParams, UrlParam } from "@/types"

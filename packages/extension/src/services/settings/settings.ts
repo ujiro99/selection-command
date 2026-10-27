@@ -1,4 +1,5 @@
 import { Storage } from "@/services/storage"
+import { isLinkCommand } from "@/lib/commandGuards"
 import { STORAGE_KEY } from "@/services/storage/const"
 import DefaultSettings, {
   DefaultCommands,
@@ -29,7 +30,6 @@ import {
   isEmpty,
   versionDiff,
   VersionDiff,
-  isLinkCommand,
   generateId,
 } from "@/lib/utils"
 import { toDataURL } from "@/services/dom"

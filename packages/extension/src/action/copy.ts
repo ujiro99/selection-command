@@ -1,11 +1,8 @@
 import { sleep, isEmpty } from "@/lib/utils"
 import { getSelectionText } from "@/services/dom"
-import type { CopyCommand, ExecuteCommandParams } from "@/types"
-import { OPEN_MODE, ExecState } from "@/const"
-
-const isCopyCommand = (command: any): command is CopyCommand => {
-  return command.openMode === OPEN_MODE.COPY
-}
+import { isCopyCommand } from "@/lib/commandGuards"
+import type { ExecuteCommandParams } from "@/types"
+import { ExecState } from "@/const"
 
 async function setClipboard(text: string) {
   const type = "text/plain"
