@@ -48,8 +48,6 @@ vi.mock("@/lib/sentry", () => {
 
 vi.mock("@/services/i18n", () => ({ getCurrentLocale: () => "en" }))
 
-vi.mock("@/hooks/useTheme", () => ({ applyInitialTheme: vi.fn() }))
-
 const loadPage = async () => {
   vi.resetModules()
   await import("../onboarding_page")

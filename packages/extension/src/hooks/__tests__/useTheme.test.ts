@@ -1,12 +1,9 @@
+import { readFileSync } from "node:fs"
+import { resolve } from "node:path"
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import { renderHook, act } from "@testing-library/react"
 import { THEME, THEME_ATTRIBUTE } from "@/const"
-import {
-  applyInitialTheme,
-  resolveTheme,
-  useTheme,
-  THEME_CACHE_KEY,
-} from "../useTheme"
+import { resolveTheme, useTheme, THEME_CACHE_KEY } from "../useTheme"
 
 const mockUserSettings = vi.hoisted(() => ({ current: {} as any }))
 const mockLoading = vi.hoisted(() => ({ current: false }))
@@ -146,9 +143,7 @@ describe("useTheme", () => {
     mockColorScheme(false)
     mockUserSettings.current = { theme: THEME.DARK }
     mockLoading.current = true
-    const { rerender } = renderHook(() =>
-      useTheme(document.documentElement),
-    )
+    const { rerender } = renderHook(() => useTheme(document.documentElement))
     expect(localStorage.getItem(THEME_CACHE_KEY)).toBeNull()
 
     mockLoading.current = false
@@ -188,7 +183,15 @@ describe("useTheme", () => {
   })
 })
 
-describe("applyInitialTheme", () => {
+describe("theme-init.js", () => {
+  // The classic script in public/ is outside the module graph, so run the
+  // file itself. This also checks that it uses THEME_CACHE_KEY.
+  const source = readFileSync(
+    resolve(__dirname, "../../../public/theme-init.js"),
+    "utf-8",
+  )
+  const runThemeInit = () => new Function(source)()
+
   beforeEach(() => {
     vi.clearAllMocks()
     localStorage.clear()
@@ -202,22 +205,20 @@ describe("applyInitialTheme", () => {
   it("THM-14: 正常系: キャッシュしたテーマを適用する", () => {
     mockColorScheme(false)
     localStorage.setItem(THEME_CACHE_KEY, "dark")
-    applyInitialTheme()
+    runThemeInit()
     expect(document.documentElement.getAttribute(THEME_ATTRIBUTE)).toBe("dark")
   })
 
   it("THM-15: 正常系: キャッシュがなければシステム設定を適用する", () => {
     mockColorScheme(true)
-    applyInitialTheme()
+    runThemeInit()
     expect(document.documentElement.getAttribute(THEME_ATTRIBUTE)).toBe("dark")
   })
 
   it("THM-16: 異常系: 不正なキャッシュ値は無視してシステム設定を適用する", () => {
     mockColorScheme(false)
     localStorage.setItem(THEME_CACHE_KEY, "invalid")
-    applyInitialTheme()
-    expect(document.documentElement.getAttribute(THEME_ATTRIBUTE)).toBe(
-      "light",
-    )
+    runThemeInit()
+    expect(document.documentElement.getAttribute(THEME_ATTRIBUTE)).toBe("light")
   })
 })

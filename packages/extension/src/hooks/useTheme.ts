@@ -12,7 +12,12 @@ const QUERY = "(prefers-color-scheme: dark)"
 
 /**
  * localStorage key caching the resolved theme of the extension pages, so the
- * next page load can apply it synchronously before the settings are loaded.
+ * next page load can apply it before the first paint (public/theme-init.js,
+ * which must use the same key).
+ * Without it, components measuring layout in their layout effects (e.g. the
+ * Radix Switch) force a style calculation before useTheme sets the
+ * attribute, and controls with color transitions then fade from the light
+ * colors to the dark ones.
  */
 export const THEME_CACHE_KEY = "selectionCommand.theme"
 
@@ -63,37 +68,12 @@ export function resolveTheme(
   return prefersDark ? "dark" : "light"
 }
 
-const readCachedTheme = (): ResolvedTheme | null => {
-  try {
-    const value = localStorage.getItem(THEME_CACHE_KEY)
-    return isResolvedTheme(value) ? value : null
-  } catch {
-    return null
-  }
-}
-
 const writeCachedTheme = (theme: ResolvedTheme) => {
   try {
     localStorage.setItem(THEME_CACHE_KEY, theme)
   } catch {
     // The cache only avoids a flash on the next load, so ignore failures.
   }
-}
-
-/**
- * Applies the theme to the document root before React renders, from the
- * cache of the last resolved theme or else the system preference.
- * Without it, components measuring layout in their layout effects (e.g. the
- * Radix Switch) force a style calculation before useTheme sets the
- * attribute, and controls with color transitions then fade from the light
- * colors to the dark ones.
- * Call it in the entry of every extension page that calls useTheme on the
- * document root.
- */
-export function applyInitialTheme(): void {
-  const theme =
-    readCachedTheme() ?? (window.matchMedia(QUERY).matches ? "dark" : "light")
-  document.documentElement.setAttribute(THEME_ATTRIBUTE, theme)
 }
 
 /**
@@ -104,8 +84,7 @@ const setThemeAttribute = (target: Element, theme: ResolvedTheme) => {
   if (target.getAttribute(THEME_ATTRIBUTE) === theme) return
 
   const style = document.createElement("style")
-  style.textContent =
-    "*,*::before,*::after{transition:none!important}"
+  style.textContent = "*,*::before,*::after{transition:none!important}"
   // A stylesheet in the document does not reach into a shadow tree.
   const container = target.shadowRoot ?? document.head
   container.appendChild(style)
@@ -130,7 +109,7 @@ export function useTheme(target: Element | null | undefined): ResolvedTheme {
   const resolved = resolveTheme(userSettings.theme, prefersDark)
 
   // While the settings are loading, keep the theme already applied (see
-  // applyInitialTheme) instead of switching to the system one meanwhile.
+  // public/theme-init.js) instead of switching to the system one meanwhile.
   const applied = target?.getAttribute(THEME_ATTRIBUTE)
   const theme = loading && isResolvedTheme(applied) ? applied : resolved
 

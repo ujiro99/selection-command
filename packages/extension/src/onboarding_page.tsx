@@ -3,7 +3,6 @@ import ReactDOM from "react-dom/client"
 import { OnboardingPage } from "@/components/onboarding/OnboardingPage"
 import { getCurrentLocale } from "@/services/i18n"
 import { initSentry, Sentry, ErrorBoundary } from "@/lib/sentry"
-import { applyInitialTheme } from "@/hooks/useTheme"
 import {
   ANALYTICS_EVENTS,
   sendEvent,
@@ -36,9 +35,6 @@ const reportRenderError = (error: unknown) => {
 initSentry().catch((error) => {
   console.error("Failed to initialize Sentry in onboarding page:", error)
 })
-
-// Apply the theme before the first render to avoid a light flash
-applyInitialTheme()
 
 // Set the document language to the current locale
 document.documentElement.lang = getCurrentLocale()

@@ -3,7 +3,6 @@ import ReactDOM from "react-dom/client"
 import { Option } from "@/components/option/Option"
 import { getCurrentLocale } from "@/services/i18n"
 import { initSentry, Sentry, ErrorBoundary } from "@/lib/sentry"
-import { applyInitialTheme } from "@/hooks/useTheme"
 
 import "@/components/global.css"
 import "@/components/Animation.css"
@@ -12,9 +11,6 @@ import "@/components/Animation.css"
 initSentry().catch((error) => {
   console.error("Failed to initialize Sentry in options page:", error)
 })
-
-// Apply the theme before the first render to avoid a light flash
-applyInitialTheme()
 
 // Set the document language to the current locale
 document.documentElement.lang = getCurrentLocale()

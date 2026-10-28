@@ -5,18 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <title>Option Page</title>
+    <!-- Sets data-sc-theme before the first paint. -->
+    <script src="/theme-init.js"></script>
     <style>
       /*
        * Paint the dark background before the scripts and styles load, so a
-       * dark-mode user does not see a white flash. Once useTheme sets
-       * data-sc-theme, global.css takes over; an explicit light setting
-       * opts out here.
+       * dark-mode user does not see a white flash. theme-init.js has set
+       * data-sc-theme by now; once global.css loads, it takes over.
        */
-      @media (prefers-color-scheme: dark) {
-        html:not([data-sc-theme="light"]) {
-          color-scheme: dark;
-          background-color: hsl(224 71% 4%);
-        }
+      html[data-sc-theme="dark"] {
+        color-scheme: dark;
+        background-color: hsl(224 71% 4%);
       }
     </style>
   </head>
