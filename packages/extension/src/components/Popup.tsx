@@ -131,6 +131,7 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
           side,
           align,
           hasIconColor,
+          zoomCompensation,
         }}
       >
         {isPreview && <PreviewDesc {...props} />}
