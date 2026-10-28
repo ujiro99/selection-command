@@ -6,6 +6,7 @@ import { useSettingsWithImageCache } from "@/hooks/useSettingsWithImageCache"
 import { cn, isMenuCommand } from "@/lib/utils"
 import { toCommandTree } from "@/services/option/commandTree"
 import css from "./Menu.module.css"
+import zc from "@/components/zoomCompensation.module.css"
 import { MenuTreeNode } from "./MenuFolder"
 
 export function Menu(): JSX.Element {
@@ -22,7 +23,10 @@ export function Menu(): JSX.Element {
   return (
     <div
       className={cn(
-        "flex items-center p-0.5 gap-px border rounded-md bg-background",
+        "border bg-background",
+        css.menubar,
+        zc.border,
+        zc.rounded,
         { [css.menuVertical]: !isHorizontal },
       )}
       ref={menuRef}

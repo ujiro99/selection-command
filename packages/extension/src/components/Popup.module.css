@@ -1,7 +1,7 @@
 @reference "./global.css";
 
 .popup {
-  border: solid 1px var(--sc-bd-color);
+  border: solid calc(1px * var(--sc-zoom-compensation, 1)) var(--sc-bd-color);
   font-family: var(--font-family);
   color: var(--sc-font-color);
 

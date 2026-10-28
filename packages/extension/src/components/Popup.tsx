@@ -20,6 +20,7 @@ import { t } from "@/services/i18n"
 import { STYLE_VARIABLE, EXIT_DURATION, SIDE, ALIGN } from "@/const"
 
 import css from "./Popup.module.css"
+import zc from "./zoomCompensation.module.css"
 
 export type PopupProps = {
   positionElm: Element | null
@@ -136,7 +137,12 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
               align={align}
               sideOffset={sideOffset * zoomCompensation}
               alignOffset={alignOffset * zoomCompensation}
-              className={cn(css.popup, isPreview && "z-10 mt-2")}
+              className={cn(
+                css.popup,
+                zc.rounded,
+                zc.shadowXl,
+                isPreview && "z-10 mt-2",
+              )}
               style={userStyles}
               {...onHover(handleOnHover, true)}
             >

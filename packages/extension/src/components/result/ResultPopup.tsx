@@ -8,6 +8,7 @@ import { X } from "lucide-react"
 import popupCss from "@/components/Popup.module.css"
 import { SIDE } from "@/const"
 import css from "./ResultPopup.module.css"
+import zc from "@/components/zoomCompensation.module.css"
 
 // PopoverContent default
 const SIDE_OFFSET = 4
@@ -37,7 +38,13 @@ export function ResultPopup(props: PopupProps) {
       <PopoverContent
         side={isBottom ? SIDE.bottom : SIDE.top}
         sideOffset={SIDE_OFFSET * zoomCompensation}
-        className={cn("bg-background rounded-md border", props.className)}
+        className={cn(
+          "bg-background rounded-md border",
+          zc.border,
+          zc.rounded,
+          zc.shadowXl,
+          props.className,
+        )}
         // Set here as well: results of the context menu and shortcuts are
         // rendered outside the popup menu that sets it.
         style={{ "--sc-zoom-compensation": zoomCompensation } as CSSProperties}

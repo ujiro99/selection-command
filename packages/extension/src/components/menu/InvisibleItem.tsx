@@ -11,6 +11,7 @@ import type { SelectionCommand } from "@/types"
 import { POPUP_OFFSET, ExecState } from "@/const"
 
 import css from "./Menu.module.css"
+import zc from "@/components/zoomCompensation.module.css"
 
 type InvisibleItemProps = {
   positionElm?: Element | null
@@ -111,6 +112,8 @@ function IconWithState(props: ImageProps): JSX.Element {
       className={cn(
         css.iconWithState,
         "shadow-md border border-gray-200 dark:border-border bg-white",
+        zc.border,
+        zc.shadowMd,
       )}
     >
       {status === ExecState.EXECUTING && (

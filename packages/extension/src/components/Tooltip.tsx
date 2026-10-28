@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/popover"
 import { usePopupContext } from "@/hooks/usePopupContext"
 import { useZoomCompensation } from "@/hooks/usePageZoom"
+import zc from "@/components/zoomCompensation.module.css"
 import { SIDE } from "@/const"
 
 // Sizes in px matching the Tailwind classes below, scaled by the zoom
@@ -85,6 +86,8 @@ export function Tooltip(props: PopupProps) {
           className={clsx(
             "bg-gray-800 dark:bg-gray-600 min-w-4 px-2 py-1.5 shadow-md",
             props.className,
+            // Only inside the menu, not to override the caller's className.
+            zoomCompensation !== 1 && [zc.rounded, zc.shadowMd],
           )}
           style={zoomStyle(zoomCompensation)}
           side={props.side ?? (side === SIDE.bottom ? SIDE.bottom : "top")}

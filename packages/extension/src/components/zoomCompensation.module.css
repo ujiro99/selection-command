@@ -1,0 +1,55 @@
+/*
+ * Fixed lengths of Tailwind utilities, scaled by --sc-zoom-compensation to
+ * cancel the browser zoom on the selection menu (see usePageZoom.ts).
+ * These rules are unlayered, so they override the layered utilities that the
+ * elements also have. Outside the menu the variable is unset and they keep
+ * the values of the utilities.
+ */
+
+/* rounded-md: calc(var(--radius) - 2px) */
+.rounded {
+  border-radius: calc(6px * var(--sc-zoom-compensation, 1));
+}
+
+/* rounded-sm: calc(var(--radius) - 4px) */
+.roundedSm {
+  border-radius: calc(4px * var(--sc-zoom-compensation, 1));
+}
+
+/* border */
+.border {
+  border-width: calc(1px * var(--sc-zoom-compensation, 1));
+}
+
+/* shadow-xl */
+.shadowXl {
+  --tw-shadow:
+    0 calc(20px * var(--sc-zoom-compensation, 1))
+      calc(25px * var(--sc-zoom-compensation, 1))
+      calc(-5px * var(--sc-zoom-compensation, 1))
+      var(--tw-shadow-color, #0000001a),
+    0 calc(8px * var(--sc-zoom-compensation, 1))
+      calc(10px * var(--sc-zoom-compensation, 1))
+      calc(-6px * var(--sc-zoom-compensation, 1))
+      var(--tw-shadow-color, #0000001a);
+}
+
+/* shadow-md */
+.shadowMd {
+  --tw-shadow:
+    0 calc(4px * var(--sc-zoom-compensation, 1))
+      calc(6px * var(--sc-zoom-compensation, 1))
+      calc(-1px * var(--sc-zoom-compensation, 1))
+      var(--tw-shadow-color, #0000001a),
+    0 calc(2px * var(--sc-zoom-compensation, 1))
+      calc(4px * var(--sc-zoom-compensation, 1))
+      calc(-2px * var(--sc-zoom-compensation, 1))
+      var(--tw-shadow-color, #0000001a);
+}
+
+/* w-2.5 p-px border-l of the vertical scroll bar */
+.scrollBar {
+  width: calc(10px * var(--sc-zoom-compensation, 1));
+  padding: calc(1px * var(--sc-zoom-compensation, 1));
+  border-left-width: calc(1px * var(--sc-zoom-compensation, 1));
+}
