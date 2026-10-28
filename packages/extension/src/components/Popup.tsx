@@ -56,6 +56,8 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
     const userStyles = {
       ...toCssVariables(userSettings?.userStyles),
       "--sc-zoom-compensation": zoomCompensation,
+      // mt-2, scaled like the other fixed lengths
+      ...(isPreview && { marginTop: 8 * zoomCompensation }),
     } as CSSProperties
 
     useEffect(() => {
@@ -141,7 +143,7 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
                 css.popup,
                 zc.rounded,
                 zc.shadowXl,
-                isPreview && "z-10 mt-2",
+                isPreview && "z-10",
               )}
               style={userStyles}
               {...onHover(handleOnHover, true)}
