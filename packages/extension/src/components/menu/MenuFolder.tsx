@@ -101,16 +101,18 @@ export const MenuFolder = (props: {
   const anchorRef = useRef<HTMLButtonElement | null>(null)
   const contentRef = useRef<HTMLDivElement | null>(null)
 
+  // Fixed lengths are scaled by the zoom compensation, like the menu CSS.
+  const z = useZoomCompensation()
+
   // Anchor button height used to cap the popover content size (maxWidth/maxHeight) so
   // it doesn't grow beyond a fixed number of items.
+  // Re-measured when the zoom compensation changes, which resizes the button.
   const [baseSize, setBaseSize] = useState(0)
   useLayoutEffect(() => {
     if (anchorRef.current && isOpen) {
       setBaseSize(anchorRef.current.getBoundingClientRect().height)
     }
-  }, [isOpen])
-  // Fixed lengths are scaled by the zoom compensation, like the menu CSS.
-  const z = useZoomCompensation()
+  }, [isOpen, z])
   const menubarStyle = isHorizontalContent
     ? {
         maxWidth:
