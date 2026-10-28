@@ -759,7 +759,7 @@
     "message": "Menyesuaikan ukuran menu pop-up dengan zoom halaman."
   },
   "Option_followBrowserZoom_tooltip": {
-    "message": "Jika diaktifkan, menu pop-up membesar dan mengecil mengikuti zoom halaman. Jika Anda mengatur zoom per situs, ukuran menu berbeda di setiap situs. Jika dinonaktifkan, menu selalu berukuran sama berapa pun zoom-nya."
+    "message": "Jika diaktifkan, menu pop-up membesar dan mengecil mengikuti zoom halaman. Jika Anda mengatur zoom per situs, ukuran menu pop-up berbeda di setiap situs. Jika dinonaktifkan, menu pop-up selalu berukuran sama berapa pun zoom-nya."
   },
   "Option_userStyles_add": {
     "message": "Edit Gaya Pengguna"
