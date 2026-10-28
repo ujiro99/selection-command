@@ -30,6 +30,75 @@ vi.mock("@import-if", () => ({
 const mockEnhancedSettings = vi.mocked(enhancedSettings)
 const mockSettings = vi.mocked(Settings)
 
+// Runs first: later tests replace modules (e.g. IPC) with partial mocks.
+describe("Browser zoom", () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    vi.resetModules()
+  })
+
+  it("ZM-01: getZoom responds with the zoom factor of the sender's tab", async () => {
+    vi.mocked(chrome.tabs.getZoom).mockResolvedValue(0.8 as never)
+    const { testExports } = await import("../service_worker")
+    const response = vi.fn()
+
+    const isAsync = testExports.commandFuncs[ServiceWorkerCommand.getZoom](
+      undefined,
+      { tab: { id: 7 } } as chrome.runtime.MessageSender,
+      response,
+    )
+
+    expect(isAsync).toBe(true)
+    await vi.waitFor(() => expect(response).toHaveBeenCalledWith(0.8))
+    expect(chrome.tabs.getZoom).toHaveBeenCalledWith(7)
+  })
+
+  it("ZM-02: getZoom responds with 1 when the sender has no tab", async () => {
+    const { testExports } = await import("../service_worker")
+    const response = vi.fn()
+
+    testExports.commandFuncs[ServiceWorkerCommand.getZoom](
+      undefined,
+      {} as chrome.runtime.MessageSender,
+      response,
+    )
+
+    expect(response).toHaveBeenCalledWith(1)
+    expect(chrome.tabs.getZoom).not.toHaveBeenCalled()
+  })
+
+  it("ZM-03: getZoom responds with 1 when the zoom cannot be read", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {})
+    vi.mocked(chrome.tabs.getZoom).mockRejectedValue(new Error("No tab"))
+    const { testExports } = await import("../service_worker")
+    const response = vi.fn()
+
+    testExports.commandFuncs[ServiceWorkerCommand.getZoom](
+      undefined,
+      { tab: { id: 7 } } as chrome.runtime.MessageSender,
+      response,
+    )
+
+    await vi.waitFor(() => expect(response).toHaveBeenCalledWith(1))
+    warn.mockRestore()
+  })
+
+  it("ZM-04: forwards zoom changes to the tab", async () => {
+    const { Ipc, TabCommand } = await import("@/services/ipc")
+    const sendTab = vi.spyOn(Ipc, "sendTab").mockResolvedValue(true)
+    await import("../service_worker")
+
+    const listener = vi.mocked(chrome.tabs.onZoomChange.addListener).mock
+      .calls[0][0]
+    listener({ tabId: 7, newZoomFactor: 1.5 } as never)
+
+    expect(sendTab).toHaveBeenCalledWith(7, TabCommand.zoomChanged, {
+      zoomFactor: 1.5,
+    })
+    sendTab.mockRestore()
+  })
+})
+
 describe("Service Worker Migration", () => {
   // Common test data factory
   const createTestSettings = (overrides = {}) => ({

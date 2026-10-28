@@ -752,6 +752,15 @@
   "Option_theme_dark": {
     "message": "Escuro"
   },
+  "Option_followBrowserZoom": {
+    "message": "Acompanhar o zoom do navegador"
+  },
+  "Option_followBrowserZoom_desc": {
+    "message": "Ajusta o tamanho do menu pop-up ao zoom da página."
+  },
+  "Option_followBrowserZoom_tooltip": {
+    "message": "Quando ativado, o menu pop-up aumenta e diminui com o zoom da página. Se você definir o zoom por site, o tamanho do menu pop-up varia de site para site. Quando desativado, o menu pop-up sempre mantém o mesmo tamanho, independentemente do zoom."
+  },
   "Option_userStyles_add": {
     "message": "Editar Estilo do Usuário"
   },

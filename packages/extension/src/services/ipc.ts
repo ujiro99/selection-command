@@ -63,6 +63,7 @@ export enum ServiceWorkerCommand {
   toggleStar = "toggleStar",
   getTabId = "getTabId",
   getActiveTabId = "getActiveTabId",
+  getZoom = "getZoom",
   closeTab = "closeTab",
   resolveIconColors = "resolveIconColors",
   // Hub
@@ -93,6 +94,7 @@ export enum TabCommand {
   showReviewRequest = "showReviewRequest",
   showToast = "showToast",
   confirmCommandUpdate = "confirmCommandUpdate",
+  zoomChanged = "zoomChanged",
   // PageAction
   sendWindowSize = "sendWindowSize",
   execPageAction = "execPageAction",
@@ -103,6 +105,11 @@ export enum TabCommand {
 /** Asks the user whether to overwrite a locally edited command. */
 export type ConfirmCommandUpdateProps = {
   title: string
+}
+
+/** Notifies a tab that the browser zoom of its page has changed. */
+export type ZoomChangedProps = {
+  zoomFactor: number
 }
 
 export type ClickElementProps = {
@@ -573,6 +580,11 @@ export const Ipc = {
 
   async getActiveTabId() {
     return Ipc.send(ServiceWorkerCommand.getActiveTabId)
+  },
+
+  /** Returns the browser zoom factor of the sender's tab (1 = 100%). */
+  async getZoom(): Promise<number> {
+    return Ipc.send(ServiceWorkerCommand.getZoom)
   },
 
   async sendQueue(tabId: number, command: IpcCommand, param?: unknown) {

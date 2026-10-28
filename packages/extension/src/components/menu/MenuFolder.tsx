@@ -8,7 +8,9 @@ import { ChevronRight } from "lucide-react"
 import { HoverArea } from "@/components/menu/HoverArea"
 import { MenuImage } from "@/components/menu/MenuImage"
 import { usePopupContext } from "@/hooks/usePopupContext"
+import { useZoomCompensation } from "@/hooks/usePageZoom"
 import css from "./Menu.module.css"
+import zc from "@/components/zoomCompensation.module.css"
 import type {
   ResolvedCommand,
   ResolvedFolder,
@@ -99,35 +101,39 @@ export const MenuFolder = (props: {
   const anchorRef = useRef<HTMLButtonElement | null>(null)
   const contentRef = useRef<HTMLDivElement | null>(null)
 
+  // Fixed lengths are scaled by the zoom compensation, like the menu CSS.
+  const z = useZoomCompensation()
+
   // Anchor button height used to cap the popover content size (maxWidth/maxHeight) so
   // it doesn't grow beyond a fixed number of items.
+  // Re-measured when the zoom compensation changes, which resizes the button.
   const [baseSize, setBaseSize] = useState(0)
   useLayoutEffect(() => {
     if (anchorRef.current && isOpen) {
       setBaseSize(anchorRef.current.getBoundingClientRect().height)
     }
-  }, [isOpen])
+  }, [isOpen, z])
   const menubarStyle = isHorizontalContent
     ? {
         maxWidth:
           baseSize * 10 /* buttons */ +
-          1 * 9 /* gap */ +
-          2 * 2 /* padding */ +
-          1 * 2 /* border */,
+          1 * 9 * z /* gap */ +
+          2 * 2 * z /* padding */ +
+          1 * 2 * z /* border */,
       }
     : {
         maxHeight:
           baseSize * 11.5 /* buttons */ +
-          1 * 10 /* gap */ +
-          2 * 2 /* padding */ +
-          1 * 2 /* border */,
+          1 * 10 * z /* gap */ +
+          2 * 2 * z /* padding */ +
+          1 * 2 * z /* border */,
       }
 
   return (
     <Popover open={isOpen}>
       <PopoverAnchor asChild>
         <button
-          className={cn("rounded-sm", css.item, css.folder, {
+          className={cn(zc.roundedSm, css.item, css.folder, {
             [css.itemHorizontal]: isHorizontal,
             [css.folderHorizontal]: isHorizontal,
             "pointer-events-none": inTransition,
@@ -159,18 +165,25 @@ export const MenuFolder = (props: {
         side={menuSide}
         sideOffset={isHorizontal ? 2 : -2}
         align="start"
-        className={cn("bg-background border", {
-          flex: isHorizontalContent,
-        })}
+        className={cn(
+          "bg-background border",
+          zc.border,
+          zc.rounded,
+          zc.shadowXl,
+          { flex: isHorizontalContent },
+        )}
         ref={contentRef}
         onInteractOutside={(e) => e.preventDefault()}
         role="menu"
         {...onHover(props.onHoverContent, folder.id)}
       >
-        <ScrollAreaConditional scrollEnabled={!isHorizontalContent}>
+        <ScrollAreaConditional
+          scrollEnabled={!isHorizontalContent}
+          scrollBarClassName={zc.scrollBar}
+        >
           <div
             style={menubarStyle}
-            className={cn("flex items-center p-0.5 gap-px", {
+            className={cn(css.menubar, {
               [css.menuVertical]: !isHorizontalContent,
               "flex-wrap": isHorizontalContent,
             })}

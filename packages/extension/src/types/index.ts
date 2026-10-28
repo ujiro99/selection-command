@@ -226,6 +226,8 @@ export type UserSettings = {
   style: STYLE
   /** Color theme. Settings saved before this option existed lack it. */
   theme?: THEME
+  /** Popup menu follows the browser zoom. Missing in older settings (= true). */
+  followBrowserZoom?: boolean
   userStyles: Array<StyleVariable>
   shortcuts: ShortcutSettings
   windowOption: WindowOption
