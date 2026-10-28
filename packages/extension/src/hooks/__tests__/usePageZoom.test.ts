@@ -5,8 +5,8 @@ import { usePageZoom } from "../usePageZoom"
 const mockIpc = vi.hoisted(() => ({
   getZoom: vi.fn(),
   addListener: vi.fn(),
-  removeListener: vi.fn(),
 }))
+const mockRemoveListener = vi.hoisted(() => vi.fn())
 
 vi.mock("@/services/ipc", () => ({
   Ipc: mockIpc,
@@ -25,6 +25,7 @@ describe("usePageZoom", () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockIpc.getZoom.mockResolvedValue(0.8)
+    mockIpc.addListener.mockReturnValue(mockRemoveListener)
   })
 
   it("ZOOM-01: 正常系: 有効時はタブのズーム倍率を返す", async () => {
@@ -56,7 +57,7 @@ describe("usePageZoom", () => {
 
     rerender({ enabled: false })
     expect(result.current).toBe(1)
-    expect(mockIpc.removeListener).toHaveBeenCalledWith("zoomChanged")
+    expect(mockRemoveListener).toHaveBeenCalledTimes(1)
   })
 
   it("ZOOM-05: 異常系: 倍率の取得に失敗しても 1 を返す", async () => {

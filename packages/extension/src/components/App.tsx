@@ -58,10 +58,10 @@ export function App({ rootElm }: Props) {
       return true
     }
 
-    Ipc.addListener<ShowToastParam>(TabCommand.showToast, handleShowToast)
-    return () => {
-      Ipc.removeListener(TabCommand.showToast)
-    }
+    return Ipc.addListener<ShowToastParam>(
+      TabCommand.showToast,
+      handleShowToast,
+    )
   }, [])
 
   useEffect(() => {
@@ -73,10 +73,10 @@ export function App({ rootElm }: Props) {
       return true
     }
 
-    Ipc.addListener(TabCommand.showReviewRequest, handleShowReviewRequest)
-    return () => {
-      Ipc.removeListener(TabCommand.showReviewRequest)
-    }
+    return Ipc.addListener(
+      TabCommand.showReviewRequest,
+      handleShowReviewRequest,
+    )
   }, [])
 
   return (

@@ -26,13 +26,10 @@ export function useDetectStartup(props: Props) {
   visible = visible || isPreview === true
 
   useEffect(() => {
-    Ipc.addListener(TabCommand.closeMenu, () => {
+    return Ipc.addListener(TabCommand.closeMenu, () => {
       setHide(true)
       return false
     })
-    return () => {
-      Ipc.removeListener(TabCommand.closeMenu)
-    }
   }, [])
 
   useEffect(() => {

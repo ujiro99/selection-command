@@ -7,13 +7,12 @@ export function useContextMenu() {
   const [action, setAction] = useState<executeActionProps | null>(null)
 
   useEffect(() => {
-    Ipc.addListener(TabCommand.executeAction, ((param: executeActionProps) => {
+    return Ipc.addListener(TabCommand.executeAction, ((
+      param: executeActionProps,
+    ) => {
       setAction(param)
       return false
     }) as IpcCallback)
-    return () => {
-      Ipc.removeListener(TabCommand.executeAction)
-    }
   }, [])
 
   const clearAction = () => setAction(null)
