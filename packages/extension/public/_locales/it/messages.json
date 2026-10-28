@@ -756,7 +756,10 @@
     "message": "Segui lo zoom del browser"
   },
   "Option_followBrowserZoom_desc": {
-    "message": "Se disattivato, il menu a comparsa mantiene la stessa dimensione indipendentemente dallo zoom della pagina."
+    "message": "Adatta la dimensione del menu a comparsa allo zoom della pagina."
+  },
+  "Option_followBrowserZoom_tooltip": {
+    "message": "Se attivato, il menu a comparsa si ingrandisce e si riduce con lo zoom della pagina. Se imposti lo zoom per sito, la dimensione del menu varia da sito a sito. Se disattivato, il menu mantiene sempre la stessa dimensione indipendentemente dallo zoom."
   },
   "Option_userStyles_add": {
     "message": "Modifica stile utente"

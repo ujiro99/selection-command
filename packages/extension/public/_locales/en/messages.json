@@ -760,7 +760,10 @@
     "message": "Follow browser zoom"
   },
   "Option_followBrowserZoom_desc": {
-    "message": "When off, the pop-up menu keeps the same size regardless of the page zoom."
+    "message": "Scales the pop-up menu with the page zoom."
+  },
+  "Option_followBrowserZoom_tooltip": {
+    "message": "When on, the pop-up menu grows and shrinks with the zoom level of the page. If you set the zoom per site, the menu size differs from site to site. When off, the menu always keeps the same size regardless of the zoom."
   },
   "Option_userStyles_add": {
     "message": "Edit User Style"

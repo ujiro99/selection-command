@@ -756,7 +756,10 @@
     "message": "브라우저 확대/축소 따르기"
   },
   "Option_followBrowserZoom_desc": {
-    "message": "끄면 페이지 확대/축소 배율과 관계없이 팝업 메뉴가 같은 크기로 표시됩니다."
+    "message": "팝업 메뉴 크기를 페이지 확대/축소에 맞춥니다."
+  },
+  "Option_followBrowserZoom_tooltip": {
+    "message": "켜면 페이지의 확대/축소 배율에 맞춰 팝업 메뉴도 확대·축소됩니다. 사이트별로 확대/축소를 설정한 경우 사이트마다 메뉴 크기가 달라집니다. 끄면 확대/축소 배율과 관계없이 항상 같은 크기로 표시됩니다."
   },
   "Option_userStyles_add": {
     "message": "사용자 스타일 편집"

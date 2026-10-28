@@ -756,7 +756,10 @@
     "message": "Browser-Zoom folgen"
   },
   "Option_followBrowserZoom_desc": {
-    "message": "Wenn deaktiviert, behält das Pop-up-Menü unabhängig vom Seitenzoom dieselbe Größe."
+    "message": "Passt die Größe des Pop-up-Menüs an den Seitenzoom an."
+  },
+  "Option_followBrowserZoom_tooltip": {
+    "message": "Wenn aktiviert, wird das Pop-up-Menü mit dem Zoom der Seite vergrößert und verkleinert. Wenn Sie den Zoom pro Website festlegen, ist das Menü je nach Website unterschiedlich groß. Wenn deaktiviert, behält das Menü unabhängig vom Zoom immer dieselbe Größe."
   },
   "Option_userStyles_add": {
     "message": "Benutzerstil bearbeiten"

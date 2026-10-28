@@ -756,7 +756,10 @@
     "message": "Seguir el zoom del navegador"
   },
   "Option_followBrowserZoom_desc": {
-    "message": "Si se desactiva, el menú emergente mantiene el mismo tamaño independientemente del zoom de la página."
+    "message": "Ajusta el tamaño del menú emergente al zoom de la página."
+  },
+  "Option_followBrowserZoom_tooltip": {
+    "message": "Si se activa, el menú emergente se amplía y reduce con el zoom de la página. Si configura el zoom por sitio, el tamaño del menú varía según el sitio. Si se desactiva, el menú siempre mantiene el mismo tamaño independientemente del zoom."
   },
   "Option_userStyles_add": {
     "message": "Editar Estilo de Usuario"

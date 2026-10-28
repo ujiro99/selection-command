@@ -756,7 +756,10 @@
     "message": "Suivre le zoom du navigateur"
   },
   "Option_followBrowserZoom_desc": {
-    "message": "Si désactivé, le menu contextuel conserve la même taille quel que soit le zoom de la page."
+    "message": "Adapte la taille du menu contextuel au zoom de la page."
+  },
+  "Option_followBrowserZoom_tooltip": {
+    "message": "Si activé, le menu contextuel s'agrandit et se réduit avec le zoom de la page. Si vous définissez le zoom par site, la taille du menu varie selon le site. Si désactivé, le menu conserve toujours la même taille quel que soit le zoom."
   },
   "Option_userStyles_add": {
     "message": "Modifier le Style Utilisateur"

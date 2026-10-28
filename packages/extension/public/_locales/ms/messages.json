@@ -756,7 +756,10 @@
     "message": "Ikut zum pelayar"
   },
   "Option_followBrowserZoom_desc": {
-    "message": "Apabila dimatikan, menu pop timbul kekal pada saiz yang sama tanpa mengira zum halaman."
+    "message": "Menyesuaikan saiz menu pop timbul dengan zum halaman."
+  },
+  "Option_followBrowserZoom_tooltip": {
+    "message": "Apabila dihidupkan, menu pop timbul membesar dan mengecil mengikut zum halaman. Jika anda menetapkan zum bagi setiap tapak, saiz menu berbeza mengikut tapak. Apabila dimatikan, menu sentiasa kekal pada saiz yang sama tanpa mengira zum."
   },
   "Option_userStyles_add": {
     "message": "Edit Gaya Pengguna"

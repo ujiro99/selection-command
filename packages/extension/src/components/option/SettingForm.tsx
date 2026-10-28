@@ -735,6 +735,7 @@ export function SettingForm({ className }: { className?: string }) {
             name="followBrowserZoom"
             formLabel={t("followBrowserZoom")}
             description={t("followBrowserZoom_desc")}
+            tooltip={t("followBrowserZoom_tooltip")}
           />
           <UserStyleList control={form.control} />
         </section>
