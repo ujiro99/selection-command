@@ -1,8 +1,9 @@
 import { describe, it, expect } from "vitest"
-import {
+import DefaultSettings, {
   DefaultCommands,
   getDefaultCommands,
   COMMAND_SEARCH_ID,
+  emptySettings,
 } from "../defaultSettings"
 import { isLinkCommand } from "@/lib/utils"
 import { INSERT, toInsertTemplate } from "@/services/pageAction"
@@ -310,5 +311,15 @@ describe("getDefaultCommands", () => {
       expect((cmd as any).aiPromptOption.prompt).toContain(SYM_SELECTED_TEXT)
       expect((cmd as any).parentFolderId).toBeUndefined()
     }
+  })
+})
+
+describe("followBrowserZoom default", () => {
+  it("DS-26: new installs do not follow the browser zoom", () => {
+    expect(DefaultSettings.followBrowserZoom).toBe(false)
+  })
+
+  it("DS-27: the loading state follows the browser zoom as existing installs do", () => {
+    expect(emptySettings.followBrowserZoom).toBe(true)
   })
 })

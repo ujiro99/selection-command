@@ -153,7 +153,9 @@ export default {
   pageRules: [],
   style: STYLE.HORIZONTAL,
   theme: THEME.SYSTEM,
-  followBrowserZoom: true,
+  // New installs keep the popup size under browser zoom. Settings of existing
+  // installs lack this option and keep following the zoom (see types).
+  followBrowserZoom: false,
   startupMethod: {
     method: STARTUP_METHOD.TEXT_SELECTION,
     keepMenuOpenOnFocusChange: false,

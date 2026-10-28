@@ -228,7 +228,8 @@ export type UserSettings = {
   theme?: THEME
   /**
    * Whether the popup menu scales with the browser zoom of the page.
-   * Settings saved before this option existed lack it (treated as true).
+   * New installs default to false. Settings saved before this option existed
+   * lack it and are treated as true, which keeps their previous behavior.
    */
   followBrowserZoom?: boolean
   userStyles: Array<StyleVariable>
