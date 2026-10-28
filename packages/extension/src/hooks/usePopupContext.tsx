@@ -8,8 +8,6 @@ export type ContextType = {
   side: SIDE
   align: ALIGN
   hasIconColor?: boolean
-  // Inverse of the browser zoom to cancel, or 1 to follow the zoom.
-  zoomCompensation?: number
 }
 
 export const popupContext = createContext<ContextType>({} as ContextType)

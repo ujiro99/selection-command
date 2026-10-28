@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useMemo } from "react"
+import React, { useRef, useEffect, useMemo, type CSSProperties } from "react"
 import { cn } from "@/lib/utils"
 
 import { ResultPopup } from "@/components/result/ResultPopup"
@@ -6,6 +6,7 @@ import { RefreshCw, Check, AlertCircle } from "lucide-react"
 import { useContextMenu } from "@/hooks/useContextMenu"
 import { useSelectContext } from "@/hooks/useSelectContext"
 import { useCommandExecutor } from "@/hooks/useCommandExecutor"
+import { useZoomCompensation } from "@/hooks/usePageZoom"
 import type { SelectionCommand } from "@/types"
 import { POPUP_OFFSET, ExecState } from "@/const"
 
@@ -21,6 +22,7 @@ export function InvisibleItem(props: InvisibleItemProps): React.ReactNode {
   const { itemState, result, executeCommand, clearResult } =
     useCommandExecutor()
   const elmRef = useRef<HTMLDivElement>(null)
+  const zoomCompensation = useZoomCompensation()
 
   useEffect(() => {
     clearResult()
@@ -53,14 +55,16 @@ export function InvisibleItem(props: InvisibleItemProps): React.ReactNode {
 
   const style = useMemo(() => {
     return {
+      // This item is outside the popup menu, which sets it for the menu.
+      "--sc-zoom-compensation": zoomCompensation,
       position: "absolute" as const,
       top: window.scrollY + position.y,
       left: window.scrollX + position.x,
       height: 0,
       width: 0,
       pointerEvents: "none" as const,
-    }
-  }, [position])
+    } as CSSProperties
+  }, [position, zoomCompensation])
 
   if (action != null) {
     executeCommand({
@@ -106,7 +110,7 @@ function IconWithState(props: ImageProps): JSX.Element {
     <div
       className={cn(
         css.iconWithState,
-        "shadow-md border border-gray-200 dark:border-border bg-white w-5 h-5",
+        "shadow-md border border-gray-200 dark:border-border bg-white",
       )}
     >
       {status === ExecState.EXECUTING && (

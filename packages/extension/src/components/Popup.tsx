@@ -9,7 +9,7 @@ import { useSidePanelAutoClose } from "@/hooks/useSidePanelAutoClose"
 import { useSelectContext } from "@/hooks/useSelectContext"
 import { popupContext } from "@/hooks/usePopupContext"
 import { useThemeContext } from "@/hooks/useTheme"
-import { usePageZoom } from "@/hooks/usePageZoom"
+import { useZoomCompensation } from "@/hooks/usePageZoom"
 import { isMac, onHover, cn } from "@/lib/utils"
 import {
   findUserStyleValue,
@@ -51,14 +51,7 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
     const sideOffset = isPreview ? 0 : (placement?.sideOffset ?? 0)
     const alignOffset = isPreview ? 0 : (placement?.alignOffset ?? 0)
 
-    // When the popup should not follow the browser zoom, scale the menu
-    // sizes by the inverse zoom factor. CSS `zoom` is not used: floating-ui
-    // does not account for it, which misplaces the folder submenus.
-    // The preview on the options page keeps the zoom of the options page.
-    const zoomFactor = usePageZoom(
-      !isPreview && userSettings?.followBrowserZoom === false,
-    )
-    const zoomCompensation = 1 / zoomFactor
+    const zoomCompensation = useZoomCompensation()
     const userStyles = {
       ...toCssVariables(userSettings?.userStyles),
       "--sc-zoom-compensation": zoomCompensation,
@@ -131,7 +124,6 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
           side,
           align,
           hasIconColor,
-          zoomCompensation,
         }}
       >
         {isPreview && <PreviewDesc {...props} />}

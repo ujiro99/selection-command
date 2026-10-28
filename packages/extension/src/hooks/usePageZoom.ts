@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { createContext, useContext, useEffect, useState } from "react"
 import { Ipc, TabCommand } from "@/services/ipc"
 import type { ZoomChangedProps } from "@/services/ipc"
 
@@ -44,3 +44,17 @@ export function usePageZoom(enabled: boolean): number {
 
   return enabled ? zoomFactor : 1
 }
+
+/**
+ * Inverse of the browser zoom that the selection menu cancels, or 1 when it
+ * follows the zoom. Provided by the content script around the menu UI only,
+ * so every other UI (e.g. the options page) gets 1.
+ *
+ * Fixed sizes are multiplied by it, either in JS or via the
+ * `--sc-zoom-compensation` CSS variable. CSS `zoom` is not used: floating-ui
+ * does not account for it, which misplaces the nested popovers.
+ */
+export const zoomCompensationContext = createContext(1)
+
+export const useZoomCompensation = (): number =>
+  useContext(zoomCompensationContext)

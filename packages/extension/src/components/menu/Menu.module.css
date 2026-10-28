@@ -97,13 +97,18 @@
   color: rgb(220 38 38);
 }
 
+/* Shown outside the popup menu, so sizes follow the zoom compensation here. */
 .iconWithState {
+  --sc-image-size: calc(16px * var(--sc-zoom-compensation, 1));
+
   background: #fff;
   @variant dark {
     background: hsl(var(--background));
   }
-  padding: var(--sc-padding, 1px);
-  border-radius: 6px;
+  width: calc(20px * var(--sc-zoom-compensation, 1));
+  height: calc(20px * var(--sc-zoom-compensation, 1));
+  padding: calc(1px * var(--sc-zoom-compensation, 1));
+  border-radius: calc(6px * var(--sc-zoom-compensation, 1));
   line-height: 1;
 }
 

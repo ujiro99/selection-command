@@ -7,10 +7,11 @@ import {
   PopoverArrow,
 } from "@/components/ui/popover"
 import { usePopupContext } from "@/hooks/usePopupContext"
+import { useZoomCompensation } from "@/hooks/usePageZoom"
 import { SIDE } from "@/const"
 
-// Sizes in px, scaled by zoomCompensation inside the popup menu when it does
-// not follow the browser zoom. They match the Tailwind classes below.
+// Sizes in px matching the Tailwind classes below, scaled by the zoom
+// compensation inside the selection menu.
 const FONT_SIZE = 12 // text-xs
 const PADDING_X = 8 // px-2
 const PADDING_Y = 6 // py-1.5
@@ -38,12 +39,8 @@ type PopupProps = {
 }
 
 export function Tooltip(props: PopupProps) {
-  const {
-    side,
-    inTransition,
-    inOnboarding,
-    zoomCompensation = 1,
-  } = usePopupContext()
+  const { side, inTransition, inOnboarding } = usePopupContext()
+  const zoomCompensation = useZoomCompensation()
   const delay = props.delay ?? 300
   const [isOpen, setIsOpen] = useState(false)
   const [shouldRender, setShouldRender] = useState(false)
