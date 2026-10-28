@@ -42,7 +42,7 @@ export const emptySettings: SettingsType = {
   pageRules: [],
   style: STYLE.HORIZONTAL,
   theme: THEME.SYSTEM,
-  followBrowserZoom: true,
+  followBrowserZoom: false,
   popupPlacement: {
     side: SIDE.top,
     align: ALIGN.start,
@@ -153,8 +153,6 @@ export default {
   pageRules: [],
   style: STYLE.HORIZONTAL,
   theme: THEME.SYSTEM,
-  // New installs keep the popup size under browser zoom. Settings of existing
-  // installs lack this option and keep following the zoom (see types).
   followBrowserZoom: false,
   startupMethod: {
     method: STARTUP_METHOD.TEXT_SELECTION,

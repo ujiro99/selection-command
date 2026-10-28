@@ -317,9 +317,6 @@ describe("getDefaultCommands", () => {
 describe("followBrowserZoom default", () => {
   it("DS-26: new installs do not follow the browser zoom", () => {
     expect(DefaultSettings.followBrowserZoom).toBe(false)
-  })
-
-  it("DS-27: the loading state follows the browser zoom as existing installs do", () => {
-    expect(emptySettings.followBrowserZoom).toBe(true)
+    expect(emptySettings.followBrowserZoom).toBe(false)
   })
 })

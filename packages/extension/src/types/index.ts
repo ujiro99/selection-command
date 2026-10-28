@@ -226,11 +226,7 @@ export type UserSettings = {
   style: STYLE
   /** Color theme. Settings saved before this option existed lack it. */
   theme?: THEME
-  /**
-   * Whether the popup menu scales with the browser zoom of the page.
-   * New installs default to false. Settings saved before this option existed
-   * lack it and are treated as true, which keeps their previous behavior.
-   */
+  /** Popup menu follows the browser zoom. Missing in older settings (= true). */
   followBrowserZoom?: boolean
   userStyles: Array<StyleVariable>
   shortcuts: ShortcutSettings
