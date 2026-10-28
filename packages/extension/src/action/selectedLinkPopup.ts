@@ -7,7 +7,7 @@ import {
   OpenSidePanelProps,
 } from "@/services/chrome"
 import { OPEN_MODE, POPUP_TYPE, LINK_POPUP_MAX_URLS } from "@/const"
-import { isLinkPopupType } from "@/types/schema"
+import { isLinkPopupCommand } from "@/lib/commandGuards"
 import type { ExecuteCommandParams } from "@/types"
 
 export const SelectedLinkPopup = {
@@ -17,7 +17,7 @@ export const SelectedLinkPopup = {
     selectionText,
     useSecondary,
   }: ExecuteCommandParams) {
-    if (!isLinkPopupType(command)) {
+    if (!isLinkPopupCommand(command)) {
       console.error("command is not for SelectedLinkPopup.")
       return
     }

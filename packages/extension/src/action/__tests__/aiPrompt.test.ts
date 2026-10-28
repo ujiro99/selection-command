@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
-import { AiPrompt, convertUrlsToMarkdown } from "../aiPrompt"
+import { AiPrompt } from "../aiPrompt"
 import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
 import { findAiService } from "@/services/aiPrompt"
 import { Storage } from "@/services/storage"
@@ -13,7 +13,7 @@ import {
   SelectorType,
 } from "@/const"
 import { INSERT, toInsertTemplate } from "@/services/pageAction"
-import { needsClipboard } from "@/lib/utils"
+import { needsClipboard } from "@/lib/url"
 import type { AiService } from "@/types"
 
 vi.mock("@/services/ipc", () => ({
@@ -778,55 +778,6 @@ describe("AiPrompt.execute", () => {
       expect(sentArgs.url.selectionText).toBe(
         "Summarize: https://example.com/page",
       )
-    })
-  })
-
-  describe("convertUrlsToMarkdown", () => {
-    it("CU-01: should convert a bare URL to Markdown link format", () => {
-      expect(convertUrlsToMarkdown("https://example.com")).toBe(
-        "[https://example.com](https://example.com)",
-      )
-    })
-
-    it("CU-02: should convert multiple bare URLs in text", () => {
-      const result = convertUrlsToMarkdown(
-        "Check https://example.com and https://other.com for details",
-      )
-      expect(result).toBe(
-        "Check [https://example.com](https://example.com) and [https://other.com](https://other.com) for details",
-      )
-    })
-
-    it("CU-03: should not double-convert URLs already in Markdown format", () => {
-      const input = "[https://example.com](https://example.com)"
-      expect(convertUrlsToMarkdown(input)).toBe(input)
-    })
-
-    it("CU-03b: should not convert Markdown links with non-URL text labels", () => {
-      const input = "[Example Site](https://example.com)"
-      expect(convertUrlsToMarkdown(input)).toBe(input)
-    })
-
-    it("CU-04: should handle text with no URLs unchanged", () => {
-      expect(convertUrlsToMarkdown("hello world")).toBe("hello world")
-    })
-
-    it("CU-05: should convert http URLs as well as https", () => {
-      expect(convertUrlsToMarkdown("http://example.com")).toBe(
-        "[http://example.com](http://example.com)",
-      )
-    })
-
-    it("CU-06: should strip trailing comma from URL", () => {
-      const result = convertUrlsToMarkdown("Check https://example.com, please")
-      expect(result).toBe(
-        "Check [https://example.com](https://example.com), please",
-      )
-    })
-
-    it("CU-07: should strip trailing period from URL", () => {
-      const result = convertUrlsToMarkdown("See https://example.com.")
-      expect(result).toBe("See [https://example.com](https://example.com).")
     })
   })
 })

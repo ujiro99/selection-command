@@ -41,17 +41,10 @@ import {
   STYLE_VARIABLE,
 } from "@/const"
 import type { UserSettings } from "@/types"
-import {
-  isMenuCommand,
-  isLinkCommand,
-  isMac,
-  isEmpty,
-  sleep,
-  e2a,
-  cn,
-} from "@/lib/utils"
+import { isMac, isEmpty, sleep, e2a, cn } from "@/lib/utils"
+import { isSelectionCommand, isLinkCommand } from "@/lib/commandGuards"
 import { toCommandTree, toFlatten } from "@/services/option/commandTree"
-import { isCommand, removeUnstoredParam } from "@/services/option/commandUtils"
+import { removeUnstoredParam } from "@/services/option/commandUtils"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { Settings } from "@/services/settings/settings"
 import { isSidePanelSupported } from "@/services/sidePanelSupport"
@@ -197,7 +190,7 @@ export function SettingForm({ className }: { className?: string }) {
         openMode: linkCommand.openMode,
       }
     }
-    settings.commands = settings.commands.filter(isMenuCommand)
+    settings.commands = settings.commands.filter(isSelectionCommand)
     // Settings saved before the theme option existed lack it.
     settings.theme = settings.theme ?? THEME.SYSTEM
     return settings as FormValues
@@ -255,7 +248,7 @@ export function SettingForm({ className }: { className?: string }) {
       const commandTree = toCommandTree(settings.commands, settings.folders)
       const commands = toFlatten(commandTree)
         .map((f: any) => f.content)
-        .filter(isCommand)
+        .filter(isSelectionCommand)
         .map(removeUnstoredParam)
 
       settings.commands = [...commands, ...linkCommands]

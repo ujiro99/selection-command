@@ -1,4 +1,5 @@
-import { sleep, toUrl, isOverBytes, needsClipboard } from "@/lib/utils"
+import { sleep, isOverBytes } from "@/lib/utils"
+import { toUrl, needsClipboard } from "@/lib/url"
 import type { ScreenSize } from "@/services/dom"
 import type { ShowToastParam, UrlParam, WindowLayer } from "@/types"
 import {

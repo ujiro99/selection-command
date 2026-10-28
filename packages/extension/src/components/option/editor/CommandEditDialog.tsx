@@ -85,20 +85,20 @@ import { getScreenSize } from "@/services/screen"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
 
-import { isEmpty, e2a, cn, parseGeminiUrl, generateId } from "@/lib/utils"
+import { isEmpty, e2a, cn, generateId } from "@/lib/utils"
+import {
+  isSearchCommand,
+  isPageActionCommand,
+  isLinkPopupCommand,
+  isSearchOpenMode,
+} from "@/lib/commandGuards"
+import { parseGeminiUrl } from "@/lib/url"
 import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
 import { SEARCH_OPEN_MODE } from "@shared/constants/open-mode"
-import { isSearchOpenMode } from "@shared/utils/type-guards"
 
-import {
-  isSearchType,
-  commandSchema,
-  CommandSchemaType,
-  isPageActionType,
-  isLinkPopupType,
-} from "@/types/schema"
+import { commandSchema, CommandSchemaType } from "@/types/schema"
 import type {
   SelectionCommand,
   CommandFolder,
@@ -146,7 +146,7 @@ const getDefault = (
       // Staying in search mode: add default windowState when switching to WINDOW
       if (
         openMode === OPEN_MODE.WINDOW &&
-        isSearchType(base) &&
+        isSearchCommand(base) &&
         base.windowState == null
       ) {
         return { ...base, ...sourceDefaults, windowState: WINDOW_STATE.NORMAL }
@@ -156,7 +156,7 @@ const getDefault = (
 
     // Switching from non-search mode (e.g. PAGE_ACTION) to search mode
     let searchUrl = ""
-    if (base && isPageActionType(base) && base.pageActionOption.startUrl) {
+    if (base && isPageActionCommand(base) && base.pageActionOption.startUrl) {
       searchUrl = base.pageActionOption.startUrl
     }
 
@@ -352,7 +352,7 @@ const CommandEditDialogInner = ({
     if (d.parentFolderId === ROOT_FOLDER) {
       d.parentFolderId = undefined
     }
-    if (isSearchType(d)) {
+    if (isSearchCommand(d)) {
       if (d.popupOption != null) {
         d.popupOption = {
           width: Number(d.popupOption.width),
@@ -459,7 +459,7 @@ const CommandEditDialogInner = ({
       if (isEmpty(initialCommand.parentFolderId)) {
         initialCommand.parentFolderId = ROOT_FOLDER
       }
-      if (isLinkPopupType(initialCommand)) {
+      if (isLinkPopupCommand(initialCommand)) {
         reset({
           ...LINK_POPUP_OPTION_DEFAULTS,
           ...initialCommand,

@@ -1,6 +1,7 @@
 import { ReactNode, useState, useEffect, useRef } from "react"
 import { fetchIconUrl } from "@/services/chrome"
-import { isEmpty, isUrl } from "@/lib/utils"
+import { isEmpty } from "@/lib/utils"
+import { isUrl } from "@/lib/url"
 import { FaviconContext, FaviconEvent } from "@/context/faviconContext"
 
 export type ParamDetail = {

@@ -21,10 +21,10 @@ import {
 } from "@/const"
 
 import { t } from "@/services/i18n"
-import { isEmpty, isReservedVariableName, parseGeminiUrl } from "@/lib/utils"
+import { isEmpty, isReservedVariableName } from "@/lib/utils"
+import { parseGeminiUrl } from "@/lib/url"
 import { SEARCH_OPEN_MODE } from "@shared/constants/open-mode"
 import { countHtmlAttachments } from "@/services/pageAction"
-import type { AiPromptCommand, LinkPopupCommand } from "@/types"
 
 export const COMMAND_TITLE_MIN_LENGTH = 2
 export const COMMAND_TITLE_MAX_LENGTH = 100
@@ -90,20 +90,6 @@ const searchSchema = z.object({
   windowState: z.nativeEnum(WINDOW_STATE).optional(),
 })
 
-type SearchType = z.infer<typeof searchSchema>
-
-export const isSearchType = (data: unknown): data is SearchType => {
-  if (!data || typeof data !== "object") {
-    return false
-  }
-  if (!("openMode" in data)) {
-    return false
-  }
-  return SEARCH_OPEN_MODE.includes(
-    data.openMode as (typeof SEARCH_OPEN_MODE)[number],
-  )
-}
-
 const apiSchema = z.object({
   openMode: z.literal(OPEN_MODE.API),
   id: z.string(),
@@ -151,16 +137,6 @@ const linkPopupSchema = z.object({
     })
     .optional(),
 })
-
-export const isLinkPopupType = (data: unknown): data is LinkPopupCommand => {
-  if (!data || typeof data !== "object") {
-    return false
-  }
-  if (!("openMode" in data)) {
-    return false
-  }
-  return data.openMode === OPEN_MODE.LINK_POPUP
-}
 
 const copySchema = z.object({
   openMode: z.enum([OPEN_MODE.COPY]),
@@ -363,18 +339,6 @@ const pageActionSchema = z.object({
   pageActionOption: PageActionOption,
 })
 
-export const isPageActionType = (
-  data: unknown,
-): data is z.infer<typeof pageActionSchema> => {
-  if (!data || typeof data !== "object") {
-    return false
-  }
-  if (!("openMode" in data)) {
-    return false
-  }
-  return data.openMode === OPEN_MODE.PAGE_ACTION
-}
-
 export const AiPromptOptionSchema = z
   .object({
     serviceId: z.string().min(1),
@@ -409,16 +373,6 @@ const aiPromptSchema = z.object({
     .optional(),
   aiPromptOption: AiPromptOptionSchema,
 })
-
-export const isAiPromptType = (data: unknown): data is AiPromptCommand => {
-  if (!data || typeof data !== "object") {
-    return false
-  }
-  if (!("openMode" in data)) {
-    return false
-  }
-  return data.openMode === OPEN_MODE.AI_PROMPT
-}
 
 export const commandSchema = z.discriminatedUnion("openMode", [
   searchSchema,

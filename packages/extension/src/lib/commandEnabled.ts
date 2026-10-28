@@ -1,10 +1,8 @@
 import { OPEN_MODE, PAGE_ACTION_OPEN_MODE, LINK_POPUP_MAX_URLS } from "@/const"
 import { urlsInSelection } from "@/services/dom"
-import {
-  isPageActionCommand,
-  matchesPageActionUrl,
-  truncateMiddle,
-} from "@/lib/utils"
+import { matchesPageActionUrl } from "@/lib/url"
+import { isPageActionCommand } from "@/lib/commandGuards"
+import { truncateMiddle } from "@/lib/utils"
 import { t } from "@/services/i18n"
 import type { Command, LinkPopupCommand } from "@/types"
 

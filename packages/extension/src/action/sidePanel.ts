@@ -1,4 +1,5 @@
-import { isValidString, toUrl } from "@/lib/utils"
+import { isValidString } from "@/lib/utils"
+import { toUrl } from "@/lib/url"
 import { SPACE_ENCODING } from "@/const"
 import type { ActionExecuteParams, ShowToastParam } from "@/types"
 import type { OpenSidePanelProps } from "@/services/chrome"
