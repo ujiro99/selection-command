@@ -42,6 +42,7 @@ export const emptySettings: SettingsType = {
   pageRules: [],
   style: STYLE.HORIZONTAL,
   theme: THEME.SYSTEM,
+  followBrowserZoom: false,
   popupPlacement: {
     side: SIDE.top,
     align: ALIGN.start,
@@ -152,6 +153,7 @@ export default {
   pageRules: [],
   style: STYLE.HORIZONTAL,
   theme: THEME.SYSTEM,
+  followBrowserZoom: false,
   startupMethod: {
     method: STARTUP_METHOD.TEXT_SELECTION,
     keepMenuOpenOnFocusChange: false,

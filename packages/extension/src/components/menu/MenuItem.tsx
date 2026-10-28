@@ -14,6 +14,7 @@ import { MenuImage } from "@/components/menu/MenuImage"
 import type { ResolvedCommand } from "@/hooks/useSettingsWithImageCache"
 
 import css from "./Menu.module.css"
+import zc from "@/components/zoomCompensation.module.css"
 
 type MenuItemProps = {
   menuRef: React.RefObject<Element>
@@ -85,7 +86,7 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
             [css.itemHorizontal]: onlyIcon,
             "hover:bg-accent": !inTransition,
           },
-          "rounded-sm",
+          zc.roundedSm,
         )}
         role="menuitem"
         aria-label={title}

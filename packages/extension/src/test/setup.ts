@@ -332,6 +332,10 @@ global.chrome = {
     onActivated: {
       addListener: vi.fn(),
     },
+    onZoomChange: {
+      addListener: vi.fn(),
+    },
+    getZoom: vi.fn(),
   },
   contextMenus: {
     create: vi.fn(),

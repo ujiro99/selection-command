@@ -752,6 +752,15 @@
   "Option_theme_dark": {
     "message": "ダーク"
   },
+  "Option_followBrowserZoom": {
+    "message": "ブラウザのズームに追従"
+  },
+  "Option_followBrowserZoom_desc": {
+    "message": "ポップアップメニューの大きさをページのズームに合わせます。"
+  },
+  "Option_followBrowserZoom_tooltip": {
+    "message": "オンにすると、ページのズーム倍率に合わせてポップアップメニューも拡大・縮小されます。サイトごとにズームを設定している場合は、サイトによってポップアップメニューの大きさが変わります。オフにすると、ズーム倍率に関係なく常に同じ大きさで表示します。"
+  },
   "Option_userStyles_add": {
     "message": "ユーザースタイル編集"
   },

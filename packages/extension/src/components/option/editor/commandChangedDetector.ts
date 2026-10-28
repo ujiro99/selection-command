@@ -1,5 +1,9 @@
-import { isSearchType, isPageActionType, isAiPromptType } from "@/types/schema"
 import type { SelectionCommand, PageActionOption } from "@/types"
+import {
+  isSearchCommand,
+  isPageActionCommand,
+  isAiPromptCommand,
+} from "@/lib/commandGuards"
 
 /**
  * Returns true when the current form values differ from the saved command,
@@ -12,10 +16,10 @@ export function hasCommandChanged(
   currentPageActionOption: Partial<PageActionOption> | null | undefined,
   currentAiPromptPrompt: string,
 ): boolean {
-  if (isSearchType(command)) {
+  if (isSearchCommand(command)) {
     return currentSearchUrl !== command.searchUrl
   }
-  if (isPageActionType(command)) {
+  if (isPageActionCommand(command)) {
     const { openMode: _a, ...pao } = currentPageActionOption ?? {}
     const { openMode: _b, ...cmdPao } = command.pageActionOption
     // Treat an empty variable list the same as an absent one so a no-op edit isn't flagged as a change.
@@ -30,7 +34,7 @@ export function hasCommandChanged(
       JSON.stringify(normalizeVariables(cmdPao))
     )
   }
-  if (isAiPromptType(command)) {
+  if (isAiPromptCommand(command)) {
     return currentAiPromptPrompt !== command.aiPromptOption.prompt
   }
   return false

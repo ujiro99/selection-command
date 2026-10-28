@@ -1,5 +1,6 @@
 import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
-import { sleep, toUrl, isValidString } from "@/lib/utils"
+import { sleep, isValidString } from "@/lib/utils"
+import { toUrl } from "@/lib/url"
 import type { ExecuteCommandParams, ApiCommand } from "@/types"
 import { OPEN_MODE, ExecState, SPACE_ENCODING } from "@/const"
 

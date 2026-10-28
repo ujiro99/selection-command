@@ -4,13 +4,9 @@ import {
   SidePanelPendingAction,
 } from "@/services/ipc"
 import { getWindowPosition } from "@/services/screen"
-import {
-  isValidString,
-  generateRandomID,
-  safeInterpolate,
-  toUrl,
-  convertUrlsToMarkdown,
-} from "@/lib/utils"
+import { isValidString, generateRandomID, safeInterpolate } from "@/lib/utils"
+import { isAiPromptCommand } from "@/lib/commandGuards"
+import { toUrl, convertUrlsToMarkdown } from "@/lib/url"
 import {
   OPEN_MODE,
   PAGE_ACTION_OPEN_MODE,
@@ -32,14 +28,10 @@ import type {
 import type { OpenAndRunProps } from "@/services/pageAction/serviceWorker"
 import type { OpenSidePanelProps } from "@/services/chrome"
 import { findAiService } from "@/services/aiPrompt"
-import { isAiPromptType } from "@/types/schema"
 import { INSERT, InsertSymbol, toInsertTemplate } from "@/services/pageAction"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { getUILanguage } from "@/services/i18n"
 import { getSelectionHtml, getPageHtml } from "@/services/dom"
-
-// Moved to lib/utils so that toUrl() can reuse it in the service worker.
-export { convertUrlsToMarkdown }
 
 // Map OPEN_MODE to PAGE_ACTION_OPEN_MODE for openAndRun
 const toPageActionMode = (mode: OPEN_MODE): PAGE_ACTION_OPEN_MODE => {
@@ -473,7 +465,7 @@ export const AiPrompt = {
     selectionFromClipboard,
     pageUrl,
   }: ActionExecuteParams) {
-    if (!isAiPromptType(command)) {
+    if (!isAiPromptCommand(command)) {
       console.error("command is not for AiPrompt.")
       return
     }

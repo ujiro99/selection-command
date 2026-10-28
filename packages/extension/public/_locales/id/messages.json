@@ -752,6 +752,15 @@
   "Option_theme_dark": {
     "message": "Gelap"
   },
+  "Option_followBrowserZoom": {
+    "message": "Ikuti zoom browser"
+  },
+  "Option_followBrowserZoom_desc": {
+    "message": "Menyesuaikan ukuran menu pop-up dengan zoom halaman."
+  },
+  "Option_followBrowserZoom_tooltip": {
+    "message": "Jika diaktifkan, menu pop-up membesar dan mengecil mengikuti zoom halaman. Jika Anda mengatur zoom per situs, ukuran menu pop-up berbeda di setiap situs. Jika dinonaktifkan, menu pop-up selalu berukuran sama berapa pun zoom-nya."
+  },
   "Option_userStyles_add": {
     "message": "Edit Gaya Pengguna"
   },

@@ -18,6 +18,8 @@ import { Ipc, TabCommand } from "@/services/ipc"
 import { Settings } from "@/services/settings/settings"
 import { ServiceWorkerData } from "@/services/serviceWorkerData"
 import { useTheme, themeContext } from "@/hooks/useTheme"
+import { useUserSettings } from "@/hooks/useSettings"
+import { usePageZoom, zoomCompensationContext } from "@/hooks/usePageZoom"
 import type { ShowToastParam } from "@/types"
 
 ServiceWorkerData.init()
@@ -32,6 +34,9 @@ export function App({ rootElm }: Props) {
   // rootElm is the shadow root; the theme attribute goes on its host so that
   // the `:host()` selectors in the stylesheets can match it.
   const theme = useTheme(rootElm instanceof ShadowRoot ? rootElm.host : rootElm)
+
+  const { userSettings } = useUserSettings()
+  const zoomFactor = usePageZoom(userSettings.followBrowserZoom === false)
 
   useEffect(() => {
     const handleShowToast = (
@@ -80,8 +85,10 @@ export function App({ rootElm }: Props) {
         <PageActionContextProvider>
           <SelectContextProvider>
             <SelectAnchor ref={setPositionElm} />
-            <Popup positionElm={positionElm} />
-            <InvisibleItem positionElm={positionElm} />
+            <zoomCompensationContext.Provider value={1 / zoomFactor}>
+              <Popup positionElm={positionElm} />
+              <InvisibleItem positionElm={positionElm} />
+            </zoomCompensationContext.Provider>
             <LinkSelector />
             <OpenInTab />
             <PageActionRunner />
