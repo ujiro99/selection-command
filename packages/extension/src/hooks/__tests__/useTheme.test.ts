@@ -181,6 +181,37 @@ describe("useTheme", () => {
       vi.useRealTimers()
     }
   })
+
+  it("THM-17: 正常系: closed な Shadow DOM ではホストに属性を付けシャドウ内でトランジションを無効化する", () => {
+    // Drop the styles left by the previous tests, whose timers ran for real.
+    document.head.querySelectorAll("style").forEach((s) => s.remove())
+    vi.useFakeTimers()
+    try {
+      const scheme = mockColorScheme(false)
+      mockUserSettings.current = { theme: THEME.SYSTEM }
+      const host = document.createElement("div")
+      // The content script uses a closed shadow root in production.
+      const shadow = host.attachShadow({ mode: "closed" })
+      renderHook(() => useTheme(shadow))
+      expect(host.getAttribute(THEME_ATTRIBUTE)).toBe("light")
+      vi.runAllTimers()
+
+      act(() => scheme.setDark(true))
+      expect(host.getAttribute(THEME_ATTRIBUTE)).toBe("dark")
+      const hasStyle = (container: ParentNode) =>
+        Array.from(container.querySelectorAll("style")).some((s) =>
+          s.textContent?.includes("transition:none"),
+        )
+      expect(hasStyle(shadow)).toBe(true)
+      // The web page's own transitions must be left alone.
+      expect(hasStyle(document.head)).toBe(false)
+
+      vi.runAllTimers()
+      expect(hasStyle(shadow)).toBe(false)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
 })
 
 describe("theme-init.js", () => {

@@ -80,14 +80,16 @@ const writeCachedTheme = (theme: ResolvedTheme) => {
  * Sets the theme attribute with transitions disabled, so that controls with
  * color transitions switch at once instead of fading between the themes.
  */
-const setThemeAttribute = (target: Element, theme: ResolvedTheme) => {
+const setThemeAttribute = (
+  target: Element,
+  styleContainer: Node,
+  theme: ResolvedTheme,
+) => {
   if (target.getAttribute(THEME_ATTRIBUTE) === theme) return
 
   const style = document.createElement("style")
   style.textContent = "*,*::before,*::after{transition:none!important}"
-  // A stylesheet in the document does not reach into a shadow tree.
-  const container = target.shadowRoot ?? document.head
-  container.appendChild(style)
+  styleContainer.appendChild(style)
 
   target.setAttribute(THEME_ATTRIBUTE, theme)
 
@@ -98,12 +100,22 @@ const setThemeAttribute = (target: Element, theme: ResolvedTheme) => {
 }
 
 /**
- * Applies the user's theme to `target` via the THEME_ATTRIBUTE attribute,
- * which the `dark:` variant and the dark color tokens are keyed on.
- * Pass the document root for extension pages, or the shadow host for the
- * content script.
+ * Applies the user's theme via the THEME_ATTRIBUTE attribute, which the
+ * `dark:` variant and the dark color tokens are keyed on.
+ * Pass the document root for extension pages, or the shadow root for the
+ * content script. For a shadow root, the attribute goes on its host so that
+ * the `:host()` selectors in the stylesheets can match it.
  */
-export function useTheme(target: Element | null | undefined): ResolvedTheme {
+export function useTheme(
+  root: Element | ShadowRoot | null | undefined,
+): ResolvedTheme {
+  const isShadowRoot = root instanceof ShadowRoot
+  const target = isShadowRoot ? root.host : root
+  // A stylesheet in the document does not reach into a shadow tree, and the
+  // content script's shadow root is closed (host.shadowRoot is null), so it
+  // must be passed in rather than looked up from the host.
+  const styleContainer = isShadowRoot ? root : document.head
+
   const { userSettings, loading } = useUserSettings()
   const prefersDark = usePrefersDarkScheme()
   const resolved = resolveTheme(userSettings.theme, prefersDark)
@@ -120,13 +132,13 @@ export function useTheme(target: Element | null | undefined): ResolvedTheme {
   // children's layout effects run, which reintroduces the light styles.
   useLayoutEffect(() => {
     if (target == null) return
-    setThemeAttribute(target, theme)
+    setThemeAttribute(target, styleContainer, theme)
     // Only the extension pages cache the theme; the content script's
     // localStorage belongs to the web page.
     if (!loading && target === document.documentElement) {
       writeCachedTheme(theme)
     }
-  }, [target, theme, loading])
+  }, [target, styleContainer, theme, loading])
 
   return theme
 }
