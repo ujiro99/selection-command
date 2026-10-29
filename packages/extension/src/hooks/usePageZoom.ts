@@ -51,7 +51,7 @@ export function usePageZoom(enabled: boolean): number {
     }
 
     Ipc.getZoom().then(update).catch(warn)
-    Ipc.addListener<ZoomChangedProps>(
+    const removeListener = Ipc.addListener<ZoomChangedProps>(
       TabCommand.zoomChanged,
       (param, _sender, response) => {
         update(param.zoomFactor)
@@ -61,7 +61,7 @@ export function usePageZoom(enabled: boolean): number {
     )
     return () => {
       disposed = true
-      Ipc.removeListener(TabCommand.zoomChanged)
+      removeListener()
     }
   }, [enabled])
 

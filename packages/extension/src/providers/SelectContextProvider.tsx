@@ -31,14 +31,13 @@ export const SelectContextProvider = ({
   }, [detectSelectionEnabled, setSelectionText])
 
   useEffect(() => {
-    Ipc.addListener(TabCommand.getSelection, (_param, _sender, response) => {
-      response(selectionRef.current)
-      return true
-    })
-
-    return () => {
-      Ipc.removeListener(TabCommand.getSelection)
-    }
+    return Ipc.addListener(
+      TabCommand.getSelection,
+      (_param, _sender, response) => {
+        response(selectionRef.current)
+        return true
+      },
+    )
   }, [])
 
   const value: ContextType = {
