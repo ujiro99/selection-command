@@ -217,7 +217,11 @@ describe("Ipc.addListener", () => {
     expect(onMessage.removeListener).toHaveBeenCalledTimes(1)
     expect(onMessage.removeListener).toHaveBeenCalledWith(firstWrapper)
     expect(onMessage.removeListener).not.toHaveBeenCalledWith(secondWrapper)
-    expect(Ipc.listeners[TabCommand.closeMenu]).toEqual([second])
+    const remaining = Ipc.listeners[TabCommand.closeMenu]
+    expect(remaining).toHaveLength(1)
+    remaining[0](undefined, {} as chrome.runtime.MessageSender, vi.fn())
+    expect(second).toHaveBeenCalledTimes(1)
+    expect(first).not.toHaveBeenCalled()
   })
 
   it("IPC-10: 正常系: 解除関数を複数回呼んでも 1 回だけ解除する", () => {
@@ -230,6 +234,34 @@ describe("Ipc.addListener", () => {
 
     // Assert
     expect(onMessage.removeListener).toHaveBeenCalledTimes(1)
+  })
+
+  it("IPC-15: 正常系: 同じコールバックを 2 回登録しても、解除するのはその登録の分だけ", () => {
+    // Arrange: register A, B, then A again.
+    const a = vi.fn((_p, _s, response) => {
+      response("a")
+      return false
+    })
+    const b = vi.fn((_p, _s, response) => {
+      response("b")
+      return false
+    })
+    Ipc.addListener(TabCommand.closeMenu, a)
+    Ipc.addListener(TabCommand.closeMenu, b)
+    const removeSecondA = Ipc.addListener(TabCommand.closeMenu, a)
+
+    // Act
+    removeSecondA()
+
+    // Assert: the first A is kept ahead of B, so it still answers first.
+    expect(Ipc.listeners[TabCommand.closeMenu]).toHaveLength(2)
+    const response = vi.fn()
+    Ipc.listeners[TabCommand.closeMenu][0](
+      undefined,
+      {} as chrome.runtime.MessageSender,
+      response,
+    )
+    expect(response).toHaveBeenCalledWith("a")
   })
 
   it("IPC-11: 正常系: ラッパーは対象コマンドのときだけコールバックを呼ぶ", () => {

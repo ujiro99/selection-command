@@ -609,19 +609,22 @@ export const Ipc = {
       return false
     }
     chrome.runtime.onMessage.addListener(listener)
-    const callbacks = (Ipc.listeners[command] ??= [])
-    callbacks.push(callback)
+    // A function unique to this registration, so unsubscribing removes this
+    // entry even when the same callback is registered more than once.
+    const entry: IpcCallback = (param, sender, response) =>
+      callback(param as M, sender, response)
+    ;(Ipc.listeners[command] ??= []).push(entry)
 
     let removed = false
     return () => {
       if (removed) return
       removed = true
       chrome.runtime.onMessage.removeListener(listener)
-      const index = callbacks.indexOf(callback)
-      if (index >= 0) callbacks.splice(index, 1)
-      if (callbacks.length === 0 && Ipc.listeners[command] === callbacks) {
-        delete Ipc.listeners[command]
-      }
+      const callbacks = Ipc.listeners[command]
+      const index = callbacks?.indexOf(entry) ?? -1
+      if (index < 0) return
+      callbacks.splice(index, 1)
+      if (callbacks.length === 0) delete Ipc.listeners[command]
     }
   },
 
