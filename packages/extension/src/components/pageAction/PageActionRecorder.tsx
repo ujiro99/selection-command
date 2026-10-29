@@ -126,10 +126,7 @@ export function PageActionRecorder(): JSX.Element {
       update()
       return false
     }
-    Ipc.addListener(TabCommand.sendWindowSize, listener)
-    return () => {
-      Ipc.removeListener(TabCommand.sendWindowSize)
-    }
+    return Ipc.addListener(TabCommand.sendWindowSize, listener)
   }, [])
 
   useEffect(() => {

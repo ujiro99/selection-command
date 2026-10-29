@@ -49,6 +49,7 @@ export enum ServiceWorkerCommand {
   openPopups = "openPopups",
   openPopupAndClick = "openPopupAndClick",
   openTab = "openTab",
+  openTabs = "openTabs",
   openSidePanel = "openSidePanel",
   closeSidePanel = "closeSidePanel",
   navigateSidePanel = "navigateSidePanel",
@@ -62,6 +63,7 @@ export enum ServiceWorkerCommand {
   toggleStar = "toggleStar",
   getTabId = "getTabId",
   getActiveTabId = "getActiveTabId",
+  getZoom = "getZoom",
   closeTab = "closeTab",
   resolveIconColors = "resolveIconColors",
   // Hub
@@ -92,6 +94,7 @@ export enum TabCommand {
   showReviewRequest = "showReviewRequest",
   showToast = "showToast",
   confirmCommandUpdate = "confirmCommandUpdate",
+  zoomChanged = "zoomChanged",
   // PageAction
   sendWindowSize = "sendWindowSize",
   execPageAction = "execPageAction",
@@ -102,6 +105,11 @@ export enum TabCommand {
 /** Asks the user whether to overwrite a locally edited command. */
 export type ConfirmCommandUpdateProps = {
   title: string
+}
+
+/** Notifies a tab that the browser zoom of its page has changed. */
+export type ZoomChangedProps = {
+  zoomFactor: number
 }
 
 export type ClickElementProps = {
@@ -202,7 +210,33 @@ export type IpcCallback<M = any> = (
   response: (response?: unknown) => void,
 ) => boolean
 
+/** Removes the listener registered by Ipc.addListener. */
+export type IpcUnsubscribe = () => void
+
 let onConnect: (port: chrome.runtime.Port) => void
+
+/**
+ * Calls every callback registered for the command, the way
+ * chrome.runtime.onMessage calls all of its listeners: only the first
+ * response reaches the sender.
+ */
+const dispatchToCallbacks = (
+  callbacks: IpcCallback[],
+  param: unknown,
+  sender: chrome.runtime.MessageSender,
+  response: (response?: unknown) => void,
+) => {
+  let responded = false
+  const respondOnce = (res?: unknown) => {
+    if (responded) return
+    responded = true
+    response(res)
+  }
+  // Copy so a callback that unsubscribes does not skip the next one.
+  for (const callback of [...callbacks]) {
+    callback(param, sender, respondOnce)
+  }
+}
 
 export const Ipc = {
   init() {
@@ -226,13 +260,16 @@ export const Ipc = {
 
   async callListener<M, R>(command: IpcCommand, param?: M): Promise<R> {
     return new Promise((resolve) => {
-      const listener = Ipc.listeners[command]
-      if (!listener) {
+      const callbacks = Ipc.listeners[command]
+      if (!callbacks?.length) {
         resolve(undefined as R)
         return
       }
-      listener(param, {} as chrome.runtime.MessageSender, (res: unknown) =>
-        resolve(res as R),
+      dispatchToCallbacks(
+        callbacks,
+        param,
+        {} as chrome.runtime.MessageSender,
+        (res: unknown) => resolve(res as R),
       )
     })
   },
@@ -508,7 +545,8 @@ export const Ipc = {
     }
   },
 
-  listeners: {} as { [key: string]: IpcCallback },
+  /** Callbacks registered by addListener, in registration order. */
+  listeners: {} as { [key: string]: IpcCallback[] },
 
   /**
    * Register a port for bidirectional communication with a side panel.
@@ -521,9 +559,10 @@ export const Ipc = {
     port.onMessage.addListener((msg: Record<string, unknown>) => {
       const command = msg?.command as string | undefined
       if (!command) return
-      const callback = Ipc.listeners[command]
-      if (!callback) return
-      callback(
+      const callbacks = Ipc.listeners[command]
+      if (!callbacks?.length) return
+      dispatchToCallbacks(
+        callbacks,
         msg.param,
         port.sender ?? ({} as chrome.runtime.MessageSender),
         (result: unknown) => {
@@ -537,7 +576,16 @@ export const Ipc = {
     })
   },
 
-  addListener<M = any>(command: IpcCommand, callback: IpcCallback<M>) {
+  /**
+   * Registers a callback for the command.
+   * The same command can be registered from several places; each registration
+   * is removed by calling the function it returns.
+   * @returns A function that removes this registration.
+   */
+  addListener<M = any>(
+    command: IpcCommand,
+    callback: IpcCallback<M>,
+  ): IpcUnsubscribe {
     const listener = (
       request: Request,
       sender: chrome.runtime.MessageSender,
@@ -555,14 +603,19 @@ export const Ipc = {
       return false
     }
     chrome.runtime.onMessage.addListener(listener)
-    Ipc.listeners[command] = callback
-  },
+    const callbacks = (Ipc.listeners[command] ??= [])
+    callbacks.push(callback)
 
-  removeListener(command: IpcCommand) {
-    const listener = Ipc.listeners[command]
-    if (listener) {
+    let removed = false
+    return () => {
+      if (removed) return
+      removed = true
       chrome.runtime.onMessage.removeListener(listener)
-      delete Ipc.listeners[command]
+      const index = callbacks.indexOf(callback)
+      if (index >= 0) callbacks.splice(index, 1)
+      if (callbacks.length === 0 && Ipc.listeners[command] === callbacks) {
+        delete Ipc.listeners[command]
+      }
     }
   },
 
@@ -572,6 +625,11 @@ export const Ipc = {
 
   async getActiveTabId() {
     return Ipc.send(ServiceWorkerCommand.getActiveTabId)
+  },
+
+  /** Returns the browser zoom factor of the sender's tab (1 = 100%). */
+  async getZoom(): Promise<number> {
+    return Ipc.send(ServiceWorkerCommand.getZoom)
   },
 
   async sendQueue(tabId: number, command: IpcCommand, param?: unknown) {

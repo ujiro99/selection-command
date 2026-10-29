@@ -60,6 +60,10 @@ export const COMMAND_TYPE_OPEN_MODES_MAP = {
   [COMMAND_TYPE.OPTION]: [OPEN_MODE.OPTION, OPEN_MODE.ADD_PAGE_RULE],
 } as const
 
+// Default icon for the "Link Popup" command
+export const LINK_POPUP_ICON_URL =
+  "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWV4dGVybmFsLWxpbmsgcHJldmlldy1pY29uIj48cGF0aCBkPSJNMTUgM2g2djYiLz48cGF0aCBkPSJNMTAgMTQgMjEgMyIvPjxwYXRoIGQ9Ik0xOCAxM3Y2YTIgMiAwIDAgMS0yIDJINWEyIDIgMCAwIDEtMi0yVjhhMiAyIDAgMCAxIDItMmg2Ii8+PC9zdmc+"
+
 // Metadata for command types
 export const COMMAND_TYPE_METADATA = {
   [COMMAND_TYPE.SEARCH]: {
@@ -393,6 +397,9 @@ export const IS_SUPPORT_BUILD = import.meta.env?.VITE_SUPPORT_BUILD === "true"
 export const PAGE_ACTION_MAX = 12 // 10 actions + 1 start + 1 end
 
 export const PAGE_ACTION_TIMEOUT = 5_000 // milliseconds
+
+/** Maximum number of URLs that a Link Popup command opens at once. */
+export const LINK_POPUP_MAX_URLS = 20
 
 /** Maximum number of characters to include from HTML attachments (pageHtml/selectionHtml) before truncation (≈1MB). */
 export const PAGE_HTML_MAX_CHARS = 1_000_000

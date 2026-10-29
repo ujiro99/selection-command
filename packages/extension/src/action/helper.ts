@@ -1,8 +1,10 @@
-import { escapeJson, toUrl } from "@/lib/utils"
+import { escapeJson } from "@/lib/utils"
+import { toUrl } from "@/lib/url"
 import {
   openPopupWindow,
   openPopupWindowMultiple,
   openTab as openTabWithClipboard,
+  openTabs as _openTabs,
   openSidePanel as _openSidePanel,
   closeSidePanel as _closeSidePanel,
   updateSidePanelUrl as _updateSidePanelUrl,
@@ -10,6 +12,7 @@ import {
   OpenPopupProps,
   OpenPopupAndClickProps,
   OpenTabProps,
+  OpenTabsProps,
   OpenSidePanelProps,
 } from "@/services/chrome"
 import { registerSidePanelTab } from "@/services/pageAction/serviceWorker-sidePanel"
@@ -99,6 +102,23 @@ export const openTab = (
     incrementCommandExecutionCount(tabId).then(() => {
       response(true)
     })
+  })
+  return true
+}
+
+export const openTabs = (
+  param: OpenTabsProps,
+  _: Sender,
+  response: (res: boolean) => void,
+): boolean => {
+  incrementCommandExecutionCount().then(async () => {
+    try {
+      await _openTabs(param)
+      response(true)
+    } catch (error) {
+      console.error("Failed to execute openTabs:", error)
+      response(false)
+    }
   })
   return true
 }

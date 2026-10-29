@@ -12,7 +12,8 @@ import type {
 import { Settings, migrate } from "@/services/settings/settings"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { CACHE_SECTIONS } from "@/services/settings/settingsCache"
-import { isBase64, isUrl } from "@/lib/utils"
+import { isBase64 } from "@/lib/utils"
+import { isUrl } from "@/lib/url"
 import { APP_ID } from "@/const"
 
 // Backup type constants

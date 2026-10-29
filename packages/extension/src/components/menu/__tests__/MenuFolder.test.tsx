@@ -1,7 +1,8 @@
-import { describe, it, expect } from "vitest"
-import { render } from "@testing-library/react"
+import { describe, it, expect, vi, afterEach } from "vitest"
+import { render, screen } from "@testing-library/react"
 import { MenuFolder } from "../MenuFolder"
 import { popupContext, ContextType } from "@/hooks/usePopupContext"
+import { zoomCompensationContext } from "@/hooks/usePageZoom"
 import { SIDE, ALIGN } from "@/const"
 import type { ResolvedFolder } from "@/hooks/useSettingsWithImageCache"
 
@@ -93,5 +94,49 @@ describe("MenuFolder - Global Icon Color Exclusion", () => {
     )
 
     expect(getByRole("menuitem").className).toContain("text-accent-foreground")
+  })
+})
+
+describe("MenuFolder - Zoom Compensation", () => {
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
+  // Renders an open vertical folder whose anchor button height follows the
+  // zoom compensation, as the menu CSS does.
+  const renderOpenFolder = (z: number) => {
+    const context: ContextType = { side: SIDE.top, align: ALIGN.start }
+    const menuRef = { current: document.createElement("div") }
+    return (
+      <zoomCompensationContext.Provider value={z}>
+        <popupContext.Provider value={context}>
+          <MenuFolder
+            folder={{ id: "f1", title: "Folder", preserveOriginalColor: false }}
+            isHorizontal={false}
+            side={SIDE.top}
+            menuRef={menuRef}
+            onHoverTrigger={() => {}}
+            onHoverContent={() => {}}
+            activeFolder="f1"
+          />
+        </popupContext.Provider>
+      </zoomCompensationContext.Provider>
+    )
+  }
+
+  it("MF-01: 正常系: 開いたまま補正値が変わるとボタンを測り直して最大の高さを更新する", () => {
+    let height = 30
+    vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(
+      () => ({ height }) as DOMRect,
+    )
+    const { rerender } = render(renderOpenFolder(1))
+    const menubar = screen.getByRole("menubar")
+    expect(menubar.style.maxHeight).toBe(`${30 * 11.5 + 10 + 4 + 2}px`)
+
+    height = 37.5
+    rerender(renderOpenFolder(1.25))
+    expect(menubar.style.maxHeight).toBe(
+      `${37.5 * 11.5 + (10 + 4 + 2) * 1.25}px`,
+    )
   })
 })

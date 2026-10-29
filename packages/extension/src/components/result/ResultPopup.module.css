@@ -1,8 +1,10 @@
 @reference "../global.css";
 
+/* Lengths follow --sc-zoom-compensation to cancel the browser zoom. */
+
 .resultPopup {
-  padding: 10px;
-  font-size: 14px;
+  padding: calc(10px * var(--sc-zoom-compensation, 1));
+  font-size: calc(14px * var(--sc-zoom-compensation, 1));
   color: var(--color-gray-600);
   font-family: var(--font-family);
 
@@ -14,20 +16,20 @@
 }
 
 .resultPopupButton {
-  --icon-size: 14px;
-  --padding: 4px;
+  --icon-size: calc(14px * var(--sc-zoom-compensation, 1));
+  --padding: calc(4px * var(--sc-zoom-compensation, 1));
 
   cursor: pointer;
   transition:
     color,
     background ease-out 0.2s;
   border: none;
-  border-radius: 6px;
+  border-radius: calc(6px * var(--sc-zoom-compensation, 1));
   background: transparent;
   width: calc(var(--icon-size) + var(--padding) * 2);
   height: calc(var(--icon-size) + var(--padding) * 2);
   padding: var(--padding);
-  font-size: 10px;
+  font-size: calc(10px * var(--sc-zoom-compensation, 1));
   color: var(--color-gray-400);
 
   svg {
@@ -70,17 +72,19 @@
 
 .closeButton {
   position: absolute;
-  top: 6px;
-  right: 4px;
+  top: calc(6px * var(--sc-zoom-compensation, 1));
+  right: calc(4px * var(--sc-zoom-compensation, 1));
 }
 
 .resultTableContainer {
   position: relative;
-  padding-right: 10px;
+  padding-right: calc(10px * var(--sc-zoom-compensation, 1));
 }
 
 .resultTable {
   table-layout: auto;
+  /* Quirks mode pages reset the font size of tables to medium. */
+  font-size: inherit;
 }
 
 .resultTableHeader {
@@ -91,14 +95,14 @@
   }
 
   th {
-    padding: 0 0 6px;
+    padding: 0 0 calc(6px * var(--sc-zoom-compensation, 1));
     font-weight: 500;
     text-align: left;
   }
 }
 
 .resultTableBody {
-  font-size: 13px;
+  font-size: calc(13px * var(--sc-zoom-compensation, 1));
   line-height: 1.4;
 
   td {
@@ -107,7 +111,7 @@
 }
 
 td.resultTableProperty {
-  padding-right: 12px;
+  padding-right: calc(12px * var(--sc-zoom-compensation, 1));
   color: var(--color-gray-500);
   text-wrap: nowrap;
 
@@ -129,6 +133,6 @@ td.resultTableProperty {
 
 .resultTableCopy {
   position: absolute;
-  top: -5px;
-  right: 16px;
+  top: calc(-5px * var(--sc-zoom-compensation, 1));
+  right: calc(16px * var(--sc-zoom-compensation, 1));
 }

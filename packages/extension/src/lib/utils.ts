@@ -1,31 +1,16 @@
 import { v7 } from "uuid"
 
 // Import and re-export shared utilities
-import {
-  cn,
-  isPageActionCommand as _isPageActionCommand,
-  isSearchCommand,
-  capitalize,
-  isEmpty,
-  sleep,
-} from "@shared"
+import { cn, capitalize, isEmpty, sleep } from "@shared"
 
 // Re-export for other files to use
-export { cn, isSearchCommand, capitalize, isEmpty, sleep }
-import { APP_ID, SPACE_ENCODING, OPEN_MODE, DRAG_OPEN_MODE } from "@/const"
+export { cn, capitalize, isEmpty, sleep }
+import { APP_ID } from "@/const"
 // Imported from the standalone module (not the barrel) to avoid a cycle back
 // into this file through @/services/pageAction.
-import { INSERT, InsertSymbol } from "@/services/pageAction/insertSymbols"
-import type {
-  Version,
-  Command,
-  SelectionCommand,
-  LinkCommand,
-  PageActionCommand,
-  AiPromptCommand,
-  UrlParam,
-  PageRule,
-} from "@/types"
+import { InsertSymbol } from "@/services/pageAction/insertSymbols"
+import type { Version, Command } from "@/types"
+import { isPageActionCommand } from "@/lib/commandGuards"
 
 // cn function is now imported from shared package
 
@@ -40,102 +25,6 @@ import type {
  */
 export function unique<T>(arr: T[]): T[] {
   return [...new Set(arr)]
-}
-
-/**
- * Check if the string is a UrlParam.
- * @param url The string to check.
- * @returns True if the string is a UrlParam.
- */
-export const isUrlParam = (url: string | UrlParam): url is UrlParam => {
-  return typeof url === "object" && "searchUrl" in url && "selectionText" in url
-}
-
-/**
- * Whether the clipboard must be read when opening the url. This is derived
- * from how the url uses the clipboard text, rather than kept as a separate
- * flag that could disagree with them.
- */
-export const needsClipboard = (url: string | UrlParam): boolean => {
-  if (!isUrlParam(url)) return false
-  return (
-    !!url.selectionFromClipboard ||
-    !!url.clipboardForSteps ||
-    url.clipboardTemplate != null
-  )
-}
-
-/**
- * Convert bare URLs in text to Markdown link format [URL](URL).
- * URLs already in Markdown link format ([text](url)) are returned unchanged,
- * so applying this to already-converted text is a no-op.
- * Trailing punctuation characters that are unlikely to be part of the URL are
- * excluded from the link and preserved in the surrounding text.
- */
-export function convertUrlsToMarkdown(text: string): string {
-  // The alternation tries the markdown link pattern first; if matched, leave it
-  // unchanged. Otherwise, convert bare URLs to [URL](URL) format.
-  return text.replace(
-    /\[[^\]]*\]\(([^)]*)\)|https?:\/\/[^\s<>"')\]]+/g,
-    (match) => {
-      if (match.startsWith("[")) return match
-      // Strip trailing punctuation that is unlikely to be part of the URL
-      const trimmed = match.replace(/[.,!?;:)'"]+$/, "")
-      const trailing = match.slice(trimmed.length)
-      return `[${trimmed}](${trimmed})${trailing}`
-    },
-  )
-}
-
-/**
- * Convert a string or UrlParam to a URL.
- * @param param The string or UrlParam to convert.
- * @param clipboardText The clipboard text, read when needsClipboard(param) is true.
- * @returns The URL.
- */
-export function toUrl(
-  param: string | UrlParam,
-  clipboardText?: string,
-): string {
-  if (!isUrlParam(param)) {
-    return param
-  }
-  const {
-    searchUrl,
-    selectionText,
-    spaceEncoding = SPACE_ENCODING.PLUS,
-    selectionFromClipboard = false,
-  } = param
-  let text = selectionText
-  if (param.clipboardTemplate) {
-    // selectionText is a pre-expanded prompt whose clipboard-dependent
-    // placeholders were left unresolved, because the clipboard can only be
-    // read here in the service worker.
-    const clipboard = clipboardText ?? ""
-    text = safeInterpolate(text, {
-      [InsertSymbol[INSERT.CLIPBOARD]]: clipboard,
-      [InsertSymbol[INSERT.SELECTED_TEXT]]: clipboard,
-    })
-    if (param.clipboardTemplate.urlToMarkdown) {
-      text = convertUrlsToMarkdown(text)
-    }
-  } else if (selectionFromClipboard) {
-    text = clipboardText ?? ""
-  }
-  // URL encode the text
-  let textEncoded = encodeURIComponent(text)
-  // Apply space encoding based on the spaceEncoding parameter
-  if (!spaceEncoding || spaceEncoding === SPACE_ENCODING.PLUS) {
-    // Replace %20 (default URL encoding for space) with +
-    textEncoded = textEncoded.replaceAll("%20", "+")
-  } else if (spaceEncoding === SPACE_ENCODING.DASH) {
-    textEncoded = textEncoded.replaceAll("%20", "-")
-  } else if (spaceEncoding === SPACE_ENCODING.UNDERSCORE) {
-    textEncoded = textEncoded.replaceAll("%20", "_")
-  }
-  let url = searchUrl?.replace("%s", textEncoded)
-  url = url?.replace("%pageUrl", encodeURIComponent(param.pageUrl ?? ""))
-  return url
 }
 
 export function escapeJson(str: string) {
@@ -162,18 +51,6 @@ export function isBase64(str: string): boolean {
 }
 
 /**
- * Check if the string is a URL.
- *
- * @param {string} str The string to check.
- * @returns {boolean} True if the string is a URL.
- * @see https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url
- */
-export function isUrl(str: string | undefined): boolean {
-  if (!str) return false
-  return /^https?:\/\//.test(str)
-}
-
-/**
  * Check if the string is a valid SVG.
  */
 export const isValidSVG = (text: string): boolean => {
@@ -193,33 +70,6 @@ export function isValidString(val: unknown): val is string {
 }
 
 /**
- * Check if the command is made for the popup menu.
- * @param {Command} command The command to check.
- * @returns {boolean} True if the command is made for the popup menu.
- */
-const OpenModes = Object.values(OPEN_MODE)
-export function isMenuCommand(command: Command): command is SelectionCommand {
-  return OpenModes.includes(command.openMode as OPEN_MODE)
-}
-
-/**
- * Check if the command is link command.
- * @param {Command|LinkCommand} command The command to check.
- * @returns {boolean} True if the command is link command.
- */
-const DragOpenModes = Object.values(DRAG_OPEN_MODE)
-export function isLinkCommand(command: Command): command is LinkCommand {
-  return DragOpenModes.includes(command.openMode as DRAG_OPEN_MODE)
-}
-
-/**
- * Check if the command is a page action command.
- */
-export function isPageActionCommand(cmd: unknown): cmd is PageActionCommand {
-  return _isPageActionCommand(cmd)
-}
-
-/**
  * Returns the website a command targets, or undefined when it has none.
  * Lives here rather than in favicon.ts so callers can name a command's target
  * without pulling in the Public Suffix List that module carries.
@@ -229,13 +79,6 @@ export function getCommandTargetUrl(command: Command): string | undefined {
     return command.pageActionOption?.startUrl
   }
   return command.searchUrl
-}
-
-export function isAiPromptCommand(cmd: unknown): cmd is AiPromptCommand {
-  if (!cmd || typeof cmd !== "object") {
-    return false
-  }
-  return (cmd as AiPromptCommand).openMode === OPEN_MODE.AI_PROMPT
 }
 
 export function isPopup(elm: Element): boolean {
@@ -430,6 +273,30 @@ export function truncate(
 }
 
 /**
+ * Truncates a string to a specified maximum length by omitting its middle,
+ * so that both the beginning and the end remain (e.g. the host and the last
+ * path segment of a URL).
+ * @param str - The string to truncate
+ * @param maxLength - Maximum length of the string including the separator
+ * @param separator - String to insert in place of the omitted part (default: '...')
+ * @return The truncated string
+ */
+export function truncateMiddle(
+  str: string,
+  maxLength: number,
+  separator: string = "...",
+): string {
+  if (str.length <= maxLength) {
+    return str
+  }
+  const keep = maxLength - separator.length
+  // Keep one more character at the beginning when the length is odd.
+  const head = Math.ceil(keep / 2)
+  const tail = keep - head
+  return str.slice(0, head) + separator + (tail > 0 ? str.slice(-tail) : "")
+}
+
+/**
  * Check if the string exceeds a specified byte size.
  * @param str - The string to check.
  * @param byte - The byte size to check against.
@@ -465,44 +332,6 @@ export function isReservedVariableName(name: string): boolean {
   return Object.values(InsertSymbol).includes(name)
 }
 
-/**
- * Checks whether a URL matches a pattern with wildcard (*) support.
- * `*` in the pattern matches any sequence of characters (including empty).
- *
- * Example:
- *   matchesPageActionUrl("https://example.com/*", "https://example.com/path?q=1") → true
- *   matchesPageActionUrl("https://example.com/page", "https://example.com/page") → true
- *   matchesPageActionUrl("https://example.com/page", "https://other.com/page")   → false
- */
-export function matchesPageActionUrl(pattern: string, url: string): boolean {
-  if (!pattern.includes("*")) {
-    return pattern === url
-  }
-  // Escape regex special chars except *, then replace * with .*
-  const regexStr = pattern
-    .replace(/[.+?^${}()|[\]\\]/g, "\\$&")
-    .replace(/\*/g, ".*")
-  return new RegExp(`^${regexStr}$`).test(url)
-}
-
-/**
- * Finds the first PageRule whose urlPattern (treated as a regex) matches the given URL.
- */
-export function findMatchingPageRule(
-  pageRules: PageRule[],
-  url: string,
-): PageRule | undefined {
-  return pageRules
-    .filter((r) => !isEmpty(r.urlPattern))
-    .find((rule) => {
-      try {
-        return new RegExp(rule.urlPattern).test(url)
-      } catch {
-        return false
-      }
-    })
-}
-
 const SCROLL_OFFSET = 80
 
 /**
@@ -516,36 +345,4 @@ export function scrollToSelector(selector: string): void {
   const targetPosition =
     elm.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET
   window.scrollTo({ top: targetPosition, behavior: "smooth" })
-}
-
-/**
- * Parse markdown URL format in Gemini and extract the actual URL.
- * @param {string} text - Text that might contain markdown URL
- * @returns {string} Extracted URL or original text if no markdown URL found
- */
-export function parseGeminiUrl(text: string): string {
-  // Match markdown link format: [text](url) and extract the text part (Gemini-specific behavior)
-  // Gemini wraps the actual URL in brackets and puts Google search URL in parentheses
-  const markdownLinkRegex = /^\[(.*?)\]\((.*)\)$/
-  const match = text.match(markdownLinkRegex)
-
-  if (match) {
-    let textPart = match[1]
-    const urlPart = match[2]
-
-    // Basic validation - both text and URL parts should be present
-    if (textPart && urlPart) {
-      // For Gemini URLs, the actual intended URL is in the text part (brackets)
-      // Handle Markdown escape sequences in the text part
-      textPart = textPart.replace(/\\(.)/g, "$1") // Unescape markdown special characters
-
-      // Basic URL validation - should start with http:// or https://
-      if (textPart.startsWith("http://") || textPart.startsWith("https://")) {
-        return textPart
-      }
-    }
-  }
-
-  // Return original text if no valid markdown URL pattern found
-  return text
 }

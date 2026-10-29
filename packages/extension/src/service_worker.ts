@@ -14,7 +14,7 @@ import {
   TabCommand,
   CONNECTION_APP,
 } from "@/services/ipc"
-import type { IpcCallback } from "@/services/ipc"
+import type { IpcCallback, ZoomChangedProps } from "@/services/ipc"
 import { Settings } from "@/services/settings/settings"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { CACHE_SECTIONS } from "@/services/settings/settingsCache"
@@ -29,7 +29,8 @@ import {
 } from "@/services/chrome"
 import { WindowStackManager } from "@/services/windowStackManager"
 import { PopupAutoClose } from "@/services/popupAutoClose"
-import { findMatchingPageRule, isEmpty } from "@/lib/utils"
+import { isEmpty } from "@/lib/utils"
+import { findMatchingPageRule } from "@/lib/url"
 import { execute } from "@/action/serviceWorker"
 import * as ActionHelper from "@/action/helper"
 import type { WindowType } from "@/types"
@@ -66,6 +67,26 @@ const getTabId = (
 ) => {
   response(sender.tab?.id)
   return false
+}
+
+const getZoom = (
+  _: unknown,
+  sender: Sender,
+  response: (res: unknown) => void,
+) => {
+  const tabId = sender.tab?.id
+  if (tabId == null) {
+    response(1)
+    return false
+  }
+  chrome.tabs
+    .getZoom(tabId)
+    .then((zoomFactor) => response(zoomFactor))
+    .catch((error) => {
+      console.warn("Failed to get zoom:", error)
+      response(1)
+    })
+  return true
 }
 
 const getActiveTabId = (
@@ -137,6 +158,7 @@ const commandFuncs = {
   [ServiceWorkerCommand.openPopups]: ActionHelper.openPopups,
   [ServiceWorkerCommand.openPopupAndClick]: ActionHelper.openPopupAndClick,
   [ServiceWorkerCommand.openTab]: ActionHelper.openTab,
+  [ServiceWorkerCommand.openTabs]: ActionHelper.openTabs,
   [ServiceWorkerCommand.openSidePanel]: (
     param: Parameters<typeof ActionHelper.openSidePanel>[0],
     sender: Sender,
@@ -330,6 +352,7 @@ const commandFuncs = {
 
   [ServiceWorkerCommand.getTabId]: getTabId,
   [ServiceWorkerCommand.getActiveTabId]: getActiveTabId,
+  [ServiceWorkerCommand.getZoom]: getZoom,
   [ServiceWorkerCommand.closeTab]: closeTab,
   [ServiceWorkerCommand.resolveIconColors]:
     IconColorServiceWorker.resolveIconColors,
@@ -789,6 +812,13 @@ getSidePanelEvent("onOpened")?.addListener(async () => {
       console.error("Failed to close menu:", error)
     }
   }
+})
+
+// Let the content script cancel the browser zoom on the popup menu.
+chrome.tabs.onZoomChange.addListener(({ tabId, newZoomFactor }) => {
+  Ipc.sendTab<ZoomChangedProps>(tabId, TabCommand.zoomChanged, {
+    zoomFactor: newZoomFactor,
+  })
 })
 
 // SidePanel auto-hide functionality

@@ -39,7 +39,12 @@ export type Point = {
 export type Command = SelectionCommand | LinkCommand
 
 export type SelectionCommand =
-  SearchCommand | CopyCommand | ApiCommand | PageActionCommand | AiPromptCommand
+  | SearchCommand
+  | CopyCommand
+  | ApiCommand
+  | PageActionCommand
+  | AiPromptCommand
+  | LinkPopupCommand
 
 export type SearchCommand = {
   id: string
@@ -83,6 +88,18 @@ export type AiPromptOption = {
 
 export type AiPromptCommand = SearchCommand & {
   aiPromptOption: AiPromptOption
+}
+
+export type LinkPopupOption = {
+  openMode: OPEN_MODE
+  // Open mode used when the menu item is clicked with Ctrl (Cmd) key.
+  openModeSecondary?: OPEN_MODE
+}
+
+export type LinkPopupCommand = SearchCommand & {
+  // Optional for commands created before this option was added,
+  // which are opened in popups.
+  linkPopupOption?: LinkPopupOption
 }
 
 export type LinkCommand = Omit<SelectionCommand, "openMode"> & {
@@ -209,6 +226,8 @@ export type UserSettings = {
   style: STYLE
   /** Color theme. Settings saved before this option existed lack it. */
   theme?: THEME
+  /** Popup menu follows the browser zoom. Missing in older settings (= true). */
+  followBrowserZoom?: boolean
   userStyles: Array<StyleVariable>
   shortcuts: ShortcutSettings
   windowOption: WindowOption

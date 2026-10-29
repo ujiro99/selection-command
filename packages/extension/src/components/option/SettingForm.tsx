@@ -41,17 +41,10 @@ import {
   STYLE_VARIABLE,
 } from "@/const"
 import type { UserSettings } from "@/types"
-import {
-  isMenuCommand,
-  isLinkCommand,
-  isMac,
-  isEmpty,
-  sleep,
-  e2a,
-  cn,
-} from "@/lib/utils"
+import { isMac, isEmpty, sleep, e2a, cn } from "@/lib/utils"
+import { isSelectionCommand, isLinkCommand } from "@/lib/commandGuards"
 import { toCommandTree, toFlatten } from "@/services/option/commandTree"
-import { isCommand, removeUnstoredParam } from "@/services/option/commandUtils"
+import { removeUnstoredParam } from "@/services/option/commandUtils"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { Settings } from "@/services/settings/settings"
 import { isSidePanelSupported } from "@/services/sidePanelSupport"
@@ -100,6 +93,7 @@ const formSchema = z
       .strict(),
     style: z.nativeEnum(STYLE),
     theme: z.nativeEnum(THEME),
+    followBrowserZoom: z.boolean(),
     commands: z.array(commandSchema).min(1),
     folders: z.array(folderSchema),
     linkCommand: z
@@ -153,6 +147,7 @@ export function SettingForm({ className }: { className?: string }) {
       windowOption: emptySettings.windowOption,
       style: emptySettings.style,
       theme: emptySettings.theme,
+      followBrowserZoom: emptySettings.followBrowserZoom,
       commands: [], // Empty array to avoid type conflicts
       folders: emptySettings.folders,
       linkCommand: emptySettings.linkCommand,
@@ -197,9 +192,11 @@ export function SettingForm({ className }: { className?: string }) {
         openMode: linkCommand.openMode,
       }
     }
-    settings.commands = settings.commands.filter(isMenuCommand)
+    settings.commands = settings.commands.filter(isSelectionCommand)
     // Settings saved before the theme option existed lack it.
     settings.theme = settings.theme ?? THEME.SYSTEM
+    // Settings saved before the zoom option existed lack it.
+    settings.followBrowserZoom = settings.followBrowserZoom ?? true
     return settings as FormValues
   }
 
@@ -255,7 +252,7 @@ export function SettingForm({ className }: { className?: string }) {
       const commandTree = toCommandTree(settings.commands, settings.folders)
       const commands = toFlatten(commandTree)
         .map((f: any) => f.content)
-        .filter(isCommand)
+        .filter(isSelectionCommand)
         .map(removeUnstoredParam)
 
       settings.commands = [...commands, ...linkCommands]
@@ -725,6 +722,13 @@ export function SettingForm({ className }: { className?: string }) {
               name: t(`theme_${theme}`),
               value: theme,
             }))}
+          />
+          <SwitchField
+            control={form.control}
+            name="followBrowserZoom"
+            formLabel={t("followBrowserZoom")}
+            description={t("followBrowserZoom_desc")}
+            tooltip={t("followBrowserZoom_tooltip")}
           />
           <UserStyleList control={form.control} />
         </section>

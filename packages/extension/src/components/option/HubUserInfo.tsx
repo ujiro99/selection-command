@@ -16,16 +16,15 @@ export function HubUserInfo() {
   if (hubUser) {
     return (
       <div className="flex items-center gap-2">
-        <img
-          className="rounded-full"
-          src={hubUser.image}
-          alt={hubUser.name}
-          width="24"
-          height="24"
-          onError={(e) => {
-            e.currentTarget.style.display = "none"
-          }}
-        />
+        {hubUser.image && (
+          <img
+            className="rounded-full size-6"
+            src={hubUser.image}
+            alt={hubUser.name}
+            width="24"
+            height="24"
+          />
+        )}
         <span className="font-mono text-sm text-gray-700 dark:text-gray-300">
           {hubUser.name}
         </span>

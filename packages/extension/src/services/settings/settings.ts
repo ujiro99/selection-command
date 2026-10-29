@@ -29,9 +29,9 @@ import {
   isEmpty,
   versionDiff,
   VersionDiff,
-  isLinkCommand,
   generateId,
 } from "@/lib/utils"
+import { isLinkCommand } from "@/lib/commandGuards"
 import { toDataURL } from "@/services/dom"
 import { OptionSettings } from "@/services/option/optionSettings"
 import { LOCAL_STORAGE_KEY } from "../storage"

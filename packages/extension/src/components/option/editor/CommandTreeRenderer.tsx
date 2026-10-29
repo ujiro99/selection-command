@@ -7,11 +7,8 @@ import { ShareButton } from "@/components/option/ShareButton"
 import { OptionMenuImage } from "@/components/option/OptionMenuImage"
 import type { FlattenNode } from "@/services/option/commandTree"
 import type { CommandFolder } from "@/types"
-import {
-  isCommand,
-  isFolder,
-  isPageActionCommand,
-} from "@/services/option/commandUtils"
+import { isFolder } from "@/services/option/commandUtils"
+import { isSelectionCommand, isPageActionCommand } from "@/lib/commandGuards"
 import { calcLevel } from "@/services/option/commandTree"
 import { hasUnpushedEdits } from "@/services/hub/commandContent"
 
@@ -59,7 +56,9 @@ export const CommandTreeRenderer: React.FC<Props> = ({
                 }
                 alt={field.content.title}
                 className="inline-block w-7 h-7 mr-3"
-                command={isCommand(field.content) ? field.content : undefined}
+                command={
+                  isSelectionCommand(field.content) ? field.content : undefined
+                }
                 excludeFromGlobalIconColor={
                   field.content.excludeFromGlobalIconColor
                 }
@@ -70,7 +69,7 @@ export const CommandTreeRenderer: React.FC<Props> = ({
                     {field.content.title}
                   </span>
                 </p>
-                {isCommand(field.content) && (
+                {isSelectionCommand(field.content) && (
                   <p className="text-xs sm:text-sm text-gray-400 dark:text-gray-500 truncate">
                     {field.content.searchUrl}
                   </p>
@@ -78,7 +77,7 @@ export const CommandTreeRenderer: React.FC<Props> = ({
               </div>
             </div>
             <div className="flex gap-0.5 items-center">
-              {isCommand(field.content) && (
+              {isSelectionCommand(field.content) && (
                 <ShareButton
                   command={field.content}
                   onCommandIdChange={(newId) =>
