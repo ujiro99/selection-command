@@ -111,7 +111,7 @@ describe("MenuFolder - Zoom Compensation", () => {
       <zoomCompensationContext.Provider value={z}>
         <popupContext.Provider value={context}>
           <MenuFolder
-            folder={{ id: "f1", title: "Folder" }}
+            folder={{ id: "f1", title: "Folder", preserveOriginalColor: false }}
             isHorizontal={false}
             side={SIDE.top}
             menuRef={menuRef}

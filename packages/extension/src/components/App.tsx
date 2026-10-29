@@ -31,9 +31,8 @@ type Props = {
 export function App({ rootElm }: Props) {
   const [positionElm, setPositionElm] = useState<Element | null>(null)
 
-  // rootElm is the shadow root; the theme attribute goes on its host so that
-  // the `:host()` selectors in the stylesheets can match it.
-  const theme = useTheme(rootElm instanceof ShadowRoot ? rootElm.host : rootElm)
+  // rootElm is the shadow root; useTheme puts the theme attribute on its host.
+  const theme = useTheme(rootElm)
 
   const { userSettings } = useUserSettings()
   const zoomFactor = usePageZoom(userSettings.followBrowserZoom === false)
