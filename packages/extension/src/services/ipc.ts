@@ -234,7 +234,13 @@ const dispatchToCallbacks = (
   }
   // Copy so a callback that unsubscribes does not skip the next one.
   for (const callback of [...callbacks]) {
-    callback(param, sender, respondOnce)
+    // Isolate each callback, as onMessage does, so one that throws does not
+    // keep the others from being called.
+    try {
+      callback(param, sender, respondOnce)
+    } catch (error) {
+      console.error("Ipc listener threw an error:", error)
+    }
   }
 }
 
