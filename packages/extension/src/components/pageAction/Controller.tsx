@@ -10,6 +10,7 @@ import {
 } from "lucide-react"
 import { StepList } from "@/components/pageAction/StepList"
 import { usePageActionContext } from "@/hooks/pageAction/usePageActionContext"
+import { useZoomCompensation } from "@/hooks/usePageZoom"
 import { PageActionListener as Listener } from "@/services/pageAction"
 import { Ipc, ServiceWorkerCommand, RunPageAction } from "@/services/ipc"
 import { t } from "@/services/i18n"
@@ -21,6 +22,7 @@ import {
 } from "@/const"
 import { TEST_IDS } from "@/testIds"
 
+import zc from "@/components/zoomCompensation.module.css"
 import css from "./PageActionRecorder.module.css"
 
 type Props = {
@@ -37,6 +39,7 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
     const [hover, setHover] = useState(false)
 
     const { isRecording, isRunning, status } = usePageActionContext()
+    const zoomCompensation = useZoomCompensation()
     const results = status?.results
     const currentId = status?.stepId
     const f = results?.find(
@@ -89,18 +92,21 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
       }
     }, [isRunning, isRecording, isRecordEnabled])
 
-    const iconSize = 14
+    const iconSize = 14 * zoomCompensation
+    const statusIconSize = 16 * zoomCompensation
 
     return (
       <div
         className={cn(
           "flex flex-col items-center gap-2 w-fit pointer-events-auto",
           "backdrop-blur-sm bg-gray-100/60 dark:bg-gray-900/80 rounded-md py-4 pl-5 pr-3 shadow-md",
+          zc.rounded,
+          zc.shadowMd,
         )}
         ref={ref}
         data-hover={hover}
       >
-        <div className="controller flex w-[400px] justify-between">
+        <div className="controller flex w-100 justify-between">
           {isListening ? (
             <button
               type="button"
@@ -108,7 +114,7 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
               onClick={() => pause()}
             >
               <Disc3
-                size={iconSize + 2}
+                size={statusIconSize}
                 strokeWidth="1.5"
                 className={css.recordButtonIcon}
               />
@@ -119,7 +125,7 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
           ) : isRunning ? (
             <div className="flex items-center gap-1.5 p-1 py-0.5">
               <LoaderCircle
-                size={iconSize + 2}
+                size={statusIconSize}
                 strokeWidth="1.5"
                 className="stroke-sky-500 animate-spin"
               />
@@ -134,7 +140,7 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
               onClick={() => resume()}
             >
               <Circle
-                size={iconSize + 2}
+                size={statusIconSize}
                 strokeWidth="1.5"
                 className="stroke-gray-500 dark:stroke-gray-400 fill-gray-100 dark:fill-gray-700"
               />
@@ -194,7 +200,7 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
             </button>
           </div>
         </div>
-        <div className="timeline relative w-[418px] h-[24px]">
+        <div className="timeline relative w-104.5 h-6">
           <StepList
             steps={props.steps}
             currentId={currentId}

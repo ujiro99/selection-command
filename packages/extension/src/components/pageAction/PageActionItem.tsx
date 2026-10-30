@@ -12,6 +12,8 @@ import { Tooltip } from "@/components/Tooltip"
 import { TypeIcon } from "@/components/pageAction/TypeIcon"
 import { InputField } from "@/components/pageAction/InputField"
 import { HoverArea } from "@/components/menu/HoverArea"
+import { useZoomCompensation } from "@/hooks/usePageZoom"
+import zc from "@/components/zoomCompensation.module.css"
 
 import { cn, capitalize, onHover } from "@/lib/utils"
 import { t } from "@/services/i18n"
@@ -59,6 +61,9 @@ export function PageActionItem(props: Props): JSX.Element {
   const labelInputRef = useRef<HTMLInputElement>(null)
   const delayInputRef = useRef<HTMLInputElement>(null)
   const isFailed = failedId === step.id
+  const zoomCompensation = useZoomCompensation()
+  const iconSize = 14 * zoomCompensation
+  const buttonIconSize = 16 * zoomCompensation
 
   const param = step.param
   const isInput = isInputParam(param)
@@ -114,7 +119,7 @@ export function PageActionItem(props: Props): JSX.Element {
   return (
     <li
       className={cn(
-        "h-[24px] flex-1 flex items-center justify-center pointer-events-auto group relative",
+        "h-6 flex-1 flex items-center justify-center pointer-events-auto group relative",
         props.className,
       )}
       ref={anchorRef}
@@ -132,7 +137,7 @@ export function PageActionItem(props: Props): JSX.Element {
         <TypeIcon
           type={step.param.type}
           className="stroke-gray-700 dark:stroke-gray-300"
-          size={14}
+          size={iconSize}
         />
       </div>
 
@@ -141,10 +146,14 @@ export function PageActionItem(props: Props): JSX.Element {
         <PopoverAnchor virtualRef={anchorRef} />
         {shouldRender && (
           <PopoverContent
-            className={
-              "border bg-white dark:bg-popover dark:[--sc-input-bg:hsl(220_18%_21%)] px-3 pt-4 pb-2 min-w-56 max-w-80 text-gray-600 dark:text-gray-400"
-            }
+            className={cn(
+              "border bg-white dark:bg-popover dark:[--sc-input-bg:hsl(220_18%_21%)] px-3 pt-4 pb-2 min-w-56 max-w-80 text-gray-600 dark:text-gray-400",
+              zc.border,
+              zc.rounded,
+              zc.shadowXl,
+            )}
             side={"top"}
+            sideOffset={4 * zoomCompensation}
             arrowPadding={-1}
             ref={contentRef}
             onPointerDownOutside={handlePointerDownOutside}
@@ -153,7 +162,7 @@ export function PageActionItem(props: Props): JSX.Element {
               <TypeIcon
                 type={step.param.type}
                 className="stroke-gray-700 dark:stroke-gray-300"
-                size={14}
+                size={iconSize}
               />
               {capitalize(step.param.type)}
             </p>
@@ -188,8 +197,10 @@ export function PageActionItem(props: Props): JSX.Element {
                     className={cn(
                       "w-2/3 max-h-32 truncate text-xs p-2 bg-gray-100 dark:bg-(--sc-input-bg,var(--color-gray-800)) font-mono rounded-sm whitespace-pre-line",
                       isInput &&
-                        isEditing &&
-                        "border border-gray-300 dark:border-gray-700 shadow-sm cursor-pointer",
+                        isEditing && [
+                          "border border-gray-300 dark:border-gray-700 shadow-sm cursor-pointer",
+                          zc.border,
+                        ],
                     )}
                     onClick={handleEditInputValue}
                   >
@@ -218,7 +229,7 @@ export function PageActionItem(props: Props): JSX.Element {
 
             <div className="flex justify-end gap-0.5 mt-2">
               {!isEditing ? (
-                <EditButton onClick={handleClickEdit} size={16} />
+                <EditButton onClick={handleClickEdit} size={buttonIconSize} />
               ) : (
                 <button
                   className={cn(
@@ -228,16 +239,17 @@ export function PageActionItem(props: Props): JSX.Element {
                 >
                   <Check
                     className={cn("stroke-gray-500 dark:stroke-gray-400")}
-                    size={16}
+                    size={buttonIconSize}
                   />
                 </button>
               )}
 
-              <RemoveButton onClick={handleClickRemove} size={16} />
+              <RemoveButton onClick={handleClickRemove} size={buttonIconSize} />
             </div>
             <PopoverArrow
               className="fill-white dark:fill-popover -mt-px"
-              height={6}
+              width={10 * zoomCompensation}
+              height={6 * zoomCompensation}
             />
             {/* Unmount while closing so the bridge does not capture the
                 pointer during the exit animation. */}

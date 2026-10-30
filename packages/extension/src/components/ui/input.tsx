@@ -59,7 +59,7 @@ const Input = React.forwardRef<
           {...props}
         />
         {unit && (
-          <span className="absolute right-[40px] top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+          <span className="absolute right-10 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
             {unit}
           </span>
         )}

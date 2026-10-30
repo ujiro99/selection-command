@@ -1,4 +1,5 @@
 import { cn, onHover } from "@/lib/utils"
+import { useZoomCompensation } from "@/hooks/usePageZoom"
 import { PageActionItem } from "@/components/pageAction/PageActionItem"
 import { CircleDashed } from "lucide-react"
 import type { PageActionStep, DeepPartial } from "@/types"
@@ -27,6 +28,7 @@ export function StepList(props: Props): JSX.Element {
   )
   const emptySteps = [...Array(PAGE_ACTION_MAX - 2 - steps.length)]
 
+  const zoomCompensation = useZoomCompensation()
   const onChangeHover = props.onChangeHover ?? noop
   const onClickRemove = props.onClickRemove ?? noop
   const onClickEdit = props.onClickEdit ?? noop
@@ -48,7 +50,7 @@ export function StepList(props: Props): JSX.Element {
           className={cn(
             "relative",
             i > 0 &&
-              "after:content-[''] after:z-[-1] after:absolute after:left-[-25%] after:h-[2px] after:w-[50%] after:bg-gray-500/80 dark:after:bg-gray-400/80 after:rounded-sm",
+              "after:content-[''] after:z-[-1] after:absolute after:left-[-25%] after:h-0.5 after:w-[50%] after:bg-gray-500/80 dark:after:bg-gray-400/80 after:rounded-sm",
           )}
         />
       ))}
@@ -56,14 +58,14 @@ export function StepList(props: Props): JSX.Element {
         <li
           key={i}
           className={cn(
-            "h-[24px] flex-1 flex items-center justify-center relative",
+            "h-6 flex-1 flex items-center justify-center relative",
             (steps.length > 0 || i > 0) &&
-              "after:content-[''] after:z-[-1] after:absolute after:left-[-25%] after:h-[2px] after:w-[50%] after:bg-gray-400/70 dark:after:bg-gray-600/70 after:rounded-sm",
+              "after:content-[''] after:z-[-1] after:absolute after:left-[-25%] after:h-0.5 after:w-[50%] after:bg-gray-400/70 dark:after:bg-gray-600/70 after:rounded-sm",
           )}
         >
           <div className="bg-gray-50 dark:bg-gray-800 rounded-full h-fit w-fit">
             <CircleDashed
-              size="12"
+              size={12 * zoomCompensation}
               strokeWidth={3}
               className="stroke-gray-400 dark:stroke-gray-500"
             />

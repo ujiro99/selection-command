@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react"
+import type { CSSProperties } from "react"
 import { restrictToParentElement } from "@dnd-kit/modifiers"
 import { DndContext, DragEndEvent } from "@dnd-kit/core"
 
 import { usePageActionContext } from "@/hooks/pageAction/usePageActionContext"
+import { usePageZoom, zoomCompensationContext } from "@/hooks/usePageZoom"
 import { InputPopup } from "@/components/pageAction/InputPopup"
 import { InputEditor } from "@/components/pageAction/InputEditor"
 import { RemoveDialog } from "@/components/option/RemoveDialog"
@@ -22,10 +24,18 @@ import type {
   DeepPartial,
   UserVariable,
 } from "@/types"
-import { isEmpty, capitalize } from "@/lib/utils"
+import { isEmpty, capitalize, cn } from "@/lib/utils"
+
+import css from "./PageActionRecorder.module.css"
 
 export function PageActionRecorder(): JSX.Element {
   const { isRecording } = usePageActionContext()
+  // The controller and the input menu always cancel the browser zoom,
+  // regardless of the followBrowserZoom setting of the selection menu.
+  const zoomCompensation = 1 / usePageZoom(isRecording === true)
+  const zoomStyle = {
+    "--sc-zoom-compensation": zoomCompensation,
+  } as CSSProperties
   const [steps, setSteps] = useState<PageActionStep[]>([])
   const [userVariables, setUserVariables] = useState<UserVariable[]>([])
   const [windowSize, setWindowSize] = useState<PopupOption>({
@@ -146,17 +156,30 @@ export function PageActionRecorder(): JSX.Element {
   return (
     <DndContext onDragEnd={handleDragEnd} modifiers={[restrictToParentElement]}>
       <div className="fixed inset-0 pointer-events-none z-2147483647">
-        <Draggable id="controller" position={position} className="z-10">
-          <Controller
-            steps={steps}
-            onClickRemove={setRemoveId}
-            onClickEdit={setEditId}
-            onChange={handleOnChangeStep}
-            isRecordEnabled={!(editorOpen || removeOpen)}
-            ref={setControllerElm}
-          />
-        </Draggable>
-        {!editorOpen && <InputPopup userVariables={userVariables} />}
+        <zoomCompensationContext.Provider value={zoomCompensation}>
+          {/* dnd-kit measures the parent of the draggable node, so the scope
+              is set on the draggable itself rather than on a wrapper. */}
+          <Draggable
+            id="controller"
+            position={position}
+            className={cn("z-10", css.zoomScope)}
+            style={zoomStyle}
+          >
+            <Controller
+              steps={steps}
+              onClickRemove={setRemoveId}
+              onClickEdit={setEditId}
+              onChange={handleOnChangeStep}
+              isRecordEnabled={!(editorOpen || removeOpen)}
+              ref={setControllerElm}
+            />
+          </Draggable>
+          {!editorOpen && (
+            <div className={cn("contents", css.zoomScope)} style={zoomStyle}>
+              <InputPopup userVariables={userVariables} />
+            </div>
+          )}
+        </zoomCompensationContext.Provider>
         <InputEditor
           open={editorOpen}
           onOpenChange={(o) => !o && setEditId(null)}

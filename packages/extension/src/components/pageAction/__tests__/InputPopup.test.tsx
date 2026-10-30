@@ -1,6 +1,7 @@
 import { render, screen, fireEvent } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
 import { InputMenu } from "../InputPopup"
+import { zoomCompensationContext } from "@/hooks/usePageZoom"
 
 describe("InputMenu file attach menu", () => {
   it("IM-01: enables the file attach menu by default", () => {
@@ -129,5 +130,30 @@ describe("InputMenu file attach menu", () => {
     } finally {
       target.remove()
     }
+  })
+})
+
+describe("InputMenu zoom compensation", () => {
+  // The chevron next to the insert-text trigger (14px).
+  const getChevron = () =>
+    screen
+      .getByText("PageAction_InputMenu_insertText")
+      .closest("button")!
+      .querySelector("svg")
+
+  it("IM-09: scales the icons by the zoom compensation", () => {
+    render(
+      <zoomCompensationContext.Provider value={1.25}>
+        <InputMenu targetElm={null} hideFilePaste />
+      </zoomCompensationContext.Provider>,
+    )
+
+    expect(getChevron()).toHaveAttribute("width", "17.5")
+  })
+
+  it("IM-10: keeps the icon size outside the recorder", () => {
+    render(<InputMenu targetElm={null} hideFilePaste />)
+
+    expect(getChevron()).toHaveAttribute("width", "14")
   })
 })

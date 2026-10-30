@@ -1,6 +1,7 @@
 import { forwardRef } from "react"
 import { cn } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
+import zc from "@/components/zoomCompensation.module.css"
 
 type Props = {
   label: string
@@ -24,7 +25,11 @@ export const InputField = forwardRef<HTMLInputElement, Props>(
             defaultValue={props.defaultValue ?? "---"}
             className="w-full"
             inputClassName={cn(
-              "h-auto px-1 py-0 text-sm",
+              // Input switches to text-base at lg. Pin text-sm so that the
+              // size does not depend on the viewport width, which changes
+              // with the browser zoom.
+              "h-auto px-1 py-0 text-sm lg:text-sm",
+              zc.border,
               !isEditing &&
                 "border-transparent bg-transparent dark:bg-transparent shadow-none truncate disabled:cursor-auto disabled:opacity-100",
               isEditing && "px-2 py-1.5 border-gray-300 dark:border-gray-700",

@@ -1,8 +1,10 @@
 import { useDraggable } from "@dnd-kit/core"
 import { cn } from "@/lib/utils"
+import { useZoomCompensation } from "@/hooks/usePageZoom"
 import { GripVertical } from "lucide-react"
 import { Point } from "@/types"
 
+import zc from "@/components/zoomCompensation.module.css"
 import css from "./PageActionRecorder.module.css"
 
 type Props = {
@@ -10,6 +12,7 @@ type Props = {
   children: React.ReactNode
   position?: Point
   className?: string
+  style?: React.CSSProperties
 }
 
 export function Draggable(props: Props) {
@@ -17,6 +20,7 @@ export function Draggable(props: Props) {
     useDraggable({
       id: props.id,
     })
+  const zoomCompensation = useZoomCompensation()
 
   let pos = {}
   if (props.position) {
@@ -26,8 +30,8 @@ export function Draggable(props: Props) {
     }
   } else {
     pos = {
-      right: 10,
-      bottom: 10,
+      right: 10 * zoomCompensation,
+      bottom: 10 * zoomCompensation,
     }
   }
 
@@ -38,6 +42,7 @@ export function Draggable(props: Props) {
     position: "absolute",
     transform: `translate3d(${diffX}px, ${diffY}px, 0)`,
     transition: "box-shadow 0.1s ease",
+    ...props.style,
     ...pos,
   } as React.CSSProperties
 
@@ -45,20 +50,24 @@ export function Draggable(props: Props) {
     <div
       ref={setNodeRef}
       style={style}
-      className={cn("relative", isDragging && "shadow-xl", props.className)}
+      className={cn(
+        "relative",
+        isDragging && ["shadow-xl", zc.shadowXl],
+        props.className,
+      )}
     >
       {props.children}
       <button
         className={cn(
           css.dragHandle,
-          "pointer-events-auto absolute px-0.5 py-1 ml-1 top-[50%] translate-x-[2px] translate-y-[-50%]",
+          "pointer-events-auto absolute px-0.5 py-1 ml-1 top-[50%] translate-x-0.5 translate-y-[-50%]",
           "rounded-md transition hover:bg-gray-300/50 dark:hover:bg-gray-600/50 hover:scale-110",
         )}
         {...listeners}
         {...attributes}
       >
         <GripVertical
-          size={18}
+          size={18 * zoomCompensation}
           strokeWidth={1.5}
           className="stroke-gray-500 dark:stroke-gray-400"
         />

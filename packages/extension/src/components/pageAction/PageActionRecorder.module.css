@@ -38,3 +38,19 @@
 [data-hover="true"] + .dragHandle {
   opacity: 0;
 }
+
+/*
+ * Cancels the browser zoom on the recorder UI (see usePageZoom.ts).
+ * The Tailwind utilities read these px tokens, so redefining them scales the
+ * utilities of every descendant by --sc-zoom-compensation. Fixed lengths
+ * that do not use a token are scaled individually.
+ */
+.zoomScope {
+  --spacing: calc(4px * var(--sc-zoom-compensation, 1));
+  --text-xs: calc(12px * var(--sc-zoom-compensation, 1));
+  --text-sm: calc(14px * var(--sc-zoom-compensation, 1));
+  --text-base: calc(16px * var(--sc-zoom-compensation, 1));
+  /* rounded-md / rounded-sm subtract a fixed px from it, so they are close
+     but not exact. Containers use zoomCompensation.module.css instead. */
+  --radius: calc(8px * var(--sc-zoom-compensation, 1));
+}

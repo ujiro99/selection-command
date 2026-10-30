@@ -30,6 +30,8 @@ import {
 } from "@/services/dom"
 import { t } from "@/services/i18n"
 import { INSERT, LocaleKey } from "@/services/pageAction"
+import { useZoomCompensation } from "@/hooks/usePageZoom"
+import zc from "@/components/zoomCompensation.module.css"
 
 enum MENU {
   INSERT = "insert",
@@ -168,6 +170,7 @@ export function InputPopup(props: {
   const [mousePos, setMousePos] = useState<Point | null>(null)
   const [menuVisible, setMenuVisible] = useState(false)
   const [shouldRender, setShouldRender] = useState(false)
+  const zoomCompensation = useZoomCompensation()
 
   useVisibleDelay({ visible: menuVisible, updater: setShouldRender })
 
@@ -234,10 +237,14 @@ export function InputPopup(props: {
         <PopoverAnchor virtualRef={{ current: anchor }} />
         {shouldRender && (
           <PopoverContent
-            className="pointer-events-auto z-auto"
+            className={cn(
+              "pointer-events-auto z-auto",
+              zc.rounded,
+              zc.shadowXl,
+            )}
             side={"top"}
             align={align}
-            sideOffset={8}
+            sideOffset={8 * zoomCompensation}
           >
             <InputMenu
               targetElm={targetElm}
@@ -265,6 +272,8 @@ type MenuProps = {
 export function InputMenu(props: MenuProps): JSX.Element {
   const disabled = props.disabled ?? false
   const [selectedMenu, setSelectedMenu] = useState("")
+  const zoomCompensation = useZoomCompensation()
+  const iconSize = 16 * zoomCompensation
   const iconSrc = chrome.runtime.getURL("/icon128.png")
   // Whether the file-attach menu is rendered alongside the insert-text menu.
   // When both are shown (the option editor's toolbar), triggers get tighter
@@ -302,12 +311,12 @@ export function InputMenu(props: MenuProps): JSX.Element {
 
   return (
     <Menubar
-      className={props.className}
+      className={cn(zc.border, zc.rounded, props.className)}
       value={selectedMenu}
       onValueChange={onSelectedMenuChange}
     >
       <MenubarMenu value={MENU.INSERT}>
-        <img src={iconSrc} alt="icon" className="size-[18px] ml-1.5 mr-0.5" />
+        <img src={iconSrc} alt="icon" className="size-4.5 ml-1.5 mr-0.5" />
         <MenubarTrigger
           className={cn(
             "p-1 pl-1.5 text-sm font-normal font-sans text-gray-700 dark:text-gray-300 cursor-pointer",
@@ -321,40 +330,41 @@ export function InputMenu(props: MenuProps): JSX.Element {
           {t("PageAction_InputMenu_insertText")}
           {!showFileAttachMenu &&
             (selectedMenu === MENU.INSERT ? (
-              <ChevronUp size={14} className="ml-1" />
+              <ChevronUp size={14 * zoomCompensation} className="ml-1" />
             ) : (
-              <ChevronDown size={14} className="ml-1" />
+              <ChevronDown size={14 * zoomCompensation} className="ml-1" />
             ))}
         </MenubarTrigger>
         <MenubarContent
-          className="border"
+          className={cn("border", zc.border, zc.rounded, zc.shadowXl)}
           onMouseLeave={() => setSelectedMenu("")}
-          sideOffset={2}
+          sideOffset={2 * zoomCompensation}
+          alignOffset={-4 * zoomCompensation}
         >
           <InputMenuItem onClick={onClickItem} value={INSERT.SELECTED_TEXT}>
             <TextCursorInput
-              size={16}
+              size={iconSize}
               className="mr-2 stroke-gray-600 dark:stroke-gray-400"
             />
             {t("PageAction_InputMenu_selectedText")}
           </InputMenuItem>
           <InputMenuItem onClick={onClickItem} value={INSERT.URL}>
             <Link2
-              size={16}
+              size={iconSize}
               className="mr-2 stroke-gray-600 dark:stroke-gray-400"
             />
             {t("PageAction_InputMenu_url")}
           </InputMenuItem>
           <InputMenuItem onClick={onClickItem} value={INSERT.CLIPBOARD}>
             <Clipboard
-              size={16}
+              size={iconSize}
               className="mr-2 stroke-gray-600 dark:stroke-gray-400"
             />
             {t("PageAction_InputMenu_clipboard")}
           </InputMenuItem>
           <InputMenuItem onClick={onClickItem} value={INSERT.LANG}>
             <Languages
-              size={16}
+              size={iconSize}
               className="mr-2 stroke-gray-600 dark:stroke-gray-400"
             />
             {t("PageAction_InputMenu_lang")}
@@ -369,7 +379,7 @@ export function InputMenu(props: MenuProps): JSX.Element {
               onClick={() => onClickVariable(variable.name)}
             >
               <Braces
-                size={16}
+                size={iconSize}
                 className="mr-2 stroke-gray-600 dark:stroke-gray-400"
               />
               {variable.name}
@@ -379,7 +389,7 @@ export function InputMenu(props: MenuProps): JSX.Element {
       </MenubarMenu>
       {showFileAttachMenu && (
         <>
-          <div className="shrink-0 self-stretch mx-px my-[2px] bg-border w-px" />
+          <div className="shrink-0 self-stretch mx-px my-0.5 bg-border w-px" />
           <MenubarMenu value={MENU.FILE_PASTE}>
             <MenubarTrigger
               className={cn(
@@ -394,13 +404,14 @@ export function InputMenu(props: MenuProps): JSX.Element {
               {t("PageAction_InputMenu_fileAttach")}
             </MenubarTrigger>
             <MenubarContent
-              className="border"
+              className={cn("border", zc.border, zc.rounded, zc.shadowXl)}
               onMouseLeave={() => setSelectedMenu("")}
-              sideOffset={2}
+              sideOffset={2 * zoomCompensation}
+              alignOffset={-4 * zoomCompensation}
             >
               <InputMenuItem onClick={onClickItem} value={INSERT.PAGE_HTML}>
                 <FileCode
-                  size={16}
+                  size={iconSize}
                   className="mr-2 stroke-gray-600 dark:stroke-gray-400"
                 />
                 {t("PageAction_InputMenu_pageHtml")}
@@ -410,7 +421,7 @@ export function InputMenu(props: MenuProps): JSX.Element {
                 value={INSERT.SELECTION_HTML}
               >
                 <Code
-                  size={16}
+                  size={iconSize}
                   className="mr-2 stroke-gray-600 dark:stroke-gray-400"
                 />
                 {t("PageAction_InputMenu_selectionHtml")}
@@ -447,6 +458,7 @@ type FocusOutlineProps = {
 
 function FocusOutline(props: FocusOutlineProps): JSX.Element {
   const { elm, disabled } = props
+  const zoomCompensation = useZoomCompensation()
   const [container, setContainer] = useState<HTMLElement | null>(null)
   const [rect, setRect] = useState<DOMRect>()
   const [shouldRender, setShouldRender] = useState(false)
@@ -497,19 +509,20 @@ function FocusOutline(props: FocusOutlineProps): JSX.Element {
   return (
     <div
       className={cn(
-        "border-2 border-gray-300 opacity-0 transition-opacity duration-150",
+        "border-gray-300 opacity-0 transition-opacity duration-150",
         shouldRender && "opacity-100",
         disabled && "border-red-500",
       )}
       style={{
         position: "fixed",
-        top: rect.top - 4,
-        left: rect.left - 4,
+        top: rect.top - 4 * zoomCompensation,
+        left: rect.left - 4 * zoomCompensation,
         width: rect.width,
         height: rect.height,
-        padding: "2px",
+        padding: 2 * zoomCompensation,
+        borderWidth: 2 * zoomCompensation,
         boxSizing: "content-box",
-        borderRadius: "6px",
+        borderRadius: 6 * zoomCompensation,
         pointerEvents: "none",
       }}
     />
