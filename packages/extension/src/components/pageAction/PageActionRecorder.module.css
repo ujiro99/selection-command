@@ -50,6 +50,9 @@
   --text-xs: calc(12px * var(--sc-zoom-compensation, 1));
   --text-sm: calc(14px * var(--sc-zoom-compensation, 1));
   --text-base: calc(16px * var(--sc-zoom-compensation, 1));
+  --text-lg: calc(18px * var(--sc-zoom-compensation, 1));
+  /* max-w-lg of the dialogs */
+  --container-lg: calc(512px * var(--sc-zoom-compensation, 1));
   /* rounded-md / rounded-sm subtract a fixed px from it, so they are close
      but not exact. Containers use zoomCompensation.module.css instead. */
   --radius: calc(8px * var(--sc-zoom-compensation, 1));

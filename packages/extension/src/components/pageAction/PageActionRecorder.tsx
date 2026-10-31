@@ -174,42 +174,43 @@ export function PageActionRecorder(): JSX.Element {
               ref={setControllerElm}
             />
           </Draggable>
-          {!editorOpen && (
-            <div className={cn("contents", css.zoomScope)} style={zoomStyle}>
-              <InputPopup userVariables={userVariables} />
-            </div>
-          )}
-        </zoomCompensationContext.Provider>
-        <InputEditor
-          open={editorOpen}
-          onOpenChange={(o) => !o && setEditId(null)}
-          value={editorValue}
-          onSubmit={editInputAction}
-          userVariables={userVariables}
-        />
-        <RemoveDialog
-          open={removeOpen}
-          onOpenChange={(o) => !o && setRemoveId(null)}
-          onRemove={() => removeAction(removeId)}
-        >
-          {removeStep && (
-            <div>
-              <p className="text-base font-medium font-mono flex items-center gap-1.5">
-                <TypeIcon
-                  type={removeStep.param.type}
-                  className="stroke-gray-700 dark:stroke-gray-300"
-                  size={20}
-                />
-                {capitalize(removeStep.param.type)}
-              </p>
-              {hasLabel && (
-                <p className="mt-2 px-3 py-2 rounded-md text-balance whitespace-pre-line text-sm max-h-80 overflow-x-hidden overflow-y-auto bg-gray-100 dark:bg-gray-800">
-                  <span>{removeStep.param.label}</span>
-                </p>
+          <div className={cn("contents", css.zoomScope)} style={zoomStyle}>
+            {!editorOpen && <InputPopup userVariables={userVariables} />}
+            <InputEditor
+              open={editorOpen}
+              onOpenChange={(o) => !o && setEditId(null)}
+              value={editorValue}
+              onSubmit={editInputAction}
+              userVariables={userVariables}
+            />
+            <RemoveDialog
+              open={removeOpen}
+              onOpenChange={(o) => !o && setRemoveId(null)}
+              onRemove={() => removeAction(removeId)}
+              // Pin the sm layout: breakpoints follow the viewport width in
+              // CSS px, which changes with the browser zoom.
+              footerClassName="flex-row justify-end space-x-2"
+            >
+              {removeStep && (
+                <div>
+                  <p className="text-base font-medium font-mono flex items-center gap-1.5">
+                    <TypeIcon
+                      type={removeStep.param.type}
+                      className="stroke-gray-700 dark:stroke-gray-300"
+                      size={20 * zoomCompensation}
+                    />
+                    {capitalize(removeStep.param.type)}
+                  </p>
+                  {hasLabel && (
+                    <p className="mt-2 px-3 py-2 rounded-md text-balance whitespace-pre-line text-sm max-h-80 overflow-x-hidden overflow-y-auto bg-gray-100 dark:bg-gray-800">
+                      <span>{removeStep.param.label}</span>
+                    </p>
+                  )}
+                </div>
               )}
-            </div>
-          )}
-        </RemoveDialog>
+            </RemoveDialog>
+          </div>
+        </zoomCompensationContext.Provider>
       </div>
     </DndContext>
   )

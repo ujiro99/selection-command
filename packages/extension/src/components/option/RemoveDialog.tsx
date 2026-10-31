@@ -21,6 +21,7 @@ type RemoveDialogProps = {
   onRemove: () => void
   children: React.ReactNode
   portal?: boolean
+  footerClassName?: string
   "data-testid-ok"?: string
 }
 
@@ -44,7 +45,7 @@ export const RemoveDialog = ({
           <div className="py-1 flex items-center justify-center">
             {props.children}
           </div>
-          <DialogFooter>
+          <DialogFooter className={props.footerClassName}>
             <DialogClose asChild>
               <Button type="button" variant="secondary" size="lg">
                 {t("Option_labelCancel")}

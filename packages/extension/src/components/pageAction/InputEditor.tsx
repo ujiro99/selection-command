@@ -18,7 +18,10 @@ import {
   convReadableKeysToSymbols,
 } from "@/services/pageAction"
 import { t } from "@/services/i18n"
+import { cn } from "@/lib/utils"
 import type { UserVariable } from "@/types"
+
+import zc from "@/components/zoomCompensation.module.css"
 
 type InputEditorProps = {
   open: boolean
@@ -40,7 +43,10 @@ export function InputEditor(props: InputEditorProps) {
   return (
     <Dialog open={props.open} onOpenChange={props.onOpenChange}>
       <DialogPortal portal={props.portal}>
-        <DialogContent className="sm:max-w-[500px]">
+        {/* The sm layout is pinned (max-w-125, space-x-2): breakpoints
+            follow the viewport width in CSS px, which changes with the
+            browser zoom. */}
+        <DialogContent className="max-w-125">
           <DialogHeader>
             <DialogTitle>
               <span className="mr-2">✏️</span>
@@ -63,10 +69,10 @@ export function InputEditor(props: InputEditorProps) {
               rows={4}
               defaultValue={defaultVal}
               ref={setTextarea}
-              className="text-sm"
+              className={cn("text-sm lg:text-sm", zc.border)}
             />
           </div>
-          <DialogFooter className="flex flex-row justify-end gap-2">
+          <DialogFooter className="flex flex-row justify-end gap-2 space-x-2">
             <DialogClose asChild>
               <Button variant="secondary">
                 {t("PageAction_InputEditor_cancel")}
