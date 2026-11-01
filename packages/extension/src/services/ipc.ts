@@ -215,33 +215,47 @@ export type IpcUnsubscribe = () => void
 
 let onConnect: (port: chrome.runtime.Port) => void
 
+// Whether the single chrome.runtime.onMessage listener of this context has
+// been registered.
+let onMessageRegistered = false
+
 /**
  * Calls every callback registered for the command, the way
  * chrome.runtime.onMessage calls all of its listeners: only the first
  * response reaches the sender.
+ * @param respondIfUnanswered - Responds with undefined when no callback has
+ * responded or will respond later (returned true), as onMessage closes the
+ * channel. Leave it false for onMessage itself, where a listener in another
+ * context may still respond.
+ * @returns Whether a callback will respond later, which an onMessage
+ * listener must return to keep the channel open.
  */
 const dispatchToCallbacks = (
   callbacks: IpcCallback[],
   param: unknown,
   sender: chrome.runtime.MessageSender,
   response: (response?: unknown) => void,
-) => {
+  respondIfUnanswered: boolean,
+): boolean => {
   let responded = false
   const respondOnce = (res?: unknown) => {
     if (responded) return
     responded = true
     response(res)
   }
+  let respondLater = false
   // Copy so a callback that unsubscribes does not skip the next one.
   for (const callback of [...callbacks]) {
     // Isolate each callback, as onMessage does, so one that throws does not
     // keep the others from being called.
     try {
-      callback(param, sender, respondOnce)
+      if (callback(param, sender, respondOnce) === true) respondLater = true
     } catch (error) {
       console.error("Ipc listener threw an error:", error)
     }
   }
+  if (respondIfUnanswered && !respondLater) respondOnce(undefined)
+  return respondLater && !responded
 }
 
 export const Ipc = {
@@ -276,6 +290,7 @@ export const Ipc = {
         param,
         {} as chrome.runtime.MessageSender,
         (res: unknown) => resolve(res as R),
+        true,
       )
     })
   },
@@ -578,8 +593,32 @@ export const Ipc = {
             console.error("Failed to send port response:", e)
           }
         },
+        true,
       )
     })
+  },
+
+  /**
+   * The single chrome.runtime.onMessage listener of this context. Delivers
+   * the message to the callbacks registered for its command.
+   * @returns Whether a callback will respond later. false for a command with
+   * no callbacks, leaving it to the listeners of other contexts.
+   */
+  handleMessage(
+    request: Request,
+    sender: chrome.runtime.MessageSender,
+    response: (response?: unknown) => void,
+  ): boolean {
+    // do not use async/await here !
+    const callbacks = Ipc.listeners[request?.command]
+    if (!callbacks?.length) return false
+    return dispatchToCallbacks(
+      callbacks,
+      request.param,
+      sender,
+      response,
+      false,
+    )
   },
 
   /**
@@ -592,23 +631,12 @@ export const Ipc = {
     command: IpcCommand,
     callback: IpcCallback<M>,
   ): IpcUnsubscribe {
-    const listener = (
-      request: Request,
-      sender: chrome.runtime.MessageSender,
-      response: (response?: unknown) => void,
-    ) => {
-      // do not use async/await here !
-      const cmd = request.command
-      const prm = request.param
-
-      if (command === cmd) {
-        // must return "true" if response is async.
-        return callback(prm as M, sender, response)
-      }
-
-      return false
+    // One onMessage listener serves every registration, so messages from
+    // tabs, ports and the service worker itself share dispatchToCallbacks.
+    if (!onMessageRegistered) {
+      chrome.runtime.onMessage.addListener(Ipc.handleMessage)
+      onMessageRegistered = true
     }
-    chrome.runtime.onMessage.addListener(listener)
     // A function unique to this registration, so unsubscribing removes this
     // entry even when the same callback is registered more than once.
     const entry: IpcCallback = (param, sender, response) =>
@@ -619,7 +647,6 @@ export const Ipc = {
     return () => {
       if (removed) return
       removed = true
-      chrome.runtime.onMessage.removeListener(listener)
       const callbacks = Ipc.listeners[command]
       const index = callbacks?.indexOf(entry) ?? -1
       if (index < 0) return

@@ -171,33 +171,29 @@ describe("Ipc.send", () => {
 })
 
 describe("Ipc.addListener", () => {
-  const onMessage = vi.mocked(chrome.runtime.onMessage)
-
-  // Returns the wrapper that addListener passed to onMessage.addListener.
-  const registeredWrapper = (index = -1) =>
-    onMessage.addListener.mock.calls.at(index)?.[0] as (
-      request: unknown,
-      sender: chrome.runtime.MessageSender,
-      response: (res?: unknown) => void,
-    ) => boolean
+  const sender = {} as chrome.runtime.MessageSender
 
   beforeEach(() => {
     vi.clearAllMocks()
     Ipc.listeners = {}
   })
 
-  it("IPC-08: 正常系: 解除関数は onMessage に登録したラッパーを解除する", () => {
+  it("IPC-08: 正常系: 解除するとそのコールバックには配信しない", () => {
     // Arrange
     const callback = vi.fn(() => false)
     const removeListener = Ipc.addListener(TabCommand.closeMenu, callback)
-    const wrapper = registeredWrapper()
 
     // Act
     removeListener()
+    const handled = Ipc.handleMessage(
+      { command: TabCommand.closeMenu, param: undefined },
+      sender,
+      vi.fn(),
+    )
 
     // Assert
-    expect(wrapper).not.toBe(callback)
-    expect(onMessage.removeListener).toHaveBeenCalledWith(wrapper)
+    expect(handled).toBe(false)
+    expect(callback).not.toHaveBeenCalled()
     expect(Ipc.listeners[TabCommand.closeMenu]).toBeUndefined()
   })
 
@@ -206,34 +202,34 @@ describe("Ipc.addListener", () => {
     const first = vi.fn(() => false)
     const second = vi.fn(() => false)
     const removeFirst = Ipc.addListener(TabCommand.closeMenu, first)
-    const firstWrapper = registeredWrapper()
     Ipc.addListener(TabCommand.closeMenu, second)
-    const secondWrapper = registeredWrapper()
 
     // Act
     removeFirst()
+    Ipc.handleMessage(
+      { command: TabCommand.closeMenu, param: undefined },
+      sender,
+      vi.fn(),
+    )
 
     // Assert
-    expect(onMessage.removeListener).toHaveBeenCalledTimes(1)
-    expect(onMessage.removeListener).toHaveBeenCalledWith(firstWrapper)
-    expect(onMessage.removeListener).not.toHaveBeenCalledWith(secondWrapper)
-    const remaining = Ipc.listeners[TabCommand.closeMenu]
-    expect(remaining).toHaveLength(1)
-    remaining[0](undefined, {} as chrome.runtime.MessageSender, vi.fn())
+    expect(Ipc.listeners[TabCommand.closeMenu]).toHaveLength(1)
     expect(second).toHaveBeenCalledTimes(1)
     expect(first).not.toHaveBeenCalled()
   })
 
-  it("IPC-10: 正常系: 解除関数を複数回呼んでも 1 回だけ解除する", () => {
+  it("IPC-10: 正常系: 解除関数を複数回呼んでも、ほかの登録は解除しない", () => {
     // Arrange
-    const removeListener = Ipc.addListener(TabCommand.closeMenu, vi.fn())
+    const callback = vi.fn(() => false)
+    const removeFirst = Ipc.addListener(TabCommand.closeMenu, callback)
+    Ipc.addListener(TabCommand.closeMenu, callback)
 
     // Act
-    removeListener()
-    removeListener()
+    removeFirst()
+    removeFirst()
 
     // Assert
-    expect(onMessage.removeListener).toHaveBeenCalledTimes(1)
+    expect(Ipc.listeners[TabCommand.closeMenu]).toHaveLength(1)
   })
 
   it("IPC-15: 正常系: 同じコールバックを 2 回登録しても、解除するのはその登録の分だけ", () => {
@@ -252,33 +248,61 @@ describe("Ipc.addListener", () => {
 
     // Act
     removeSecondA()
+    const response = vi.fn()
+    Ipc.handleMessage(
+      { command: TabCommand.closeMenu, param: undefined },
+      sender,
+      response,
+    )
 
     // Assert: the first A is kept ahead of B, so it still answers first.
     expect(Ipc.listeners[TabCommand.closeMenu]).toHaveLength(2)
-    const response = vi.fn()
-    Ipc.listeners[TabCommand.closeMenu][0](
-      undefined,
-      {} as chrome.runtime.MessageSender,
-      response,
-    )
+    expect(a).toHaveBeenCalledTimes(1)
+    expect(b).toHaveBeenCalledTimes(1)
+    expect(response).toHaveBeenCalledTimes(1)
     expect(response).toHaveBeenCalledWith("a")
   })
 
-  it("IPC-11: 正常系: ラッパーは対象コマンドのときだけコールバックを呼ぶ", () => {
+  it("IPC-16: 正常系: 何回登録しても onMessage のリスナーは 1 つだけ登録する", async () => {
+    // Arrange: a fresh module has not registered its listener yet.
+    vi.resetModules()
+    const { Ipc: FreshIpc } = await import("../ipc")
+
+    // Act
+    const remove = FreshIpc.addListener(TabCommand.closeMenu, vi.fn())
+    FreshIpc.addListener(TabCommand.showToast, vi.fn())
+    remove()
+    FreshIpc.addListener(TabCommand.closeMenu, vi.fn())
+
+    // Assert
+    const onMessage = vi.mocked(chrome.runtime.onMessage)
+    expect(onMessage.addListener).toHaveBeenCalledTimes(1)
+    expect(onMessage.addListener).toHaveBeenCalledWith(FreshIpc.handleMessage)
+    expect(onMessage.removeListener).not.toHaveBeenCalled()
+  })
+})
+
+describe("Ipc.handleMessage", () => {
+  const sender = {} as chrome.runtime.MessageSender
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    Ipc.listeners = {}
+  })
+
+  it("IPC-11: 正常系: 対象コマンドのコールバックだけを呼ぶ", () => {
     // Arrange
     const callback = vi.fn(() => true)
     Ipc.addListener(TabCommand.closeMenu, callback)
-    const wrapper = registeredWrapper()
-    const sender = {} as chrome.runtime.MessageSender
     const response = vi.fn()
 
     // Act
-    const other = wrapper(
+    const other = Ipc.handleMessage(
       { command: TabCommand.showToast, param: 1 },
       sender,
       response,
     )
-    const own = wrapper(
+    const own = Ipc.handleMessage(
       { command: TabCommand.closeMenu, param: 2 },
       sender,
       response,
@@ -288,7 +312,102 @@ describe("Ipc.addListener", () => {
     expect(other).toBe(false)
     expect(own).toBe(true)
     expect(callback).toHaveBeenCalledTimes(1)
-    expect(callback).toHaveBeenCalledWith(2, sender, response)
+    expect(callback).toHaveBeenCalledWith(2, sender, expect.any(Function))
+  })
+
+  it("IPC-17: 正常系: 後で応答するコールバックがあれば true を返し、その応答を返す", () => {
+    // Arrange
+    let respondLater: ((res?: unknown) => void) | undefined
+    Ipc.addListener(TabCommand.closeMenu, () => false)
+    Ipc.addListener(TabCommand.closeMenu, (_p, _s, response) => {
+      respondLater = response
+      return true
+    })
+    const response = vi.fn()
+
+    // Act
+    const keepOpen = Ipc.handleMessage(
+      { command: TabCommand.closeMenu, param: undefined },
+      sender,
+      response,
+    )
+    respondLater?.("later")
+
+    // Assert
+    expect(keepOpen).toBe(true)
+    expect(response).toHaveBeenCalledTimes(1)
+    expect(response).toHaveBeenCalledWith("later")
+  })
+
+  it("IPC-18: 正常系: 誰も応答しなければ false を返し、自分では応答しない", () => {
+    // Arrange: a listener in another context may still respond.
+    Ipc.addListener(TabCommand.closeMenu, () => false)
+    const response = vi.fn()
+
+    // Act
+    const keepOpen = Ipc.handleMessage(
+      { command: TabCommand.closeMenu, param: undefined },
+      sender,
+      response,
+    )
+
+    // Assert
+    expect(keepOpen).toBe(false)
+    expect(response).not.toHaveBeenCalled()
+  })
+
+  it("IPC-19: 正常系: 同期的に応答したら、後で応答するコールバックがあっても false を返す", () => {
+    // Arrange
+    Ipc.addListener(TabCommand.closeMenu, (_p, _s, response) => {
+      response("now")
+      return false
+    })
+    Ipc.addListener(TabCommand.closeMenu, () => true)
+    const response = vi.fn()
+
+    // Act
+    const keepOpen = Ipc.handleMessage(
+      { command: TabCommand.closeMenu, param: undefined },
+      sender,
+      response,
+    )
+
+    // Assert
+    expect(keepOpen).toBe(false)
+    expect(response).toHaveBeenCalledWith("now")
+  })
+})
+
+describe("Ipc.callListener", () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    Ipc.listeners = {}
+  })
+
+  it("IPC-20: 正常系: どのコールバックも応答しなければ undefined で解決する", async () => {
+    // Arrange
+    Ipc.addListener(ServiceWorkerCommand.onHidden, () => false)
+
+    // Act
+    const result = await Ipc.callListener(ServiceWorkerCommand.onHidden)
+
+    // Assert
+    expect(result).toBeUndefined()
+  })
+
+  it("IPC-21: 正常系: 後で応答するコールバックがあれば、その応答で解決する", async () => {
+    // Arrange
+    Ipc.addListener(ServiceWorkerCommand.getTabId, () => false)
+    Ipc.addListener(ServiceWorkerCommand.getTabId, (_p, _s, response) => {
+      setTimeout(() => response(42), 0)
+      return true
+    })
+
+    // Act
+    const result = await Ipc.callListener(ServiceWorkerCommand.getTabId)
+
+    // Assert
+    expect(result).toBe(42)
   })
 })
 
@@ -386,5 +505,46 @@ describe("Ipc.bridgePortToListeners", () => {
       error,
     )
     consoleErrorSpy.mockRestore()
+  })
+
+  it("IPC-22: 正常系: どのコールバックも応答しなければ undefined を返す", () => {
+    // Arrange
+    Ipc.addListener(TabCommand.closeMenu, () => false)
+    const { port, handler } = createPort()
+
+    // Act
+    handler({ command: TabCommand.closeMenu, id: 1 })
+
+    // Assert
+    expect(port.postMessage).toHaveBeenCalledTimes(1)
+    expect(port.postMessage).toHaveBeenCalledWith({
+      command: "portResponse",
+      id: 1,
+      result: undefined,
+    })
+  })
+
+  it("IPC-23: 正常系: 後で応答するコールバックがあれば、その応答を待って返す", () => {
+    // Arrange
+    let respondLater: ((res?: unknown) => void) | undefined
+    Ipc.addListener(TabCommand.closeMenu, (_p, _s, response) => {
+      respondLater = response
+      return true
+    })
+    const { port, handler } = createPort()
+
+    // Act
+    handler({ command: TabCommand.closeMenu, id: 1 })
+    const postedBefore = port.postMessage.mock.calls.length
+    respondLater?.("later")
+
+    // Assert
+    expect(postedBefore).toBe(0)
+    expect(port.postMessage).toHaveBeenCalledTimes(1)
+    expect(port.postMessage).toHaveBeenCalledWith({
+      command: "portResponse",
+      id: 1,
+      result: "later",
+    })
   })
 })
