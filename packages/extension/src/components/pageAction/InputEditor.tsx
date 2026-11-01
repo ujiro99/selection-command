@@ -46,7 +46,7 @@ export function InputEditor(props: InputEditorProps) {
         {/* The sm layout is pinned (max-w-125, space-x-2): breakpoints
             follow the viewport width in CSS px, which changes with the
             browser zoom. */}
-        <DialogContent className="max-w-125">
+        <DialogContent className={cn("max-w-125", zc.border, zc.shadowLg)}>
           <DialogHeader>
             <DialogTitle>
               <span className="mr-2">✏️</span>

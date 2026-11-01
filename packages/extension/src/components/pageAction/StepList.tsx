@@ -1,5 +1,4 @@
 import { cn, onHover } from "@/lib/utils"
-import { useZoomCompensation } from "@/hooks/usePageZoom"
 import { PageActionItem } from "@/components/pageAction/PageActionItem"
 import { CircleDashed } from "lucide-react"
 import type { PageActionStep, DeepPartial } from "@/types"
@@ -28,7 +27,6 @@ export function StepList(props: Props): JSX.Element {
   )
   const emptySteps = [...Array(PAGE_ACTION_MAX - 2 - steps.length)]
 
-  const zoomCompensation = useZoomCompensation()
   const onChangeHover = props.onChangeHover ?? noop
   const onClickRemove = props.onClickRemove ?? noop
   const onClickEdit = props.onClickEdit ?? noop
@@ -65,9 +63,8 @@ export function StepList(props: Props): JSX.Element {
         >
           <div className="bg-gray-50 dark:bg-gray-800 rounded-full h-fit w-fit">
             <CircleDashed
-              size={12 * zoomCompensation}
               strokeWidth={3}
-              className="stroke-gray-400 dark:stroke-gray-500"
+              className="size-3 stroke-gray-400 dark:stroke-gray-500"
             />
           </div>
         </li>

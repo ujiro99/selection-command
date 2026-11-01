@@ -46,10 +46,11 @@ const getControllerRoot = () => getDragHandle().parentElement as HTMLElement
 
 describe("PageActionRecorder zoom compensation", () => {
   beforeEach(() => {
+    vi.clearAllMocks()
     vi.mocked(usePageZoom).mockReset()
   })
 
-  it("PAR-01: cancels the browser zoom on the controller while recording", async () => {
+  it("PAR-01: 正常系: 記録中はコントローラのブラウザズームを打ち消す", async () => {
     setRecording(true)
     vi.mocked(usePageZoom).mockReturnValue(0.8)
 
@@ -60,12 +61,12 @@ describe("PageActionRecorder zoom compensation", () => {
     expect(
       getControllerRoot().style.getPropertyValue("--sc-zoom-compensation"),
     ).toBe("1.25")
-    // Fixed sizes in JS are scaled too, e.g. the drag handle icon (18px).
-    const gripIcon = getDragHandle().querySelector("svg")
-    expect(gripIcon).toHaveAttribute("width", "22.5")
+    // Lengths set in JS are scaled too, e.g. the initial offset (10px).
+    expect(getControllerRoot().style.right).toBe("12.5px")
+    expect(getControllerRoot().style.bottom).toBe("12.5px")
   })
 
-  it("PAR-02: keeps the original size when the zoom is 100%", async () => {
+  it("PAR-02: 正常系: ズーム100%では元のサイズを保つ", async () => {
     setRecording(true)
     vi.mocked(usePageZoom).mockReturnValue(1)
 
@@ -75,11 +76,10 @@ describe("PageActionRecorder zoom compensation", () => {
     expect(
       getControllerRoot().style.getPropertyValue("--sc-zoom-compensation"),
     ).toBe("1")
-    const gripIcon = getDragHandle().querySelector("svg")
-    expect(gripIcon).toHaveAttribute("width", "18")
+    expect(getControllerRoot().style.right).toBe("10px")
   })
 
-  it("PAR-03: does not track the zoom while not recording", () => {
+  it("PAR-03: 正常系: 記録中でなければズームを追跡しない", () => {
     setRecording(false)
     vi.mocked(usePageZoom).mockReturnValue(1)
 

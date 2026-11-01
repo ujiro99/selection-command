@@ -62,8 +62,6 @@ export function PageActionItem(props: Props): JSX.Element {
   const delayInputRef = useRef<HTMLInputElement>(null)
   const isFailed = failedId === step.id
   const zoomCompensation = useZoomCompensation()
-  const iconSize = 14 * zoomCompensation
-  const buttonIconSize = 16 * zoomCompensation
 
   const param = step.param
   const isInput = isInputParam(param)
@@ -136,8 +134,7 @@ export function PageActionItem(props: Props): JSX.Element {
       >
         <TypeIcon
           type={step.param.type}
-          className="stroke-gray-700 dark:stroke-gray-300"
-          size={iconSize}
+          className="size-3.5 stroke-gray-700 dark:stroke-gray-300"
         />
       </div>
 
@@ -161,8 +158,7 @@ export function PageActionItem(props: Props): JSX.Element {
             <p className="text-sm font-semibold font-mono flex items-center gap-1.5">
               <TypeIcon
                 type={step.param.type}
-                className="stroke-gray-700 dark:stroke-gray-300"
-                size={iconSize}
+                className="size-3.5 stroke-gray-700 dark:stroke-gray-300"
               />
               {capitalize(step.param.type)}
             </p>
@@ -229,7 +225,7 @@ export function PageActionItem(props: Props): JSX.Element {
 
             <div className="flex justify-end gap-0.5 mt-2">
               {!isEditing ? (
-                <EditButton onClick={handleClickEdit} size={buttonIconSize} />
+                <EditButton onClick={handleClickEdit} classNameIcon="size-4" />
               ) : (
                 <button
                   className={cn(
@@ -237,14 +233,11 @@ export function PageActionItem(props: Props): JSX.Element {
                   )}
                   onClick={handleClickEditFinish}
                 >
-                  <Check
-                    className={cn("stroke-gray-500 dark:stroke-gray-400")}
-                    size={buttonIconSize}
-                  />
+                  <Check className="size-4 stroke-gray-500 dark:stroke-gray-400" />
                 </button>
               )}
 
-              <RemoveButton onClick={handleClickRemove} size={buttonIconSize} />
+              <RemoveButton onClick={handleClickRemove} />
             </div>
             <PopoverArrow
               className="fill-white dark:fill-popover -mt-px"
@@ -269,10 +262,9 @@ export function PageActionItem(props: Props): JSX.Element {
 
 type RemoveButtonProps = {
   onClick: () => void
-  size: number
 }
 
-const RemoveButton = ({ onClick, size }: RemoveButtonProps) => {
+const RemoveButton = ({ onClick }: RemoveButtonProps) => {
   const buttonRef = useRef<HTMLButtonElement>(null)
   return (
     <>
@@ -284,10 +276,7 @@ const RemoveButton = ({ onClick, size }: RemoveButtonProps) => {
         onClick={onClick}
         ref={buttonRef}
       >
-        <Trash2
-          className="stroke-gray-500 dark:stroke-gray-400 group-hover/remove-button:stroke-red-500"
-          size={size}
-        />
+        <Trash2 className="size-4 stroke-gray-500 dark:stroke-gray-400 group-hover/remove-button:stroke-red-500" />
       </button>
       <Tooltip
         positionElm={buttonRef.current}

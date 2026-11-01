@@ -67,9 +67,8 @@ export function Draggable(props: Props) {
         {...attributes}
       >
         <GripVertical
-          size={18 * zoomCompensation}
           strokeWidth={1.5}
-          className="stroke-gray-500 dark:stroke-gray-400"
+          className="size-4.5 stroke-gray-500 dark:stroke-gray-400"
         />
       </button>
     </div>

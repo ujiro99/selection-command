@@ -6,8 +6,8 @@ import { RemoveDialog } from "../RemoveDialog"
 const getFooter = () =>
   screen.getByText("Option_labelCancel").closest("button")!.parentElement!
 
-describe("RemoveDialog footer", () => {
-  it("RD-01: switches the footer layout at the sm breakpoint by default", () => {
+describe("RemoveDialog class names", () => {
+  it("RD-01: 正常系: 既定ではsmブレークポイントでフッターのレイアウトを切り替える", () => {
     render(
       <RemoveDialog open onOpenChange={() => {}} onRemove={() => {}}>
         <span>item</span>
@@ -17,7 +17,7 @@ describe("RemoveDialog footer", () => {
     expect(getFooter()).toHaveClass("flex-col-reverse", "sm:flex-row")
   })
 
-  it("RD-02: replaces the footer layout with footerClassName", () => {
+  it("RD-02: 正常系: footerClassNameでフッターのレイアウトを置き換える", () => {
     render(
       <RemoveDialog
         open
@@ -32,5 +32,20 @@ describe("RemoveDialog footer", () => {
     const footer = getFooter()
     expect(footer).toHaveClass("flex-row", "justify-end", "space-x-2")
     expect(footer).not.toHaveClass("flex-col-reverse")
+  })
+
+  it("RD-03: 正常系: classNameをダイアログ本体に付与する", () => {
+    render(
+      <RemoveDialog
+        open
+        onOpenChange={() => {}}
+        onRemove={() => {}}
+        className="custom-content"
+      >
+        <span>item</span>
+      </RemoveDialog>,
+    )
+
+    expect(screen.getByRole("dialog")).toHaveClass("custom-content")
   })
 })

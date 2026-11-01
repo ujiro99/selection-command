@@ -26,6 +26,7 @@ import type {
 } from "@/types"
 import { isEmpty, capitalize, cn } from "@/lib/utils"
 
+import zc from "@/components/zoomCompensation.module.css"
 import css from "./PageActionRecorder.module.css"
 
 export function PageActionRecorder(): JSX.Element {
@@ -187,6 +188,7 @@ export function PageActionRecorder(): JSX.Element {
               open={removeOpen}
               onOpenChange={(o) => !o && setRemoveId(null)}
               onRemove={() => removeAction(removeId)}
+              className={cn(zc.border, zc.shadowLg)}
               // Pin the sm layout: breakpoints follow the viewport width in
               // CSS px, which changes with the browser zoom.
               footerClassName="flex-row justify-end space-x-2"
@@ -196,8 +198,7 @@ export function PageActionRecorder(): JSX.Element {
                   <p className="text-base font-medium font-mono flex items-center gap-1.5">
                     <TypeIcon
                       type={removeStep.param.type}
-                      className="stroke-gray-700 dark:stroke-gray-300"
-                      size={20 * zoomCompensation}
+                      className="size-5 stroke-gray-700 dark:stroke-gray-300"
                     />
                     {capitalize(removeStep.param.type)}
                   </p>

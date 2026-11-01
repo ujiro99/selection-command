@@ -273,7 +273,6 @@ export function InputMenu(props: MenuProps): JSX.Element {
   const disabled = props.disabled ?? false
   const [selectedMenu, setSelectedMenu] = useState("")
   const zoomCompensation = useZoomCompensation()
-  const iconSize = 16 * zoomCompensation
   const iconSrc = chrome.runtime.getURL("/icon128.png")
   // Whether the file-attach menu is rendered alongside the insert-text menu.
   // When both are shown (the option editor's toolbar), triggers get tighter
@@ -330,9 +329,9 @@ export function InputMenu(props: MenuProps): JSX.Element {
           {t("PageAction_InputMenu_insertText")}
           {!showFileAttachMenu &&
             (selectedMenu === MENU.INSERT ? (
-              <ChevronUp size={14 * zoomCompensation} className="ml-1" />
+              <ChevronUp className="size-3.5 ml-1" />
             ) : (
-              <ChevronDown size={14 * zoomCompensation} className="ml-1" />
+              <ChevronDown className="size-3.5 ml-1" />
             ))}
         </MenubarTrigger>
         <MenubarContent
@@ -342,31 +341,19 @@ export function InputMenu(props: MenuProps): JSX.Element {
           alignOffset={-4 * zoomCompensation}
         >
           <InputMenuItem onClick={onClickItem} value={INSERT.SELECTED_TEXT}>
-            <TextCursorInput
-              size={iconSize}
-              className="mr-2 stroke-gray-600 dark:stroke-gray-400"
-            />
+            <TextCursorInput className="size-4 mr-2 stroke-gray-600 dark:stroke-gray-400" />
             {t("PageAction_InputMenu_selectedText")}
           </InputMenuItem>
           <InputMenuItem onClick={onClickItem} value={INSERT.URL}>
-            <Link2
-              size={iconSize}
-              className="mr-2 stroke-gray-600 dark:stroke-gray-400"
-            />
+            <Link2 className="size-4 mr-2 stroke-gray-600 dark:stroke-gray-400" />
             {t("PageAction_InputMenu_url")}
           </InputMenuItem>
           <InputMenuItem onClick={onClickItem} value={INSERT.CLIPBOARD}>
-            <Clipboard
-              size={iconSize}
-              className="mr-2 stroke-gray-600 dark:stroke-gray-400"
-            />
+            <Clipboard className="size-4 mr-2 stroke-gray-600 dark:stroke-gray-400" />
             {t("PageAction_InputMenu_clipboard")}
           </InputMenuItem>
           <InputMenuItem onClick={onClickItem} value={INSERT.LANG}>
-            <Languages
-              size={iconSize}
-              className="mr-2 stroke-gray-600 dark:stroke-gray-400"
-            />
+            <Languages className="size-4 mr-2 stroke-gray-600 dark:stroke-gray-400" />
             {t("PageAction_InputMenu_lang")}
           </InputMenuItem>
           {userVariables.length > 0 && (
@@ -378,10 +365,7 @@ export function InputMenu(props: MenuProps): JSX.Element {
               className="m-0.5 px-2.5 py-2 text-sm font-normal font-sans text-gray-700 dark:text-gray-300 cursor-pointer hover:bg-hover focus:bg-hover"
               onClick={() => onClickVariable(variable.name)}
             >
-              <Braces
-                size={iconSize}
-                className="mr-2 stroke-gray-600 dark:stroke-gray-400"
-              />
+              <Braces className="size-4 mr-2 stroke-gray-600 dark:stroke-gray-400" />
               {variable.name}
             </MenubarItem>
           ))}
@@ -410,20 +394,14 @@ export function InputMenu(props: MenuProps): JSX.Element {
               alignOffset={-4 * zoomCompensation}
             >
               <InputMenuItem onClick={onClickItem} value={INSERT.PAGE_HTML}>
-                <FileCode
-                  size={iconSize}
-                  className="mr-2 stroke-gray-600 dark:stroke-gray-400"
-                />
+                <FileCode className="size-4 mr-2 stroke-gray-600 dark:stroke-gray-400" />
                 {t("PageAction_InputMenu_pageHtml")}
               </InputMenuItem>
               <InputMenuItem
                 onClick={onClickItem}
                 value={INSERT.SELECTION_HTML}
               >
-                <Code
-                  size={iconSize}
-                  className="mr-2 stroke-gray-600 dark:stroke-gray-400"
-                />
+                <Code className="size-4 mr-2 stroke-gray-600 dark:stroke-gray-400" />
                 {t("PageAction_InputMenu_selectionHtml")}
               </InputMenuItem>
             </MenubarContent>

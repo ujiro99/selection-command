@@ -10,7 +10,6 @@ import {
 } from "lucide-react"
 import { StepList } from "@/components/pageAction/StepList"
 import { usePageActionContext } from "@/hooks/pageAction/usePageActionContext"
-import { useZoomCompensation } from "@/hooks/usePageZoom"
 import { PageActionListener as Listener } from "@/services/pageAction"
 import { Ipc, ServiceWorkerCommand, RunPageAction } from "@/services/ipc"
 import { t } from "@/services/i18n"
@@ -39,7 +38,6 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
     const [hover, setHover] = useState(false)
 
     const { isRecording, isRunning, status } = usePageActionContext()
-    const zoomCompensation = useZoomCompensation()
     const results = status?.results
     const currentId = status?.stepId
     const f = results?.find(
@@ -92,9 +90,6 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
       }
     }, [isRunning, isRecording, isRecordEnabled])
 
-    const iconSize = 14 * zoomCompensation
-    const statusIconSize = 16 * zoomCompensation
-
     return (
       <div
         className={cn(
@@ -114,9 +109,8 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
               onClick={() => pause()}
             >
               <Disc3
-                size={statusIconSize}
                 strokeWidth="1.5"
-                className={css.recordButtonIcon}
+                className={cn("size-4", css.recordButtonIcon)}
               />
               <span className={css.buttonLabelStatus}>
                 {t("PageAction_Controller_recording")}...
@@ -125,9 +119,8 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
           ) : isRunning ? (
             <div className="flex items-center gap-1.5 p-1 py-0.5">
               <LoaderCircle
-                size={statusIconSize}
                 strokeWidth="1.5"
-                className="stroke-sky-500 animate-spin"
+                className="size-4 stroke-sky-500 animate-spin"
               />
               <span className={css.buttonLabelStatus}>
                 {t("PageAction_Controller_previewing")}
@@ -140,9 +133,8 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
               onClick={() => resume()}
             >
               <Circle
-                size={statusIconSize}
                 strokeWidth="1.5"
-                className="stroke-gray-500 dark:stroke-gray-400 fill-gray-100 dark:fill-gray-700"
+                className="size-4 stroke-gray-500 dark:stroke-gray-400 fill-gray-100 dark:fill-gray-700"
               />
               <span className={css.buttonLabelStatus}>
                 {t("PageAction_Controller_not_recording")}
@@ -156,10 +148,7 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
               onClick={() => finish()}
               data-testid={TEST_IDS.pageActionCompleteButton}
             >
-              <Check
-                size={iconSize}
-                className="stroke-gray-600 dark:stroke-gray-400"
-              />
+              <Check className="size-3.5 stroke-gray-600 dark:stroke-gray-400" />
               <span className={css.buttonLabel}>
                 {t("PageAction_Controller_complete")}
               </span>
@@ -170,30 +159,21 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
                 className={css.button}
                 onClick={() => Ipc.send(ServiceWorkerCommand.stopPageAction)}
               >
-                <Square
-                  size={iconSize}
-                  className="stroke-gray-600 dark:stroke-gray-400"
-                />
+                <Square className="size-3.5 stroke-gray-600 dark:stroke-gray-400" />
                 <span className={css.buttonLabel}>
                   {t("PageAction_Controller_stop")}
                 </span>
               </button>
             ) : (
               <button className={css.button} onClick={() => preview()}>
-                <Play
-                  size={iconSize}
-                  className="stroke-gray-600 dark:stroke-gray-400"
-                />
+                <Play className="size-3.5 stroke-gray-600 dark:stroke-gray-400" />
                 <span className={css.buttonLabel}>
                   {t("PageAction_Controller_preview")}
                 </span>
               </button>
             )}
             <button className={css.button} onClick={() => reset()}>
-              <RotateCcw
-                size={iconSize}
-                className="stroke-gray-600 dark:stroke-gray-400"
-              />
+              <RotateCcw className="size-3.5 stroke-gray-600 dark:stroke-gray-400" />
               <span className={css.buttonLabel}>
                 {t("PageAction_Controller_reset")}
               </span>
