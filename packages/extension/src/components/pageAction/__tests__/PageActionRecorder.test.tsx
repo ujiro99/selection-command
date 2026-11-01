@@ -1,9 +1,10 @@
-import { describe, it, expect, vi, beforeEach } from "vitest"
-import { render, screen, waitFor } from "@testing-library/react"
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
+import { render, screen, waitFor, act } from "@testing-library/react"
 import { PageActionRecorder } from "../PageActionRecorder"
 import { usePageZoom } from "@/hooks/usePageZoom"
 import { usePageActionContext } from "@/hooks/pageAction/usePageActionContext"
 import { TEST_IDS } from "@/testIds"
+import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 
 vi.mock("@/hooks/usePageZoom", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/hooks/usePageZoom")>()),
@@ -89,5 +90,90 @@ describe("PageActionRecorder zoom compensation", () => {
     expect(
       screen.queryByTestId(TEST_IDS.pageActionCompleteButton),
     ).not.toBeInTheDocument()
+  })
+})
+
+describe("PageActionRecorder controller overflow", () => {
+  const savedPosition = { x: 500, y: 300 }
+  const controllerSize = { width: 450, height: 89 }
+  let rectSpy: ReturnType<typeof vi.spyOn>
+
+  const setViewport = (width: number, height: number) => {
+    Object.defineProperty(window, "innerWidth", {
+      value: width,
+      configurable: true,
+    })
+    Object.defineProperty(window, "innerHeight", {
+      value: height,
+      configurable: true,
+    })
+  }
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    setRecording(true)
+    vi.mocked(usePageZoom).mockReturnValue(1)
+    vi.mocked(Storage.get).mockImplementation(async (key) =>
+      key === SESSION_STORAGE_KEY.PA_RECORDER_OPTION
+        ? { controllerPosition: savedPosition }
+        : {},
+    )
+    rectSpy = vi
+      .spyOn(HTMLElement.prototype, "getBoundingClientRect")
+      .mockReturnValue({
+        ...controllerSize,
+        x: 0,
+        y: 0,
+        top: 0,
+        left: 0,
+        right: controllerSize.width,
+        bottom: controllerSize.height,
+        toJSON: () => ({}),
+      })
+  })
+
+  afterEach(() => {
+    vi.mocked(Storage.get).mockResolvedValue({})
+    rectSpy.mockRestore()
+    setViewport(1024, 768)
+  })
+
+  it("PAR-04: 正常系: ビューポートに収まる保存位置にコントローラを置く", async () => {
+    setViewport(1024, 768)
+
+    render(<PageActionRecorder />)
+
+    await waitFor(() => expect(getControllerRoot().style.left).toBe("500px"))
+    expect(getControllerRoot().style.top).toBe("300px")
+  })
+
+  it("PAR-05: 正常系: ビューポートが縮んではみ出したら初期位置に戻す", async () => {
+    setViewport(1024, 768)
+    render(<PageActionRecorder />)
+    await waitFor(() => expect(getControllerRoot().style.left).toBe("500px"))
+
+    // Zooming in shrinks the viewport in CSS px and fires a resize event.
+    act(() => {
+      setViewport(800, 600)
+      window.dispatchEvent(new Event("resize"))
+    })
+
+    await waitFor(() => expect(getControllerRoot().style.right).toBe("10px"))
+    expect(getControllerRoot().style.left).toBe("")
+  })
+
+  it("PAR-06: 境界値: 右下の端がビューポートの端に一致するときは位置を保つ", async () => {
+    setViewport(
+      savedPosition.x + controllerSize.width,
+      savedPosition.y + controllerSize.height,
+    )
+
+    render(<PageActionRecorder />)
+
+    await waitFor(() => expect(getControllerRoot().style.left).toBe("500px"))
+    act(() => {
+      window.dispatchEvent(new Event("resize"))
+    })
+    expect(getControllerRoot().style.left).toBe("500px")
   })
 })
