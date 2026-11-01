@@ -569,6 +569,15 @@ chrome.runtime.onInstalled.addListener(async (details) => {
       await openOnboardingTab()
     }
 
+    if (details.reason === chrome.runtime.OnInstalledReason.UPDATE) {
+      // Wrapped so that a failure here does not skip the steps below.
+      try {
+        await Settings.saveForExistingInstall()
+      } catch (error) {
+        console.error("Failed to save settings of the existing install:", error)
+      }
+    }
+
     stage = "context_menu"
     await ContextMenu.init()
 

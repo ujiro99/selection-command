@@ -917,6 +917,8 @@ describe("onInstalled: onboarding diagnostics (#479)", () => {
       getOrCreateClientId?: ReturnType<typeof vi.fn>
     },
     beforeImport?: () => Promise<void>,
+    reason: chrome.runtime.OnInstalledReason = chrome.runtime.OnInstalledReason
+      .INSTALL,
   ) => {
     vi.doMock("@/services/analytics", () => ({
       ANALYTICS_EVENTS,
@@ -935,9 +937,7 @@ describe("onInstalled: onboarding diagnostics (#479)", () => {
     const listenerCalls = (chrome.runtime.onInstalled.addListener as any).mock
       .calls
     const onInstalledListener = listenerCalls[listenerCalls.length - 1][0]
-    await onInstalledListener({
-      reason: chrome.runtime.OnInstalledReason.INSTALL,
-    })
+    await onInstalledListener({ reason })
   }
 
   it("IN-05: settles the client_id before sending events or opening the onboarding tab", async () => {
@@ -1039,6 +1039,46 @@ describe("onInstalled: onboarding diagnostics (#479)", () => {
     )
     // The failure is handled in place and the onboarding tab still opens.
     expect(chrome.tabs.create).toHaveBeenCalled()
+
+    consoleErrorSpy.mockRestore()
+  })
+
+  it("IN-10: saves the settings of the existing install on update", async () => {
+    await runInstall({}, undefined, chrome.runtime.OnInstalledReason.UPDATE)
+
+    const { Settings: FreshSettings } =
+      await import("@/services/settings/settings")
+    expect(FreshSettings.saveForExistingInstall).toHaveBeenCalled()
+    expect(FreshSettings.reset).not.toHaveBeenCalled()
+  })
+
+  it("IN-11: does not treat a new install as an existing install", async () => {
+    await runInstall({})
+
+    const { Settings: FreshSettings } =
+      await import("@/services/settings/settings")
+    expect(FreshSettings.saveForExistingInstall).not.toHaveBeenCalled()
+    expect(FreshSettings.reset).toHaveBeenCalled()
+  })
+
+  it("IN-12: continues the update initialization when saving the settings fails", async () => {
+    const consoleErrorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {})
+
+    await runInstall(
+      {},
+      async () => {
+        const { Settings: FreshSettings } =
+          await import("@/services/settings/settings")
+        vi.mocked(FreshSettings.saveForExistingInstall).mockRejectedValueOnce(
+          new Error("Sync quota exceeded"),
+        )
+      },
+      chrome.runtime.OnInstalledReason.UPDATE,
+    )
+
+    expect(chrome.runtime.setUninstallURL).toHaveBeenCalled()
 
     consoleErrorSpy.mockRestore()
   })
