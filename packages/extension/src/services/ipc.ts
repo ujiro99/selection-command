@@ -27,6 +27,17 @@ export class IpcTimeoutError extends Error {
   }
 }
 
+/**
+ * Thrown when every callback of the command has finished without responding,
+ * so waiting longer cannot produce a response.
+ */
+export class IpcNoReplyError extends Error {
+  constructor(command: string) {
+    super(`IPC command got no reply: ${command}`)
+    this.name = "IpcNoReplyError"
+  }
+}
+
 const withTimeout = <R>(
   command: string,
   request: Promise<R>,
@@ -189,6 +200,12 @@ export type SendWindowSize = {
   height: number
 }
 
+/** Messages that answer a request sent over a port, matched by its id. */
+export enum PortReply {
+  response = "portResponse",
+  noReply = "portNoReply",
+}
+
 type IpcCommand = ServiceWorkerCommand | TabCommand
 
 type Request = {
@@ -223,10 +240,9 @@ let onMessageRegistered = false
  * Calls every callback registered for the command, the way
  * chrome.runtime.onMessage calls all of its listeners: only the first
  * response reaches the sender.
- * @param respondIfUnanswered - Responds with undefined when no callback has
- * responded or will respond later (returned true), as onMessage closes the
- * channel. Leave it false for onMessage itself, where a listener in another
- * context may still respond.
+ * @param onNoReply - Called when no callback has responded or will respond
+ * later (returned true), as onMessage closes the channel. Omit it for
+ * onMessage itself, where a listener in another context may still respond.
  * @returns Whether a callback will respond later, which an onMessage
  * listener must return to keep the channel open.
  */
@@ -235,7 +251,7 @@ const dispatchToCallbacks = (
   param: unknown,
   sender: chrome.runtime.MessageSender,
   response: (response?: unknown) => void,
-  respondIfUnanswered: boolean,
+  onNoReply?: () => void,
 ): boolean => {
   let responded = false
   const respondOnce = (res?: unknown) => {
@@ -254,9 +270,22 @@ const dispatchToCallbacks = (
       console.error("Ipc listener threw an error:", error)
     }
   }
-  if (respondIfUnanswered && !respondLater) respondOnce(undefined)
+  if (!respondLater && !responded) {
+    // Ignore a response that arrives after the sender was told there is none.
+    responded = true
+    onNoReply?.()
+  }
   return respondLater && !responded
 }
+
+/**
+ * Looks up the callbacks of a command received from another context. Only own
+ * keys count, as an inherited name such as "constructor" is not a command.
+ */
+const findCallbacks = (command?: string): IpcCallback[] | undefined =>
+  Object.hasOwn(Ipc.listeners, command ?? "")
+    ? Ipc.listeners[command as string]
+    : undefined
 
 export const Ipc = {
   init() {
@@ -279,7 +308,7 @@ export const Ipc = {
   },
 
   async callListener<M, R>(command: IpcCommand, param?: M): Promise<R> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       const callbacks = Ipc.listeners[command]
       if (!callbacks?.length) {
         resolve(undefined as R)
@@ -290,7 +319,7 @@ export const Ipc = {
         param,
         {} as chrome.runtime.MessageSender,
         (res: unknown) => resolve(res as R),
-        true,
+        () => reject(new IpcNoReplyError(command)),
       )
     })
   },
@@ -580,20 +609,21 @@ export const Ipc = {
     port.onMessage.addListener((msg: Record<string, unknown>) => {
       const command = msg?.command as string | undefined
       if (!command) return
-      const callbacks = Ipc.listeners[command]
+      const callbacks = findCallbacks(command)
       if (!callbacks?.length) return
+      const reply = (message: { command: PortReply; result?: unknown }) => {
+        try {
+          port.postMessage({ ...message, id: msg.id })
+        } catch (e) {
+          console.error("Failed to send port response:", e)
+        }
+      }
       dispatchToCallbacks(
         callbacks,
         msg.param,
         port.sender ?? ({} as chrome.runtime.MessageSender),
-        (result: unknown) => {
-          try {
-            port.postMessage({ command: "portResponse", id: msg.id, result })
-          } catch (e) {
-            console.error("Failed to send port response:", e)
-          }
-        },
-        true,
+        (result: unknown) => reply({ command: PortReply.response, result }),
+        () => reply({ command: PortReply.noReply }),
       )
     })
   },
@@ -610,15 +640,9 @@ export const Ipc = {
     response: (response?: unknown) => void,
   ): boolean {
     // do not use async/await here !
-    const callbacks = Ipc.listeners[request?.command]
+    const callbacks = findCallbacks(request?.command)
     if (!callbacks?.length) return false
-    return dispatchToCallbacks(
-      callbacks,
-      request.param,
-      sender,
-      response,
-      false,
-    )
+    return dispatchToCallbacks(callbacks, request.param, sender, response)
   },
 
   /**

@@ -1,5 +1,12 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
-import { Ipc, IpcTimeoutError, ServiceWorkerCommand, TabCommand } from "../ipc"
+import {
+  Ipc,
+  IpcNoReplyError,
+  IpcTimeoutError,
+  PortReply,
+  ServiceWorkerCommand,
+  TabCommand,
+} from "../ipc"
 import { ServiceWorkerData } from "@/services/serviceWorkerData"
 
 vi.mock("@/services/serviceWorkerData", () => ({
@@ -378,21 +385,39 @@ describe("Ipc.handleMessage", () => {
   })
 })
 
+describe("Ipc.handleMessage - inherited command names", () => {
+  it("IPC-26: 異常系: Object.prototype のメンバー名のコマンドは false を返す", () => {
+    // Arrange
+    Ipc.listeners = {}
+    const response = vi.fn()
+
+    // Act
+    const result = Ipc.handleMessage(
+      { command: "constructor" as TabCommand, param: undefined },
+      {} as chrome.runtime.MessageSender,
+      response,
+    )
+
+    // Assert
+    expect(result).toBe(false)
+    expect(response).not.toHaveBeenCalled()
+  })
+})
+
 describe("Ipc.callListener", () => {
   beforeEach(() => {
     vi.clearAllMocks()
     Ipc.listeners = {}
   })
 
-  it("IPC-20: 正常系: どのコールバックも応答しなければ undefined で解決する", async () => {
+  it("IPC-20: 異常系: どのコールバックも応答しなければ IpcNoReplyError で拒否する", async () => {
     // Arrange
     Ipc.addListener(ServiceWorkerCommand.onHidden, () => false)
 
-    // Act
-    const result = await Ipc.callListener(ServiceWorkerCommand.onHidden)
-
-    // Assert
-    expect(result).toBeUndefined()
+    // Act & Assert
+    await expect(
+      Ipc.callListener(ServiceWorkerCommand.onHidden),
+    ).rejects.toBeInstanceOf(IpcNoReplyError)
   })
 
   it("IPC-21: 正常系: 後で応答するコールバックがあれば、その応答で解決する", async () => {
@@ -507,7 +532,7 @@ describe("Ipc.bridgePortToListeners", () => {
     consoleErrorSpy.mockRestore()
   })
 
-  it("IPC-22: 正常系: どのコールバックも応答しなければ undefined を返す", () => {
+  it("IPC-22: 正常系: どのコールバックも応答しなければ no-reply を返す", () => {
     // Arrange
     Ipc.addListener(TabCommand.closeMenu, () => false)
     const { port, handler } = createPort()
@@ -518,10 +543,43 @@ describe("Ipc.bridgePortToListeners", () => {
     // Assert
     expect(port.postMessage).toHaveBeenCalledTimes(1)
     expect(port.postMessage).toHaveBeenCalledWith({
-      command: "portResponse",
+      command: PortReply.noReply,
       id: 1,
-      result: undefined,
     })
+  })
+
+  it("IPC-24: 異常系: コールバックが例外を投げて応答しなければ no-reply を返し、後からの応答は無視する", () => {
+    // Arrange
+    const consoleErrorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {})
+    let lateResponse: ((res?: unknown) => void) | undefined
+    Ipc.addListener(TabCommand.closeMenu, (_p, _s, response) => {
+      lateResponse = response
+      throw new Error("boom")
+    })
+    const { port, handler } = createPort()
+
+    // Act
+    handler({ command: TabCommand.closeMenu, id: 1 })
+    lateResponse?.("late")
+
+    // Assert
+    expect(port.postMessage).toHaveBeenCalledTimes(1)
+    expect(port.postMessage).toHaveBeenCalledWith({
+      command: PortReply.noReply,
+      id: 1,
+    })
+    consoleErrorSpy.mockRestore()
+  })
+
+  it("IPC-25: 異常系: Object.prototype のメンバー名のコマンドは無視する", () => {
+    // Arrange
+    const { port, handler } = createPort()
+
+    // Act & Assert
+    expect(() => handler({ command: "constructor", id: 1 })).not.toThrow()
+    expect(port.postMessage).not.toHaveBeenCalled()
   })
 
   it("IPC-23: 正常系: 後で応答するコールバックがあれば、その応答を待って返す", () => {
