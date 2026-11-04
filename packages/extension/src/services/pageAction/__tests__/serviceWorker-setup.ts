@@ -25,6 +25,11 @@ vi.mock("@/services/ipc", () => ({
     execPageAction: "execPageAction",
     sendWindowSize: "sendWindowSize",
   },
+  PortReply: {
+    response: "portResponse",
+    noReply: "portNoReply",
+  },
+  IpcNoReplyError: class IpcNoReplyError extends Error {},
 }))
 
 vi.mock("@/services/chrome", () => ({
