@@ -456,6 +456,37 @@ describe("Settings", () => {
     })
   })
 
+  describe("saveForExistingInstall method", () => {
+    beforeEach(() => {
+      setupDefaultMocks()
+    })
+
+    it("ST-35: should save the existing install that has no saved settings to follow the browser zoom", async () => {
+      mockStorage.has.mockResolvedValue(false)
+      // Storage.get falls back to the defaults for new installs.
+      mockStorage.get.mockImplementation(async (key) =>
+        key === STORAGE_KEY.USER ? structuredClone(DefaultSettings) : {},
+      )
+
+      await Settings.saveForExistingInstall()
+
+      expect(mockStorage.has).toHaveBeenCalledWith(STORAGE_KEY.USER)
+      expect(mockStorage.set).toHaveBeenCalledWith(
+        STORAGE_KEY.USER,
+        expect.objectContaining({ followBrowserZoom: true }),
+      )
+    })
+
+    it("ST-36: should not change the saved settings", async () => {
+      mockStorage.has.mockResolvedValue(true)
+
+      await Settings.saveForExistingInstall()
+
+      expect(mockStorage.set).not.toHaveBeenCalled()
+      expect(mockStorage.setCommands).not.toHaveBeenCalled()
+    })
+  })
+
   describe("reset method", () => {
     beforeEach(() => {
       setupDefaultMocks()

@@ -205,6 +205,16 @@ export const Settings = {
     })
   },
 
+  /**
+   * Installs from before the settings were saved on install may have no
+   * settings saved, and would read the defaults for new installs. Save their
+   * settings so that they keep following the browser zoom as before.
+   */
+  saveForExistingInstall: async (): Promise<void> => {
+    if (await Storage.has(STORAGE_KEY.USER)) return
+    await Settings.update("followBrowserZoom", () => true, true)
+  },
+
   reset: async () => {
     await Storage.set(STORAGE_KEY.USER, DefaultSettings)
     await Storage.setCommands(getDefaultCommands(getUILanguage()))
