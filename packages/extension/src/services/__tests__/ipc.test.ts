@@ -420,6 +420,13 @@ describe("Ipc.callListener", () => {
     ).rejects.toBeInstanceOf(IpcNoReplyError)
   })
 
+  it("IPC-27: 異常系: コールバックが登録されていなければ IpcNoReplyError で拒否する", async () => {
+    // Act & Assert
+    await expect(
+      Ipc.callListener(ServiceWorkerCommand.onHidden),
+    ).rejects.toBeInstanceOf(IpcNoReplyError)
+  })
+
   it("IPC-21: 正常系: 後で応答するコールバックがあれば、その応答で解決する", async () => {
     // Arrange
     Ipc.addListener(ServiceWorkerCommand.getTabId, () => false)

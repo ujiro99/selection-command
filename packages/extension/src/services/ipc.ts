@@ -28,8 +28,8 @@ export class IpcTimeoutError extends Error {
 }
 
 /**
- * Thrown when every callback of the command has finished without responding,
- * so waiting longer cannot produce a response.
+ * Thrown when no callback of the command has responded or will respond, so
+ * waiting longer cannot produce a response.
  */
 export class IpcNoReplyError extends Error {
   constructor(command: string) {
@@ -309,13 +309,8 @@ export const Ipc = {
 
   async callListener<M, R>(command: IpcCommand, param?: M): Promise<R> {
     return new Promise((resolve, reject) => {
-      const callbacks = Ipc.listeners[command]
-      if (!callbacks?.length) {
-        resolve(undefined as R)
-        return
-      }
       dispatchToCallbacks(
-        callbacks,
+        Ipc.listeners[command] ?? [],
         param,
         {} as chrome.runtime.MessageSender,
         (res: unknown) => resolve(res as R),
