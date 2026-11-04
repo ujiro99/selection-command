@@ -39,7 +39,9 @@ export function PageActionRecorder(): JSX.Element {
   } as CSSProperties
   const [steps, setSteps] = useState<PageActionStep[]>([])
   const [userVariables, setUserVariables] = useState<UserVariable[]>([])
-  const [windowSize, setWindowSize] = useState<PopupOption>({
+  // The viewport size in CSS px, the same unit as the controller position.
+  // It also changes with the browser zoom.
+  const [viewportSize, setViewportSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
   })
@@ -132,7 +134,6 @@ export function PageActionRecorder(): JSX.Element {
           STORAGE_KEY.PA_RECORDING,
           data,
         )
-        setWindowSize(param)
       }
       update()
       return false
@@ -141,16 +142,27 @@ export function PageActionRecorder(): JSX.Element {
   }, [])
 
   useEffect(() => {
+    const handleResize = () => {
+      setViewportSize({ width: window.innerWidth, height: window.innerHeight })
+    }
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
+
+  // Reset the controller to the initial position when it overflows the
+  // viewport. The zoom compensation is a dependency because the size of the
+  // controller in CSS px follows it, and it may be updated after the resize.
+  useEffect(() => {
     if (controllerElm && position) {
       const rect = controllerElm.getBoundingClientRect()
       const over =
-        windowSize.width < position.x + rect.width ||
-        windowSize.height < position.y + rect.height
+        viewportSize.width < position.x + rect.width ||
+        viewportSize.height < position.y + rect.height
       if (over) {
         setPosition(undefined)
       }
     }
-  }, [controllerElm, position, windowSize])
+  }, [controllerElm, position, viewportSize, zoomCompensation])
 
   if (!isRecording) return <></>
 
