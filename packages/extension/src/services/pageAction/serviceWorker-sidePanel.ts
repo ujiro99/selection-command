@@ -1,6 +1,8 @@
 import {
   TabCommand,
   ExecPageAction,
+  IpcNoReplyError,
+  PortReply,
   SidePanelPendingAction,
 } from "@/services/ipc"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
@@ -79,10 +81,15 @@ export const runViaPort = (
       )
 
       const onMsg = (msg: Record<string, unknown>) => {
-        if (msg?.command === "portResponse" && msg.id === id) {
+        if (msg?.id !== id) return
+        if (msg.command === PortReply.response) {
           clearTimeout(timeout)
           port.onMessage.removeListener(onMsg)
           resolve(msg.result as ExecPageAction.Return)
+        } else if (msg.command === PortReply.noReply) {
+          clearTimeout(timeout)
+          port.onMessage.removeListener(onMsg)
+          reject(new IpcNoReplyError(TabCommand.execPageAction))
         }
       }
       port.onMessage.addListener(onMsg)
