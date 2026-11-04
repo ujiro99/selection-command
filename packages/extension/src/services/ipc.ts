@@ -27,6 +27,17 @@ export class IpcTimeoutError extends Error {
   }
 }
 
+/**
+ * Thrown when no callback of the command has responded or will respond, so
+ * waiting longer cannot produce a response.
+ */
+export class IpcNoReplyError extends Error {
+  constructor(command: string) {
+    super(`IPC command got no reply: ${command}`)
+    this.name = "IpcNoReplyError"
+  }
+}
+
 const withTimeout = <R>(
   command: string,
   request: Promise<R>,
@@ -189,6 +200,12 @@ export type SendWindowSize = {
   height: number
 }
 
+/** Messages that answer a request sent over a port, matched by its id. */
+export enum PortReply {
+  response = "portResponse",
+  noReply = "portNoReply",
+}
+
 type IpcCommand = ServiceWorkerCommand | TabCommand
 
 type Request = {
@@ -215,34 +232,60 @@ export type IpcUnsubscribe = () => void
 
 let onConnect: (port: chrome.runtime.Port) => void
 
+// Whether the single chrome.runtime.onMessage listener of this context has
+// been registered.
+let onMessageRegistered = false
+
 /**
  * Calls every callback registered for the command, the way
  * chrome.runtime.onMessage calls all of its listeners: only the first
  * response reaches the sender.
+ * @param onNoReply - Called when no callback has responded or will respond
+ * later (returned true), as onMessage closes the channel. Omit it for
+ * onMessage itself, where a listener in another context may still respond.
+ * @returns Whether a callback will respond later, which an onMessage
+ * listener must return to keep the channel open.
  */
 const dispatchToCallbacks = (
   callbacks: IpcCallback[],
   param: unknown,
   sender: chrome.runtime.MessageSender,
   response: (response?: unknown) => void,
-) => {
+  onNoReply?: () => void,
+): boolean => {
   let responded = false
   const respondOnce = (res?: unknown) => {
     if (responded) return
     responded = true
     response(res)
   }
+  let respondLater = false
   // Copy so a callback that unsubscribes does not skip the next one.
   for (const callback of [...callbacks]) {
     // Isolate each callback, as onMessage does, so one that throws does not
     // keep the others from being called.
     try {
-      callback(param, sender, respondOnce)
+      if (callback(param, sender, respondOnce) === true) respondLater = true
     } catch (error) {
       console.error("Ipc listener threw an error:", error)
     }
   }
+  if (!respondLater && !responded) {
+    // Ignore a response that arrives after the sender was told there is none.
+    responded = true
+    onNoReply?.()
+  }
+  return respondLater && !responded
 }
+
+/**
+ * Looks up the callbacks of a command received from another context. Only own
+ * keys count, as an inherited name such as "constructor" is not a command.
+ */
+const findCallbacks = (command?: string): IpcCallback[] | undefined =>
+  Object.hasOwn(Ipc.listeners, command ?? "")
+    ? Ipc.listeners[command as string]
+    : undefined
 
 export const Ipc = {
   init() {
@@ -265,17 +308,13 @@ export const Ipc = {
   },
 
   async callListener<M, R>(command: IpcCommand, param?: M): Promise<R> {
-    return new Promise((resolve) => {
-      const callbacks = Ipc.listeners[command]
-      if (!callbacks?.length) {
-        resolve(undefined as R)
-        return
-      }
+    return new Promise((resolve, reject) => {
       dispatchToCallbacks(
-        callbacks,
+        Ipc.listeners[command] ?? [],
         param,
         {} as chrome.runtime.MessageSender,
         (res: unknown) => resolve(res as R),
+        () => reject(new IpcNoReplyError(command)),
       )
     })
   },
@@ -565,21 +604,40 @@ export const Ipc = {
     port.onMessage.addListener((msg: Record<string, unknown>) => {
       const command = msg?.command as string | undefined
       if (!command) return
-      const callbacks = Ipc.listeners[command]
+      const callbacks = findCallbacks(command)
       if (!callbacks?.length) return
+      const reply = (message: { command: PortReply; result?: unknown }) => {
+        try {
+          port.postMessage({ ...message, id: msg.id })
+        } catch (e) {
+          console.error("Failed to send port response:", e)
+        }
+      }
       dispatchToCallbacks(
         callbacks,
         msg.param,
         port.sender ?? ({} as chrome.runtime.MessageSender),
-        (result: unknown) => {
-          try {
-            port.postMessage({ command: "portResponse", id: msg.id, result })
-          } catch (e) {
-            console.error("Failed to send port response:", e)
-          }
-        },
+        (result: unknown) => reply({ command: PortReply.response, result }),
+        () => reply({ command: PortReply.noReply }),
       )
     })
+  },
+
+  /**
+   * The single chrome.runtime.onMessage listener of this context. Delivers
+   * the message to the callbacks registered for its command.
+   * @returns Whether a callback will respond later. false for a command with
+   * no callbacks, leaving it to the listeners of other contexts.
+   */
+  handleMessage(
+    request: Request,
+    sender: chrome.runtime.MessageSender,
+    response: (response?: unknown) => void,
+  ): boolean {
+    // do not use async/await here !
+    const callbacks = findCallbacks(request?.command)
+    if (!callbacks?.length) return false
+    return dispatchToCallbacks(callbacks, request.param, sender, response)
   },
 
   /**
@@ -592,23 +650,12 @@ export const Ipc = {
     command: IpcCommand,
     callback: IpcCallback<M>,
   ): IpcUnsubscribe {
-    const listener = (
-      request: Request,
-      sender: chrome.runtime.MessageSender,
-      response: (response?: unknown) => void,
-    ) => {
-      // do not use async/await here !
-      const cmd = request.command
-      const prm = request.param
-
-      if (command === cmd) {
-        // must return "true" if response is async.
-        return callback(prm as M, sender, response)
-      }
-
-      return false
+    // One onMessage listener serves every registration, so messages from
+    // tabs, ports and the service worker itself share dispatchToCallbacks.
+    if (!onMessageRegistered) {
+      chrome.runtime.onMessage.addListener(Ipc.handleMessage)
+      onMessageRegistered = true
     }
-    chrome.runtime.onMessage.addListener(listener)
     // A function unique to this registration, so unsubscribing removes this
     // entry even when the same callback is registered more than once.
     const entry: IpcCallback = (param, sender, response) =>
@@ -619,7 +666,6 @@ export const Ipc = {
     return () => {
       if (removed) return
       removed = true
-      chrome.runtime.onMessage.removeListener(listener)
       const callbacks = Ipc.listeners[command]
       const index = callbacks?.indexOf(entry) ?? -1
       if (index < 0) return
