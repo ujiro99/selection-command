@@ -321,4 +321,38 @@ describe("Ipc.bridgePortToListeners", () => {
     // Assert
     expect(callback).not.toHaveBeenCalled()
   })
+
+  it("IPC-14: 異常系: 例外を投げるコールバックがあっても後続のコールバックに配信する", () => {
+    // Arrange
+    const consoleErrorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {})
+    const error = new Error("boom")
+    const throwing = vi.fn(() => {
+      throw error
+    })
+    const next = vi.fn((_p, _s, response) => {
+      response("next")
+      return false
+    })
+    Ipc.addListener(TabCommand.closeMenu, throwing)
+    Ipc.addListener(TabCommand.closeMenu, next)
+    const { port, handler } = createPort()
+
+    // Act
+    handler({ command: TabCommand.closeMenu, id: 1 })
+
+    // Assert
+    expect(next).toHaveBeenCalledTimes(1)
+    expect(port.postMessage).toHaveBeenCalledWith({
+      command: "portResponse",
+      id: 1,
+      result: "next",
+    })
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      "Ipc listener threw an error:",
+      error,
+    )
+    consoleErrorSpy.mockRestore()
+  })
 })
