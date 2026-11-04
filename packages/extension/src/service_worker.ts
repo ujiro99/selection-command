@@ -16,6 +16,7 @@ import {
 } from "@/services/ipc"
 import type { IpcCallback, ZoomChangedProps } from "@/services/ipc"
 import { Settings } from "@/services/settings/settings"
+import { syncAiPromptFavicons } from "@/services/aiPromptFaviconSync"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { CACHE_SECTIONS } from "@/services/settings/settingsCache"
 import * as PageActionServiceWorker from "@/services/pageAction/serviceWorker"
@@ -611,6 +612,10 @@ chrome.runtime.onInstalled.addListener(async (details) => {
 
     // Check for weekly backup on startup
     await checkAndPerformWeeklyBackup()
+
+    if (details.reason === chrome.runtime.OnInstalledReason.UPDATE) {
+      await syncAiPromptFaviconsSafely()
+    }
   } catch (error) {
     console.error("Error during onInstalled initialization:", error)
     if (isInstall) {
@@ -634,7 +639,18 @@ chrome.runtime.onStartup.addListener(() => {
 
   // Check for legacy backup on startup
   checkAndPerformLegacyBackup()
+
+  syncAiPromptFaviconsSafely()
 })
+
+// Follow the favicon changes of the AI services
+const syncAiPromptFaviconsSafely = async () => {
+  try {
+    await syncAiPromptFavicons()
+  } catch (error) {
+    console.error("Failed to sync the AI prompt favicons:", error)
+  }
+}
 
 // Daily backup check function
 const checkAndPerformDailyBackup = async () => {

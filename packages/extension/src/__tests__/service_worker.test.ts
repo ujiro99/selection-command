@@ -16,6 +16,7 @@ const setSidePanel = (value: unknown) => {
 vi.mock("@/services/settings/enhancedSettings")
 vi.mock("@/services/settings/settings")
 vi.mock("@/services/settings/settingsCache")
+vi.mock("@/services/aiPromptFaviconSync")
 vi.mock("@/services/storage")
 vi.mock("@/services/chrome")
 vi.mock("@/services/serviceWorkerData")
@@ -1059,6 +1060,22 @@ describe("onInstalled: onboarding diagnostics (#479)", () => {
       await import("@/services/settings/settings")
     expect(FreshSettings.saveForExistingInstall).not.toHaveBeenCalled()
     expect(FreshSettings.reset).toHaveBeenCalled()
+  })
+
+  it("IN-13: syncs the AI prompt favicons on update", async () => {
+    await runInstall({}, undefined, chrome.runtime.OnInstalledReason.UPDATE)
+
+    const { syncAiPromptFavicons } =
+      await import("@/services/aiPromptFaviconSync")
+    expect(syncAiPromptFavicons).toHaveBeenCalled()
+  })
+
+  it("IN-14: does not sync the AI prompt favicons on a new install", async () => {
+    await runInstall({})
+
+    const { syncAiPromptFavicons } =
+      await import("@/services/aiPromptFaviconSync")
+    expect(syncAiPromptFavicons).not.toHaveBeenCalled()
   })
 
   it("IN-12: continues the update initialization when saving the settings fails", async () => {
