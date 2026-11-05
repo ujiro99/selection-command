@@ -21,6 +21,8 @@ import {
   getHubAddEvent,
 } from "@/services/analytics"
 import { PopupOption } from "@/services/option/defaultSettings"
+import { ensureIconsCached } from "@/services/iconCache"
+import { isUrl } from "@/lib/url"
 import { generateId } from "@/lib/utils"
 import {
   isSearchCommand,
@@ -422,6 +424,12 @@ export async function handleAddCommand(
 
     await Settings.addCommands([cmd])
     console.debug("[handleAddCommand] Saved command id:", cmd.id)
+    // Not awaited: a slow icon host must not delay the response to the Hub.
+    if (isUrl(cmd.iconUrl)) {
+      ensureIconsCached([cmd.iconUrl]).catch((error) => {
+        console.warn("[handleAddCommand] Failed to cache the icon", error)
+      })
+    }
     await sendEvent(
       getHubAddEvent(cmd.openMode),
       {

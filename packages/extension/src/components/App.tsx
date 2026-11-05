@@ -66,7 +66,8 @@ export function App({ rootElm }: Props) {
   useEffect(() => {
     const handleShowReviewRequest = (_: any, __: any, response: any) => {
       showReviewRequestToast(() => {
-        Settings.update("hasShownReviewRequest", () => true)
+        // Icons are not converted here: a content script is bound by CORS.
+        Settings.update("hasShownReviewRequest", () => true, true)
       })
       response(true)
       return true

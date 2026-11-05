@@ -32,10 +32,13 @@ import {
   generateId,
 } from "@/lib/utils"
 import { isLinkCommand } from "@/lib/commandGuards"
-import { toDataURL } from "@/services/dom"
+import { fetchIconAsDataUrl } from "@/services/iconCache"
 import { OptionSettings } from "@/services/option/optionSettings"
 import { LOCAL_STORAGE_KEY } from "../storage"
 import { getUILanguage } from "@/services/i18n"
+
+/** Saving the settings waits for the icons, so a slow host must not hold it. */
+const SAVE_ICON_TIMEOUT_MS = 3_000
 
 const callbacks = [] as (() => void)[]
 
@@ -104,7 +107,7 @@ export const Settings = {
         noCacheUrls.map(async (url) => {
           let dataUrl = ""
           try {
-            dataUrl = await toDataURL(url)
+            dataUrl = await fetchIconAsDataUrl(url, SAVE_ICON_TIMEOUT_MS)
           } catch (e) {
             console.warn("Failed to convert to data url", url)
             console.warn(e)
