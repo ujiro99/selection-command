@@ -7,7 +7,7 @@ import DefaultSettings, {
   getDefaultCommands,
   COMMAND_SEARCH_ID,
 } from "../../option/defaultSettings"
-import { toDataURL } from "../../dom"
+import { fetchIconAsDataUrl } from "../../iconCache"
 import { OPTION_FOLDER, VERSION, OPEN_MODE } from "@/const"
 import type { Command, SettingsType, Star } from "@/types"
 import * as utils from "@/lib/utils"
@@ -16,11 +16,11 @@ import { isLinkCommand } from "@/lib/commandGuards"
 // Mock dependencies
 vi.mock("../../storage")
 vi.mock("../../option/optionSettings")
-vi.mock("../../dom")
+vi.mock("../../iconCache")
 
 const mockStorage = vi.mocked(Storage)
 const mockOptionSettings = vi.mocked(OptionSettings)
-const mockToDataURL = vi.mocked(toDataURL)
+const mockFetchIcon = vi.mocked(fetchIconAsDataUrl)
 
 describe("Settings", () => {
   // Setup function to create clean mocks for each test
@@ -42,7 +42,7 @@ describe("Settings", () => {
       onlyIcon: true,
     }
 
-    mockToDataURL.mockResolvedValue("data:image/png;base64,test")
+    mockFetchIcon.mockResolvedValue("data:image/png;base64,test")
   }
 
   afterEach(() => {
@@ -227,7 +227,7 @@ describe("Settings", () => {
 
     it("ST-09: should skip image cache processing when serviceWorker is true", async () => {
       await Settings.set(mockSettings, true)
-      expect(mockToDataURL).not.toHaveBeenCalled()
+      expect(mockFetchIcon).not.toHaveBeenCalled()
     })
 
     it("ST-10: should remove unused cache entries", async () => {
@@ -273,7 +273,7 @@ describe("Settings", () => {
       try {
         await Settings.set(settingsWithImage, false)
 
-        expect(mockToDataURL).toHaveBeenCalledWith(imageUrl)
+        expect(mockFetchIcon).toHaveBeenCalledWith(imageUrl, 3000)
         expect(mockStorage.set).toHaveBeenCalledWith(
           "caches",
           expect.objectContaining({
@@ -313,7 +313,7 @@ describe("Settings", () => {
       )
     })
 
-    it("ST-14: should handle toDataURL errors gracefully", async () => {
+    it("ST-14: should handle icon conversion errors gracefully", async () => {
       const imageUrl = "http://example.com/invalid.png"
       const settingsWithImage = {
         ...mockSettings,
@@ -331,7 +331,7 @@ describe("Settings", () => {
       mockStorage.get.mockResolvedValueOnce({ images: {} })
 
       Settings.getUrls = vi.fn().mockReturnValue([imageUrl])
-      mockToDataURL.mockRejectedValue(new Error("Network error"))
+      mockFetchIcon.mockRejectedValue(new Error("Network error"))
 
       try {
         // Should not throw error
