@@ -189,7 +189,8 @@ describe("syncAiPromptFavicons", () => {
 
     await syncAiPromptFavicons()
 
-    expect(fetch).not.toHaveBeenCalledWith(NEW_URL)
+    const requested = vi.mocked(fetch).mock.calls.map(([url]) => url)
+    expect(requested).not.toContain(NEW_URL)
     expect(mockStorage.set).not.toHaveBeenCalled()
     expect(mockSettings.updateCommands).toHaveBeenCalled()
   })
@@ -220,5 +221,107 @@ describe("syncAiPromptFavicons", () => {
     const probes = vi.mocked(fetch).mock.calls.filter(([u]) => u === OLD_URL)
     expect(probes).toHaveLength(1)
     expect(mockSettings.updateCommands.mock.calls[0][0]).toHaveLength(2)
+  })
+
+  it("AFS-15: replaces an icon whose URL answers an HTML page", async () => {
+    respondWith({ [OLD_URL]: async () => imageResponse("text/html") })
+    mockStorage.getCommands.mockResolvedValue([aiCommand(OLD_URL)])
+
+    await syncAiPromptFavicons()
+
+    expect(mockSettings.updateCommands).toHaveBeenCalledWith([
+      aiCommand(NEW_URL),
+    ])
+  })
+
+  it.each(["application/octet-stream", "text/plain", ""])(
+    "AFS-16: keeps an icon served as '%s'",
+    async (contentType) => {
+      respondWith({ [OLD_URL]: async () => imageResponse(contentType) })
+      mockStorage.getCommands.mockResolvedValue([aiCommand(OLD_URL)])
+
+      await syncAiPromptFavicons()
+
+      expect(mockSettings.updateCommands).not.toHaveBeenCalled()
+    },
+  )
+
+  it("AFS-17: keeps an edit made during the requests", async () => {
+    respondWith({ [OLD_URL]: async () => status(404) })
+    const edited = { ...aiCommand(OLD_URL), title: "Edited" }
+    mockStorage.getCommands
+      .mockResolvedValueOnce([aiCommand(OLD_URL)])
+      .mockResolvedValueOnce([edited])
+
+    await syncAiPromptFavicons()
+
+    expect(mockSettings.updateCommands).toHaveBeenCalledWith([
+      { ...edited, iconUrl: NEW_URL },
+    ])
+  })
+
+  it("AFS-18: keeps an icon changed during the requests", async () => {
+    respondWith({ [OLD_URL]: async () => status(404) })
+    mockStorage.getCommands
+      .mockResolvedValueOnce([aiCommand(OLD_URL)])
+      .mockResolvedValueOnce([aiCommand("https://example.com/my-icon.png")])
+
+    await syncAiPromptFavicons()
+
+    expect(mockSettings.updateCommands).not.toHaveBeenCalled()
+  })
+
+  it("AFS-19: does not restore a command removed during the requests", async () => {
+    respondWith({ [OLD_URL]: async () => status(404) })
+    mockStorage.getCommands
+      .mockResolvedValueOnce([aiCommand(OLD_URL)])
+      .mockResolvedValueOnce([])
+
+    await syncAiPromptFavicons()
+
+    expect(mockSettings.updateCommands).not.toHaveBeenCalled()
+  })
+
+  it("AFS-20: keeps cache changes made during the downloads", async () => {
+    respondWith({ [OLD_URL]: async () => status(404) })
+    mockStorage.get
+      .mockResolvedValueOnce({ images: {} })
+      .mockResolvedValueOnce({ images: { added: "data:added" }, other: 1 })
+    mockStorage.getCommands.mockResolvedValue([aiCommand(OLD_URL)])
+
+    await syncAiPromptFavicons()
+
+    expect(mockStorage.set).toHaveBeenCalledWith("caches", {
+      images: {
+        added: "data:added",
+        [NEW_URL]: `data:image/svg+xml;base64,${btoa("abc")}`,
+      },
+      other: 1,
+    })
+  })
+
+  it("AFS-21: sets a timeout on every request", async () => {
+    respondWith({ [OLD_URL]: async () => status(404) })
+    mockStorage.getCommands.mockResolvedValue([aiCommand(OLD_URL)])
+
+    await syncAiPromptFavicons()
+
+    const calls = vi.mocked(fetch).mock.calls
+    expect(calls.map(([url]) => url)).toEqual([OLD_URL, NEW_URL])
+    for (const [, init] of calls) {
+      expect(init?.signal).toBeInstanceOf(AbortSignal)
+    }
+  })
+
+  it("AFS-22: a request that times out keeps the icon", async () => {
+    respondWith({
+      [OLD_URL]: () =>
+        Promise.reject(new DOMException("Timed out", "TimeoutError")),
+    })
+    mockStorage.getCommands.mockResolvedValue([aiCommand(OLD_URL)])
+
+    await syncAiPromptFavicons()
+
+    expect(mockSettings.updateCommands).not.toHaveBeenCalled()
   })
 })
