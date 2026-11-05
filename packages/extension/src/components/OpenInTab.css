@@ -1,4 +1,6 @@
 .OpenInTab {
+  display: flex;
+  gap: 4px;
   position: fixed;
   top: 5px;
   right: 5px;

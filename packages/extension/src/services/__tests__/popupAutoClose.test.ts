@@ -13,6 +13,7 @@ vi.mock("@/services/chrome", () => ({
 vi.mock("@/services/windowStackManager", () => ({
   WindowStackManager: {
     removeWindow: vi.fn(),
+    isKeepOpen: vi.fn(),
   },
 }))
 
@@ -43,6 +44,27 @@ describe("PopupAutoClose", () => {
   })
 
   describe("scheduleClose", () => {
+    it("should not close a window marked as keep open during the delay", async () => {
+      const windows = [
+        { id: 100, commandId: "test", srcWindowId: 1 },
+        { id: 101, commandId: "test", srcWindowId: 1 },
+      ]
+      mockEnhancedSettings.getSection.mockResolvedValue({
+        windowOption: { popupAutoCloseDelay: 1000 },
+      } as any)
+
+      await PopupAutoClose.scheduleClose(windows)
+      mockWindowStackManager.isKeepOpen.mockImplementation(
+        async (id) => id === 100,
+      )
+      await vi.advanceTimersByTimeAsync(1000)
+      mockWindowStackManager.isKeepOpen.mockReset()
+
+      expect(mockCloseWindow).not.toHaveBeenCalledWith(100, "onFocusChanged")
+      expect(mockWindowStackManager.removeWindow).not.toHaveBeenCalledWith(100)
+      expect(mockCloseWindow).toHaveBeenCalledWith(101, "onFocusChanged")
+    })
+
     it("should close windows immediately when delay is undefined", async () => {
       const windows = [{ id: 100, commandId: "test", srcWindowId: 1 }]
 
