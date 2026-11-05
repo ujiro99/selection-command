@@ -29,9 +29,9 @@ import {
   isEmpty,
   versionDiff,
   VersionDiff,
-  isLinkCommand,
   generateId,
 } from "@/lib/utils"
+import { isLinkCommand } from "@/lib/commandGuards"
 import { toDataURL } from "@/services/dom"
 import { OptionSettings } from "@/services/option/optionSettings"
 import { LOCAL_STORAGE_KEY } from "../storage"
@@ -203,6 +203,16 @@ export const Settings = {
         s.commandId === oldId ? { ...s, commandId: newId } : s,
       ),
     })
+  },
+
+  /**
+   * Installs from before the settings were saved on install may have no
+   * settings saved, and would read the defaults for new installs. Save their
+   * settings so that they keep following the browser zoom as before.
+   */
+  saveForExistingInstall: async (): Promise<void> => {
+    if (await Storage.has(STORAGE_KEY.USER)) return
+    await Settings.update("followBrowserZoom", () => true, true)
   },
 
   reset: async () => {

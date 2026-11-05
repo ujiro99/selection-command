@@ -21,12 +21,12 @@ import {
   getHubAddEvent,
 } from "@/services/analytics"
 import { PopupOption } from "@/services/option/defaultSettings"
+import { generateId } from "@/lib/utils"
 import {
-  generateId,
   isSearchCommand,
   isPageActionCommand,
   isAiPromptCommand,
-} from "@/lib/utils"
+} from "@/lib/commandGuards"
 import { toSyncInstalledCommand } from "@/services/hub/installedCommands"
 import {
   applyHubContent,

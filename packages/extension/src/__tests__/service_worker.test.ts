@@ -16,6 +16,7 @@ const setSidePanel = (value: unknown) => {
 vi.mock("@/services/settings/enhancedSettings")
 vi.mock("@/services/settings/settings")
 vi.mock("@/services/settings/settingsCache")
+vi.mock("@/services/aiPromptFaviconSync")
 vi.mock("@/services/storage")
 vi.mock("@/services/chrome")
 vi.mock("@/services/serviceWorkerData")
@@ -29,6 +30,75 @@ vi.mock("@import-if", () => ({
 
 const mockEnhancedSettings = vi.mocked(enhancedSettings)
 const mockSettings = vi.mocked(Settings)
+
+// Runs first: later tests replace modules (e.g. IPC) with partial mocks.
+describe("Browser zoom", () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    vi.resetModules()
+  })
+
+  it("ZM-01: getZoom responds with the zoom factor of the sender's tab", async () => {
+    vi.mocked(chrome.tabs.getZoom).mockResolvedValue(0.8 as never)
+    const { testExports } = await import("../service_worker")
+    const response = vi.fn()
+
+    const isAsync = testExports.commandFuncs[ServiceWorkerCommand.getZoom](
+      undefined,
+      { tab: { id: 7 } } as chrome.runtime.MessageSender,
+      response,
+    )
+
+    expect(isAsync).toBe(true)
+    await vi.waitFor(() => expect(response).toHaveBeenCalledWith(0.8))
+    expect(chrome.tabs.getZoom).toHaveBeenCalledWith(7)
+  })
+
+  it("ZM-02: getZoom responds with 1 when the sender has no tab", async () => {
+    const { testExports } = await import("../service_worker")
+    const response = vi.fn()
+
+    testExports.commandFuncs[ServiceWorkerCommand.getZoom](
+      undefined,
+      {} as chrome.runtime.MessageSender,
+      response,
+    )
+
+    expect(response).toHaveBeenCalledWith(1)
+    expect(chrome.tabs.getZoom).not.toHaveBeenCalled()
+  })
+
+  it("ZM-03: getZoom responds with 1 when the zoom cannot be read", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {})
+    vi.mocked(chrome.tabs.getZoom).mockRejectedValue(new Error("No tab"))
+    const { testExports } = await import("../service_worker")
+    const response = vi.fn()
+
+    testExports.commandFuncs[ServiceWorkerCommand.getZoom](
+      undefined,
+      { tab: { id: 7 } } as chrome.runtime.MessageSender,
+      response,
+    )
+
+    await vi.waitFor(() => expect(response).toHaveBeenCalledWith(1))
+    warn.mockRestore()
+  })
+
+  it("ZM-04: forwards zoom changes to the tab", async () => {
+    const { Ipc, TabCommand } = await import("@/services/ipc")
+    const sendTab = vi.spyOn(Ipc, "sendTab").mockResolvedValue(true)
+    await import("../service_worker")
+
+    const listener = vi.mocked(chrome.tabs.onZoomChange.addListener).mock
+      .calls[0][0]
+    listener({ tabId: 7, newZoomFactor: 1.5 } as never)
+
+    expect(sendTab).toHaveBeenCalledWith(7, TabCommand.zoomChanged, {
+      zoomFactor: 1.5,
+    })
+    sendTab.mockRestore()
+  })
+})
 
 describe("Service Worker Migration", () => {
   // Common test data factory
@@ -848,6 +918,8 @@ describe("onInstalled: onboarding diagnostics (#479)", () => {
       getOrCreateClientId?: ReturnType<typeof vi.fn>
     },
     beforeImport?: () => Promise<void>,
+    reason: chrome.runtime.OnInstalledReason = chrome.runtime.OnInstalledReason
+      .INSTALL,
   ) => {
     vi.doMock("@/services/analytics", () => ({
       ANALYTICS_EVENTS,
@@ -866,9 +938,7 @@ describe("onInstalled: onboarding diagnostics (#479)", () => {
     const listenerCalls = (chrome.runtime.onInstalled.addListener as any).mock
       .calls
     const onInstalledListener = listenerCalls[listenerCalls.length - 1][0]
-    await onInstalledListener({
-      reason: chrome.runtime.OnInstalledReason.INSTALL,
-    })
+    await onInstalledListener({ reason })
   }
 
   it("IN-05: settles the client_id before sending events or opening the onboarding tab", async () => {
@@ -970,6 +1040,62 @@ describe("onInstalled: onboarding diagnostics (#479)", () => {
     )
     // The failure is handled in place and the onboarding tab still opens.
     expect(chrome.tabs.create).toHaveBeenCalled()
+
+    consoleErrorSpy.mockRestore()
+  })
+
+  it("IN-10: saves the settings of the existing install on update", async () => {
+    await runInstall({}, undefined, chrome.runtime.OnInstalledReason.UPDATE)
+
+    const { Settings: FreshSettings } =
+      await import("@/services/settings/settings")
+    expect(FreshSettings.saveForExistingInstall).toHaveBeenCalled()
+    expect(FreshSettings.reset).not.toHaveBeenCalled()
+  })
+
+  it("IN-11: does not treat a new install as an existing install", async () => {
+    await runInstall({})
+
+    const { Settings: FreshSettings } =
+      await import("@/services/settings/settings")
+    expect(FreshSettings.saveForExistingInstall).not.toHaveBeenCalled()
+    expect(FreshSettings.reset).toHaveBeenCalled()
+  })
+
+  it("IN-13: syncs the AI prompt favicons on update", async () => {
+    await runInstall({}, undefined, chrome.runtime.OnInstalledReason.UPDATE)
+
+    const { syncAiPromptFavicons } =
+      await import("@/services/aiPromptFaviconSync")
+    expect(syncAiPromptFavicons).toHaveBeenCalled()
+  })
+
+  it("IN-14: does not sync the AI prompt favicons on a new install", async () => {
+    await runInstall({})
+
+    const { syncAiPromptFavicons } =
+      await import("@/services/aiPromptFaviconSync")
+    expect(syncAiPromptFavicons).not.toHaveBeenCalled()
+  })
+
+  it("IN-12: continues the update initialization when saving the settings fails", async () => {
+    const consoleErrorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {})
+
+    await runInstall(
+      {},
+      async () => {
+        const { Settings: FreshSettings } =
+          await import("@/services/settings/settings")
+        vi.mocked(FreshSettings.saveForExistingInstall).mockRejectedValueOnce(
+          new Error("Sync quota exceeded"),
+        )
+      },
+      chrome.runtime.OnInstalledReason.UPDATE,
+    )
+
+    expect(chrome.runtime.setUninstallURL).toHaveBeenCalled()
 
     consoleErrorSpy.mockRestore()
   })

@@ -2,11 +2,8 @@ import type { Active, Over } from "@dnd-kit/core"
 import type { Command, CommandFolder } from "@/types"
 import type { CommandTreeNode } from "@/services/option/commandTree"
 import { findNodeInTree, findFirstCommand } from "@/services/option/commandTree"
-import {
-  isCommand,
-  isFolder,
-  isCircularReference,
-} from "@/services/option/commandUtils"
+import { isFolder, isCircularReference } from "@/services/option/commandUtils"
+import { isSelectionCommand } from "@/lib/commandGuards"
 import { ROOT_FOLDER } from "@/const"
 
 /**
@@ -25,7 +22,7 @@ export const isValidDrop = (
 ): boolean => {
   if (!activeContent || !overContent) return false
 
-  if (isCommand(activeContent)) return true
+  if (isSelectionCommand(activeContent)) return true
 
   if (isFolder(activeContent) && isFolder(overContent)) {
     return !isCircularReference(activeContent.id, overContent.id, folders)

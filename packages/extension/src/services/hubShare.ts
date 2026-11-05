@@ -7,10 +7,10 @@ import {
   type NewHubLocale,
 } from "@/const"
 import { getAiServicesFallback } from "@/services/aiPromptFallback"
-import { isAiPromptCommand, isPageActionCommand } from "@/lib/utils"
 import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
 import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
 import type { SelectionCommand, SearchCommand } from "@/types"
+import { isAiPromptCommand, isPageActionCommand } from "@/lib/commandGuards"
 
 const HUB_SHAREABLE_SOURCE_TYPES = new Set([
   COMMAND_SOURCE_TYPE.SELF_CREATED,

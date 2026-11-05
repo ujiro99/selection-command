@@ -44,12 +44,12 @@ export function CommandUpdateConfirmDialog(): JSX.Element {
       // Respond asynchronously after the user chooses.
       return true
     }
-    Ipc.addListener<ConfirmCommandUpdateProps>(
+    const removeListener = Ipc.addListener<ConfirmCommandUpdateProps>(
       TabCommand.confirmCommandUpdate,
       handleConfirm,
     )
     return () => {
-      Ipc.removeListener(TabCommand.confirmCommandUpdate)
+      removeListener()
       // Answer a pending request so the service worker does not wait on it.
       responseRef.current?.(false)
       responseRef.current = null
