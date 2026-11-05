@@ -9,17 +9,25 @@ let isPageUnloading = false
 export function OpenInTab(): JSX.Element {
   const [enableOpenInTab, setEnableOpenInTab] = useState(false)
   const [keepOpen, setKeepOpen] = useState(false)
+  // Starts busy: a click before the initial state arrives would toggle a stale value.
+  const [isKeepOpenBusy, setIsKeepOpenBusy] = useState(true)
 
   const onClickOpenTab = () => {
     Ipc.send(ServiceWorkerCommand.openInTab)
   }
 
+  const syncKeepOpen = (request: Promise<boolean>) => {
+    setIsKeepOpenBusy(true)
+    request
+      .then((result) => setKeepOpen(result))
+      .catch((e) => console.warn("Failed to sync keep open", e))
+      .finally(() => setIsKeepOpenBusy(false))
+  }
+
   const onClickKeepOpen = () => {
-    Ipc.send(ServiceWorkerCommand.setPopupKeepOpen, {
-      keepOpen: !keepOpen,
-    }).then((result) => {
-      setKeepOpen(result)
-    })
+    syncKeepOpen(
+      Ipc.send(ServiceWorkerCommand.setPopupKeepOpen, { keepOpen: !keepOpen }),
+    )
   }
 
   useEffect(() => {
@@ -31,9 +39,7 @@ export function OpenInTab(): JSX.Element {
   // The state lives in the service worker so it survives page navigation.
   useEffect(() => {
     if (!enableOpenInTab) return
-    Ipc.send(ServiceWorkerCommand.getPopupKeepOpen).then((result) => {
-      setKeepOpen(result)
-    })
+    syncKeepOpen(Ipc.send(ServiceWorkerCommand.getPopupKeepOpen))
   }, [enableOpenInTab])
 
   useEffect(() => {
@@ -66,6 +72,7 @@ export function OpenInTab(): JSX.Element {
           <button
             type="button"
             aria-pressed={keepOpen}
+            disabled={isKeepOpenBusy}
             className={cn(
               "OpenInTab__button rounded-sm flex items-center px-2 py-1 text-xs cursor-pointer gap-1.5",
               keepOpen

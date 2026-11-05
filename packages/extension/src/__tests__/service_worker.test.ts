@@ -1201,7 +1201,10 @@ describe("Window listeners: ServiceWorkerData readiness", () => {
       ServiceWorkerData: { init: vi.fn(), ready, get, update, set: vi.fn() },
     }))
     vi.doMock("@/services/windowStackManager", () => ({
-      WindowStackManager: { getStack: vi.fn().mockResolvedValue([]) },
+      WindowStackManager: {
+        getStack: vi.fn().mockResolvedValue([]),
+        isKeepOpen: vi.fn().mockResolvedValue(false),
+      },
     }))
 
     vi.resetModules()
@@ -1455,19 +1458,53 @@ describe("Keep Open", () => {
     expect(isKeepOpen).not.toHaveBeenCalled()
   })
 
-  it("KO-06: onRemoved should remove a manually closed window from the stack", async () => {
-    getStack.mockResolvedValue([[win(100, 1, true)]])
+  it("KO-07: setPopupKeepOpen should respond with the previous state when the update fails", async () => {
+    const error = vi.spyOn(console, "error").mockImplementation(() => {})
+    setKeepOpen.mockRejectedValueOnce(new Error("Quota exceeded"))
+    const { testExports } = await loadServiceWorker()
+    const response = vi.fn()
+
+    testExports.commandFuncs[ServiceWorkerCommand.setPopupKeepOpen](
+      { keepOpen: true },
+      { tab: { windowId: 100 } } as chrome.runtime.MessageSender,
+      response,
+    )
+
+    await vi.waitFor(() => expect(response).toHaveBeenCalledWith(false))
+    error.mockRestore()
+  })
+
+  it("KO-08: getPopupKeepOpen should respond with false when the state cannot be read", async () => {
+    const error = vi.spyOn(console, "error").mockImplementation(() => {})
+    isKeepOpen.mockRejectedValueOnce(new Error("Read failed"))
+    const { testExports } = await loadServiceWorker()
+    const response = vi.fn()
+
+    testExports.commandFuncs[ServiceWorkerCommand.getPopupKeepOpen](
+      undefined,
+      { tab: { windowId: 100 } } as chrome.runtime.MessageSender,
+      response,
+    )
+
+    await vi.waitFor(() => expect(response).toHaveBeenCalledWith(false))
+    error.mockRestore()
+  })
+
+  it("KO-06: onRemoved should remove only keep open windows from the stack", async () => {
     await loadServiceWorker()
     const calls = vi.mocked(chrome.windows.onRemoved.addListener).mock.calls
     const listener = calls[calls.length - 1][0] as unknown as (
       id: number,
     ) => Promise<void>
 
+    isKeepOpen.mockResolvedValue(true)
     await listener(100)
     expect(removeWindow).toHaveBeenCalledWith(100)
 
+    // Other windows must stay, as multiple links protection relies on them.
     removeWindow.mockClear()
-    await listener(999)
+    isKeepOpen.mockResolvedValue(false)
+    await listener(101)
     expect(removeWindow).not.toHaveBeenCalled()
   })
 })

@@ -61,9 +61,7 @@ describe("OpenInTab", () => {
 
     render(<OpenInTab />)
     const button = await getKeepOpenButton()
-    await waitFor(() =>
-      expect(send).toHaveBeenCalledWith(ServiceWorkerCommand.getPopupKeepOpen),
-    )
+    await waitFor(() => expect(button.disabled).toBe(false))
 
     fireEvent.click(button)
 
@@ -73,5 +71,71 @@ describe("OpenInTab", () => {
     await waitFor(() =>
       expect(button.getAttribute("aria-pressed")).toBe("true"),
     )
+  })
+
+  it("OIT-04: ignores clicks until the initial state arrives", async () => {
+    let resolveState!: (value: boolean) => void
+    const send = vi.spyOn(Ipc, "send").mockImplementation(async (command) => {
+      if (command === ServiceWorkerCommand.canOpenInTab) return true
+      return new Promise((resolve) => {
+        resolveState = resolve
+      })
+    })
+
+    render(<OpenInTab />)
+    const button = await getKeepOpenButton()
+    await waitFor(() =>
+      expect(send).toHaveBeenCalledWith(ServiceWorkerCommand.getPopupKeepOpen),
+    )
+
+    fireEvent.click(button)
+    expect(send).not.toHaveBeenCalledWith(
+      ServiceWorkerCommand.setPopupKeepOpen,
+      expect.anything(),
+    )
+
+    resolveState(true)
+    await waitFor(() => expect(button.disabled).toBe(false))
+    expect(button.getAttribute("aria-pressed")).toBe("true")
+  })
+
+  it("OIT-05: sends a single update when double clicked", async () => {
+    const send = mockIpc({
+      [ServiceWorkerCommand.canOpenInTab]: true,
+      [ServiceWorkerCommand.getPopupKeepOpen]: false,
+      [ServiceWorkerCommand.setPopupKeepOpen]: true,
+    })
+
+    render(<OpenInTab />)
+    const button = await getKeepOpenButton()
+    await waitFor(() => expect(button.disabled).toBe(false))
+
+    fireEvent.click(button)
+    fireEvent.click(button)
+
+    const updates = send.mock.calls.filter(
+      ([command]) => command === ServiceWorkerCommand.setPopupKeepOpen,
+    )
+    expect(updates).toHaveLength(1)
+    await waitFor(() => expect(button.disabled).toBe(false))
+  })
+
+  it("OIT-06: keeps the state and becomes clickable again when the update fails", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {})
+    vi.spyOn(Ipc, "send").mockImplementation(async (command) => {
+      if (command === ServiceWorkerCommand.canOpenInTab) return true
+      if (command === ServiceWorkerCommand.getPopupKeepOpen) return false
+      throw new Error("No reply")
+    })
+
+    render(<OpenInTab />)
+    const button = await getKeepOpenButton()
+    await waitFor(() => expect(button.disabled).toBe(false))
+
+    fireEvent.click(button)
+
+    await waitFor(() => expect(warn).toHaveBeenCalled())
+    await waitFor(() => expect(button.disabled).toBe(false))
+    expect(button.getAttribute("aria-pressed")).toBe("false")
   })
 })
