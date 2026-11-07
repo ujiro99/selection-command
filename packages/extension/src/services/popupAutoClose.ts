@@ -54,6 +54,8 @@ export class PopupAutoClose {
     const closeWindows = async () => {
       try {
         for (const window of windowsToClose) {
+          // Keep open may have been turned on while the close was pending.
+          if (await WindowStackManager.isKeepOpen(window.id)) continue
           await closeWindow(window.id, reason)
           await WindowStackManager.removeWindow(window.id)
         }

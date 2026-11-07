@@ -132,7 +132,29 @@ export class WindowStackManager {
   }
 
   /**
-   * Get windows to close based on focus change
+   * Set whether a window is excluded from auto-close.
+   * Does nothing when the window is not in the stack.
+   */
+  static async setKeepOpen(windowId: number, keepOpen: boolean): Promise<void> {
+    await ServiceWorkerData.update((data) => ({
+      windowStack: (data.windowStack ?? []).map((layer) =>
+        layer.map((w) => (w.id === windowId ? { ...w, keepOpen } : w)),
+      ),
+    }))
+  }
+
+  /**
+   * Check whether a window is excluded from auto-close.
+   */
+  static async isKeepOpen(windowId: number): Promise<boolean> {
+    const stack = await this.loadStack()
+    return stack.flat().some((w) => w.id === windowId && w.keepOpen === true)
+  }
+
+  /**
+   * Get windows to close based on focus change.
+   * Windows marked as keep open are never included. When the focused window is
+   * keep open, the other windows in its layer are closed as well.
    */
   static async getWindowsToClose(
     focusedWindowId: number,
@@ -146,13 +168,25 @@ export class WindowStackManager {
 
     // If focused window is not in stack, close all windows
     if (focusedLayerIndex < 0) {
-      return stack.flat()
+      return stack.flat().filter((w) => !w.keepOpen)
+    }
+
+    const windowsToClose: WindowType[] = []
+
+    // A keep open window shares its layer with popups opened later from the
+    // same source window (e.g. link previews). Those are transient, so close
+    // them when the user returns to the keep open window.
+    const focusedLayer = stack[focusedLayerIndex]
+    const focusedWindow = focusedLayer.find((w) => w.id === focusedWindowId)
+    if (focusedWindow?.keepOpen) {
+      windowsToClose.push(
+        ...focusedLayer.filter((w) => w.id !== focusedWindowId && !w.keepOpen),
+      )
     }
 
     // Close all windows in layers after the focused layer
-    const windowsToClose: WindowType[] = []
     for (let i = focusedLayerIndex + 1; i < stack.length; i++) {
-      windowsToClose.push(...stack[i])
+      windowsToClose.push(...stack[i].filter((w) => !w.keepOpen))
     }
 
     return windowsToClose

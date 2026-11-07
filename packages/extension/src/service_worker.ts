@@ -288,6 +288,49 @@ const commandFuncs = {
     return true
   },
 
+  [ServiceWorkerCommand.getPopupKeepOpen]: (
+    _: unknown,
+    sender: Sender,
+    response: (res: unknown) => void,
+  ) => {
+    const windowId = sender.tab?.windowId
+    if (windowId == null) {
+      response(false)
+      return false
+    }
+    WindowStackManager.isKeepOpen(windowId)
+      .then(response)
+      .catch((e) => {
+        console.error("Failed to get keep open", e)
+        response(false)
+      })
+    return true
+  },
+
+  [ServiceWorkerCommand.setPopupKeepOpen]: (
+    param: { keepOpen: boolean },
+    sender: Sender,
+    response: (res: unknown) => void,
+  ) => {
+    const windowId = sender.tab?.windowId
+    if (windowId == null) {
+      response(false)
+      return false
+    }
+    const handleSetKeepOpen = async () => {
+      try {
+        await WindowStackManager.setKeepOpen(windowId, param.keepOpen)
+        response(await WindowStackManager.isKeepOpen(windowId))
+      } catch (e) {
+        console.error("Failed to set keep open", e)
+        // The update failed, so the window still has the previous state.
+        response(!param.keepOpen)
+      }
+    }
+    handleSetKeepOpen()
+    return true
+  },
+
   [ServiceWorkerCommand.onHidden]: (
     _param: any,
     sender: Sender,
@@ -311,17 +354,19 @@ const commandFuncs = {
       }
 
       const layer = stack.find((s) => s.find((w) => w.id === windowId))
-      if (!layer || layer.length > 1) {
-        // Do nothing when the window isn't in the layer or multiple links are opened.
+      // Keep open windows don't count as multiple links opened at once.
+      const closableWindows = layer?.filter((w) => !w.keepOpen) ?? []
+      const window = closableWindows.find((w) => w.id === windowId)
+      if (!window || closableWindows.length > 1) {
+        // Do nothing when the window isn't in the layer, is marked as keep open,
+        // or multiple links are opened. Returning before scheduleClose also keeps
+        // a pending close of other windows from being cancelled.
         response(true)
         return
       }
 
       // Schedule popup window to close with configured delay
-      const window = layer.find((w) => w.id === windowId)
-      if (window) {
-        await PopupAutoClose.scheduleClose([window], "onHidden")
-      }
+      await PopupAutoClose.scheduleClose([window], "onHidden")
       response(false)
     }
 
@@ -439,6 +484,13 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
 chrome.windows.onRemoved.addListener(async (windowId: number) => {
   // Wait for the persisted state so we never write back the empty default.
   await ServiceWorkerData.ready()
+
+  // Keep open windows are skipped by auto-close, so a manually closed one
+  // would otherwise stay in the stack forever.
+  if (await WindowStackManager.isKeepOpen(windowId)) {
+    await WindowStackManager.removeWindow(windowId)
+  }
+
   const normalWindows = ServiceWorkerData.get().normalWindows ?? []
   if (!normalWindows.some((w) => w.id === windowId)) return
 

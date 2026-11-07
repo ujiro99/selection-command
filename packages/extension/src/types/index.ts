@@ -341,6 +341,8 @@ export type WindowType = {
   id: number
   commandId: string
   srcWindowId: number
+  // Excluded from auto-close until the user turns it off or closes the window.
+  keepOpen?: boolean
 }
 
 export type WindowLayer = WindowType[]

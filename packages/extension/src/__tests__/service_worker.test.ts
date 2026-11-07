@@ -589,6 +589,7 @@ describe("Popup Auto-Close Delay", () => {
       WindowStackManager: {
         getWindowsToClose: mockGetWindowsToClose,
         removeWindow: mockRemoveWindow,
+        isKeepOpen: vi.fn().mockResolvedValue(false),
       },
     }))
 
@@ -650,6 +651,7 @@ describe("Popup Auto-Close Delay", () => {
       WindowStackManager: {
         getWindowsToClose: mockGetWindowsToClose,
         removeWindow: mockRemoveWindow,
+        isKeepOpen: vi.fn().mockResolvedValue(false),
       },
     }))
 
@@ -714,6 +716,7 @@ describe("Popup Auto-Close Delay", () => {
       WindowStackManager: {
         getWindowsToClose: mockGetWindowsToClose,
         removeWindow: mockRemoveWindow,
+        isKeepOpen: vi.fn().mockResolvedValue(false),
       },
     }))
 
@@ -1198,7 +1201,10 @@ describe("Window listeners: ServiceWorkerData readiness", () => {
       ServiceWorkerData: { init: vi.fn(), ready, get, update, set: vi.fn() },
     }))
     vi.doMock("@/services/windowStackManager", () => ({
-      WindowStackManager: { getStack: vi.fn().mockResolvedValue([]) },
+      WindowStackManager: {
+        getStack: vi.fn().mockResolvedValue([]),
+        isKeepOpen: vi.fn().mockResolvedValue(false),
+      },
     }))
 
     vi.resetModules()
@@ -1334,5 +1340,171 @@ describe("Side panel optional capability", () => {
     const mod = await import("../service_worker")
 
     expect(mod.testExports.commandFuncs).toBeDefined()
+  })
+})
+
+describe("Keep Open", () => {
+  const scheduleClose = vi.fn().mockResolvedValue(undefined)
+  const setKeepOpen = vi.fn().mockResolvedValue(undefined)
+  const isKeepOpen = vi.fn()
+  const removeWindow = vi.fn().mockResolvedValue(undefined)
+  const getStack = vi.fn()
+
+  const win = (id: number, srcWindowId: number, keepOpen?: boolean) => ({
+    id,
+    commandId: "cmd",
+    srcWindowId,
+    keepOpen,
+  })
+
+  const loadServiceWorker = async () => {
+    // Earlier tests leave partial mocks of these modules behind.
+    vi.doUnmock("@/services/ipc")
+    vi.doUnmock("@/services/storage")
+    vi.doMock("@/services/windowStackManager", () => ({
+      WindowStackManager: { getStack, setKeepOpen, isKeepOpen, removeWindow },
+    }))
+    vi.doMock("@/services/popupAutoClose", () => ({
+      PopupAutoClose: { scheduleClose },
+    }))
+    vi.doMock("@/services/serviceWorkerData", () => ({
+      ServiceWorkerData: {
+        init: vi.fn(),
+        ready: vi.fn().mockResolvedValue(undefined),
+        get: vi.fn(() => ({ normalWindows: [] })),
+        update: vi.fn().mockResolvedValue(true),
+        set: vi.fn(),
+      },
+    }))
+    vi.resetModules()
+    return await import("../service_worker")
+  }
+
+  const sendOnHidden = async (windowId: number) => {
+    const { testExports } = await loadServiceWorker()
+    const response = vi.fn()
+    testExports.commandFuncs[ServiceWorkerCommand.onHidden](
+      undefined,
+      { tab: { id: 1, windowId } } as chrome.runtime.MessageSender,
+      response,
+    )
+    await vi.waitFor(() => expect(response).toHaveBeenCalled())
+  }
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  afterEach(() => {
+    vi.doUnmock("@/services/windowStackManager")
+    vi.doUnmock("@/services/popupAutoClose")
+    vi.doUnmock("@/services/serviceWorkerData")
+  })
+
+  it("KO-01: onHidden should not touch pending closes for a keep open window", async () => {
+    getStack.mockResolvedValue([[win(100, 1, true), win(101, 1)]])
+
+    await sendOnHidden(100)
+
+    expect(scheduleClose).not.toHaveBeenCalled()
+  })
+
+  it("KO-02: onHidden should close a window whose only sibling is keep open", async () => {
+    const target = win(101, 1)
+    getStack.mockResolvedValue([[win(100, 1, true), target]])
+
+    await sendOnHidden(101)
+
+    expect(scheduleClose).toHaveBeenCalledWith([target], "onHidden")
+  })
+
+  it("KO-03: onHidden should still skip multiple closable windows", async () => {
+    getStack.mockResolvedValue([[win(100, 1), win(101, 1)]])
+
+    await sendOnHidden(100)
+
+    expect(scheduleClose).not.toHaveBeenCalled()
+  })
+
+  it("KO-04: setPopupKeepOpen should update the sender's window and respond with the state", async () => {
+    isKeepOpen.mockResolvedValue(true)
+    const { testExports } = await loadServiceWorker()
+    const response = vi.fn()
+
+    const isAsync = testExports.commandFuncs[
+      ServiceWorkerCommand.setPopupKeepOpen
+    ](
+      { keepOpen: true },
+      { tab: { windowId: 100 } } as chrome.runtime.MessageSender,
+      response,
+    )
+
+    expect(isAsync).toBe(true)
+    await vi.waitFor(() => expect(response).toHaveBeenCalledWith(true))
+    expect(setKeepOpen).toHaveBeenCalledWith(100, true)
+  })
+
+  it("KO-05: getPopupKeepOpen should respond with false when the sender has no tab", async () => {
+    const { testExports } = await loadServiceWorker()
+    const response = vi.fn()
+
+    testExports.commandFuncs[ServiceWorkerCommand.getPopupKeepOpen](
+      undefined,
+      {} as chrome.runtime.MessageSender,
+      response,
+    )
+
+    expect(response).toHaveBeenCalledWith(false)
+    expect(isKeepOpen).not.toHaveBeenCalled()
+  })
+
+  it("KO-07: setPopupKeepOpen should respond with the previous state when the update fails", async () => {
+    const error = vi.spyOn(console, "error").mockImplementation(() => {})
+    setKeepOpen.mockRejectedValueOnce(new Error("Quota exceeded"))
+    const { testExports } = await loadServiceWorker()
+    const response = vi.fn()
+
+    testExports.commandFuncs[ServiceWorkerCommand.setPopupKeepOpen](
+      { keepOpen: true },
+      { tab: { windowId: 100 } } as chrome.runtime.MessageSender,
+      response,
+    )
+
+    await vi.waitFor(() => expect(response).toHaveBeenCalledWith(false))
+    error.mockRestore()
+  })
+
+  it("KO-08: getPopupKeepOpen should respond with false when the state cannot be read", async () => {
+    const error = vi.spyOn(console, "error").mockImplementation(() => {})
+    isKeepOpen.mockRejectedValueOnce(new Error("Read failed"))
+    const { testExports } = await loadServiceWorker()
+    const response = vi.fn()
+
+    testExports.commandFuncs[ServiceWorkerCommand.getPopupKeepOpen](
+      undefined,
+      { tab: { windowId: 100 } } as chrome.runtime.MessageSender,
+      response,
+    )
+
+    await vi.waitFor(() => expect(response).toHaveBeenCalledWith(false))
+    error.mockRestore()
+  })
+
+  it("KO-06: onRemoved should remove only keep open windows from the stack", async () => {
+    await loadServiceWorker()
+    const calls = vi.mocked(chrome.windows.onRemoved.addListener).mock.calls
+    const listener = calls[calls.length - 1][0] as unknown as (
+      id: number,
+    ) => Promise<void>
+
+    isKeepOpen.mockResolvedValue(true)
+    await listener(100)
+    expect(removeWindow).toHaveBeenCalledWith(100)
+
+    // Other windows must stay, as multiple links protection relies on them.
+    removeWindow.mockClear()
+    isKeepOpen.mockResolvedValue(false)
+    await listener(101)
+    expect(removeWindow).not.toHaveBeenCalled()
   })
 })
