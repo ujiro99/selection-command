@@ -303,6 +303,42 @@ describe("WindowStackManager", () => {
       expect(await WindowStackManager.getWindowsToClose(1)).toEqual([sibling])
     })
 
+    it("should close same layer windows when focusing a keep open window", async () => {
+      const kept = keepOpenWindow(1, 0)
+      const otherKept = keepOpenWindow(2, 0)
+      const preview = createTestWindow(3, "cmd", 0)
+      const child = createTestWindow(4, "cmd", 3)
+      mockServiceWorkerDataGet.mockReturnValue(
+        createServiceWorkerData([[kept, otherKept, preview], [child]]),
+      )
+
+      expect(await WindowStackManager.getWindowsToClose(1)).toEqual([
+        preview,
+        child,
+      ])
+    })
+
+    it("should keep same layer windows when focusing a closable window", async () => {
+      const kept = keepOpenWindow(1, 0)
+      const preview = createTestWindow(2, "cmd", 0)
+      mockServiceWorkerDataGet.mockReturnValue(
+        createServiceWorkerData([[kept, preview]]),
+      )
+
+      expect(await WindowStackManager.getWindowsToClose(2)).toEqual([])
+    })
+
+    it("should add a preview from the same source window to the keep open layer", async () => {
+      const kept = keepOpenWindow(1, 100)
+      const preview = createTestWindow(2, "cmd", 100)
+
+      await WindowStackManager.addWindows([
+        { window: preview, parentWindowId: 100 },
+      ])
+
+      expectStackUpdate([[kept, preview]], [[kept]])
+    })
+
     it("should update only the target window", async () => {
       const a = createTestWindow(1, "cmd", 0)
       const b = createTestWindow(2, "cmd", 1)

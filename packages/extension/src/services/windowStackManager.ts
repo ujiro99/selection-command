@@ -153,7 +153,8 @@ export class WindowStackManager {
 
   /**
    * Get windows to close based on focus change.
-   * Windows marked as keep open are never included.
+   * Windows marked as keep open are never included. When the focused window is
+   * keep open, the other windows in its layer are closed as well.
    */
   static async getWindowsToClose(
     focusedWindowId: number,
@@ -170,8 +171,20 @@ export class WindowStackManager {
       return stack.flat().filter((w) => !w.keepOpen)
     }
 
-    // Close all windows in layers after the focused layer
     const windowsToClose: WindowType[] = []
+
+    // A keep open window shares its layer with popups opened later from the
+    // same source window (e.g. link previews). Those are transient, so close
+    // them when the user returns to the keep open window.
+    const focusedLayer = stack[focusedLayerIndex]
+    const focusedWindow = focusedLayer.find((w) => w.id === focusedWindowId)
+    if (focusedWindow?.keepOpen) {
+      windowsToClose.push(
+        ...focusedLayer.filter((w) => w.id !== focusedWindowId && !w.keepOpen),
+      )
+    }
+
+    // Close all windows in layers after the focused layer
     for (let i = focusedLayerIndex + 1; i < stack.length; i++) {
       windowsToClose.push(...stack[i].filter((w) => !w.keepOpen))
     }
