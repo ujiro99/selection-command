@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react"
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
-import { OpenInTab } from "../OpenInTab"
+import { PopupControls } from "../PopupControls"
 import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
 
 type IpcResponses = Partial<Record<ServiceWorkerCommand, unknown>>
@@ -17,7 +17,7 @@ const mockIpc = (responses: IpcResponses) =>
 const getKeepOpenButton = async () =>
   (await screen.findByText("Keep Open")).closest("button") as HTMLButtonElement
 
-describe("OpenInTab", () => {
+describe("PopupControls", () => {
   beforeEach(() => {
     vi.clearAllMocks()
   })
@@ -29,7 +29,7 @@ describe("OpenInTab", () => {
   it("OIT-01: shows no buttons outside a popup window", async () => {
     const send = mockIpc({ [ServiceWorkerCommand.canOpenInTab]: false })
 
-    render(<OpenInTab />)
+    render(<PopupControls />)
 
     await waitFor(() =>
       expect(send).toHaveBeenCalledWith(ServiceWorkerCommand.canOpenInTab),
@@ -44,7 +44,7 @@ describe("OpenInTab", () => {
       [ServiceWorkerCommand.getPopupKeepOpen]: true,
     })
 
-    render(<OpenInTab />)
+    render(<PopupControls />)
 
     const button = await getKeepOpenButton()
     await waitFor(() =>
@@ -59,7 +59,7 @@ describe("OpenInTab", () => {
       [ServiceWorkerCommand.setPopupKeepOpen]: true,
     })
 
-    render(<OpenInTab />)
+    render(<PopupControls />)
     const button = await getKeepOpenButton()
     await waitFor(() => expect(button.disabled).toBe(false))
 
@@ -82,7 +82,7 @@ describe("OpenInTab", () => {
       })
     })
 
-    render(<OpenInTab />)
+    render(<PopupControls />)
     const button = await getKeepOpenButton()
     await waitFor(() =>
       expect(send).toHaveBeenCalledWith(ServiceWorkerCommand.getPopupKeepOpen),
@@ -106,7 +106,7 @@ describe("OpenInTab", () => {
       [ServiceWorkerCommand.setPopupKeepOpen]: true,
     })
 
-    render(<OpenInTab />)
+    render(<PopupControls />)
     const button = await getKeepOpenButton()
     await waitFor(() => expect(button.disabled).toBe(false))
 
@@ -128,7 +128,7 @@ describe("OpenInTab", () => {
       throw new Error("No reply")
     })
 
-    render(<OpenInTab />)
+    render(<PopupControls />)
     const button = await getKeepOpenButton()
     await waitFor(() => expect(button.disabled).toBe(false))
 

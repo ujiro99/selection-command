@@ -1,4 +1,4 @@
-.OpenInTab {
+.PopupControls {
   display: flex;
   gap: 4px;
   position: fixed;
@@ -8,7 +8,7 @@
   visibility: visible !important;
 }
 
-.OpenInTab__button {
+.PopupControls__button {
   background: #f9f9f9;
   border: none;
   filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
@@ -18,11 +18,11 @@
     background-color 250ms;
 }
 
-.OpenInTab__button:hover {
+.PopupControls__button:hover {
   background: #fff;
 }
 
-.OpenInTab__icon {
+.PopupControls__icon {
   transition: color 250ms;
 }
 
@@ -31,12 +31,12 @@
  * `:host()` for the content script's shadow host, and the attribute alone
  * for extension pages.
  */
-:host([data-sc-theme="dark"]) .OpenInTab__button,
-[data-sc-theme="dark"] .OpenInTab__button {
+:host([data-sc-theme="dark"]) .PopupControls__button,
+[data-sc-theme="dark"] .PopupControls__button {
   background: #2b2d31;
 }
 
-:host([data-sc-theme="dark"]) .OpenInTab__button:hover,
-[data-sc-theme="dark"] .OpenInTab__button:hover {
+:host([data-sc-theme="dark"]) .PopupControls__button:hover,
+[data-sc-theme="dark"] .PopupControls__button:hover {
   background: #35373c;
 }

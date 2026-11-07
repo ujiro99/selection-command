@@ -2,11 +2,11 @@ import { useEffect, useState } from "react"
 import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
 import { cn } from "@/lib/utils"
 import { ExternalLink, Pin } from "lucide-react"
-import "./OpenInTab.css"
+import "./PopupControls.css"
 
 let isPageUnloading = false
 
-export function OpenInTab(): JSX.Element {
+export function PopupControls(): JSX.Element {
   const [enableOpenInTab, setEnableOpenInTab] = useState(false)
   const [keepOpen, setKeepOpen] = useState(false)
   // Starts busy: a click before the initial state arrives would toggle a stale value.
@@ -68,13 +68,13 @@ export function OpenInTab(): JSX.Element {
   return (
     <>
       {enableOpenInTab && (
-        <div className="OpenInTab" style={{ visibility: "hidden" }}>
+        <div className="PopupControls" style={{ visibility: "hidden" }}>
           <button
             type="button"
             aria-pressed={keepOpen}
             disabled={isKeepOpenBusy}
             className={cn(
-              "OpenInTab__button rounded-sm flex items-center px-2 py-1 text-xs cursor-pointer gap-1.5",
+              "PopupControls__button rounded-sm flex items-center px-2 py-1 text-xs cursor-pointer gap-1.5",
               keepOpen
                 ? "text-foreground"
                 : "text-foreground/60 hover:text-foreground",
@@ -83,7 +83,7 @@ export function OpenInTab(): JSX.Element {
           >
             <Pin
               className={cn(
-                "OpenInTab__icon size-4",
+                "PopupControls__icon size-4",
                 keepOpen && "fill-current",
               )}
             />
@@ -91,10 +91,10 @@ export function OpenInTab(): JSX.Element {
           </button>
           <button
             type="button"
-            className="OpenInTab__button rounded-sm flex items-center px-2 py-1 text-xs text-foreground/60 hover:text-foreground cursor-pointer gap-1.5"
+            className="PopupControls__button rounded-sm flex items-center px-2 py-1 text-xs text-foreground/60 hover:text-foreground cursor-pointer gap-1.5"
             onClick={onClickOpenTab}
           >
-            <ExternalLink className="OpenInTab__icon size-4" />
+            <ExternalLink className="PopupControls__icon size-4" />
             Open in Tab
           </button>
         </div>
