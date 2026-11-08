@@ -6,13 +6,9 @@ import { ExternalLink, Pin } from "lucide-react"
 let isPageUnloading = false
 
 const buttonClass = cn(
-  "flex items-center gap-1.5 px-2 py-1 rounded-sm border-none text-xs cursor-pointer",
-  "bg-[#f9f9f9] hover:bg-white dark:bg-[#2b2d31] dark:hover:bg-[#35373c]",
-  "[filter:drop-shadow(0_4px_3px_rgb(0_0_0/0.07))_drop-shadow(0_2px_2px_rgb(0_0_0/0.06))]",
-  "transition-colors duration-250",
+  "flex items-center gap-1.5 px-2 py-1 rounded-sm text-xs cursor-pointer",
+  "border bg-background shadow-md hover:bg-hover transition-colors",
 )
-
-const iconClass = "size-4 transition-colors duration-250"
 
 export function PopupControls(): JSX.Element {
   const [enableOpenInTab, setEnableOpenInTab] = useState(false)
@@ -78,7 +74,7 @@ export function PopupControls(): JSX.Element {
       {enableOpenInTab && (
         // Hidden inline until the shadow root stylesheet loads and `visible!` applies.
         <div
-          className="fixed top-[5px] right-[5px] z-[2147483647] flex gap-1 visible!"
+          className="fixed top-1 right-1 z-2147483647 flex gap-1 visible!"
           style={{ visibility: "hidden" }}
         >
           <button
@@ -93,7 +89,7 @@ export function PopupControls(): JSX.Element {
             )}
             onClick={onClickKeepOpen}
           >
-            <Pin className={cn(iconClass, keepOpen && "fill-current")} />
+            <Pin className={cn("size-4", keepOpen && "fill-current")} />
             Keep Open
           </button>
           <button
@@ -104,7 +100,7 @@ export function PopupControls(): JSX.Element {
             )}
             onClick={onClickOpenTab}
           >
-            <ExternalLink className={iconClass} />
+            <ExternalLink className="size-4" />
             Open in Tab
           </button>
         </div>
