@@ -1542,7 +1542,7 @@ describe("Keep Open", () => {
       ({ id, focused, incognito, type: "normal" }) as chrome.windows.Window
 
     beforeEach(() => {
-      vi.mocked(chrome.tabs.create).mockResolvedValue({} as chrome.tabs.Tab)
+      vi.mocked(chrome.tabs.create).mockResolvedValue({} as any)
       ;(chrome.windows as any).getAll = vi.fn().mockResolvedValue([])
       ;(chrome.windows as any).create = vi.fn().mockResolvedValue({})
     })
