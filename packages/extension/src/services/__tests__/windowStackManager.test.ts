@@ -193,8 +193,8 @@ describe("WindowStackManager", () => {
 
         await WindowStackManager.removeWindow(999)
 
-        // Update runs atomically, but the resulting stack is unchanged
-        expectStackUpdate([[window1]], initialStack)
+        // Nothing to remove, so storage is not written
+        expect(mockServiceWorkerDataUpdate).not.toHaveBeenCalled()
       })
     })
   })
@@ -303,45 +303,74 @@ describe("WindowStackManager", () => {
       expect(await WindowStackManager.getWindowsToClose(1)).toEqual([sibling])
     })
 
-    it("should close same layer windows when focusing a keep open window", async () => {
+    it("should keep same layer windows when focusing a keep open window", async () => {
       const kept = keepOpenWindow(1, 0)
-      const otherKept = keepOpenWindow(2, 0)
-      const preview = createTestWindow(3, "cmd", 0)
-      const child = createTestWindow(4, "cmd", 3)
+      const sibling = createTestWindow(2, "cmd", 0)
       mockServiceWorkerDataGet.mockReturnValue(
-        createServiceWorkerData([[kept, otherKept, preview], [child]]),
+        createServiceWorkerData([[kept, sibling]]),
       )
 
-      expect(await WindowStackManager.getWindowsToClose(1)).toEqual([
-        preview,
-        child,
-      ])
+      // Windows opened together stay siblings even after one is kept open.
+      expect(await WindowStackManager.getWindowsToClose(1)).toEqual([])
     })
 
-    it("should keep same layer windows when focusing a closable window", async () => {
-      const kept = keepOpenWindow(1, 0)
-      const preview = createTestWindow(2, "cmd", 0)
-      mockServiceWorkerDataGet.mockReturnValue(
-        createServiceWorkerData([[kept, preview]]),
-      )
-
-      expect(await WindowStackManager.getWindowsToClose(2)).toEqual([])
-    })
-
-    it("should add a preview from the same source window to the keep open layer", async () => {
+    it("should put a later popup from the same source in a new layer", async () => {
       const kept = keepOpenWindow(1, 100)
-      const preview = createTestWindow(2, "cmd", 100)
+      const preview1 = createTestWindow(2, "cmd", 100)
+      const preview2 = createTestWindow(3, "cmd", 100)
 
       await WindowStackManager.addWindows([
-        { window: preview, parentWindowId: 100 },
+        { window: preview1, parentWindowId: 100 },
+        { window: preview2, parentWindowId: 100 },
       ])
 
-      expectStackUpdate([[kept, preview]], [[kept]])
+      // Popups opened at once still share their own layer.
+      expectStackUpdate([[kept], [preview1, preview2]], [[kept]])
+    })
+
+    it("should close a later popup when focusing the keep open window", async () => {
+      const kept = keepOpenWindow(1, 100)
+      const preview = createTestWindow(2, "cmd", 100)
+      mockServiceWorkerDataGet.mockReturnValue(
+        createServiceWorkerData([[kept], [preview]]),
+      )
+
+      expect(await WindowStackManager.getWindowsToClose(1)).toEqual([preview])
+    })
+
+    it("should join the same source layer when it has no keep open window", async () => {
+      const preview1 = createTestWindow(2, "cmd", 100)
+      const preview2 = createTestWindow(3, "cmd", 100)
+
+      await WindowStackManager.addWindows([
+        { window: preview2, parentWindowId: 100 },
+      ])
+
+      expectStackUpdate([[preview1, preview2]], [[preview1]])
+    })
+
+    it("should put a child after a keep open next layer", async () => {
+      const parent = createTestWindow(1, "cmd", 0)
+      const keptChild = keepOpenWindow(2, 1)
+      const grandChild = createTestWindow(3, "cmd", 2)
+      const newChild = createTestWindow(4, "cmd", 1)
+
+      await WindowStackManager.addWindows([
+        { window: newChild, parentWindowId: 1 },
+      ])
+
+      expectStackUpdate(
+        [[parent], [keptChild], [newChild], [grandChild]],
+        [[parent], [keptChild], [grandChild]],
+      )
     })
 
     it("should update only the target window", async () => {
       const a = createTestWindow(1, "cmd", 0)
       const b = createTestWindow(2, "cmd", 1)
+      mockServiceWorkerDataGet.mockReturnValue(
+        createServiceWorkerData([[a], [b]]),
+      )
 
       await WindowStackManager.setKeepOpen(2, true)
 
@@ -350,10 +379,44 @@ describe("WindowStackManager", () => {
 
     it("should turn keep open off", async () => {
       const a = keepOpenWindow(1, 0)
+      mockServiceWorkerDataGet.mockReturnValue(createServiceWorkerData([[a]]))
 
       await WindowStackManager.setKeepOpen(1, false)
 
       expectStackUpdate([[{ ...a, keepOpen: false }]], [[a]])
+    })
+
+    it("should not write when keep open is unchanged or the window is missing", async () => {
+      mockServiceWorkerDataGet.mockReturnValue(
+        createServiceWorkerData([[keepOpenWindow(1, 0)]]),
+      )
+
+      await WindowStackManager.setKeepOpen(1, true)
+      await WindowStackManager.setKeepOpen(999, true)
+
+      expect(mockServiceWorkerDataUpdate).not.toHaveBeenCalled()
+    })
+
+    it("should list the ids of keep open windows", async () => {
+      mockServiceWorkerDataGet.mockReturnValue(
+        createServiceWorkerData([
+          [keepOpenWindow(1, 0), createTestWindow(2, "cmd", 0)],
+          [keepOpenWindow(3, 1)],
+        ]),
+      )
+
+      expect(await WindowStackManager.getKeepOpenIds()).toEqual(new Set([1, 3]))
+    })
+
+    it("should find a window in any layer", async () => {
+      const a = createTestWindow(1, "cmd", 0)
+      const b = createTestWindow(2, "cmd", 1)
+      mockServiceWorkerDataGet.mockReturnValue(
+        createServiceWorkerData([[a], [b]]),
+      )
+
+      expect(await WindowStackManager.findWindow(2)).toEqual(b)
+      expect(await WindowStackManager.findWindow(999)).toBeUndefined()
     })
 
     it("should report the keep open state of a window", async () => {

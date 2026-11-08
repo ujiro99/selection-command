@@ -13,7 +13,7 @@ vi.mock("@/services/chrome", () => ({
 vi.mock("@/services/windowStackManager", () => ({
   WindowStackManager: {
     removeWindow: vi.fn(),
-    isKeepOpen: vi.fn(),
+    getKeepOpenIds: vi.fn(),
   },
 }))
 
@@ -30,6 +30,7 @@ describe("PopupAutoClose", () => {
   beforeEach(() => {
     vi.clearAllMocks()
     vi.useFakeTimers()
+    mockWindowStackManager.getKeepOpenIds.mockResolvedValue(new Set())
   })
 
   afterEach(() => {
@@ -54,11 +55,8 @@ describe("PopupAutoClose", () => {
       } as any)
 
       await PopupAutoClose.scheduleClose(windows)
-      mockWindowStackManager.isKeepOpen.mockImplementation(
-        async (id) => id === 100,
-      )
+      mockWindowStackManager.getKeepOpenIds.mockResolvedValue(new Set([100]))
       await vi.advanceTimersByTimeAsync(1000)
-      mockWindowStackManager.isKeepOpen.mockReset()
 
       expect(mockCloseWindow).not.toHaveBeenCalledWith(100, "onFocusChanged")
       expect(mockWindowStackManager.removeWindow).not.toHaveBeenCalledWith(100)
