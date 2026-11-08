@@ -7,7 +7,7 @@ import DefaultSettings, {
   getDefaultCommands,
   COMMAND_SEARCH_ID,
 } from "../../option/defaultSettings"
-import { fetchIconAsDataUrl } from "../../iconCache"
+import { ensureIconsCached } from "../../iconCache"
 import { OPTION_FOLDER, VERSION, OPEN_MODE } from "@/const"
 import type { Command, SettingsType, Star } from "@/types"
 import * as utils from "@/lib/utils"
@@ -20,7 +20,7 @@ vi.mock("../../iconCache")
 
 const mockStorage = vi.mocked(Storage)
 const mockOptionSettings = vi.mocked(OptionSettings)
-const mockFetchIcon = vi.mocked(fetchIconAsDataUrl)
+const mockEnsureIcons = vi.mocked(ensureIconsCached)
 
 describe("Settings", () => {
   // Setup function to create clean mocks for each test
@@ -42,7 +42,7 @@ describe("Settings", () => {
       onlyIcon: true,
     }
 
-    mockFetchIcon.mockResolvedValue("data:image/png;base64,test")
+    mockEnsureIcons.mockResolvedValue(new Set())
   }
 
   afterEach(() => {
@@ -226,8 +226,16 @@ describe("Settings", () => {
     })
 
     it("ST-09: should skip image cache processing when serviceWorker is true", async () => {
-      await Settings.set(mockSettings, true)
-      expect(mockFetchIcon).not.toHaveBeenCalled()
+      const originalGetUrls = Settings.getUrls
+      mockStorage.get.mockResolvedValueOnce({ images: {} })
+      Settings.getUrls = vi.fn().mockReturnValue(["http://example.com/a.png"])
+
+      try {
+        await Settings.set(mockSettings, true)
+        expect(mockEnsureIcons).not.toHaveBeenCalled()
+      } finally {
+        Settings.getUrls = originalGetUrls
+      }
     })
 
     it("ST-10: should remove unused cache entries", async () => {
@@ -259,29 +267,30 @@ describe("Settings", () => {
       }
     })
 
-    it("ST-11: should process image URLs and create cache when serviceWorker is false", async () => {
+    it("ST-11: should cache only the missing icons after storing the settings", async () => {
       const imageUrl = "http://example.com/icon.png"
+      const cachedUrl = "http://example.com/cached.png"
       const settingsWithImage = {
         ...mockSettings,
         commands: DefaultCommands,
       }
 
       const originalGetUrls = Settings.getUrls
-      mockStorage.get.mockResolvedValueOnce({ images: {} })
-      Settings.getUrls = vi.fn().mockReturnValue([imageUrl])
+      mockStorage.get.mockResolvedValueOnce({
+        images: { [cachedUrl]: "data:cached" },
+      })
+      Settings.getUrls = vi
+        .fn()
+        .mockReturnValue([imageUrl, cachedUrl, "", "data:image/png;base64,x"])
 
       try {
         await Settings.set(settingsWithImage, false)
 
-        expect(mockFetchIcon).toHaveBeenCalledWith(imageUrl, 3000)
-        expect(mockStorage.set).toHaveBeenCalledWith(
-          "caches",
-          expect.objectContaining({
-            images: expect.objectContaining({
-              [imageUrl]: "data:image/png;base64,test",
-            }),
-          }),
-        )
+        expect(mockEnsureIcons).toHaveBeenCalledWith([imageUrl], 3000)
+        // The settings are stored before the icons are downloaded.
+        expect(
+          mockStorage.setCommands.mock.invocationCallOrder[0],
+        ).toBeLessThan(mockEnsureIcons.mock.invocationCallOrder[0])
       } finally {
         Settings.getUrls = originalGetUrls
       }
@@ -331,7 +340,7 @@ describe("Settings", () => {
       mockStorage.get.mockResolvedValueOnce({ images: {} })
 
       Settings.getUrls = vi.fn().mockReturnValue([imageUrl])
-      mockFetchIcon.mockRejectedValue(new Error("Network error"))
+      mockEnsureIcons.mockResolvedValue(new Set())
 
       try {
         // Should not throw error

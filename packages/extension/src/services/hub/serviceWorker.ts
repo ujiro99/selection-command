@@ -425,6 +425,9 @@ export async function handleAddCommand(
     await Settings.addCommands([cmd])
     console.debug("[handleAddCommand] Saved command id:", cmd.id)
     // Not awaited: a slow icon host must not delay the response to the Hub.
+    // If the service worker stops before the download ends, the icon is
+    // cached on the next save of the settings on the options page; until then
+    // the menu shows the original URL.
     if (isUrl(cmd.iconUrl)) {
       ensureIconsCached([cmd.iconUrl]).catch((error) => {
         console.warn("[handleAddCommand] Failed to cache the icon", error)

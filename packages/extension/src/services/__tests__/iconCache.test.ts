@@ -119,6 +119,59 @@ describe("fetchIconAsDataUrl", () => {
     await expect(fetchIconAsDataUrl(URL_B)).rejects.toThrow("Icon too large")
   })
 
+  it("ICN-13: sniffs the bytes when the declared type has no subtype", async () => {
+    vi.mocked(fetch).mockResolvedValue(response(PNG, "image/"))
+
+    await expect(fetchIconAsDataUrl(URL_A)).resolves.toBe(
+      dataUrl(PNG, "image/png"),
+    )
+  })
+
+  it("ICN-14: detects an SVG that starts with a UTF-8 BOM", async () => {
+    const svg = [0xef, 0xbb, 0xbf, ...text("<svg></svg>")]
+    vi.mocked(fetch).mockResolvedValue(
+      response(svg, "application/octet-stream"),
+    )
+
+    await expect(fetchIconAsDataUrl(URL_A)).resolves.toBe(
+      dataUrl(svg, "image/svg+xml"),
+    )
+  })
+
+  it("ICN-15: rejects a too large content-length without reading the body", async () => {
+    const res = new Response(new Uint8Array(PNG), {
+      headers: {
+        "content-type": "image/png",
+        "content-length": String(512 * 1024 + 1),
+      },
+    })
+    const arrayBuffer = vi.spyOn(res, "arrayBuffer")
+    const cancel = vi.spyOn(res.body!, "cancel")
+    vi.mocked(fetch).mockResolvedValue(res)
+
+    await expect(fetchIconAsDataUrl(URL_A)).rejects.toThrow("Icon too large")
+    expect(arrayBuffer).not.toHaveBeenCalled()
+    expect(cancel).toHaveBeenCalled()
+  })
+
+  it("ICN-16: stops reading a stream once it exceeds the size limit", async () => {
+    const chunk = new Uint8Array(256 * 1024)
+    let pulled = 0
+    const body = new ReadableStream<Uint8Array>({
+      pull(controller) {
+        pulled++
+        controller.enqueue(chunk)
+      },
+    })
+    vi.mocked(fetch).mockResolvedValue(
+      new Response(body, { headers: { "content-type": "image/png" } }),
+    )
+
+    await expect(fetchIconAsDataUrl(URL_A)).rejects.toThrow("Icon too large")
+    // The endless stream is cancelled right after the limit is exceeded.
+    expect(pulled).toBeLessThanOrEqual(4)
+  })
+
   it("ICN-08: applies the given timeout", async () => {
     const timeout = vi.spyOn(AbortSignal, "timeout")
     vi.mocked(fetch).mockResolvedValue(response(PNG, "image/png"))
@@ -171,6 +224,14 @@ describe("ensureIconsCached", () => {
     expect(mockStorage.set).toHaveBeenCalledWith("caches", {
       images: { [URL_B]: dataUrl(PNG, "image/png") },
     })
+  })
+
+  it("ICN-17: applies the given timeout to the downloads", async () => {
+    const timeout = vi.spyOn(AbortSignal, "timeout")
+
+    await ensureIconsCached([URL_A], 1234)
+
+    expect(timeout).toHaveBeenCalledWith(1234)
   })
 
   it("ICN-12: keeps cache changes made during the downloads", async () => {

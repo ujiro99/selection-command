@@ -13,4 +13,15 @@ describe("bytesToDataUrl", () => {
       "data:image/png;base64,/wA=",
     )
   })
+
+  it("DU-03: encodes bytes across the chunk boundary", () => {
+    const bytes = new Uint8Array(0x8000 * 2 + 3).map((_, i) => i % 256)
+    const expected = btoa(
+      Array.from(bytes, (b) => String.fromCharCode(b)).join(""),
+    )
+
+    expect(bytesToDataUrl(bytes, "image/png")).toBe(
+      `data:image/png;base64,${expected}`,
+    )
+  })
 })
