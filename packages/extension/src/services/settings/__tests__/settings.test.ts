@@ -340,12 +340,15 @@ describe("Settings", () => {
       mockStorage.get.mockResolvedValueOnce({ images: {} })
 
       Settings.getUrls = vi.fn().mockReturnValue([imageUrl])
-      mockEnsureIcons.mockResolvedValue(new Set())
+      mockEnsureIcons.mockRejectedValue(new Error("QUOTA_BYTES exceeded"))
+      vi.spyOn(console, "warn").mockImplementation(() => {})
 
       try {
-        // Should not throw error
+        // The settings are stored, so a failure to cache icons is not an error.
         const result = await Settings.set(settingsWithImage, false)
         expect(result).toBe(true)
+        expect(mockEnsureIcons).toHaveBeenCalledWith([imageUrl], 3000)
+        expect(mockStorage.setCommands).toHaveBeenCalled()
       } finally {
         // Restore original methods
         Settings.getUrls = originalGetUrls
@@ -405,6 +408,26 @@ describe("Settings", () => {
       } finally {
         Settings.get = originalGet
         Settings.set = originalSet
+      }
+    })
+    it("ST-16b: does not cache icons on an update from a content script", async () => {
+      const originalGet = Settings.get
+      const originalGetUrls = Settings.getUrls
+      Settings.get = vi.fn().mockResolvedValue({
+        ...DefaultSettings,
+        stars: [],
+      })
+      Settings.getUrls = vi.fn().mockReturnValue(["http://example.com/a.png"])
+      mockStorage.get.mockResolvedValue({ images: {} })
+
+      try {
+        await Settings.update("hasShownReviewRequest", () => true, true)
+
+        expect(mockStorage.set).toHaveBeenCalled()
+        expect(mockEnsureIcons).not.toHaveBeenCalled()
+      } finally {
+        Settings.get = originalGet
+        Settings.getUrls = originalGetUrls
       }
     })
   })

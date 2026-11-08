@@ -37,7 +37,10 @@ import { OptionSettings } from "@/services/option/optionSettings"
 import { LOCAL_STORAGE_KEY } from "../storage"
 import { getUILanguage } from "@/services/i18n"
 
-/** Settings.set resolves after the icons are cached, so a slow host must not hold it. */
+/**
+ * Settings.set resolves after the icons are cached, so a slow host must not
+ * hold it.
+ */
 const SAVE_ICON_TIMEOUT_MS = 3_000
 
 const callbacks = [] as (() => void)[]
@@ -152,7 +155,13 @@ export const Settings = {
         (url) => !isEmpty(url) && !isBase64(url) && caches.images[url] == null,
       )
       if (noCacheUrls.length > 0) {
-        await ensureIconsCached(noCacheUrls, SAVE_ICON_TIMEOUT_MS)
+        // The settings are already stored, so a failure here (e.g. the storage
+        // quota) must not be reported as a failure to save them.
+        try {
+          await ensureIconsCached(noCacheUrls, SAVE_ICON_TIMEOUT_MS)
+        } catch (e) {
+          console.warn("Failed to cache the icons", e)
+        }
       }
     }
     return true

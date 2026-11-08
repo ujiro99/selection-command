@@ -172,6 +172,19 @@ describe("fetchIconAsDataUrl", () => {
     expect(pulled).toBeLessThanOrEqual(4)
   })
 
+  it.each(["image/x-icon", "image/svg+xml"])(
+    "ICN-18: rejects an HTML page declared as %s",
+    async (contentType) => {
+      vi.mocked(fetch).mockResolvedValue(
+        response(text("\n<!DOCTYPE html><html></html>"), contentType),
+      )
+
+      await expect(fetchIconAsDataUrl(URL_A)).rejects.toThrow(
+        `HTML served as ${contentType}`,
+      )
+    },
+  )
+
   it("ICN-08: applies the given timeout", async () => {
     const timeout = vi.spyOn(AbortSignal, "timeout")
     vi.mocked(fetch).mockResolvedValue(response(PNG, "image/png"))
@@ -232,6 +245,19 @@ describe("ensureIconsCached", () => {
     await ensureIconsCached([URL_A], 1234)
 
     expect(timeout).toHaveBeenCalledWith(1234)
+  })
+
+  it("ICN-19: reports an icon cached by another update during the downloads", async () => {
+    mockStorage.get
+      .mockResolvedValueOnce({ images: {} })
+      .mockResolvedValueOnce({ images: { [URL_A]: "data:other" } })
+    vi.mocked(fetch).mockImplementation(async (url) =>
+      url === URL_A ? response([], "image/png") : response(PNG, "image/png"),
+    )
+
+    const cached = await ensureIconsCached([URL_A, URL_B])
+
+    expect(cached).toEqual(new Set([URL_A, URL_B]))
   })
 
   it("ICN-12: keeps cache changes made during the downloads", async () => {

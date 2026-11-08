@@ -18,6 +18,9 @@ const IMAGE_SIGNATURES: { mimeType: string; bytes: number[] }[] = [
 /** A MIME type without parameters, e.g. image/svg+xml. */
 const IMAGE_MIME_TYPE = /^image\/[a-z0-9][a-z0-9.+-]*$/
 
+/** An HTML document, such as an error page served with an image type. */
+const HTML_HEAD = /^\s*<(?:!doctype html|html|head|body)[\s>]/i
+
 /** An SVG root, after anything allowed to come before it. */
 const SVG_HEAD =
   /^(?:<\?xml[^>]*>|<!--[\s\S]*?-->|<!doctype svg[^>]*>|\s)*<svg[\s>]/i
@@ -63,6 +66,11 @@ const readBodyWithLimit = async (
 const hasBytesAt = (data: Uint8Array, bytes: number[], offset = 0): boolean =>
   bytes.every((byte, i) => data[offset + i] === byte)
 
+const decodeHead = (data: Uint8Array): string =>
+  new TextDecoder().decode(data.subarray(0, 1024))
+
+const isHtml = (data: Uint8Array): boolean => HTML_HEAD.test(decodeHead(data))
+
 const sniffImageType = (data: Uint8Array): string | undefined => {
   const signature = IMAGE_SIGNATURES.find(({ bytes }) =>
     hasBytesAt(data, bytes),
@@ -76,8 +84,7 @@ const sniffImageType = (data: Uint8Array): string | undefined => {
 
   // TextDecoder drops a UTF-8 BOM. UTF-16 SVGs and SVGs behind a comment longer
   // than the head are not detected, which is acceptable for icons.
-  const head = new TextDecoder().decode(data.subarray(0, 1024))
-  return SVG_HEAD.test(head) ? "image/svg+xml" : undefined
+  return SVG_HEAD.test(decodeHead(data)) ? "image/svg+xml" : undefined
 }
 
 /**
@@ -104,6 +111,8 @@ export const fetchIconAsDataUrl = async (
     ? declared
     : sniffImageType(bytes)
   if (!mimeType) throw new Error(`Unexpected content type: ${contentType}`)
+  // A cached HTML page would never fall back to the original URL again.
+  if (isHtml(bytes)) throw new Error(`HTML served as ${mimeType}`)
 
   return bytesToDataUrl(bytes, mimeType)
 }
@@ -132,13 +141,16 @@ export const ensureIconsCached = async (
     }),
   )
   const images = Object.fromEntries(results.filter((r) => r != null))
-  if (Object.keys(images).length > 0) {
-    // Read again: the caches may have changed during the downloads.
-    const latest = await Storage.get<Caches>(LOCAL_STORAGE_KEY.CACHES)
-    await Storage.set<Caches>(LOCAL_STORAGE_KEY.CACHES, {
-      ...latest,
-      images: { ...latest.images, ...images },
-    })
+  if (Object.keys(images).length === 0) {
+    return new Set(urls.filter((url) => caches.images?.[url]))
   }
-  return new Set(urls.filter((url) => caches.images?.[url] || images[url]))
+
+  // Read again: the caches may have changed during the downloads.
+  const latest = await Storage.get<Caches>(LOCAL_STORAGE_KEY.CACHES)
+  const merged = { ...latest.images, ...images }
+  await Storage.set<Caches>(LOCAL_STORAGE_KEY.CACHES, {
+    ...latest,
+    images: merged,
+  })
+  return new Set(urls.filter((url) => merged[url]))
 }
