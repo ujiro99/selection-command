@@ -1,4 +1,8 @@
 import type { ClipboardResult } from "./services/ipc"
+import { registerEnvironmentProbeListener } from "./services/offscreenEnvironmentProbe"
+
+// Only one offscreen document can exist, so this one answers probes too.
+registerEnvironmentProbeListener()
 
 chrome.runtime.onMessage.addListener((message, sender, respond) => {
   if (

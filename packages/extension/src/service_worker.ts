@@ -43,6 +43,7 @@ import {
   getBrowserEnvironmentParams,
   toErrorMessageParam,
 } from "@/services/analytics"
+import { getInstallEnvironmentParams } from "@/services/installEnvironment"
 import * as HubServiceWorker from "@/services/hub/serviceWorker"
 import { ensureOnboardingAssignment } from "@/services/experiments"
 import * as IconColorServiceWorker from "@/services/iconColor/serviceWorker"
@@ -545,6 +546,8 @@ chrome.runtime.onInstalled.addListener(async (details) => {
 
       // Counted alongside the settings reset so it does not delay the tab.
       const windowCount = getWindowCount()
+      // Signals to tell automated installs apart (#550). Never rejects.
+      const installEnvironment = getInstallEnvironmentParams()
 
       // Initialize default settings on install
       await Settings.reset()
@@ -552,6 +555,8 @@ chrome.runtime.onInstalled.addListener(async (details) => {
         ANALYTICS_EVENTS.INSTALLED,
         {
           ...getBrowserEnvironmentParams(),
+          // Overrides is_webdriver, which the worker itself cannot read.
+          ...(await installEnvironment),
           window_count: await windowCount,
           // "false" means the onboarding page may report under another id.
           client_id_ready: String(clientIdReady),

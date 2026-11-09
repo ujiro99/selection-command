@@ -184,6 +184,7 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         input: {
           offscreenClipboard: "src/offscreen_clipboard.html",
+          offscreenEnvironment: "src/offscreen_environment.html",
           onboarding: "src/onboarding_page.html",
         },
       },
