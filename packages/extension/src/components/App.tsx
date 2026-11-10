@@ -66,7 +66,14 @@ export function App({ rootElm }: Props) {
   useEffect(() => {
     const handleShowReviewRequest = (_: any, __: any, response: any) => {
       showReviewRequestToast(() => {
-        Settings.update("hasShownReviewRequest", () => true)
+        // Icons are not cached here: a content script is bound by CORS.
+        // Unused caches are still removed, which does not change anything
+        // because this update does not change any icon URL.
+        Settings.update(
+          "hasShownReviewRequest",
+          () => true,
+          true /* serviceWorker: skip caching the icons */,
+        )
       })
       response(true)
       return true

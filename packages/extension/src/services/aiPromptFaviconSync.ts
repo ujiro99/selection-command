@@ -1,11 +1,12 @@
 import { getAiServices } from "@/services/aiPrompt"
 import { calcContentHash } from "@/services/hub/commandContent"
 import { Settings } from "@/services/settings/settings"
-import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
+import { ensureIconsCached, ICON_FETCH_TIMEOUT_MS } from "@/services/iconCache"
+import { Storage } from "@/services/storage"
 import { isAiPromptCommand } from "@/lib/commandGuards"
 import { isUrl } from "@/lib/url"
 import { unique } from "@/lib/utils"
-import type { Caches, Command } from "@/types"
+import type { Command } from "@/types"
 
 /**
  * Statuses that mean the icon no longer exists. Other failures (offline, 5xx,
@@ -13,9 +14,6 @@ import type { Caches, Command } from "@/types"
  * an icon of their own.
  */
 const GONE_STATUSES = [404, 410]
-
-/** A host that never answers must not hold back the other commands. */
-const ICON_FETCH_TIMEOUT_MS = 10_000
 
 const isGone = async (url: string): Promise<boolean> => {
   try {
@@ -49,55 +47,6 @@ const withIconUrl = (command: Command, iconUrl: string): Command => {
   return updated
 }
 
-/** Converts an icon to a data URL. Service workers have no Image or canvas. */
-const fetchAsDataUrl = async (url: string): Promise<string> => {
-  const res = await fetch(url, {
-    signal: AbortSignal.timeout(ICON_FETCH_TIMEOUT_MS),
-  })
-  if (!res.ok) throw new Error(`HTTP ${res.status}`)
-  const contentType = res.headers.get("content-type") ?? ""
-  if (!contentType.startsWith("image/")) {
-    throw new Error(`Unexpected content type: ${contentType}`)
-  }
-  const bytes = new Uint8Array(await res.arrayBuffer())
-  const binary = Array.from(bytes, (b) => String.fromCharCode(b)).join("")
-  return `data:${contentType};base64,${btoa(binary)}`
-}
-
-/**
- * Menus show icons from the image cache, because the CSP of a page may block
- * the original URL. Commands synced from another device arrive with a new URL
- * and no cache on this device, so the caller also passes the current favicons
- * already in use, not only the ones this run replaces with.
- *
- * @returns The URLs that are in the cache afterwards.
- */
-const ensureCached = async (urls: string[]): Promise<Set<string>> => {
-  const caches = await Storage.get<Caches>(LOCAL_STORAGE_KEY.CACHES)
-  const missing = urls.filter((url) => !caches.images?.[url])
-
-  const results = await Promise.all(
-    missing.map(async (url): Promise<[string, string] | null> => {
-      try {
-        return [url, await fetchAsDataUrl(url)]
-      } catch (error) {
-        console.warn("Failed to cache the favicon", url, error)
-        return null
-      }
-    }),
-  )
-  const images = Object.fromEntries(results.filter((r) => r != null))
-  if (Object.keys(images).length > 0) {
-    // Read again: the caches may have changed during the downloads.
-    const latest = await Storage.get<Caches>(LOCAL_STORAGE_KEY.CACHES)
-    await Storage.set<Caches>(LOCAL_STORAGE_KEY.CACHES, {
-      ...latest,
-      images: { ...latest.images, ...images },
-    })
-  }
-  return new Set(urls.filter((url) => caches.images?.[url] || images[url]))
-}
-
 /**
  * Replaces the icon of AiPrompt commands with the current favicon of their
  * service when the icon no longer exists. An icon that can still be loaded is
@@ -128,7 +77,9 @@ export const syncAiPromptFavicons = async (): Promise<void> => {
   const inUse = targets.filter(({ command, latest }) => {
     return command.iconUrl === latest
   })
-  const cached = await ensureCached(
+  // Commands synced from another device arrive with a new URL and no cache on
+  // this device, so the current favicons already in use are cached as well.
+  const cached = await ensureIconsCached(
     unique([...inUse, ...replaced].map(({ latest }) => latest)),
   )
 
