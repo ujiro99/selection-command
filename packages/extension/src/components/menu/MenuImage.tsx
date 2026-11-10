@@ -1,4 +1,5 @@
 import { isEmpty, isValidSVG, cn } from "@/lib/utils"
+import { bytesToDataUrl } from "@/lib/dataUrl"
 import { usePopupContext } from "@/hooks/usePopupContext"
 import css from "./Menu.module.css"
 
@@ -32,11 +33,7 @@ const imageRoleProps = (alt?: string) =>
     : ({ role: "img", "aria-label": alt } as const)
 
 const toSvgDataUrl = (svg: string) =>
-  `data:image/svg+xml;base64,${btoa(
-    Array.from(new TextEncoder().encode(svg), (byte) =>
-      String.fromCharCode(byte),
-    ).join(""),
-  )}`
+  bytesToDataUrl(new TextEncoder().encode(svg), "image/svg+xml")
 
 export function MenuImage(props: MenuImageProps): JSX.Element {
   const { src, svg, alt, className } = props
