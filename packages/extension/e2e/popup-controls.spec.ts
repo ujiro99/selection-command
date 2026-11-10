@@ -31,6 +31,8 @@ const keepOpenButton = (page: Page) =>
 const openInTabButton = (page: Page) =>
   page.getByRole("button", { name: "Open in Tab" })
 
+const closeButton = (page: Page) => page.getByRole("button", { name: "Close" })
+
 /**
  * Opens a popup with the "テストページ検索" command (OpenMode: Popup).
  */
@@ -160,5 +162,30 @@ test.describe("Popup Controls", () => {
    */
   test.skip("E2E-125: only the keep open popup stays after link popup", async () => {
     // Focus changes can't be reproduced in headless Chrome
+  })
+
+  /**
+   * E2E-126: The close button hides the controls, and they show again after
+   * the page reloads because the hidden state is not saved.
+   */
+  test("E2E-126: close button hides the controls until reload", async ({
+    context,
+    page,
+  }) => {
+    attachConsole(page)
+    const testPage = new TestPage(page)
+    await testPage.open()
+
+    const popupPage = await openSearchPopup(context, testPage)
+    await expect(closeButton(popupPage)).toBeVisible()
+
+    await closeButton(popupPage).click()
+    await expect(keepOpenButton(popupPage)).toHaveCount(0)
+    await expect(openInTabButton(popupPage)).toHaveCount(0)
+    // Only the controls are hidden; the popup window itself stays open.
+    expect(popupPage.isClosed()).toBe(false)
+
+    await popupPage.reload()
+    await expect(keepOpenButton(popupPage)).toBeVisible()
   })
 })

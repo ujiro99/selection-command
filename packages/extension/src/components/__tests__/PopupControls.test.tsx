@@ -138,4 +138,37 @@ describe("PopupControls", () => {
     await waitFor(() => expect(button.disabled).toBe(false))
     expect(button.getAttribute("aria-pressed")).toBe("false")
   })
+
+  it("OIT-07: hides the menu when the close button is clicked", async () => {
+    mockIpc({
+      [ServiceWorkerCommand.canOpenInTab]: true,
+      [ServiceWorkerCommand.getPopupKeepOpen]: false,
+    })
+
+    render(<PopupControls />)
+    await getKeepOpenButton()
+
+    fireEvent.click(screen.getByTitle("Close"))
+
+    expect(screen.queryByRole("button", { hidden: true })).toBeNull()
+  })
+
+  it("OIT-08: keeps sending onHidden after the menu is closed", async () => {
+    const send = mockIpc({
+      [ServiceWorkerCommand.canOpenInTab]: true,
+      [ServiceWorkerCommand.getPopupKeepOpen]: false,
+    })
+
+    render(<PopupControls />)
+    await getKeepOpenButton()
+    fireEvent.click(screen.getByTitle("Close"))
+
+    const hidden = vi.spyOn(document, "hidden", "get").mockReturnValue(true)
+    document.dispatchEvent(new Event("visibilitychange"))
+
+    await waitFor(() =>
+      expect(send).toHaveBeenCalledWith(ServiceWorkerCommand.onHidden),
+    )
+    hidden.mockRestore()
+  })
 })

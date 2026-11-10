@@ -1,17 +1,21 @@
 import { useEffect, useState } from "react"
 import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
 import { cn } from "@/lib/utils"
-import { ExternalLink, Pin } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { ButtonGroup } from "@/components/ui/button-group"
+import { ExternalLink, Pin, X } from "lucide-react"
 
 let isPageUnloading = false
 
 const buttonClass = cn(
-  "flex items-center gap-1.5 px-2 py-1 rounded-sm text-xs cursor-pointer",
-  "border bg-background shadow-md hover:bg-hover transition-colors",
+  "h-auto px-2 py-1 gap-1.5 text-xs font-normal cursor-pointer [&_svg]:mr-0",
+  "text-foreground/60 hover:text-foreground",
 )
 
 export function PopupControls(): JSX.Element {
   const [enableOpenInTab, setEnableOpenInTab] = useState(false)
+  // Hiding the menu is not persisted; it shows again when the page reloads.
+  const [isMenuVisible, setIsMenuVisible] = useState(true)
   const [keepOpen, setKeepOpen] = useState(false)
   // Starts busy: a click before the initial state arrives would toggle a stale value.
   const [isKeepOpenBusy, setIsKeepOpenBusy] = useState(true)
@@ -69,42 +73,47 @@ export function PopupControls(): JSX.Element {
     }
   }, [enableOpenInTab])
 
+  // Only the menu is hidden; the auto-close listeners above keep running.
+  if (!enableOpenInTab || !isMenuVisible) return <></>
+
   return (
-    <>
-      {enableOpenInTab && (
-        // Hidden inline until the shadow root stylesheet loads and `visible!` applies.
-        <div
-          className="fixed top-1 right-1 z-2147483647 flex gap-1 visible!"
-          style={{ visibility: "hidden" }}
+    // Hidden inline until the shadow root stylesheet loads and `visible!` applies.
+    <div
+      className="fixed top-1 right-1 z-2147483647 visible!"
+      style={{ visibility: "hidden" }}
+    >
+      <ButtonGroup className="rounded-md shadow-md">
+        <Button
+          type="button"
+          variant="outline"
+          aria-pressed={keepOpen}
+          disabled={isKeepOpenBusy}
+          className={cn(buttonClass, keepOpen && "text-foreground")}
+          onClick={onClickKeepOpen}
         >
-          <button
-            type="button"
-            aria-pressed={keepOpen}
-            disabled={isKeepOpenBusy}
-            className={cn(
-              buttonClass,
-              keepOpen
-                ? "text-foreground"
-                : "text-foreground/60 hover:text-foreground",
-            )}
-            onClick={onClickKeepOpen}
-          >
-            <Pin className={cn("size-4", keepOpen && "fill-current")} />
-            Keep Open
-          </button>
-          <button
-            type="button"
-            className={cn(
-              buttonClass,
-              "text-foreground/60 hover:text-foreground",
-            )}
-            onClick={onClickOpenTab}
-          >
-            <ExternalLink className="size-4" />
-            Open in Tab
-          </button>
-        </div>
-      )}
-    </>
+          <Pin className={cn("size-4", keepOpen && "fill-current")} />
+          Keep Open
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          className={buttonClass}
+          onClick={onClickOpenTab}
+        >
+          <ExternalLink className="size-4" />
+          Open in Tab
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          aria-label="Close"
+          title="Close"
+          className={buttonClass}
+          onClick={() => setIsMenuVisible(false)}
+        >
+          <X className="size-4" />
+        </Button>
+      </ButtonGroup>
+    </div>
   )
 }
