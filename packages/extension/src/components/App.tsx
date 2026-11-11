@@ -5,7 +5,7 @@ import { toast, Toaster } from "sonner"
 import { SelectAnchor } from "./SelectAnchor"
 import { Popup } from "./Popup"
 import { LinkSelector } from "@/components/LinkSelector"
-import { OpenInTab } from "@/components/OpenInTab"
+import { PopupControls } from "@/components/PopupControls"
 import { PageActionRecorder } from "@/components/pageAction/PageActionRecorder"
 import { PageActionRunner } from "@/components/pageAction/PageActionRunner"
 import { showReviewRequestToast } from "@/components/ReviewRequestToast"
@@ -96,7 +96,7 @@ export function App({ rootElm }: Props) {
               <InvisibleItem positionElm={positionElm} />
             </zoomCompensationContext.Provider>
             <LinkSelector />
-            <OpenInTab />
+            <PopupControls />
             <PageActionRunner />
             <PageActionRecorder />
             <CommandUpdateConfirmDialog />

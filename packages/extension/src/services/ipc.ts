@@ -70,6 +70,8 @@ export enum ServiceWorkerCommand {
   execApi = "execApi",
   canOpenInTab = "canOpenInTab",
   openInTab = "openInTab",
+  getPopupKeepOpen = "getPopupKeepOpen",
+  setPopupKeepOpen = "setPopupKeepOpen",
   onHidden = "onHidden",
   toggleStar = "toggleStar",
   getTabId = "getTabId",
