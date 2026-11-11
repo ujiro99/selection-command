@@ -39,9 +39,9 @@ export function PopupControls(): JSX.Element {
   }
 
   useEffect(() => {
-    Ipc.send(ServiceWorkerCommand.canOpenInTab).then((result) => {
-      setEnableOpenInTab(result)
-    })
+    Ipc.send(ServiceWorkerCommand.canOpenInTab)
+      .then((result) => setEnableOpenInTab(result))
+      .catch((e) => console.warn("Failed to check open in tab", e))
   }, [])
 
   // The state lives in the service worker so it survives page navigation.
@@ -55,6 +55,11 @@ export function PopupControls(): JSX.Element {
       isPageUnloading = true
     }
 
+    // A page restored from the back/forward cache is alive again.
+    const onPageshow = (e: PageTransitionEvent) => {
+      if (e.persisted) isPageUnloading = false
+    }
+
     const onHidden = () => {
       setTimeout(() => {
         if (document.hidden && !isPageUnloading) {
@@ -65,10 +70,12 @@ export function PopupControls(): JSX.Element {
 
     if (enableOpenInTab) {
       window.addEventListener("pagehide", onPagehide)
+      window.addEventListener("pageshow", onPageshow)
       document.addEventListener("visibilitychange", onHidden)
     }
     return () => {
       window.removeEventListener("pagehide", onPagehide)
+      window.removeEventListener("pageshow", onPageshow)
       document.removeEventListener("visibilitychange", onHidden)
     }
   }, [enableOpenInTab])
@@ -87,6 +94,8 @@ export function PopupControls(): JSX.Element {
           type="button"
           variant="outline"
           aria-pressed={keepOpen}
+          aria-label="Keep Open"
+          title="Keep Open"
           disabled={isKeepOpenBusy}
           className={cn(buttonClass, keepOpen && "text-foreground")}
           onClick={onClickKeepOpen}

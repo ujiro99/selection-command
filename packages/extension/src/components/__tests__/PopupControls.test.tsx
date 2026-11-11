@@ -15,7 +15,7 @@ const mockIpc = (responses: IpcResponses) =>
 // The container is hidden until the CSS applies, so it has no accessible name
 // in tests and the button is looked up by its label instead.
 const getKeepOpenButton = async () =>
-  (await screen.findByText("Keep Open")).closest("button") as HTMLButtonElement
+  (await screen.findByTitle("Keep Open")) as HTMLButtonElement
 
 describe("PopupControls", () => {
   beforeEach(() => {

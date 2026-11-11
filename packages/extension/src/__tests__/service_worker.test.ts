@@ -1544,6 +1544,9 @@ describe("Keep Open", () => {
     beforeEach(() => {
       vi.mocked(chrome.tabs.create).mockResolvedValue({} as any)
       ;(chrome.windows as any).getAll = vi.fn().mockResolvedValue([])
+      ;(chrome.windows as any).getLastFocused = vi
+        .fn()
+        .mockRejectedValue(new Error("no window"))
       ;(chrome.windows as any).create = vi.fn().mockResolvedValue({})
     })
 
@@ -1562,26 +1565,50 @@ describe("Keep Open", () => {
       expect(response).toHaveBeenCalledWith(true)
     })
 
-    it("KO-10: should fall back to the focused normal window when the source is gone", async () => {
+    it("KO-10: should fall back to the last focused normal window when the source is gone", async () => {
       findWindow.mockResolvedValue(win(100, 1, true))
       windowExists.mockResolvedValue({ exists: false })
       ;(chrome.windows as any).getAll = vi
         .fn()
         .mockResolvedValue([
           normalWindow(2),
-          normalWindow(3, true, true),
-          normalWindow(4, true),
+          normalWindow(3, false, true),
+          normalWindow(4),
         ])
+      ;(chrome.windows as any).getLastFocused = vi
+        .fn()
+        .mockResolvedValue(normalWindow(4))
 
       await sendOpenInTab()
 
       expect(chrome.windows.getAll).toHaveBeenCalledWith({
         windowTypes: ["normal"],
       })
-      // Window 3 is focused but incognito, unlike the popup.
+      expect(chrome.windows.getLastFocused).toHaveBeenCalledWith({
+        windowTypes: ["normal"],
+      })
       expect(chrome.tabs.create).toHaveBeenCalledWith({
         url: "https://example.com/",
         windowId: 4,
+      })
+    })
+
+    it("KO-10b: should skip a last focused window of another incognito state", async () => {
+      findWindow.mockResolvedValue(win(100, 1, true))
+      windowExists.mockResolvedValue({ exists: false })
+      ;(chrome.windows as any).getAll = vi
+        .fn()
+        .mockResolvedValue([normalWindow(2), normalWindow(3, false, true)])
+      // Window 3 was focused last but is incognito, unlike the popup.
+      ;(chrome.windows as any).getLastFocused = vi
+        .fn()
+        .mockResolvedValue(normalWindow(3, false, true))
+
+      await sendOpenInTab()
+
+      expect(chrome.tabs.create).toHaveBeenCalledWith({
+        url: "https://example.com/",
+        windowId: 2,
       })
     })
 
