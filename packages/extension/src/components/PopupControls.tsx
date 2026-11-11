@@ -92,7 +92,7 @@ export function PopupControls(): JSX.Element {
           onClick={onClickKeepOpen}
         >
           <Pin className={cn("size-4", keepOpen && "fill-current")} />
-          Keep Open
+          Keep
         </Button>
         <Button
           type="button"
