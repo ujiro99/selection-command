@@ -1,37 +1,26 @@
 import { Storage } from "@/services/storage"
+import type { BaseBackupManager } from "@/services/storage/backupManager"
 
-// Daily backup check function
-export const checkAndPerformDailyBackup = async () => {
+// Back up the commands if the manager's schedule says it is due.
+// Never throws, so callers may run it without awaiting.
+const checkAndPerformBackup = async (
+  manager: BaseBackupManager,
+  label: string,
+) => {
   try {
-    const dailyBackupManager = Storage.dailyBackupManager
-    if (await dailyBackupManager.shouldBackup()) {
-      await dailyBackupManager.performBackup()
+    if (await manager.shouldBackup()) {
+      await manager.performBackup()
     }
   } catch (error) {
-    console.error("Failed to perform daily backup check:", error)
+    console.error(`Failed to perform ${label} backup check:`, error)
   }
 }
 
-// Weekly backup check function
-export const checkAndPerformWeeklyBackup = async () => {
-  try {
-    const weeklyBackupManager = Storage.weeklyBackupManager
-    if (await weeklyBackupManager.shouldBackup()) {
-      await weeklyBackupManager.performBackup()
-    }
-  } catch (error) {
-    console.error("Failed to perform weekly backup check:", error)
-  }
-}
+export const checkAndPerformDailyBackup = () =>
+  checkAndPerformBackup(Storage.dailyBackupManager, "daily")
 
-// Legacy backup check function
-export const checkAndPerformLegacyBackup = async () => {
-  try {
-    const legacyBackupManager = Storage.legacyBackupManager
-    if (await legacyBackupManager.shouldBackup()) {
-      await legacyBackupManager.performBackup()
-    }
-  } catch (error) {
-    console.error("Failed to perform legacy backup check:", error)
-  }
-}
+export const checkAndPerformWeeklyBackup = () =>
+  checkAndPerformBackup(Storage.weeklyBackupManager, "weekly")
+
+export const checkAndPerformLegacyBackup = () =>
+  checkAndPerformBackup(Storage.legacyBackupManager, "legacy")

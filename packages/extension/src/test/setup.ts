@@ -342,6 +342,9 @@ global.chrome = {
     update: vi.fn(),
     remove: vi.fn(),
     removeAll: vi.fn(),
+    onClicked: {
+      addListener: vi.fn(),
+    },
   },
   i18n: {
     getMessage: vi.fn((key: string) => key),

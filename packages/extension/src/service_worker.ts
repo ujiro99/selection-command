@@ -538,17 +538,14 @@ if (isDebug) {
   })
 }
 
-// Initialize commandIdObj and register listener at top-level
-// to ensure they are available when service worker restarts
-;(async () => {
-  try {
-    await ContextMenu.syncCommandIdObj()
-    chrome.contextMenus.onClicked.addListener(ContextMenu.onClicked)
-  } catch (error) {
-    // Ignore errors during initialization (e.g., in test environment)
-    console.debug("Failed to initialize context menu listener:", error)
-  }
-})()
+// Register the click listener synchronously, so a click that wakes the service
+// worker is not lost. The handler waits for commandIdObj to be restored first.
+// syncCommandIdObj catches its own errors, so this promise never rejects.
+const commandIdObjReady = ContextMenu.syncCommandIdObj()
+chrome.contextMenus.onClicked.addListener(async (info, tab) => {
+  await commandIdObjReady
+  await ContextMenu.onClicked(info, tab)
+})
 
 Settings.addChangedListener(() => ContextMenu.init())
 

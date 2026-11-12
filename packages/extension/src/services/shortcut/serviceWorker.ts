@@ -1,5 +1,5 @@
 import { SHORTCUT_NO_SELECTION_BEHAVIOR, SCREEN } from "@/const"
-import { executeActionProps } from "@/services/contextMenus"
+import type { executeActionProps } from "@/services/contextMenus"
 import { Ipc, TabCommand } from "@/services/ipc"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { getCurrentTab } from "@/services/chrome"

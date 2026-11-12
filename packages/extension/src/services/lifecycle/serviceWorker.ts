@@ -26,6 +26,18 @@ const getWindowCount = async (): Promise<number> => {
   }
 }
 
+// Let content scripts read and write chrome.storage.session.
+// Never throws, so callers may run it without awaiting.
+const allowSessionStorageInContentScripts = async () => {
+  try {
+    await chrome.storage.session.setAccessLevel({
+      accessLevel: "TRUSTED_AND_UNTRUSTED_CONTEXTS",
+    })
+  } catch (error) {
+    console.error("Failed to set the session storage access level:", error)
+  }
+}
+
 // Open the onboarding page and report the result, so installs that never
 // send onboarding_start can be told apart from ones whose tab was never
 // created (#479).
@@ -107,9 +119,7 @@ const onInstalled = async (details: chrome.runtime.InstalledDetails) => {
     await ContextMenu.init()
 
     stage = "post_init"
-    chrome.storage.session.setAccessLevel({
-      accessLevel: "TRUSTED_AND_UNTRUSTED_CONTEXTS",
-    })
+    allowSessionStorageInContentScripts()
 
     if (
       details.reason === chrome.runtime.OnInstalledReason.INSTALL ||
@@ -131,11 +141,12 @@ const onInstalled = async (details: chrome.runtime.InstalledDetails) => {
       }
     }
 
-    // Check for daily backup on startup
-    await checkAndPerformDailyBackup()
-
-    // Check for weekly backup on startup
-    await checkAndPerformWeeklyBackup()
+    // Check for daily and weekly backups. They write separate keys, so they
+    // can run in parallel.
+    await Promise.all([
+      checkAndPerformDailyBackup(),
+      checkAndPerformWeeklyBackup(),
+    ])
 
     if (details.reason === chrome.runtime.OnInstalledReason.UPDATE) {
       await syncAiPromptFaviconsSafely()
@@ -154,6 +165,10 @@ const onInstalled = async (details: chrome.runtime.InstalledDetails) => {
 
 const onStartup = () => {
   console.debug("Service worker started")
+
+  // Re-apply on every browser startup, as the access level of the session
+  // storage may not outlive the browser session.
+  allowSessionStorageInContentScripts()
 
   // Check for daily backup on browser startup
   checkAndPerformDailyBackup()
