@@ -14,42 +14,29 @@ describe("useOnboardingState", () => {
     sendOnboardingEvent.mockClear()
   })
 
-  it("opens on the intro step for variant A", () => {
-    const { result } = renderHook(() => useOnboardingState("A"))
-
-    expect(result.current.step).toBe(OnboardingStep.INTRO)
-    expect(result.current.phase).toBe(StepPhase.EXPLAIN)
-  })
-
-  it("skips the intro and opens on the welcome overlay for variant C", () => {
+  it("opens on the welcome overlay for variant C", () => {
     const { result } = renderHook(() => useOnboardingState("C"))
 
     expect(result.current.step).toBe(OnboardingStep.SEARCH)
     expect(result.current.phase).toBe(StepPhase.WELCOME)
   })
 
-  it("opens on the welcome overlay for variant D too", () => {
-    const { result } = renderHook(() => useOnboardingState("D"))
+  it("opens on the welcome overlay for variant E too", () => {
+    const { result } = renderHook(() => useOnboardingState("E"))
 
     expect(result.current.step).toBe(OnboardingStep.SEARCH)
     expect(result.current.phase).toBe(StepPhase.WELCOME)
   })
 
-  it("keeps the rail and the vignette for variant C", () => {
+  it("uses the vignette background for variant C", () => {
     const { result } = renderHook(() => useOnboardingState("C"))
 
-    expect(result.current.ui).toMatchObject({
-      showRail: true,
-      background: "vignette",
-    })
+    expect(result.current.ui.background).toBe("vignette")
   })
 
-  it("drops the rail and uses the glow background for variant D", () => {
-    const { result } = renderHook(() => useOnboardingState("D"))
+  it("uses the glow background for variant E", () => {
+    const { result } = renderHook(() => useOnboardingState("E"))
 
-    expect(result.current.ui).toMatchObject({
-      showRail: false,
-      background: "glow",
-    })
+    expect(result.current.ui.background).toBe("glow")
   })
 })
