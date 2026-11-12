@@ -172,6 +172,7 @@ export function StepLinkPreview({ onboarding }: Props) {
             resultLabel={t("onboarding_railResultPreview")}
             activeBeat={isValueShown ? -1 : railBeat(phase)}
             size="lg"
+            background={onboarding.ui.background}
           />
         </OnboardingFadeIn>
       </div>

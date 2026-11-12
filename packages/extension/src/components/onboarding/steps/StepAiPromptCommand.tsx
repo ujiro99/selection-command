@@ -191,6 +191,7 @@ export function StepAiPromptCommand({ onboarding }: Props) {
             resultLabel={t("onboarding_railResultAi")}
             activeBeat={railBeat(phase)}
             size="lg"
+            background={onboarding.ui.background}
           />
         </OnboardingFadeIn>
       </div>

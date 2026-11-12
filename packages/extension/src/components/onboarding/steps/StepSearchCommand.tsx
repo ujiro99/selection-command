@@ -237,6 +237,7 @@ export function StepSearchCommand({ onboarding }: Props) {
             resultLabel={t("onboarding_railResultSearch")}
             activeBeat={isValueShown ? -1 : railBeat(phase)}
             size="lg"
+            background={onboarding.ui.background}
           />
         </OnboardingFadeIn>
       </div>
