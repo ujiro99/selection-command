@@ -22,7 +22,7 @@ type Props = {
   // The page background behind the rail. The flat slate fill of upcoming
   // beats blends into the "glow" background, so they get a white fill and
   // an outline there instead.
-  background?: OnboardingBackground
+  background: OnboardingBackground
 }
 
 type BeatState = "done" | "current" | "todo"
@@ -38,10 +38,13 @@ export function OnboardingRail({
   resultLabel,
   activeBeat,
   size = "sm",
-  background = "vignette",
+  background,
 }: Props) {
   const beats = [selectLabel, commandLabel, resultLabel]
   const lg = size === "lg"
+  // slate-300 fades into the "glow" background, so go a shade darker there.
+  const upcomingChevronClass =
+    background === "glow" ? "text-slate-400" : "text-slate-300"
 
   return (
     <div
@@ -68,7 +71,7 @@ export function OnboardingRail({
                   lg ? "size-[18px]" : "size-3.5",
                   chevronWalked
                     ? "text-sky-950 dark:text-sky-200"
-                    : "text-slate-300",
+                    : upcomingChevronClass,
                   lg && "animate-onboarding-rise motion-reduce:animate-none",
                 )}
                 style={lg ? { animationDelay: `${delayMs}ms` } : undefined}
