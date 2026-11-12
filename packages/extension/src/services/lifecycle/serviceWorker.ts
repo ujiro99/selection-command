@@ -38,6 +38,15 @@ const allowSessionStorageInContentScripts = async () => {
   }
 }
 
+// Follow the favicon changes of the AI services
+const syncAiPromptFaviconsSafely = async () => {
+  try {
+    await syncAiPromptFavicons()
+  } catch (error) {
+    console.error("Failed to sync the AI prompt favicons:", error)
+  }
+}
+
 // Open the onboarding page and report the result, so installs that never
 // send onboarding_start can be told apart from ones whose tab was never
 // created (#479).
@@ -119,7 +128,7 @@ const onInstalled = async (details: chrome.runtime.InstalledDetails) => {
     await ContextMenu.init()
 
     stage = "post_init"
-    allowSessionStorageInContentScripts()
+    void allowSessionStorageInContentScripts()
 
     if (
       details.reason === chrome.runtime.OnInstalledReason.INSTALL ||
@@ -168,27 +177,18 @@ const onStartup = () => {
 
   // Re-apply on every browser startup, as the access level of the session
   // storage may not outlive the browser session.
-  allowSessionStorageInContentScripts()
+  void allowSessionStorageInContentScripts()
 
   // Check for daily backup on browser startup
-  checkAndPerformDailyBackup()
+  void checkAndPerformDailyBackup()
 
   // Check for weekly backup on browser startup
-  checkAndPerformWeeklyBackup()
+  void checkAndPerformWeeklyBackup()
 
   // Check for legacy backup on startup
-  checkAndPerformLegacyBackup()
+  void checkAndPerformLegacyBackup()
 
-  syncAiPromptFaviconsSafely()
-}
-
-// Follow the favicon changes of the AI services
-const syncAiPromptFaviconsSafely = async () => {
-  try {
-    await syncAiPromptFavicons()
-  } catch (error) {
-    console.error("Failed to sync the AI prompt favicons:", error)
-  }
+  void syncAiPromptFaviconsSafely()
 }
 
 /**

@@ -9,6 +9,11 @@ import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
 import { getCenteredOffsetInCurrentWindow } from "@/services/screen"
 import { resolvePopupSize } from "@/services/option/defaultSettings"
 
+/**
+ * Run the command mapped to a keyboard shortcut.
+ * Without a text selection, follows the shortcut's noSelectionBehavior.
+ * Errors are logged and never thrown.
+ */
 async function handleShortcutCommand(commandName: string) {
   try {
     // Get settings
