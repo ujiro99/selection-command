@@ -1,13 +1,4 @@
-import {
-  isDebug,
-  OPTION_PAGE_PATH,
-  ONBOARDING_PAGE_PATH,
-  SHORTCUT_NO_SELECTION_BEHAVIOR,
-  NEW_HUB_URL,
-  SCREEN,
-  VERSION,
-} from "@/const"
-import { executeActionProps } from "@/services/contextMenus"
+import { isDebug, OPTION_PAGE_PATH } from "@/const"
 import {
   Ipc,
   ServiceWorkerCommand,
@@ -16,7 +7,6 @@ import {
 } from "@/services/ipc"
 import type { IpcCallback, ZoomChangedProps } from "@/services/ipc"
 import { Settings } from "@/services/settings/settings"
-import { syncAiPromptFavicons } from "@/services/aiPromptFaviconSync"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { CACHE_SECTIONS } from "@/services/settings/settingsCache"
 import * as PageActionServiceWorker from "@/services/pageAction/serviceWorker"
@@ -30,31 +20,23 @@ import {
 } from "@/services/chrome"
 import { WindowStackManager } from "@/services/windowStackManager"
 import { PopupAutoClose } from "@/services/popupAutoClose"
-import { isEmpty } from "@/lib/utils"
 import { findMatchingPageRule } from "@/lib/url"
-import { execute } from "@/action/serviceWorker"
 import * as ActionHelper from "@/action/helper"
-import type { WindowType } from "@/types"
-import { Storage } from "@/services/storage"
-import {
-  ANALYTICS_EVENTS,
-  sendEvent,
-  getOrCreateClientId,
-  getBrowserEnvironmentParams,
-  toErrorMessageParam,
-} from "@/services/analytics"
-import { getInstallEnvironmentParams } from "@/services/installEnvironment"
 import * as HubServiceWorker from "@/services/hub/serviceWorker"
-import { ensureOnboardingAssignment } from "@/services/experiments"
 import * as IconColorServiceWorker from "@/services/iconColor/serviceWorker"
 import { getSidePanelEvent } from "@/services/sidePanelSupport"
-import { getCenteredOffsetInCurrentWindow } from "@/services/screen"
-import { resolvePopupSize } from "@/services/option/defaultSettings"
+import { registerLifecycleListeners } from "@/services/lifecycle/serviceWorker"
+import { registerShortcutListeners } from "@/services/shortcut/serviceWorker"
 
 import { importIf } from "@import-if"
 importIf("production", "./lib/sentry/initialize")
 
 ServiceWorkerData.init()
+
+// Must run synchronously: an event that wakes the service worker is lost when
+// its listener is registered after an await.
+registerLifecycleListeners()
+registerShortcutListeners()
 
 type Sender = chrome.runtime.MessageSender
 
@@ -96,7 +78,13 @@ const getActiveTabId = (
   _sender: Sender,
   response: (res: unknown) => void,
 ) => {
-  getCurrentTab().then((tab) => response(tab?.id))
+  getCurrentTab()
+    .then((tab) => response(tab?.id))
+    .catch((e) => {
+      console.error("Failed to get active tab", e)
+      // Same as when no active tab exists.
+      response(undefined)
+    })
   return true
 }
 
@@ -154,6 +142,32 @@ const onDisconnect = async function (port: chrome.runtime.Port) {
   }
 }
 chrome.runtime.onConnect.addListener(onConnect)
+
+/**
+ * Find a normal window to open a popup's page in as a tab.
+ * Prefers the window the popup was opened from. A popup can outlive it (e.g.
+ * with Keep Open) or be opened from another popup, so falls back to the
+ * last focused normal window, then any normal window. Returns undefined when no
+ * normal window exists.
+ */
+const findTabTargetWindowId = async (
+  srcWindowId: number | undefined,
+  incognito: boolean,
+): Promise<number | undefined> => {
+  if (srcWindowId != null) {
+    const src = await windowExists(srcWindowId)
+    if (src.exists && src.window.type === "normal") return srcWindowId
+  }
+  const windows = (
+    await chrome.windows.getAll({ windowTypes: ["normal"] })
+  ).filter((w) => w.incognito === incognito)
+  // The popup itself has the focus when its button is clicked, so no normal
+  // window is focused here. Use the last focused normal window instead.
+  const lastFocused = await chrome.windows
+    .getLastFocused({ windowTypes: ["normal"] })
+    .catch(() => undefined)
+  return (windows.find((w) => w.id === lastFocused?.id) ?? windows[0])?.id
+}
 
 const commandFuncs = {
   [ServiceWorkerCommand.openPopup]: ActionHelper.openPopup,
@@ -221,18 +235,17 @@ const commandFuncs = {
     sender: Sender,
     response: (res: unknown) => void,
   ) => {
-    WindowStackManager.getStack().then((stack) => {
-      for (const layer of stack) {
-        for (const window of layer) {
-          if (window.id === sender.tab?.windowId) {
-            // found!
-            response(true)
-            return
-          }
-        }
-      }
+    const windowId = sender.tab?.windowId
+    if (windowId == null) {
       response(false)
-    })
+      return false
+    }
+    WindowStackManager.findWindow(windowId)
+      .then((w) => response(w != null))
+      .catch((e) => {
+        console.error("Failed to find window", e)
+        response(false)
+      })
     return true
   },
 
@@ -242,50 +255,81 @@ const commandFuncs = {
     response: (res: unknown) => void,
   ) => {
     const handleOpenInTab = async () => {
-      let w: WindowType | undefined
-      const targetUrl = sender.tab?.url ?? sender.url
-
-      const stack = await WindowStackManager.getStack()
-      for (const layer of stack) {
-        for (const window of layer) {
-          if (window.id === sender.tab?.windowId) {
-            w = window
-            break
-          }
-        }
-      }
-      if (!w || w.srcWindowId == null) {
-        console.warn("window not found", sender.tab?.windowId)
-        chrome.tabs.create({ url: targetUrl })
-        await closeWindow(sender.tab?.windowId as number, "openInTab")
-        await WindowStackManager.removeWindow(sender.tab?.windowId as number)
-        response(true)
+      const windowId = sender.tab?.windowId
+      const url = sender.tab?.url ?? sender.url
+      if (windowId == null || !url) {
+        response(false)
         return
       }
 
-      let targetId: number | undefined
-      const { exists } = await windowExists(w.srcWindowId)
-      if (exists) {
-        targetId = w.srcWindowId
-      } else {
-        const current = await chrome.windows.getCurrent()
-        targetId = current.id
-        console.warn(
-          `source window(${w.srcWindowId}) not found, use current(${current.id}) instead.`,
-        )
+      const w = await WindowStackManager.findWindow(windowId)
+      const incognito = sender.tab?.incognito ?? false
+      const targetId = await findTabTargetWindowId(w?.srcWindowId, incognito)
+      try {
+        if (targetId != null) {
+          await chrome.tabs.create({ url, windowId: targetId })
+        } else {
+          await chrome.windows.create({ url, incognito })
+        }
+      } catch (e) {
+        // Keep the popup open so the page isn't lost.
+        console.error("Failed to open in tab", e)
+        response(false)
+        return
       }
 
-      if (targetId) {
-        chrome.tabs.create({ url: targetUrl, windowId: targetId })
-        await closeWindow(sender.tab?.windowId as number, "openInTab")
-        await WindowStackManager.removeWindow(sender.tab?.windowId as number)
-        response(true)
-      } else {
-        response(false)
-      }
+      await closeWindow(windowId, "openInTab")
+      await WindowStackManager.removeWindow(windowId)
+      response(true)
     }
 
-    handleOpenInTab()
+    handleOpenInTab().catch((e) => {
+      console.error("Failed to open in tab", e)
+      response(false)
+    })
+    return true
+  },
+
+  [ServiceWorkerCommand.getPopupKeepOpen]: (
+    _: unknown,
+    sender: Sender,
+    response: (res: unknown) => void,
+  ) => {
+    const windowId = sender.tab?.windowId
+    if (windowId == null) {
+      response(false)
+      return false
+    }
+    WindowStackManager.isKeepOpen(windowId)
+      .then(response)
+      .catch((e) => {
+        console.error("Failed to get keep open", e)
+        response(false)
+      })
+    return true
+  },
+
+  [ServiceWorkerCommand.setPopupKeepOpen]: (
+    param: { keepOpen: boolean },
+    sender: Sender,
+    response: (res: unknown) => void,
+  ) => {
+    const windowId = sender.tab?.windowId
+    if (windowId == null) {
+      response(false)
+      return false
+    }
+    const handleSetKeepOpen = async () => {
+      try {
+        await WindowStackManager.setKeepOpen(windowId, param.keepOpen)
+        response(await WindowStackManager.isKeepOpen(windowId))
+      } catch (e) {
+        console.error("Failed to set keep open", e)
+        // The update failed, so the window still has the previous state.
+        response(!param.keepOpen)
+      }
+    }
+    handleSetKeepOpen()
     return true
   },
 
@@ -312,21 +356,27 @@ const commandFuncs = {
       }
 
       const layer = stack.find((s) => s.find((w) => w.id === windowId))
-      if (!layer || layer.length > 1) {
-        // Do nothing when the window isn't in the layer or multiple links are opened.
+      // Keep open windows don't count as multiple links opened at once.
+      const closableWindows = layer?.filter((w) => !w.keepOpen) ?? []
+      const window = closableWindows.find((w) => w.id === windowId)
+      if (!window || closableWindows.length > 1) {
+        // Do nothing when the window isn't in the layer, is marked as keep open,
+        // or multiple links are opened. Returning before scheduleClose also keeps
+        // a pending close of other windows from being cancelled.
         response(true)
         return
       }
 
       // Schedule popup window to close with configured delay
-      const window = layer.find((w) => w.id === windowId)
-      if (window) {
-        await PopupAutoClose.scheduleClose([window], "onHidden")
-      }
+      await PopupAutoClose.scheduleClose([window], "onHidden")
       response(false)
     }
 
-    handleOnHidden()
+    handleOnHidden().catch((e) => {
+      console.error("Failed to handle onHidden", e)
+      // true means no close was scheduled.
+      response(true)
+    })
     return true
   },
 
@@ -440,6 +490,11 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
 chrome.windows.onRemoved.addListener(async (windowId: number) => {
   // Wait for the persisted state so we never write back the empty default.
   await ServiceWorkerData.ready()
+
+  // Drop windows closed by the user, so stale entries don't affect
+  // auto-close decisions. Does nothing for windows not in the stack.
+  await WindowStackManager.removeWindow(windowId)
+
   const normalWindows = ServiceWorkerData.get().normalWindows ?? []
   if (!normalWindows.some((w) => w.id === windowId)) return
 
@@ -493,217 +548,14 @@ if (isDebug) {
   })
 }
 
-// Number of open browser windows, or -1 if it cannot be determined. A tab
-// cannot be created while no window is open (#479).
-const getWindowCount = async (): Promise<number> => {
-  try {
-    return (await chrome.windows.getAll()).length
-  } catch {
-    return -1
-  }
-}
-
-// Open the onboarding page and report the result, so installs that never
-// send onboarding_start can be told apart from ones whose tab was never
-// created (#479).
-const openOnboardingTab = async () => {
-  try {
-    await chrome.tabs.create({ url: ONBOARDING_PAGE_PATH })
-    sendEvent(
-      ANALYTICS_EVENTS.ONBOARDING_TAB_OPENED,
-      { success: "true" },
-      SCREEN.SERVICE_WORKER,
-    )
-  } catch (error) {
-    console.error("Failed to open onboarding tab:", error)
-    sendEvent(
-      ANALYTICS_EVENTS.ONBOARDING_TAB_OPENED,
-      { success: "false", error_message: toErrorMessageParam(error) },
-      SCREEN.SERVICE_WORKER,
-    )
-  }
-}
-
-chrome.runtime.onInstalled.addListener(async (details) => {
-  const isInstall = details.reason === chrome.runtime.OnInstalledReason.INSTALL
-  // Last step reached, reported as install_init_error if the initialization
-  // throws on install. Steps that catch their own errors (client_id,
-  // onboarding assignment and tab, uninstall URL, backups) never surface
-  // here, so everything after the context menu is reported as "post_init".
-  let stage = "settings_reset"
-  try {
-    if (isInstall) {
-      // Settle the client_id before anything can report an event. Otherwise
-      // this worker and the onboarding page may each generate their own id
-      // and split one install into two GA4 clients (#479).
-      let clientIdReady = true
-      try {
-        await getOrCreateClientId()
-      } catch (error) {
-        clientIdReady = false
-        console.error("Failed to create client_id:", error)
-      }
-
-      // Counted alongside the settings reset so it does not delay the tab.
-      const windowCount = getWindowCount()
-      // Signals to tell automated installs apart (#550). Never rejects.
-      const installEnvironment = getInstallEnvironmentParams()
-
-      // Initialize default settings on install
-      await Settings.reset()
-      sendEvent(
-        ANALYTICS_EVENTS.INSTALLED,
-        {
-          ...getBrowserEnvironmentParams(),
-          // Overrides is_webdriver, which the worker itself cannot read.
-          ...(await installEnvironment),
-          window_count: await windowCount,
-          // "false" means the onboarding page may report under another id.
-          client_id_ready: String(clientIdReady),
-        },
-        SCREEN.SERVICE_WORKER,
-      )
-      // Assign the onboarding A/B variant before the tab is created, so the
-      // page can render its first frame from storage without fetching the
-      // remote config itself. A failure here must never block onboarding -
-      // the page assigns on its own if no assignment is stored yet.
-      try {
-        await ensureOnboardingAssignment()
-      } catch (error) {
-        console.error("Failed to assign onboarding variant:", error)
-      }
-      await openOnboardingTab()
-    }
-
-    if (details.reason === chrome.runtime.OnInstalledReason.UPDATE) {
-      // Wrapped so that a failure here does not skip the steps below.
-      try {
-        await Settings.saveForExistingInstall()
-      } catch (error) {
-        console.error("Failed to save settings of the existing install:", error)
-      }
-    }
-
-    stage = "context_menu"
-    await ContextMenu.init()
-
-    stage = "post_init"
-    chrome.storage.session.setAccessLevel({
-      accessLevel: "TRUSTED_AND_UNTRUSTED_CONTEXTS",
-    })
-
-    if (
-      details.reason === chrome.runtime.OnInstalledReason.INSTALL ||
-      details.reason === chrome.runtime.OnInstalledReason.UPDATE
-    ) {
-      // Set uninstall survey URL with client_id for analysis. The version
-      // rides along for the `uninstall` event the Hub sends on our behalf
-      // (selection-command-hub#275).
-      // Wrapped in its own try/catch so a failure here (e.g. storage quota
-      // error) does not skip the backup checks below.
-      try {
-        const clientId = await getOrCreateClientId()
-        chrome.runtime.setUninstallURL(
-          `${NEW_HUB_URL}/uninstall?client_id=${clientId}&v=${VERSION}`,
-        )
-      } catch (error) {
-        console.error("Failed to set uninstall URL with client_id:", error)
-        chrome.runtime.setUninstallURL(`${NEW_HUB_URL}/uninstall`)
-      }
-    }
-
-    // Check for daily backup on startup
-    await checkAndPerformDailyBackup()
-
-    // Check for weekly backup on startup
-    await checkAndPerformWeeklyBackup()
-
-    if (details.reason === chrome.runtime.OnInstalledReason.UPDATE) {
-      await syncAiPromptFaviconsSafely()
-    }
-  } catch (error) {
-    console.error("Error during onInstalled initialization:", error)
-    if (isInstall) {
-      sendEvent(
-        ANALYTICS_EVENTS.INSTALL_INIT_ERROR,
-        { stage, error_message: toErrorMessageParam(error) },
-        SCREEN.SERVICE_WORKER,
-      )
-    }
-  }
+// Register the click listener synchronously, so a click that wakes the service
+// worker is not lost. The handler waits for commandIdObj to be restored first.
+// syncCommandIdObj catches its own errors, so this promise never rejects.
+const commandIdObjReady = ContextMenu.syncCommandIdObj()
+chrome.contextMenus.onClicked.addListener(async (info, tab) => {
+  await commandIdObjReady
+  await ContextMenu.onClicked(info, tab)
 })
-
-chrome.runtime.onStartup.addListener(() => {
-  console.debug("Service worker started")
-
-  // Check for daily backup on browser startup
-  checkAndPerformDailyBackup()
-
-  // Check for weekly backup on browser startup
-  checkAndPerformWeeklyBackup()
-
-  // Check for legacy backup on startup
-  checkAndPerformLegacyBackup()
-
-  syncAiPromptFaviconsSafely()
-})
-
-// Follow the favicon changes of the AI services
-const syncAiPromptFaviconsSafely = async () => {
-  try {
-    await syncAiPromptFavicons()
-  } catch (error) {
-    console.error("Failed to sync the AI prompt favicons:", error)
-  }
-}
-
-// Daily backup check function
-const checkAndPerformDailyBackup = async () => {
-  try {
-    const dailyBackupManager = Storage.dailyBackupManager
-    if (await dailyBackupManager.shouldBackup()) {
-      await dailyBackupManager.performBackup()
-    }
-  } catch (error) {
-    console.error("Failed to perform daily backup check:", error)
-  }
-}
-
-// Weekly backup check function
-const checkAndPerformWeeklyBackup = async () => {
-  try {
-    const weeklyBackupManager = Storage.weeklyBackupManager
-    if (await weeklyBackupManager.shouldBackup()) {
-      await weeklyBackupManager.performBackup()
-    }
-  } catch (error) {
-    console.error("Failed to perform weekly backup check:", error)
-  }
-}
-
-// Legacy backup check function
-const checkAndPerformLegacyBackup = async () => {
-  try {
-    const legacyBackupManager = Storage.legacyBackupManager
-    if (await legacyBackupManager.shouldBackup()) {
-      await legacyBackupManager.performBackup()
-    }
-  } catch (error) {
-    console.error("Failed to perform legacy backup check:", error)
-  }
-}
-
-// Initialize commandIdObj and register listener at top-level
-// to ensure they are available when service worker restarts
-;(async () => {
-  try {
-    await ContextMenu.syncCommandIdObj()
-    chrome.contextMenus.onClicked.addListener(ContextMenu.onClicked)
-  } catch (error) {
-    // Ignore errors during initialization (e.g., in test environment)
-    console.debug("Failed to initialize context menu listener:", error)
-  }
-})()
 
 Settings.addChangedListener(() => ContextMenu.init())
 
@@ -713,119 +565,6 @@ Settings.addChangedListener(() => ContextMenu.init())
 //     console.debug(details)
 //   },
 // )
-
-// Add command processing
-async function handleShortcutCommand(commandName: string) {
-  try {
-    // Get settings
-    const settings = await enhancedSettings.get()
-    const shortcut = settings.shortcuts?.shortcuts.find(
-      (shortcut) => shortcut.id === commandName,
-    )
-
-    if (!shortcut) {
-      console.warn(`No shortcut mapped for command: ${commandName}`)
-      return
-    }
-
-    const command = settings.commands.find((c) => c.id === shortcut.commandId)
-    if (!command) {
-      console.warn(`Command not found: ${shortcut.commandId}`)
-      return
-    }
-
-    const tab = await getCurrentTab()
-    const enableSendTab =
-      tab?.id &&
-      !tab.url?.startsWith("chrome") &&
-      !tab.url?.includes("chromewebstore.google.com")
-
-    // A global shortcut can be pressed while another app has focus. Then the
-    // selection left in the page is ignored, as the user may have copied
-    // other text in that app. After returning to Chrome, the selection shown
-    // in the page is used. getLastFocused fails when no window is open.
-    const lastFocusedWindow = await chrome.windows
-      .getLastFocused()
-      .catch(() => undefined)
-
-    // Ask the active tab for its latest selection. Tabs without the content
-    // script (e.g. chrome://) are treated as having no selection.
-    let selectionText = ""
-    if (enableSendTab && lastFocusedWindow?.focused) {
-      const selection = await Ipc.sendTab<unknown, string | Error | undefined>(
-        tab.id ?? 0,
-        TabCommand.getSelection,
-      )
-      if (typeof selection === "string") selectionText = selection
-    }
-
-    // This is the only place to decide whether to use the clipboard text as
-    // the selected text. Actions trust this decision and don't re-check.
-    let selectionFromClipboard = false
-    if (isEmpty(selectionText)) {
-      if (
-        shortcut.noSelectionBehavior ===
-        SHORTCUT_NO_SELECTION_BEHAVIOR.DO_NOTHING
-      ) {
-        return
-      } else if (
-        shortcut.noSelectionBehavior ===
-        SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD
-      ) {
-        selectionFromClipboard = true
-      }
-    }
-
-    let ret: unknown
-    if (enableSendTab) {
-      // Execute command in tab
-      ret = await Ipc.sendTab<executeActionProps>(
-        tab?.id ?? 0,
-        TabCommand.executeAction,
-        {
-          command,
-          selectionText,
-          selectionFromClipboard,
-        },
-      )
-    }
-
-    if (!enableSendTab || ret instanceof Error) {
-      // Execute command directly in the service worker.
-      // There is no selection position here, so center the popup in the
-      // current window to keep it on the display the user is working on.
-      const position = await getCenteredOffsetInCurrentWindow(
-        resolvePopupSize(command.popupOption),
-      )
-      await execute({
-        command,
-        position,
-        selectionText,
-        target: null,
-        selectionFromClipboard,
-        pageUrl: tab?.url ?? "",
-      })
-    }
-    sendEvent(
-      ANALYTICS_EVENTS.SHORTCUT,
-      {
-        event_label: command.openMode,
-      },
-      SCREEN.SERVICE_WORKER,
-    )
-  } catch (error) {
-    console.error("Failed to execute shortcut command:", error)
-  }
-}
-
-chrome.commands.onCommand.addListener(handleShortcutCommand)
-
-// Expose only in the E2E worker for Playwright evaluation, without a message endpoint.
-if (import.meta.env.MODE === "e2e") {
-  Object.assign(globalThis, {
-    __e2eHandleShortcutCommand: handleShortcutCommand,
-  })
-}
 
 // Side panel is an optional capability (e.g. not available on Opera), so
 // each event is feature-detected individually.

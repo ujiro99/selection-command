@@ -5,7 +5,7 @@ import { toast, Toaster } from "sonner"
 import { SelectAnchor } from "./SelectAnchor"
 import { Popup } from "./Popup"
 import { LinkSelector } from "@/components/LinkSelector"
-import { OpenInTab } from "@/components/OpenInTab"
+import { PopupControls } from "@/components/PopupControls"
 import { PageActionRecorder } from "@/components/pageAction/PageActionRecorder"
 import { PageActionRunner } from "@/components/pageAction/PageActionRunner"
 import { showReviewRequestToast } from "@/components/ReviewRequestToast"
@@ -66,7 +66,14 @@ export function App({ rootElm }: Props) {
   useEffect(() => {
     const handleShowReviewRequest = (_: any, __: any, response: any) => {
       showReviewRequestToast(() => {
-        Settings.update("hasShownReviewRequest", () => true)
+        // Icons are not cached here: a content script is bound by CORS.
+        // Unused caches are still removed, which does not change anything
+        // because this update does not change any icon URL.
+        Settings.update(
+          "hasShownReviewRequest",
+          () => true,
+          true /* serviceWorker: skip caching the icons */,
+        )
       })
       response(true)
       return true
@@ -89,7 +96,7 @@ export function App({ rootElm }: Props) {
               <InvisibleItem positionElm={positionElm} />
             </zoomCompensationContext.Provider>
             <LinkSelector />
-            <OpenInTab />
+            <PopupControls />
             <PageActionRunner />
             <PageActionRecorder />
             <CommandUpdateConfirmDialog />

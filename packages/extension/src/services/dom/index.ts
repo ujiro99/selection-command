@@ -8,29 +8,6 @@ import {
 } from "@/lib/urlExtractor"
 import { APP_ID, PAGE_HTML_MAX_CHARS } from "@/const"
 
-export function toDataURL(src: string, outputFormat?: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const img = new Image()
-    img.crossOrigin = "Anonymous"
-    const id = setTimeout(() => reject(`toDataURL timeout: ${src}`), 1000)
-    img.onload = function () {
-      const canvas = document.createElement("canvas")
-      const ctx = canvas.getContext("2d")
-      canvas.height = img.naturalHeight
-      canvas.width = img.naturalWidth
-      ctx?.drawImage(img, 0, 0)
-      const dataURL = canvas.toDataURL(outputFormat)
-      resolve(dataURL)
-      clearTimeout(id)
-    }
-    img.onerror = function () {
-      clearTimeout(id)
-      reject(new Error(`Failed to load image: ${src}`))
-    }
-    img.src = src
-  })
-}
-
 export function linksInSelection(): string[] {
   const selection = document.getSelection()
   if (!selection || selection.rangeCount === 0) {
