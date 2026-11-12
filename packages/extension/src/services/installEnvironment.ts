@@ -14,7 +14,10 @@ export type InstallEnvironmentParams = {
 }
 
 const isProbeResult = (value: unknown): value is EnvironmentProbeResult =>
-  typeof value === "object" && value !== null && "webdriver" in value
+  typeof value === "object" &&
+  value !== null &&
+  (typeof (value as EnvironmentProbeResult).webdriver === "boolean" ||
+    (value as EnvironmentProbeResult).webdriver === null)
 
 /**
  * Split the user agent at fixed positions so the analysis side can join the

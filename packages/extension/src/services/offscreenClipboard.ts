@@ -1,14 +1,11 @@
 import type { ClipboardResult } from "./ipc"
 import { sleep } from "@/lib/utils"
-import { ensureOffscreenDocument } from "./offscreenDocument"
+import { ensureOffscreenDocument, toErrorMessage } from "./offscreenDocument"
 
 const MAX_ATTEMPTS = 3
 const RETRY_DELAY_MS = 50
 
 let pendingRead: Promise<unknown> = Promise.resolve()
-
-const toErrorMessage = (error: unknown): string =>
-  error instanceof Error ? error.message : String(error)
 
 const isClipboardResult = (value: unknown): value is ClipboardResult =>
   typeof value === "object" &&

@@ -1,14 +1,12 @@
 export const OFFSCREEN_DOCUMENT_PATH = "src/offscreen_clipboard.html"
 
-const toErrorMessage = (error: unknown): string =>
+export const toErrorMessage = (error: unknown): string =>
   error instanceof Error ? error.message : String(error)
 
-/**
- * Make sure the shared offscreen document exists. Only one offscreen document
- * can exist at a time, so every offscreen task goes through this one and it
- * is kept open for subsequent requests.
- */
-export async function ensureOffscreenDocument(): Promise<void> {
+// In-flight check-and-create shared by concurrent callers in this context.
+let pendingEnsure: Promise<void> | null = null
+
+async function createDocumentIfMissing(): Promise<void> {
   const contexts = await chrome.runtime.getContexts({
     contextTypes: [chrome.runtime.ContextType.OFFSCREEN_DOCUMENT],
     documentUrls: [chrome.runtime.getURL(OFFSCREEN_DOCUMENT_PATH)],
@@ -29,4 +27,20 @@ export async function ensureOffscreenDocument(): Promise<void> {
     // Another context may have created it between the check and the creation.
     if (!/single offscreen document/i.test(toErrorMessage(error))) throw error
   }
+}
+
+/**
+ * Make sure the shared offscreen document exists. Only one offscreen document
+ * can exist at a time, so every offscreen task goes through this one and it
+ * is kept open for subsequent requests.
+ *
+ * Concurrent callers (e.g. a clipboard read and the install probe) share one
+ * in-flight creation. Otherwise the losing caller would swallow the "single
+ * offscreen document" error and message the document before it has loaded.
+ */
+export function ensureOffscreenDocument(): Promise<void> {
+  pendingEnsure ??= createDocumentIfMissing().finally(() => {
+    pendingEnsure = null
+  })
+  return pendingEnsure
 }
