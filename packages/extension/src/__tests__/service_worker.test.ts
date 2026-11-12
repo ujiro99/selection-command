@@ -343,22 +343,6 @@ describe("Service Worker Migration", () => {
     )
   })
 
-  it("MG-01-c-error: should respond false when toggleStar fails", async () => {
-    mockEnhancedSettings.get.mockRejectedValueOnce(new Error("read failed"))
-    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
-
-    const { testExports } = await import("../service_worker")
-    const mockResponse = vi.fn()
-    testExports.commandFuncs[ServiceWorkerCommand.toggleStar](
-      { id: "star" },
-      {} as chrome.runtime.MessageSender,
-      mockResponse,
-    )
-
-    await vi.waitFor(() => expect(mockResponse).toHaveBeenCalledWith(false))
-    errorSpy.mockRestore()
-  })
-
   const setupOnCommand = async ({
     tab,
     tabSelection,

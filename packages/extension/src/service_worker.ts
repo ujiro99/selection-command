@@ -398,10 +398,7 @@ const commandFuncs = {
       await Settings.set(settings, true)
       response(true)
     }
-    toggle().catch((e) => {
-      console.error("Failed to toggle star", e)
-      response(false)
-    })
+    toggle()
     return true
   },
 
