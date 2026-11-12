@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import { openTab } from "../chrome"
+import { openTab, openTabs } from "../chrome"
 import { Ipc } from "../ipc"
 import { readOffscreenClipboard } from "../offscreenClipboard"
 
@@ -116,5 +116,49 @@ describe("openTab", () => {
       connection.mockRestore()
       sendTab.mockRestore()
     }
+  })
+})
+
+describe("openTabs", () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    vi.mocked(chrome.tabs.query).mockImplementation(() =>
+      Promise.resolve([sourceTab]),
+    )
+    let id = 20
+    vi.mocked(chrome.tabs.create).mockImplementation(() =>
+      Promise.resolve({ id: id++, windowId: 1 } as chrome.tabs.Tab),
+    )
+  })
+
+  it("COTS-01: 正常系: URLの順にタブを並べ、先頭のタブだけアクティブにする", async () => {
+    const result = await openTabs({
+      urls: ["https://example.com/a", "https://example.com/b"],
+      active: true,
+    })
+
+    expect(chrome.tabs.create).toHaveBeenNthCalledWith(1, {
+      url: "https://example.com/a",
+      active: true,
+      windowId: 1,
+      index: 3,
+    })
+    expect(chrome.tabs.create).toHaveBeenNthCalledWith(2, {
+      url: "https://example.com/b",
+      active: false,
+      windowId: 1,
+      index: 4,
+    })
+    expect(result).toEqual([20, 21])
+  })
+
+  it("COTS-02: 正常系: バックグラウンドでは全てのタブを非アクティブで作成する", async () => {
+    await openTabs({
+      urls: ["https://example.com/a", "https://example.com/b"],
+      active: false,
+    })
+
+    const calls = vi.mocked(chrome.tabs.create).mock.calls
+    expect(calls.map(([arg]) => arg.active)).toEqual([false, false])
   })
 })

@@ -29,13 +29,19 @@ import {
   isEmpty,
   versionDiff,
   VersionDiff,
-  isLinkCommand,
   generateId,
 } from "@/lib/utils"
-import { toDataURL } from "@/services/dom"
+import { isLinkCommand } from "@/lib/commandGuards"
+import { ensureIconsCached } from "@/services/iconCache"
 import { OptionSettings } from "@/services/option/optionSettings"
 import { LOCAL_STORAGE_KEY } from "../storage"
 import { getUILanguage } from "@/services/i18n"
+
+/**
+ * Settings.set resolves after the icons are cached, so a slow host must not
+ * hold it.
+ */
+const SAVE_ICON_TIMEOUT_MS = 3_000
 
 const callbacks = [] as (() => void)[]
 
@@ -95,29 +101,6 @@ export const Settings = {
       }
     }
 
-    if (!serviceWorker) {
-      // Convert iconUrl to DataURL for cache.
-      const noCacheUrls = urls
-        .filter((url) => !isEmpty(url))
-        .filter((url) => !isBase64(url) && caches.images[url] == null)
-      const newCaches = await Promise.all(
-        noCacheUrls.map(async (url) => {
-          let dataUrl = ""
-          try {
-            dataUrl = await toDataURL(url)
-          } catch (e) {
-            console.warn("Failed to convert to data url", url)
-            console.warn(e)
-          }
-          return [url, dataUrl]
-        }),
-      )
-      for (const [iconUrl, dataUrl] of newCaches) {
-        if (isEmpty(dataUrl)) continue
-        caches.images[iconUrl] = dataUrl
-      }
-    }
-
     // Restore a link command if not exists.
     const linkCommands = data.commands.filter(isLinkCommand)
     if (linkCommands.length === 0) {
@@ -163,6 +146,24 @@ export const Settings = {
     ps.push(Storage.set(LOCAL_STORAGE_KEY.CACHES, caches))
 
     await Promise.all(ps)
+
+    // Cache the icons after the settings are stored, so a slow icon host does
+    // not delay storing them. ensureIconsCached reads the caches again before
+    // writing, so cache updates made during the downloads are kept.
+    if (!serviceWorker) {
+      const noCacheUrls = urls.filter(
+        (url) => !isEmpty(url) && !isBase64(url) && caches.images[url] == null,
+      )
+      if (noCacheUrls.length > 0) {
+        // The settings are already stored, so a failure here (e.g. the storage
+        // quota) must not be reported as a failure to save them.
+        try {
+          await ensureIconsCached(noCacheUrls, SAVE_ICON_TIMEOUT_MS)
+        } catch (e) {
+          console.warn("Failed to cache the icons", e)
+        }
+      }
+    }
     return true
   },
 
@@ -203,6 +204,16 @@ export const Settings = {
         s.commandId === oldId ? { ...s, commandId: newId } : s,
       ),
     })
+  },
+
+  /**
+   * Installs from before the settings were saved on install may have no
+   * settings saved, and would read the defaults for new installs. Save their
+   * settings so that they keep following the browser zoom as before.
+   */
+  saveForExistingInstall: async (): Promise<void> => {
+    if (await Storage.has(STORAGE_KEY.USER)) return
+    await Settings.update("followBrowserZoom", () => true, true)
   },
 
   reset: async () => {

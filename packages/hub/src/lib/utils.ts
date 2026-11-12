@@ -1,15 +1,7 @@
 // Re-export shared utilities
-export {
-  isPageActionCommand,
-  isSearchCommand,
-  capitalize,
-  isEmpty,
-  sleep,
-} from "@shared"
+export { capitalize, isEmpty, sleep } from "@shared"
 
 export { generateUUIDFromObject } from "@shared/utils/uuid"
-
-// Type guards and common utilities are now imported from shared package
 
 let hoverTo = 0
 

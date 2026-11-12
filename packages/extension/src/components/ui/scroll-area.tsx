@@ -8,10 +8,12 @@ import { cn } from "@/lib/utils"
 function ScrollArea({
   className,
   viewportClassName,
+  scrollBarClassName,
   children,
   ...props
 }: React.ComponentProps<typeof ScrollAreaPrimitive.Root> & {
   viewportClassName?: string
+  scrollBarClassName?: string
 }) {
   return (
     <ScrollAreaPrimitive.Root
@@ -28,7 +30,7 @@ function ScrollArea({
       >
         {children}
       </ScrollAreaPrimitive.Viewport>
-      <ScrollBar />
+      <ScrollBar className={scrollBarClassName} />
       <ScrollAreaPrimitive.Corner />
     </ScrollAreaPrimitive.Root>
   )
@@ -37,7 +39,7 @@ function ScrollArea({
 function ScrollAreaConditional({
   scrollEnabled = true,
   ...props
-}: React.ComponentProps<typeof ScrollAreaPrimitive.Root> & {
+}: React.ComponentProps<typeof ScrollArea> & {
   scrollEnabled?: boolean
 }) {
   if (!scrollEnabled) {

@@ -34,7 +34,7 @@ describe("OnboardingWelcome", () => {
 
   it("uses the per-variant duration when one is given", async () => {
     const onDone = vi.fn()
-    const ui = getVariantUi("D").welcome
+    const ui = getVariantUi("E").welcome
     render(<OnboardingWelcome onDone={onDone} ui={ui} />)
 
     await advance(ui.durationMs - 1)

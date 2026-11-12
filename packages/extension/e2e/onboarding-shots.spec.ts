@@ -3,6 +3,7 @@ import fs from "fs"
 import path from "path"
 import { fileURLToPath } from "url"
 import { OnboardingStep, StepPhase } from "@/types/onboarding"
+import type { ExperimentVariant } from "@/services/experiments"
 
 // Not part of the regular e2e suite - a design-review tool. Skipped unless
 // explicitly requested (`CAPTURE=1 yarn test:e2e onboarding-shots`) so it
@@ -25,15 +26,14 @@ type Shot = {
   phase?: StepPhase
   // Defaults to the control (variant C), so the shots never depend on the
   // assignment the install happened to draw.
-  variant?: "A" | "C" | "D"
+  variant?: ExperimentVariant
 }
 
 // One shot per visually distinct screen - not one per StepPhase transition;
 // e.g. Step2's WAIT_EXECUTE looks like Step1's, so only Step1 gets it.
 const SHOTS: Shot[] = [
-  { name: "00-intro", step: "INTRO", variant: "A" },
-  // Variant C of the onboarding A/B test (see services/experiments): no
-  // INTRO step, a brief welcome overlay in front of the first step instead.
+  // Every variant of the onboarding A/B test (see services/experiments)
+  // opens on a brief welcome overlay in front of the first step.
   { name: "00c-welcome-variant-c", variant: "C" },
   { name: "01-search-explain", step: "SEARCH", phase: StepPhase.EXPLAIN },
   {
@@ -63,18 +63,16 @@ const SHOTS: Shot[] = [
   { name: "10-complete", step: "COMPLETE" },
 ]
 
-// Variant D (no step rail, welcome glow as the page background) only
-// changes how the steps after the welcome overlay look, so it gets its own
+// Variant E (welcome glow as the page background, slower welcome) changes
+// how the welcome overlay and the steps after it look, so it gets its own
 // copy of each of those shots for side-by-side review against variant C.
-const VARIANT_D_SHOTS: Shot[] = [
-  { name: "00d-welcome-variant-d", variant: "D" },
-  ...SHOTS.filter((shot) => shot.step && shot.step !== "INTRO").map(
-    (shot): Shot => ({
-      ...shot,
-      name: `${shot.name}-variant-d`,
-      variant: "D",
-    }),
-  ),
+const VARIANT_E_SHOTS: Shot[] = [
+  { name: "00e-welcome-variant-e", variant: "E" },
+  ...SHOTS.filter((shot) => shot.step).map((shot): Shot => ({
+    ...shot,
+    name: `${shot.name}-variant-e`,
+    variant: "E",
+  })),
 ]
 
 const LOCALES = ["ja", "en-US", "de"]
@@ -111,7 +109,7 @@ test.describe("onboarding screenshots (design review)", () => {
         )
         fs.mkdirSync(outDir, { recursive: true })
 
-        for (const shot of [...SHOTS, ...VARIANT_D_SHOTS]) {
+        for (const shot of [...SHOTS, ...VARIANT_E_SHOTS]) {
           const params = new URLSearchParams()
           if (shot.step) params.set("step", shot.step)
           if (shot.phase) params.set("phase", shot.phase)

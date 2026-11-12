@@ -11,6 +11,8 @@ import {
   resetSidePanelState,
 } from "../serviceWorker-sidePanel"
 
+import { IpcNoReplyError, PortReply } from "@/services/ipc"
+
 // Setup test environment (applies vi.mock calls from serviceWorker-setup.ts)
 setupServiceWorkerTestEnvironment()
 
@@ -337,6 +339,54 @@ describe("serviceWorker.ts - Side Panel Connection", () => {
           }),
         }),
       )
+    })
+  })
+
+  describe("step replies", () => {
+    const connectAndGetStep = async () => {
+      const port = createMockPort(PENDING_URL)
+      mockStorage.get.mockResolvedValue(createPendingAction())
+      registerSidePanelTab(TAB_ID, PENDING_URL)
+      await handleSidePanelConnect(port as any)
+      await vi.waitFor(() => expect(port.postMessage).toHaveBeenCalledTimes(1))
+      const { id } = port.postMessage.mock.calls[0][0]
+      const onMsg = port.onMessage.addListener.mock.calls[0][0]
+      return { port, id, onMsg }
+    }
+
+    it("SP-16: Stops the run with an error when the step gets a no-reply", async () => {
+      const consoleErrorSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {})
+      const { port, id, onMsg } = await connectAndGetStep()
+
+      onMsg({ command: PortReply.noReply, id })
+
+      await vi.waitFor(() =>
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+          "Side panel page action step error:",
+          expect.any(IpcNoReplyError),
+        ),
+      )
+      expect(port.onMessage.removeListener).toHaveBeenCalledWith(onMsg)
+      expect(port.postMessage).toHaveBeenCalledTimes(1)
+      consoleErrorSpy.mockRestore()
+    })
+
+    it("SP-17: Ignores a no-reply for another step", async () => {
+      const { port, id, onMsg } = await connectAndGetStep()
+
+      onMsg({ command: PortReply.noReply, id: `${id}-other` })
+
+      expect(port.onMessage.removeListener).not.toHaveBeenCalled()
+    })
+
+    it("SP-18: Runs the next step after a response", async () => {
+      const { port, id, onMsg } = await connectAndGetStep()
+
+      onMsg({ command: PortReply.response, id, result: { result: true } })
+
+      await vi.waitFor(() => expect(port.postMessage).toHaveBeenCalledTimes(2))
     })
   })
 

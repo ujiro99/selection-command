@@ -26,7 +26,7 @@ describe("readOffscreenClipboard", () => {
       },
       offscreen: {
         createDocument,
-        Reason: { CLIPBOARD: "CLIPBOARD" },
+        Reason: { CLIPBOARD: "CLIPBOARD", DOM_SCRAPING: "DOM_SCRAPING" },
       },
     })
   })
@@ -39,7 +39,7 @@ describe("readOffscreenClipboard", () => {
     expect(createDocument).toHaveBeenCalledWith(
       expect.objectContaining({
         url: "src/offscreen_clipboard.html",
-        reasons: ["CLIPBOARD"],
+        reasons: ["CLIPBOARD", "DOM_SCRAPING"],
       }),
     )
     sendMessage.mockResolvedValue({ data: "updated" })

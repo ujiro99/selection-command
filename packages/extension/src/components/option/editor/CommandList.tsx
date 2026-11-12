@@ -42,7 +42,6 @@ import {
   type FlattenNode,
 } from "@/services/option/commandTree"
 import {
-  isCommand,
   isFolder,
   getDescendantFolderIds,
 } from "@/services/option/commandUtils"
@@ -62,6 +61,7 @@ import { useSharedCommandIds } from "@/hooks/option/useSharedCommandIds"
 import { CommandListMenu } from "./CommandListMenu"
 import { CommandTreeRenderer } from "./CommandTreeRenderer"
 import { generateId } from "@/lib/utils"
+import { isSelectionCommand } from "@/lib/commandGuards"
 
 // Drag filtering utilities
 
@@ -78,7 +78,7 @@ const isDescendantOfHiddenFolder = (
   node: FlattenNode,
   hiddenFolderIds: Set<string>,
 ): boolean => {
-  if (isCommand(node.content) || isFolder(node.content)) {
+  if (isSelectionCommand(node.content) || isFolder(node.content)) {
     return !!(
       node.content.parentFolderId &&
       hiddenFolderIds.has(node.content.parentFolderId)
@@ -94,7 +94,7 @@ function commandsFilter(
 ): FlattenNode[] {
   if (!draggingId) return nodes
   const draggingNode = nodes.find((n) => n.id === draggingId)
-  if (isCommand(draggingNode?.content)) {
+  if (isSelectionCommand(draggingNode?.content)) {
     return nodes
   }
   const descendantFolderIds = getDescendantFolderIds(draggingId, folders)
@@ -219,7 +219,7 @@ export const CommandList = ({ control, saveNow }: CommandListProps) => {
   const commandEditorOpen = (idx: number) => {
     const node = flatten[idx]
     editDataRef.current = node.content
-    if (isCommand(node.content)) {
+    if (isSelectionCommand(node.content)) {
       const command = node.content as SelectionCommand
       const type = OPEN_MODE_TYPE_MAP[command.openMode]
       setSelectedType(type)
@@ -230,7 +230,7 @@ export const CommandList = ({ control, saveNow }: CommandListProps) => {
   }
 
   const commandUpsert = (data: SelectionCommand | CommandFolder) => {
-    if (isCommand(data)) {
+    if (isSelectionCommand(data)) {
       const idx = commandArray.fields.findIndex((f) => f.id === data.id)
       if (idx >= 0) {
         commandArray.update(idx, data as CommandSchemaType)
@@ -356,7 +356,7 @@ export const CommandList = ({ control, saveNow }: CommandListProps) => {
 
   const commandRemove = (idx: number) => {
     const node = flatten[idx]
-    if (isCommand(node.content)) {
+    if (isSelectionCommand(node.content)) {
       commandArray.remove(
         commandArray.fields.findIndex((f) => f.id === node.id),
       )
@@ -420,7 +420,7 @@ export const CommandList = ({ control, saveNow }: CommandListProps) => {
         onTypeClick={handleTypeClick}
         isShared={
           editDataRef.current != null &&
-          isCommand(editDataRef.current) &&
+          isSelectionCommand(editDataRef.current) &&
           sharedCommandIds.has(editDataRef.current.id)
         }
       />

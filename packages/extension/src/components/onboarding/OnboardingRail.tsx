@@ -1,5 +1,6 @@
 import { Check, ChevronsRight } from "lucide-react"
 import { cn } from "@/lib/utils"
+import type { OnboardingBackground } from "./onboardingVariantUi"
 
 // Reinforces the PRD's "select -> command -> result" mental model
 // (https://github.com/ujiro99/selection-command/issues/452, section 6-2) as
@@ -18,6 +19,10 @@ type Props = {
   // progress; "lg" is the larger, staggered-reveal form used on the
   // value-shown payoff screens.
   size?: "sm" | "lg"
+  // The page background behind the rail. The flat slate fill of upcoming
+  // beats blends into the "glow" background, so they get a white fill and
+  // an outline there instead.
+  background: OnboardingBackground
 }
 
 type BeatState = "done" | "current" | "todo"
@@ -33,9 +38,13 @@ export function OnboardingRail({
   resultLabel,
   activeBeat,
   size = "sm",
+  background,
 }: Props) {
   const beats = [selectLabel, commandLabel, resultLabel]
   const lg = size === "lg"
+  // slate-300 fades into the "glow" background, so go a shade darker there.
+  const upcomingChevronClass =
+    background === "glow" ? "text-slate-400" : "text-slate-300"
 
   return (
     <div
@@ -62,7 +71,7 @@ export function OnboardingRail({
                   lg ? "size-[18px]" : "size-3.5",
                   chevronWalked
                     ? "text-sky-950 dark:text-sky-200"
-                    : "text-slate-300",
+                    : upcomingChevronClass,
                   lg && "animate-onboarding-rise motion-reduce:animate-none",
                 )}
                 style={lg ? { animationDelay: `${delayMs}ms` } : undefined}
@@ -82,7 +91,9 @@ export function OnboardingRail({
                   "flex items-center justify-center rounded-full",
                   lg ? "size-6" : "size-[18px]",
                   state === "todo"
-                    ? "bg-slate-200 dark:bg-slate-700"
+                    ? background === "glow"
+                      ? "bg-white dark:bg-gray-800 ring-1 ring-inset ring-slate-300 dark:ring-slate-600"
+                      : "bg-slate-200 dark:bg-slate-700"
                     : state === "done"
                       ? "bg-blue-200 dark:bg-blue-900 text-blue-800 dark:text-blue-300"
                       : "bg-sky-950/[0.14] text-sky-950 dark:text-sky-200",

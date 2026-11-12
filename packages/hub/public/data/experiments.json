@@ -10,5 +10,9 @@
   "onboarding_v4": {
     "enabled": true,
     "allocation": 0.5
+  },
+  "onboarding_v5": {
+    "enabled": true,
+    "allocation": 0.5
   }
 }

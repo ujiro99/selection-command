@@ -2,15 +2,11 @@ import { describe, test, expect, vi, beforeEach } from "vitest"
 import {
   generateUUIDFromObject,
   isEmpty,
-  isSearchCommand,
-  isPageActionCommand,
   onHover,
   capitalize,
   sleep,
   enumToValues,
 } from "../utils"
-import { OPEN_MODE } from "@/const"
-import type { SearchCommand, PageActionCommand } from "@/types"
 
 describe("Utility Functions", () => {
   describe("generateUUIDFromObject function", () => {
@@ -112,84 +108,6 @@ describe("Utility Functions", () => {
       // Act & Assert
       expect(isEmpty(null)).toBe(true)
       expect(isEmpty(undefined)).toBe(true)
-    })
-  })
-
-  describe("isSearchCommand function", () => {
-    test("UTIL-09: Normal case: returns true for valid SearchCommand", () => {
-      // Arrange
-      const searchCommand: SearchCommand = {
-        id: "test-id",
-        title: "Test Command",
-        description: "Test Description",
-        tags: [],
-        addedAt: "2024-01-01",
-        openMode: OPEN_MODE.POPUP,
-        searchUrl: "https://example.com",
-        iconUrl: "https://example.com/icon.ico",
-        openModeSecondary: OPEN_MODE.TAB,
-        spaceEncoding: "plus" as any,
-      }
-
-      // Act & Assert
-      expect(isSearchCommand(searchCommand)).toBe(true)
-    })
-
-    test("UTIL-10: Normal case: returns true for various OPEN modes", () => {
-      // Arrange
-      const popupCommand = { openMode: OPEN_MODE.POPUP }
-      const tabCommand = { openMode: OPEN_MODE.TAB }
-      const windowCommand = { openMode: OPEN_MODE.WINDOW }
-
-      // Act & Assert
-      expect(isSearchCommand(popupCommand)).toBe(true)
-      expect(isSearchCommand(tabCommand)).toBe(true)
-      expect(isSearchCommand(windowCommand)).toBe(true)
-    })
-
-    test("UTIL-11: Error case: returns false for invalid objects", () => {
-      // Arrange
-      const invalidCommand = { openMode: OPEN_MODE.PAGE_ACTION }
-      const emptyObject = {}
-
-      // Act & Assert
-      expect(isSearchCommand(invalidCommand)).toBe(false)
-      expect(isSearchCommand(emptyObject)).toBe(false)
-      expect(isSearchCommand(null)).toBe(false)
-    })
-  })
-
-  describe("isPageActionCommand function", () => {
-    test("UTIL-12: Normal case: returns true for valid PageActionCommand", () => {
-      // Arrange
-      const pageActionCommand: PageActionCommand = {
-        id: "test-id",
-        title: "Test Command",
-        description: "Test Description",
-        tags: [],
-        addedAt: "2024-01-01",
-        openMode: OPEN_MODE.PAGE_ACTION,
-        iconUrl: "https://example.com/icon.ico",
-        pageActionOption: {
-          startUrl: "https://example.com",
-          openMode: "none" as any,
-          steps: [],
-        },
-      }
-
-      // Act & Assert
-      expect(isPageActionCommand(pageActionCommand)).toBe(true)
-    })
-
-    test("UTIL-13: Error case: returns false for invalid objects", () => {
-      // Arrange
-      const searchCommand = { openMode: OPEN_MODE.POPUP }
-      const emptyObject = {}
-
-      // Act & Assert
-      expect(isPageActionCommand(searchCommand)).toBe(false)
-      expect(isPageActionCommand(emptyObject)).toBe(false)
-      expect(isPageActionCommand(null)).toBe(false)
     })
   })
 

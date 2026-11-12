@@ -25,6 +25,11 @@ vi.mock("@/services/ipc", () => ({
     execPageAction: "execPageAction",
     sendWindowSize: "sendWindowSize",
   },
+  PortReply: {
+    response: "portResponse",
+    noReply: "portNoReply",
+  },
+  IpcNoReplyError: class IpcNoReplyError extends Error {},
 }))
 
 vi.mock("@/services/chrome", () => ({
@@ -59,13 +64,22 @@ vi.mock("@/services/commandMetrics", () => ({
 vi.mock("@/lib/utils", () => ({
   generateRandomID: vi.fn(() => "test-id"),
   isEmpty: vi.fn(),
-  isPageActionCommand: vi.fn(),
   isServiceWorker: vi.fn(() => true),
+  sleep: vi.fn(),
+}))
+
+// Replace only the functions the tests control, keeping the others real.
+vi.mock("@/lib/commandGuards", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/lib/commandGuards")>()),
+  isPageActionCommand: vi.fn(),
+}))
+
+vi.mock("@/lib/url", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/lib/url")>()),
   isUrl: vi.fn(),
   isUrlParam: vi.fn(),
   matchesPageActionUrl: vi.fn(),
   needsClipboard: vi.fn(),
-  sleep: vi.fn(),
 }))
 
 vi.mock("@/const", async () => {
@@ -116,16 +130,14 @@ import {
 import { ServiceWorkerData } from "@/services/serviceWorkerData"
 import { RunningStatus } from "@/services/pageAction"
 import { incrementCommandExecutionCount } from "@/services/commandMetrics"
+import { generateRandomID, isEmpty, sleep } from "@/lib/utils"
+import { isPageActionCommand } from "@/lib/commandGuards"
 import {
-  generateRandomID,
-  isEmpty,
-  isPageActionCommand,
   isUrl,
   isUrlParam,
   matchesPageActionUrl,
   needsClipboard,
-  sleep,
-} from "@/lib/utils"
+} from "@/lib/url"
 import { resetLastUrl } from "../serviceWorker"
 
 // Get references to mocked functions

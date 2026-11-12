@@ -1,4 +1,4 @@
-import React, { useRef } from "react"
+import React, { useMemo, useRef } from "react"
 import clsx from "clsx"
 import { usePopupContext } from "@/hooks/usePopupContext"
 import { Tooltip } from "../Tooltip"
@@ -7,12 +7,14 @@ import { ResultPopup } from "@/components/result/ResultPopup"
 import { useSelectContext } from "@/hooks/useSelectContext"
 import { useCommandExecutor } from "@/hooks/useCommandExecutor"
 import { getCommandEnabled } from "@/lib/commandEnabled"
+import { isEmpty } from "@/lib/utils"
 import { PopupOption } from "@/services/option/defaultSettings"
-import { ExecState } from "@/const"
+import { ExecState, SIDE } from "@/const"
 import { MenuImage } from "@/components/menu/MenuImage"
 import type { ResolvedCommand } from "@/hooks/useSettingsWithImageCache"
 
 import css from "./Menu.module.css"
+import zc from "@/components/zoomCompensation.module.css"
 
 type MenuItemProps = {
   menuRef: React.RefObject<Element>
@@ -28,8 +30,17 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
   const { iconUrl, title, preserveOriginalColor } = props.command
   const { isPreview, inTransition, inOnboarding } = usePopupContext()
   const { selectionText, target } = useSelectContext()
-  const { enabled, message: defaultMessage } = getCommandEnabled(props.command)
-  const message = itemState.message || defaultMessage
+  // Searching URLs in a large selection is costly, so the result is kept
+  // while the command and the selection are unchanged.
+  const { enabled, detail } = useMemo(
+    () => getCommandEnabled(props.command, location.href, selectionText),
+    [props.command, selectionText],
+  )
+  // A vertical item shows its title, so the tooltip shows only the detail,
+  // and is hidden when there is no detail.
+  const message = onlyIcon
+    ? itemState.message || [title, detail].filter(Boolean).join("\n")
+    : (detail ?? "")
 
   function handleClick(e: React.MouseEvent) {
     if (isPreview) {
@@ -75,7 +86,7 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
             [css.itemHorizontal]: onlyIcon,
             "hover:bg-accent": !inTransition,
           },
-          "rounded-sm",
+          zc.roundedSm,
         )}
         role="menuitem"
         aria-label={title}
@@ -95,7 +106,9 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
       <Tooltip
         text={message}
         positionElm={buttonRef.current}
-        disabled={!onlyIcon && enabled}
+        disabled={isEmpty(message)}
+        // Show beside a vertical item so as not to cover the adjacent items.
+        side={onlyIcon ? undefined : SIDE.right}
       />
       <ResultPopup
         visible={result != null}

@@ -7,13 +7,13 @@ import type {
 } from "./types"
 
 /** Experiment id reported to GA4 as `experiment_id`. */
-export const ONBOARDING_EXPERIMENT_ID = "onboarding_v4"
+export const ONBOARDING_EXPERIMENT_ID = "onboarding_v5"
 
 /** Arm everyone falls back to: experiment disabled, or assignment failed. */
 export const ONBOARDING_CONTROL_VARIANT: ExperimentVariant = "C"
 
 /** Arm assigned to the `allocation` share of users. */
-export const ONBOARDING_TREATMENT_VARIANT: ExperimentVariant = "D"
+export const ONBOARDING_TREATMENT_VARIANT: ExperimentVariant = "E"
 
 /**
  * Last resolved assignment, kept in module memory so analytics helpers can
@@ -30,7 +30,7 @@ export const getOnboardingVariantSync = (): ExperimentVariant | null =>
 
 /**
  * dev/e2e only: force a variant for the rest of this page's lifetime without
- * fetching or persisting anything, so `?variant=D` can be used to review a
+ * fetching or persisting anything, so `?variant=E` can be used to review a
  * screen directly. See useOnboardingVariant().
  */
 export const overrideOnboardingAssignment = (

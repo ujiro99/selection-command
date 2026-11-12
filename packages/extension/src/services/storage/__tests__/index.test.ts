@@ -2,6 +2,7 @@ import { beforeEach, afterEach, describe, it, expect, vi } from "vitest"
 
 // Mock Chrome API
 const mockChromeStorageSync = {
+  get: vi.fn(),
   set: vi.fn().mockResolvedValue(undefined),
 }
 
@@ -36,7 +37,7 @@ vi.stubGlobal("chrome", {
 
 // Import module after mocking
 import { debouncedSyncSet, BaseStorage } from "../index"
-import { LOCAL_STORAGE_KEY } from "../const"
+import { LOCAL_STORAGE_KEY, STORAGE_KEY } from "../const"
 
 describe("debouncedSyncSet", () => {
   beforeEach(() => {
@@ -332,6 +333,29 @@ describe("BaseStorage.get", () => {
     await expect(BaseStorage.get(LOCAL_STORAGE_KEY.CLIENT_ID)).rejects.toThrow(
       "Quota exceeded",
     )
+  })
+})
+
+describe("BaseStorage.has", () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it("BS-HAS-01: returns true when a value is saved for the key", async () => {
+    mockChromeStorageSync.get.mockResolvedValue({
+      [STORAGE_KEY.USER]: { settingVersion: "1.0.0" },
+    })
+
+    expect(await BaseStorage.has(STORAGE_KEY.USER)).toBe(true)
+    expect(mockChromeStorageSync.get).toHaveBeenCalledWith(
+      `${STORAGE_KEY.USER}`,
+    )
+  })
+
+  it("BS-HAS-02: returns false without falling back to the default value", async () => {
+    mockChromeStorageSync.get.mockResolvedValue({})
+
+    expect(await BaseStorage.has(STORAGE_KEY.USER)).toBe(false)
   })
 })
 

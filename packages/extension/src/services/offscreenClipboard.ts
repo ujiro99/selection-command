@@ -1,42 +1,20 @@
 import type { ClipboardResult } from "./ipc"
 import { sleep } from "@/lib/utils"
+import { ensureOffscreenDocument, toErrorMessage } from "./offscreenDocument"
 
-const DOCUMENT_PATH = "src/offscreen_clipboard.html"
 const MAX_ATTEMPTS = 3
 const RETRY_DELAY_MS = 50
 
 let pendingRead: Promise<unknown> = Promise.resolve()
-
-const toErrorMessage = (error: unknown): string =>
-  error instanceof Error ? error.message : String(error)
 
 const isClipboardResult = (value: unknown): value is ClipboardResult =>
   typeof value === "object" &&
   value !== null &&
   typeof (value as ClipboardResult).data === "string"
 
-async function ensureDocument(): Promise<void> {
-  const contexts = await chrome.runtime.getContexts({
-    contextTypes: [chrome.runtime.ContextType.OFFSCREEN_DOCUMENT],
-    documentUrls: [chrome.runtime.getURL(DOCUMENT_PATH)],
-  })
-  // Recheck after worker restarts or if Chrome discarded the document.
-  if (contexts.length > 0) return
-  try {
-    await chrome.offscreen.createDocument({
-      url: DOCUMENT_PATH,
-      reasons: [chrome.offscreen.Reason.CLIPBOARD],
-      justification: "Read clipboard text without opening a visible window",
-    })
-  } catch (error) {
-    // Another context may have created it between the check and the creation.
-    if (!/single offscreen document/i.test(toErrorMessage(error))) throw error
-  }
-}
-
 async function readOnce(): Promise<ClipboardResult> {
   try {
-    await ensureDocument()
+    await ensureOffscreenDocument()
     const result: unknown = await chrome.runtime.sendMessage({
       target: "offscreen-clipboard",
       command: "read",
