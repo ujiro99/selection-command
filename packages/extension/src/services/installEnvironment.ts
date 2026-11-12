@@ -1,9 +1,6 @@
-import {
-  ENV_PROBE_TARGET,
-  type EnvironmentProbeResult,
-} from "./offscreenEnvironmentProbe"
+import type { EnvironmentProbeResult } from "./ipc"
+import { ensureOffscreenDocument } from "./offscreenDocument"
 
-const DOCUMENT_PATH = "src/offscreen_environment.html"
 const PROBE_TIMEOUT_MS = 3000
 // GA4 caps event parameter values at 100 characters.
 const MAX_PARAM_LENGTH = 100
@@ -14,14 +11,10 @@ export type InstallEnvironmentParams = {
   user_agent_1: string
   user_agent_2?: string
   is_webdriver: string
-  webgl_renderer: string
 }
 
 const isProbeResult = (value: unknown): value is EnvironmentProbeResult =>
-  typeof value === "object" &&
-  value !== null &&
-  "webdriver" in value &&
-  "webglRenderer" in value
+  typeof value === "object" && value !== null && "webdriver" in value
 
 /**
  * Split the user agent at fixed positions so the analysis side can join the
@@ -48,38 +41,20 @@ async function getInstallType(): Promise<string> {
 }
 
 /**
- * Read navigator.webdriver and the WebGL renderer in an offscreen document,
- * since neither is available in a service worker. The document is closed
- * right after, unless it was already open for another purpose.
+ * Read navigator.webdriver in the shared offscreen document, since it is not
+ * available in a service worker. The document is left open, as the clipboard
+ * reads reuse it and may be in progress at the same time.
  */
 async function probeInOffscreenDocument(): Promise<EnvironmentProbeResult | null> {
-  let created = false
   try {
-    try {
-      await chrome.offscreen.createDocument({
-        url: DOCUMENT_PATH,
-        reasons: [chrome.offscreen.Reason.DOM_SCRAPING],
-        justification:
-          "Read navigator.webdriver and the WebGL renderer, which are not available in a service worker",
-      })
-      created = true
-    } catch (error) {
-      // Another offscreen document (e.g. the clipboard one) is open; it also
-      // answers the probe, so ask it instead.
-      const message = error instanceof Error ? error.message : String(error)
-      if (!/single offscreen document/i.test(message)) throw error
-    }
+    await ensureOffscreenDocument()
     const result: unknown = await chrome.runtime.sendMessage({
-      target: ENV_PROBE_TARGET,
+      target: "offscreen-environment",
     })
     return isProbeResult(result) ? result : null
   } catch (error) {
     console.warn("Failed to probe the environment:", error)
     return null
-  } finally {
-    if (created) {
-      chrome.offscreen.closeDocument().catch(() => undefined)
-    }
   }
 }
 
@@ -105,9 +80,5 @@ export async function getInstallEnvironmentParams(): Promise<InstallEnvironmentP
     install_type: installType,
     ...splitUserAgent(globalThis.navigator?.userAgent ?? ""),
     is_webdriver: probe?.webdriver == null ? UNKNOWN : String(probe.webdriver),
-    webgl_renderer: (probe?.webglRenderer || UNKNOWN).slice(
-      0,
-      MAX_PARAM_LENGTH,
-    ),
   }
 }

@@ -29,7 +29,6 @@ vi.mock("@/services/installEnvironment", () => ({
     install_type: "normal",
     user_agent_1: "Mozilla/5.0",
     is_webdriver: "true",
-    webgl_renderer: "ANGLE",
   }),
 }))
 vi.mock("@import-if", () => ({
@@ -827,7 +826,6 @@ describe("onInstalled: installed analytics event", () => {
         is_webdriver: "true",
         install_type: "normal",
         user_agent_1: "Mozilla/5.0",
-        webgl_renderer: "ANGLE",
         // chrome.windows.getAll is not mocked, so the count is unknown.
         window_count: -1,
         client_id_ready: "true",

@@ -5,7 +5,7 @@ import {
 } from "../installEnvironment"
 
 const createDocument = vi.fn()
-const closeDocument = vi.fn()
+const getContexts = vi.fn()
 const sendMessage = vi.fn()
 const getSelf = vi.fn()
 
@@ -33,20 +33,22 @@ describe("getInstallEnvironmentParams", () => {
   beforeEach(() => {
     vi.resetAllMocks()
     createDocument.mockResolvedValue(undefined)
-    closeDocument.mockResolvedValue(undefined)
+    getContexts.mockResolvedValue([])
     getSelf.mockResolvedValue({ installType: "development" })
-    sendMessage.mockResolvedValue({
-      webdriver: true,
-      webglRenderer: "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device))",
-    })
+    sendMessage.mockResolvedValue({ webdriver: true })
     vi.stubGlobal("chrome", {
       ...chrome,
-      runtime: { ...chrome.runtime, sendMessage },
+      runtime: {
+        ...chrome.runtime,
+        getURL: (path: string) => `chrome-extension://test/${path}`,
+        getContexts,
+        ContextType: { OFFSCREEN_DOCUMENT: "OFFSCREEN_DOCUMENT" },
+        sendMessage,
+      },
       management: { getSelf },
       offscreen: {
         createDocument,
-        closeDocument,
-        Reason: { DOM_SCRAPING: "DOM_SCRAPING" },
+        Reason: { CLIPBOARD: "CLIPBOARD", DOM_SCRAPING: "DOM_SCRAPING" },
       },
     })
     vi.stubGlobal("navigator", { userAgent: "Mozilla/5.0 HeadlessChrome/151" })
@@ -56,26 +58,25 @@ describe("getInstallEnvironmentParams", () => {
     vi.unstubAllGlobals()
   })
 
-  it("IE-04: 正常系: offscreenで読んだ値を返し、ドキュメントを閉じる", async () => {
+  it("IE-04: 正常系: 共有offscreenドキュメントを作成して読んだ値を返す", async () => {
     await expect(getInstallEnvironmentParams()).resolves.toEqual({
       install_type: "development",
       user_agent_1: "Mozilla/5.0 HeadlessChrome/151",
       is_webdriver: "true",
-      webgl_renderer: "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device))",
     })
     expect(createDocument).toHaveBeenCalledWith(
-      expect.objectContaining({ url: "src/offscreen_environment.html" }),
+      expect.objectContaining({ url: "src/offscreen_clipboard.html" }),
     )
-    expect(closeDocument).toHaveBeenCalledOnce()
+    expect(sendMessage).toHaveBeenCalledWith({
+      target: "offscreen-environment",
+    })
   })
 
-  it("IE-05: 既存のoffscreenドキュメントがあれば、それに問い合わせて閉じない", async () => {
-    createDocument.mockRejectedValue(
-      new Error("Only a single offscreen document may be created."),
-    )
+  it("IE-05: 既存のoffscreenドキュメントがあれば、作成せずに問い合わせる", async () => {
+    getContexts.mockResolvedValue([{}])
     const result = await getInstallEnvironmentParams()
     expect(result.is_webdriver).toBe("true")
-    expect(closeDocument).not.toHaveBeenCalled()
+    expect(createDocument).not.toHaveBeenCalled()
   })
 
   it("IE-06: 異常系: 取得に失敗した値はunknownにする", async () => {
@@ -86,7 +87,6 @@ describe("getInstallEnvironmentParams", () => {
       install_type: "unknown",
       user_agent_1: "Mozilla/5.0 HeadlessChrome/151",
       is_webdriver: "unknown",
-      webgl_renderer: "unknown",
     })
   })
 
@@ -97,14 +97,12 @@ describe("getInstallEnvironmentParams", () => {
     await vi.advanceTimersByTimeAsync(3000)
     const result = await pending
     expect(result.is_webdriver).toBe("unknown")
-    expect(result.webgl_renderer).toBe("unknown")
     expect(result.install_type).toBe("development")
   })
 
   it("IE-08: webdriverがfalseの場合は文字列falseを返す", async () => {
-    sendMessage.mockResolvedValue({ webdriver: false, webglRenderer: null })
+    sendMessage.mockResolvedValue({ webdriver: false })
     const result = await getInstallEnvironmentParams()
     expect(result.is_webdriver).toBe("false")
-    expect(result.webgl_renderer).toBe("unknown")
   })
 })

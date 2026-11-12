@@ -1,8 +1,21 @@
-import type { ClipboardResult } from "./services/ipc"
-import { registerEnvironmentProbeListener } from "./services/offscreenEnvironmentProbe"
+import type { ClipboardResult, EnvironmentProbeResult } from "./services/ipc"
 
-// Only one offscreen document can exist, so this one answers probes too.
-registerEnvironmentProbeListener()
+// Only one offscreen document can exist, so this one also answers the
+// environment probe, as navigator.webdriver cannot be read in a service worker.
+chrome.runtime.onMessage.addListener((message, sender, respond) => {
+  if (
+    sender.id !== chrome.runtime.id ||
+    sender.tab ||
+    message?.target !== "offscreen-environment"
+  ) {
+    return false
+  }
+  respond({
+    webdriver:
+      typeof navigator.webdriver === "boolean" ? navigator.webdriver : null,
+  } satisfies EnvironmentProbeResult)
+  return false
+})
 
 chrome.runtime.onMessage.addListener((message, sender, respond) => {
   if (
