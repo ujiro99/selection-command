@@ -3,6 +3,7 @@ import {
   ensureOnboardingAssignment,
   overrideOnboardingAssignment,
   ONBOARDING_CONTROL_VARIANT,
+  ONBOARDING_TREATMENT_VARIANT,
 } from "@/services/experiments"
 import type { ExperimentVariant } from "@/services/experiments"
 
@@ -12,8 +13,12 @@ import type { ExperimentVariant } from "@/services/experiments"
 function readVariantOverride(): ExperimentVariant | null {
   if (!["e2e", "development"].includes(import.meta.env.MODE)) return null
   const param = new URLSearchParams(window.location.search).get("variant")
-  if (param !== "C" && param !== "E") return null
-  return overrideOnboardingAssignment(param).variant
+  const variant = [
+    ONBOARDING_CONTROL_VARIANT,
+    ONBOARDING_TREATMENT_VARIANT,
+  ].find((v) => v === param)
+  if (variant == null) return null
+  return overrideOnboardingAssignment(variant).variant
 }
 
 /**

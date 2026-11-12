@@ -3,6 +3,7 @@ import fs from "fs"
 import path from "path"
 import { fileURLToPath } from "url"
 import { OnboardingStep, StepPhase } from "@/types/onboarding"
+import type { ExperimentVariant } from "@/services/experiments"
 
 // Not part of the regular e2e suite - a design-review tool. Skipped unless
 // explicitly requested (`CAPTURE=1 yarn test:e2e onboarding-shots`) so it
@@ -25,7 +26,7 @@ type Shot = {
   phase?: StepPhase
   // Defaults to the control (variant C), so the shots never depend on the
   // assignment the install happened to draw.
-  variant?: "C" | "E"
+  variant?: ExperimentVariant
 }
 
 // One shot per visually distinct screen - not one per StepPhase transition;
