@@ -37,21 +37,16 @@ function readStepAndPhaseOverride(): {
   return { step, phase }
 }
 
-// Where the flow opens, per A/B variant: variant A keeps the INTRO step,
-// while variants C and D drop it and start on the first real step behind a
-// short welcome overlay (see OnboardingWelcome).
-function initialStepAndPhase(variant: ExperimentVariant): {
-  step: OnboardingStep
-  phase: StepPhase
-} {
-  return variant === "A"
-    ? { step: OnboardingStep.INTRO, phase: StepPhase.EXPLAIN }
-    : { step: OnboardingStep.SEARCH, phase: StepPhase.WELCOME }
+// Every variant opens on the first real step behind a short welcome overlay
+// (see OnboardingWelcome).
+const INITIAL_STEP_AND_PHASE = {
+  step: OnboardingStep.SEARCH,
+  phase: StepPhase.WELCOME,
 }
 
 export function useOnboardingState(variant: ExperimentVariant) {
   const [initial] = useState(
-    () => readStepAndPhaseOverride() ?? initialStepAndPhase(variant),
+    () => readStepAndPhaseOverride() ?? INITIAL_STEP_AND_PHASE,
   )
   const ui = getVariantUi(variant)
   const [step, setStep] = useState<OnboardingStep>(initial.step)

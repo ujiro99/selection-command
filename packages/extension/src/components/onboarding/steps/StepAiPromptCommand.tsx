@@ -138,14 +138,7 @@ export function StepAiPromptCommand({ onboarding }: Props) {
         </h2>
       </OnboardingFadeIn>
 
-      <div
-        className={cn(
-          "flex flex-col items-center gap-4",
-          // Without the rail (and its own pb-14), the target text's callout
-          // would overlap the explanation above it; keep the room it needs.
-          !onboarding.ui.showRail && !isValueShown && "pb-14",
-        )}
-      >
+      <div className="flex flex-col items-center gap-4">
         <OnboardingFadeIn
           key={
             isValueShown
@@ -187,30 +180,24 @@ export function StepAiPromptCommand({ onboarding }: Props) {
           </OnboardingFadeIn>
         )}
 
-        {onboarding.ui.showRail && (
-          <OnboardingFadeIn
-            key={isValueShown ? "rail-complete" : "rail"}
-            delay={phaseDelays.rail}
-            className={isValueShown ? undefined : "pb-14"}
-          >
-            <OnboardingRail
-              selectLabel={t("onboarding_railSelect")}
-              commandLabel={t("onboarding_railCommand")}
-              resultLabel={t("onboarding_railResultAi")}
-              activeBeat={railBeat(phase)}
-              size="lg"
-            />
-          </OnboardingFadeIn>
-        )}
+        <OnboardingFadeIn
+          key={isValueShown ? "rail-complete" : "rail"}
+          delay={phaseDelays.rail}
+          className={isValueShown ? undefined : "pb-14"}
+        >
+          <OnboardingRail
+            selectLabel={t("onboarding_railSelect")}
+            commandLabel={t("onboarding_railCommand")}
+            resultLabel={t("onboarding_railResultAi")}
+            activeBeat={railBeat(phase)}
+            size="lg"
+          />
+        </OnboardingFadeIn>
       </div>
 
       {!isValueShown && (
         <>
-          <OnboardingFadeIn
-            key={"target-text"}
-            delay={phaseDelays.targetText}
-            className={cn(!onboarding.ui.showRail && "mt-4")}
-          >
+          <OnboardingFadeIn key={"target-text"} delay={phaseDelays.targetText}>
             <OnboardingTargetText
               text={t("onboarding_step2TargetText")}
               background={onboarding.ui.background}
@@ -235,10 +222,7 @@ export function StepAiPromptCommand({ onboarding }: Props) {
           <button
             type="button"
             onClick={() => onboarding.goToStep(OnboardingStep.LINK_PREVIEW)}
-            className={cn(
-              "flex items-center gap-2 min-h-14 rounded-xl bg-sky-950 dark:bg-sky-700 px-8 text-lg font-semibold text-white shadow-[0_10px_20px_-14px_rgba(15,23,42,.7)] hover:brightness-[1.35]",
-              !onboarding.ui.showRail && "mt-4",
-            )}
+            className="flex items-center gap-2 min-h-14 rounded-xl bg-sky-950 dark:bg-sky-700 px-8 text-lg font-semibold text-white shadow-[0_10px_20px_-14px_rgba(15,23,42,.7)] hover:brightness-[1.35]"
           >
             {t("onboarding_nextButton")}
             <ChevronRight className="inline-block size-5" />

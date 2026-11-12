@@ -2,7 +2,6 @@ import { useEffect, useState } from "react"
 import { ChevronRight, ArrowBigUp, MousePointerClick } from "lucide-react"
 import { t } from "@/services/i18n"
 import { DRAG_OPEN_MODE } from "@/const"
-import { cn } from "@/lib/utils"
 import { subscribeCommandExecuted } from "../onboardingEvents"
 import { OnboardingCallout } from "../OnboardingCallout"
 import { OnboardingFadeIn } from "../OnboardingFadeIn"
@@ -163,29 +162,24 @@ export function StepLinkPreview({ onboarding }: Props) {
           </OnboardingFadeIn>
         )}
 
-        {onboarding.ui.showRail && (
-          <OnboardingFadeIn
-            key={isValueShown ? "rail-complete" : "rail"}
-            delay={phaseDelays.rail}
-          >
-            <OnboardingRail
-              selectLabel={t("onboarding_railSelect")}
-              commandLabel={t("onboarding_railCommand")}
-              resultLabel={t("onboarding_railResultPreview")}
-              activeBeat={isValueShown ? -1 : railBeat(phase)}
-              size="lg"
-            />
-          </OnboardingFadeIn>
-        )}
+        <OnboardingFadeIn
+          key={isValueShown ? "rail-complete" : "rail"}
+          delay={phaseDelays.rail}
+        >
+          <OnboardingRail
+            selectLabel={t("onboarding_railSelect")}
+            commandLabel={t("onboarding_railCommand")}
+            resultLabel={t("onboarding_railResultPreview")}
+            activeBeat={isValueShown ? -1 : railBeat(phase)}
+            size="lg"
+          />
+        </OnboardingFadeIn>
       </div>
 
       {isExplain && (
         <OnboardingFadeIn
           key={"target-text"}
-          className={cn(
-            "flex flex-col items-center gap-8",
-            onboarding.ui.showRail ? "mt-24" : "mt-28",
-          )}
+          className="mt-24 flex flex-col items-center gap-8"
           delay={phaseDelays.targetText}
         >
           <div
@@ -249,10 +243,7 @@ export function StepLinkPreview({ onboarding }: Props) {
           <button
             type="button"
             onClick={() => onboarding.goToStep(OnboardingStep.CUSTOMIZE)}
-            className={cn(
-              "flex items-center gap-2 min-h-14 rounded-xl bg-sky-950 dark:bg-sky-700 px-8 text-lg font-semibold text-white shadow-[0_10px_20px_-14px_rgba(15,23,42,.7)] hover:brightness-[1.35]",
-              !onboarding.ui.showRail && "mt-4",
-            )}
+            className="flex items-center gap-2 min-h-14 rounded-xl bg-sky-950 dark:bg-sky-700 px-8 text-lg font-semibold text-white shadow-[0_10px_20px_-14px_rgba(15,23,42,.7)] hover:brightness-[1.35]"
           >
             {t("onboarding_nextButton")}
             <ChevronRight className="inline-block size-5" />
