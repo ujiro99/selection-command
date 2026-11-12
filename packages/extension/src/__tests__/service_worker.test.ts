@@ -24,6 +24,13 @@ vi.mock("@/services/contextMenus")
 vi.mock("@/action/serviceWorker")
 vi.mock("@/action/helper")
 vi.mock("@/services/pageAction/serviceWorker")
+vi.mock("@/services/installEnvironment", () => ({
+  getInstallEnvironmentParams: vi.fn().mockResolvedValue({
+    install_type: "normal",
+    user_agent_1: "Mozilla/5.0",
+    is_webdriver: "true",
+  }),
+}))
 vi.mock("@import-if", () => ({
   importIf: vi.fn(),
 }))
@@ -815,7 +822,10 @@ describe("onInstalled: installed analytics event", () => {
       "installed",
       {
         browser_brands: "Chromium/141",
-        is_webdriver: "false",
+        // The offscreen probe result overrides the worker's own value.
+        is_webdriver: "true",
+        install_type: "normal",
+        user_agent_1: "Mozilla/5.0",
         // chrome.windows.getAll is not mocked, so the count is unknown.
         window_count: -1,
         client_id_ready: "true",

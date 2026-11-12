@@ -143,6 +143,11 @@ export type ClipboardResult = {
   err?: string
 }
 
+/** Environment values read in the offscreen document. */
+export type EnvironmentProbeResult = {
+  webdriver: boolean | null
+}
+
 export type NavigateSidePanelProps = {
   url: string
   tabId: number | null
