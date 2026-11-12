@@ -22,7 +22,6 @@ import { WindowStackManager } from "@/services/windowStackManager"
 import { PopupAutoClose } from "@/services/popupAutoClose"
 import { findMatchingPageRule } from "@/lib/url"
 import * as ActionHelper from "@/action/helper"
-import type { WindowType } from "@/types"
 import * as HubServiceWorker from "@/services/hub/serviceWorker"
 import * as IconColorServiceWorker from "@/services/iconColor/serviceWorker"
 import { getSidePanelEvent } from "@/services/sidePanelSupport"
@@ -138,6 +137,32 @@ const onDisconnect = async function (port: chrome.runtime.Port) {
 }
 chrome.runtime.onConnect.addListener(onConnect)
 
+/**
+ * Find a normal window to open a popup's page in as a tab.
+ * Prefers the window the popup was opened from. A popup can outlive it (e.g.
+ * with Keep Open) or be opened from another popup, so falls back to the
+ * last focused normal window, then any normal window. Returns undefined when no
+ * normal window exists.
+ */
+const findTabTargetWindowId = async (
+  srcWindowId: number | undefined,
+  incognito: boolean,
+): Promise<number | undefined> => {
+  if (srcWindowId != null) {
+    const src = await windowExists(srcWindowId)
+    if (src.exists && src.window.type === "normal") return srcWindowId
+  }
+  const windows = (
+    await chrome.windows.getAll({ windowTypes: ["normal"] })
+  ).filter((w) => w.incognito === incognito)
+  // The popup itself has the focus when its button is clicked, so no normal
+  // window is focused here. Use the last focused normal window instead.
+  const lastFocused = await chrome.windows
+    .getLastFocused({ windowTypes: ["normal"] })
+    .catch(() => undefined)
+  return (windows.find((w) => w.id === lastFocused?.id) ?? windows[0])?.id
+}
+
 const commandFuncs = {
   [ServiceWorkerCommand.openPopup]: ActionHelper.openPopup,
   [ServiceWorkerCommand.openPopups]: ActionHelper.openPopups,
@@ -204,18 +229,17 @@ const commandFuncs = {
     sender: Sender,
     response: (res: unknown) => void,
   ) => {
-    WindowStackManager.getStack().then((stack) => {
-      for (const layer of stack) {
-        for (const window of layer) {
-          if (window.id === sender.tab?.windowId) {
-            // found!
-            response(true)
-            return
-          }
-        }
-      }
+    const windowId = sender.tab?.windowId
+    if (windowId == null) {
       response(false)
-    })
+      return false
+    }
+    WindowStackManager.findWindow(windowId)
+      .then((w) => response(w != null))
+      .catch((e) => {
+        console.error("Failed to find window", e)
+        response(false)
+      })
     return true
   },
 
@@ -225,50 +249,81 @@ const commandFuncs = {
     response: (res: unknown) => void,
   ) => {
     const handleOpenInTab = async () => {
-      let w: WindowType | undefined
-      const targetUrl = sender.tab?.url ?? sender.url
-
-      const stack = await WindowStackManager.getStack()
-      for (const layer of stack) {
-        for (const window of layer) {
-          if (window.id === sender.tab?.windowId) {
-            w = window
-            break
-          }
-        }
-      }
-      if (!w || w.srcWindowId == null) {
-        console.warn("window not found", sender.tab?.windowId)
-        chrome.tabs.create({ url: targetUrl })
-        await closeWindow(sender.tab?.windowId as number, "openInTab")
-        await WindowStackManager.removeWindow(sender.tab?.windowId as number)
-        response(true)
+      const windowId = sender.tab?.windowId
+      const url = sender.tab?.url ?? sender.url
+      if (windowId == null || !url) {
+        response(false)
         return
       }
 
-      let targetId: number | undefined
-      const { exists } = await windowExists(w.srcWindowId)
-      if (exists) {
-        targetId = w.srcWindowId
-      } else {
-        const current = await chrome.windows.getCurrent()
-        targetId = current.id
-        console.warn(
-          `source window(${w.srcWindowId}) not found, use current(${current.id}) instead.`,
-        )
+      const w = await WindowStackManager.findWindow(windowId)
+      const incognito = sender.tab?.incognito ?? false
+      const targetId = await findTabTargetWindowId(w?.srcWindowId, incognito)
+      try {
+        if (targetId != null) {
+          await chrome.tabs.create({ url, windowId: targetId })
+        } else {
+          await chrome.windows.create({ url, incognito })
+        }
+      } catch (e) {
+        // Keep the popup open so the page isn't lost.
+        console.error("Failed to open in tab", e)
+        response(false)
+        return
       }
 
-      if (targetId) {
-        chrome.tabs.create({ url: targetUrl, windowId: targetId })
-        await closeWindow(sender.tab?.windowId as number, "openInTab")
-        await WindowStackManager.removeWindow(sender.tab?.windowId as number)
-        response(true)
-      } else {
-        response(false)
-      }
+      await closeWindow(windowId, "openInTab")
+      await WindowStackManager.removeWindow(windowId)
+      response(true)
     }
 
-    handleOpenInTab()
+    handleOpenInTab().catch((e) => {
+      console.error("Failed to open in tab", e)
+      response(false)
+    })
+    return true
+  },
+
+  [ServiceWorkerCommand.getPopupKeepOpen]: (
+    _: unknown,
+    sender: Sender,
+    response: (res: unknown) => void,
+  ) => {
+    const windowId = sender.tab?.windowId
+    if (windowId == null) {
+      response(false)
+      return false
+    }
+    WindowStackManager.isKeepOpen(windowId)
+      .then(response)
+      .catch((e) => {
+        console.error("Failed to get keep open", e)
+        response(false)
+      })
+    return true
+  },
+
+  [ServiceWorkerCommand.setPopupKeepOpen]: (
+    param: { keepOpen: boolean },
+    sender: Sender,
+    response: (res: unknown) => void,
+  ) => {
+    const windowId = sender.tab?.windowId
+    if (windowId == null) {
+      response(false)
+      return false
+    }
+    const handleSetKeepOpen = async () => {
+      try {
+        await WindowStackManager.setKeepOpen(windowId, param.keepOpen)
+        response(await WindowStackManager.isKeepOpen(windowId))
+      } catch (e) {
+        console.error("Failed to set keep open", e)
+        // The update failed, so the window still has the previous state.
+        response(!param.keepOpen)
+      }
+    }
+    handleSetKeepOpen()
     return true
   },
 
@@ -295,17 +350,19 @@ const commandFuncs = {
       }
 
       const layer = stack.find((s) => s.find((w) => w.id === windowId))
-      if (!layer || layer.length > 1) {
-        // Do nothing when the window isn't in the layer or multiple links are opened.
+      // Keep open windows don't count as multiple links opened at once.
+      const closableWindows = layer?.filter((w) => !w.keepOpen) ?? []
+      const window = closableWindows.find((w) => w.id === windowId)
+      if (!window || closableWindows.length > 1) {
+        // Do nothing when the window isn't in the layer, is marked as keep open,
+        // or multiple links are opened. Returning before scheduleClose also keeps
+        // a pending close of other windows from being cancelled.
         response(true)
         return
       }
 
       // Schedule popup window to close with configured delay
-      const window = layer.find((w) => w.id === windowId)
-      if (window) {
-        await PopupAutoClose.scheduleClose([window], "onHidden")
-      }
+      await PopupAutoClose.scheduleClose([window], "onHidden")
       response(false)
     }
 
@@ -423,6 +480,11 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
 chrome.windows.onRemoved.addListener(async (windowId: number) => {
   // Wait for the persisted state so we never write back the empty default.
   await ServiceWorkerData.ready()
+
+  // Drop windows closed by the user, so stale entries don't affect
+  // auto-close decisions. Does nothing for windows not in the stack.
+  await WindowStackManager.removeWindow(windowId)
+
   const normalWindows = ServiceWorkerData.get().normalWindows ?? []
   if (!normalWindows.some((w) => w.id === windowId)) return
 
