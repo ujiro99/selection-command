@@ -194,6 +194,10 @@ export const ContextMenu = {
   ) => {
     if (tab && tab.id) {
       const command = ContextMenu.commandIdObj[info.menuItemId]
+      if (!command) {
+        console.warn("Command not found for menu item:", info.menuItemId)
+        return
+      }
       const res = await Ipc.sendTab(tab.id, TabCommand.executeAction, {
         command,
       })
