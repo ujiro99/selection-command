@@ -343,6 +343,22 @@ describe("Service Worker Migration", () => {
     )
   })
 
+  it("MG-01-c-error: should respond false when toggleStar fails", async () => {
+    mockEnhancedSettings.get.mockRejectedValueOnce(new Error("read failed"))
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
+
+    const { testExports } = await import("../service_worker")
+    const mockResponse = vi.fn()
+    testExports.commandFuncs[ServiceWorkerCommand.toggleStar](
+      { id: "star" },
+      {} as chrome.runtime.MessageSender,
+      mockResponse,
+    )
+
+    await vi.waitFor(() => expect(mockResponse).toHaveBeenCalledWith(false))
+    errorSpy.mockRestore()
+  })
+
   const setupOnCommand = async ({
     tab,
     tabSelection,
@@ -1352,6 +1368,7 @@ describe("Keep Open", () => {
   const findWindow = vi.fn()
   const windowExists = vi.fn()
   const closeWindow = vi.fn().mockResolvedValue(undefined)
+  const getCurrentTab = vi.fn().mockResolvedValue({ id: 1 })
 
   const win = (id: number, srcWindowId: number, keepOpen?: boolean) => ({
     id,
@@ -1376,7 +1393,7 @@ describe("Keep Open", () => {
     vi.doMock("@/services/chrome", () => ({
       windowExists,
       closeWindow,
-      getCurrentTab: vi.fn().mockResolvedValue({ id: 1 }),
+      getCurrentTab,
     }))
     vi.doMock("@/services/popupAutoClose", () => ({
       PopupAutoClose: { scheduleClose },
@@ -1676,5 +1693,37 @@ describe("Keep Open", () => {
     expect(await send(true)).toHaveBeenCalledWith(true)
     expect(await send(false)).toHaveBeenCalledWith(false)
     expect(findWindow).toHaveBeenCalledWith(100)
+  })
+
+  it("KO-15: onHidden should respond true when getting the stack fails", async () => {
+    getStack.mockRejectedValueOnce(new Error("stack failed"))
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
+    const { testExports } = await loadServiceWorker()
+    const response = vi.fn()
+    testExports.commandFuncs[ServiceWorkerCommand.onHidden](
+      undefined,
+      { tab: { id: 1, windowId: 100 } } as chrome.runtime.MessageSender,
+      response,
+    )
+
+    await vi.waitFor(() => expect(response).toHaveBeenCalledWith(true))
+    expect(scheduleClose).not.toHaveBeenCalled()
+    errorSpy.mockRestore()
+  })
+
+  it("KO-16: getActiveTabId should respond undefined when getting the tab fails", async () => {
+    getCurrentTab.mockRejectedValueOnce(new Error("tab failed"))
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
+    const { testExports } = await loadServiceWorker()
+    const response = vi.fn()
+    testExports.commandFuncs[ServiceWorkerCommand.getActiveTabId](
+      undefined,
+      {} as chrome.runtime.MessageSender,
+      response,
+    )
+
+    await vi.waitFor(() => expect(response).toHaveBeenCalled())
+    expect(response).toHaveBeenCalledWith(undefined)
+    errorSpy.mockRestore()
   })
 })

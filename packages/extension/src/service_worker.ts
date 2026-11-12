@@ -78,7 +78,13 @@ const getActiveTabId = (
   _sender: Sender,
   response: (res: unknown) => void,
 ) => {
-  getCurrentTab().then((tab) => response(tab?.id))
+  getCurrentTab()
+    .then((tab) => response(tab?.id))
+    .catch((e) => {
+      console.error("Failed to get active tab", e)
+      // Same as when no active tab exists.
+      response(undefined)
+    })
   return true
 }
 
@@ -366,7 +372,11 @@ const commandFuncs = {
       response(false)
     }
 
-    handleOnHidden()
+    handleOnHidden().catch((e) => {
+      console.error("Failed to handle onHidden", e)
+      // true means no close was scheduled.
+      response(true)
+    })
     return true
   },
 
@@ -388,7 +398,10 @@ const commandFuncs = {
       await Settings.set(settings, true)
       response(true)
     }
-    toggle()
+    toggle().catch((e) => {
+      console.error("Failed to toggle star", e)
+      response(false)
+    })
     return true
   },
 
