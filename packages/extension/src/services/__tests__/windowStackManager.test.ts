@@ -365,6 +365,23 @@ describe("WindowStackManager", () => {
       )
     })
 
+    it("should keep children opened at once as siblings after a keep open next layer", async () => {
+      const parent = createTestWindow(1, "cmd", 0)
+      const keptChild = keepOpenWindow(2, 1)
+      const child1 = createTestWindow(3, "cmd", 1)
+      const child2 = createTestWindow(4, "cmd", 1)
+
+      await WindowStackManager.addWindows([
+        { window: child1, parentWindowId: 1 },
+        { window: child2, parentWindowId: 1 },
+      ])
+
+      expectStackUpdate(
+        [[parent], [keptChild], [child1, child2]],
+        [[parent], [keptChild]],
+      )
+    })
+
     it("should update only the target window", async () => {
       const a = createTestWindow(1, "cmd", 0)
       const b = createTestWindow(2, "cmd", 1)

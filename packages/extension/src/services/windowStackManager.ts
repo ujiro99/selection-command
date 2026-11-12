@@ -27,14 +27,28 @@ const insertWindow = (
     if (parentLayerIndex >= 0) {
       const nextLayerIndex = parentLayerIndex + 1
       const nextLayer = stack[nextLayerIndex]
-      if (nextLayer && canJoinLayer(nextLayer)) {
+      if (!nextLayer) {
+        // Create new layer after the parent layer
+        stack.splice(nextLayerIndex, 0, [window])
+      } else if (canJoinLayer(nextLayer)) {
         // Add to existing next layer
         nextLayer.push(window)
       } else {
-        // Create a new layer after the parent layer, or after the keep open
-        // layer so that focusing a keep open window closes this one.
-        const insertIndex = nextLayer ? nextLayerIndex + 1 : nextLayerIndex
-        stack.splice(insertIndex, 0, [window])
+        // The next layer holds a keep open window. Place this one after it so
+        // that focusing the keep open window closes this one, joining the
+        // parent's other children already there (e.g. links opened at once).
+        const afterIndex = nextLayerIndex + 1
+        const afterLayer = stack[afterIndex]
+        if (
+          afterLayer &&
+          afterLayer.length > 0 &&
+          afterLayer[0].srcWindowId === parentWindowId &&
+          canJoinLayer(afterLayer)
+        ) {
+          afterLayer.push(window)
+        } else {
+          stack.splice(afterIndex, 0, [window])
+        }
       }
     } else {
       // Parent not found, check if there's already a layer with the same srcWindowId

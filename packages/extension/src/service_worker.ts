@@ -157,7 +157,7 @@ chrome.runtime.onConnect.addListener(onConnect)
  * Find a normal window to open a popup's page in as a tab.
  * Prefers the window the popup was opened from. A popup can outlive it (e.g.
  * with Keep Open) or be opened from another popup, so falls back to the
- * focused normal window, then any normal window. Returns undefined when no
+ * last focused normal window, then any normal window. Returns undefined when no
  * normal window exists.
  */
 const findTabTargetWindowId = async (
@@ -171,7 +171,12 @@ const findTabTargetWindowId = async (
   const windows = (
     await chrome.windows.getAll({ windowTypes: ["normal"] })
   ).filter((w) => w.incognito === incognito)
-  return (windows.find((w) => w.focused) ?? windows[0])?.id
+  // The popup itself has the focus when its button is clicked, so no normal
+  // window is focused here. Use the last focused normal window instead.
+  const lastFocused = await chrome.windows
+    .getLastFocused({ windowTypes: ["normal"] })
+    .catch(() => undefined)
+  return (windows.find((w) => w.id === lastFocused?.id) ?? windows[0])?.id
 }
 
 const commandFuncs = {
