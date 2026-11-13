@@ -203,3 +203,10 @@ interface PageActionOption {
 - Extension: `yarn zip`で配布用zipファイル作成
 - Hub: GitHub Pages（`.github/workflows/pages.yml`）で静的サイト配布
 - Shared: TypeScript declarations自動生成
+
+## Github
+
+When creating a PR linked to an issue:
+
+- Targeting `main`: Add `Closes #<issue-number>` to the PR body.
+- Targeting other branches: Link the issue via GitHub's Development section (not closing keywords).
