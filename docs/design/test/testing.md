@@ -15,7 +15,7 @@
 | パッケージ           | Unit Test | E2E Test |
 | -------------------- | --------- | -------- |
 | `packages/extension` | ◯         | ◯        |
-| `packages/pages`       | ◯         | -        |
+| `packages/pages`     | ◯         | -        |
 | `packages/shared`    | -         | -        |
 
 ---
@@ -121,7 +121,7 @@ yarn test src/services/settings/__tests__/settings.test.ts   # 単一ファイ�
 
 ### 対象
 
-テスト項目の一覧と実装状況は [E2Eテスト仕様書](./test/e2e-test-spec.md) で管理する。
+テスト項目の一覧と実装状況は [E2Eテスト仕様書](./e2e-test-spec.md) で管理する。
 
 | 優先度 | シナリオ例                                 |
 | ------ | ------------------------------------------ |
@@ -152,7 +152,7 @@ packages/extension/
 - **Arrange-Act-Assert (AAA)** パターンを使用
 - **Page Object Model (POM)** パターンで頻出する操作を抽象化
   - ページオブジェクトは `e2e/pages/` に配置
-- テスト ID は `E2E-XX` 形式とし、[E2Eテスト仕様書](./test/e2e-test-spec.md) を追加・更新すること
+- テスト ID は `E2E-XX` 形式とし、[E2Eテスト仕様書](./e2e-test-spec.md) を追加・更新すること
 
 ### 方針
 

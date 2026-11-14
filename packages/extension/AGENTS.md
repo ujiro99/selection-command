@@ -61,7 +61,7 @@ This file provides guidance to AI Agent when working with code in this repositor
   - `setup.ts` - Vitestのセットアップファイル（Chrome拡張機能APIのモック、jsdom環境設定）
   - `**/__tests__/*.test.{ts,tsx}` - コンポーネントとサービスのユニットテスト（テスト対象と同階層の `__tests__/` に配置）
   - `e2e/*.spec.ts` - PlaywrightによるE2Eテスト
-  - テスト方針の詳細は [docs/testing.md](../../docs/testing.md) を参照
+  - テスト方針の詳細は [docs/design/test/testing.md](../../docs/design/test/testing.md) を参照
 
 **主要機能:**
 
@@ -174,5 +174,5 @@ content script はユーザーが閲覧中の任意のページ上で動作す�
   - Arrange-Act-Assertパターンを使用
   - Page Object Model パターンを使用して、頻出する操作を抽象化する
     - `packages/extension/e2e/pages/` にページオブジェクトを配置
-  - 詳細な設計書は `docs/test/e2e-test-spec.md` を参照、更新すること
+  - 詳細な設計書は `docs/design/test/e2e-test-spec.md` を参照、更新すること
   - テストの実行前には、必ず `yarn build:e2e` を実行して最新のe2e向けビルドを生成すること
