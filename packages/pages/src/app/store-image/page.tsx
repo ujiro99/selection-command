@@ -1,7 +1,29 @@
 import type { Metadata } from "next"
-import { ArrowUpRight, Search, Sparkle, Zap } from "lucide-react"
+import {
+  ArrowUpRight,
+  Bot,
+  EllipsisVertical,
+  Globe,
+  Languages,
+  MonitorPlay,
+  Search,
+  Sparkle,
+  Zap,
+  type LucideIcon,
+} from "lucide-react"
 
 import css from "./page.module.css"
+
+// Commands shown in the mock menu bar, left to right. The first one is hovered.
+const MENU_ICONS: LucideIcon[] = [
+  Search,
+  Bot,
+  Languages,
+  Globe,
+  MonitorPlay,
+  Zap,
+  EllipsisVertical,
+]
 
 export const metadata: Metadata = {
   title: "Store Image | Selection Command",
@@ -83,28 +105,20 @@ export default function StoreImagePage(): JSX.Element {
         </div>
 
         {/* Command popup shown on text selection */}
+        {/* Icon-only menu bar, modeled after the extension's actual popup */}
         <div className={css.popup}>
-          <div className={`${css.menuItem} ${css.menuItemActive}`}>
-            <Search size={16} strokeWidth={2.8} className={css.menuIcon} />
-            <span>検索</span>
-          </div>
-          <div className={css.menuItem}>
-            <Sparkle size={22} strokeWidth={1.8} className={css.menuIcon} />
-            <span>AIに聞く</span>
-          </div>
-          <div className={css.menuItem}>
-            <span className={css.menuGlyph}>文</span>
-            <span>翻訳</span>
-          </div>
-          <div className={css.menuItem}>
-            <Zap
-              size={24}
-              strokeWidth={1.6}
-              className={css.menuIconBolt}
-              fill="currentColor"
-            />
-            <span>その他</span>
-          </div>
+          {MENU_ICONS.map((Icon, index) => (
+            <span
+              key={index}
+              className={
+                index === 0
+                  ? `${css.menuItem} ${css.menuItemActive}`
+                  : css.menuItem
+              }
+            >
+              <Icon strokeWidth={1.75} className={css.menuIcon} />
+            </span>
+          ))}
         </div>
 
         <svg

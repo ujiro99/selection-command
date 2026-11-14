@@ -148,7 +148,7 @@
 
 .scene {
   position: absolute;
-  top: 160px;
+  top: 108px;
   left: 632px;
   width: 720px;
   height: 540px;
@@ -244,36 +244,32 @@
   background: #b9d3fb;
 }
 
-/* Command popup */
+/* Command popup: an icon-only menu bar like the extension's real popup */
 
 .popup {
   position: absolute;
-  top: 326px;
-  left: 118px;
+  top: 350px;
+  left: 88px;
   display: flex;
-  gap: 4px;
-  padding: 10px;
-  border: 1px solid #e3e8ef;
-  border-radius: 14px;
+  align-items: center;
+  padding: 0.15em 0.25em;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.6em;
+  font-size: 32px;
   background: #fff;
   box-shadow:
-    0 24px 48px -12px rgb(30 60 120 / 0.25),
-    0 4px 12px rgb(30 60 120 / 0.08);
+    0 24px 48px -12px rgb(30 60 120 / 0.28),
+    0 4px 10px rgb(30 60 120 / 0.1);
 }
 
 .menuItem {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  width: 98px;
-  height: 82px;
-  border-radius: 10px;
-  font-family: var(--jp);
-  font-size: 13px;
-  font-weight: 700;
-  color: #26344a;
+  width: 2.1em;
+  height: 2.2em;
+  border-radius: 0.45em;
+  color: rgb(20 20 20 / 0.8);
 }
 
 .menuItemActive {
@@ -282,24 +278,14 @@
 }
 
 .menuIcon {
-  height: 26px;
-}
-
-.menuGlyph {
-  font-size: 26px;
-  line-height: 26px;
-  font-weight: 800;
-}
-
-.menuIconBolt {
-  height: 26px;
-  color: #f5b20b;
+  width: 1.1em;
+  height: 1.1em;
 }
 
 .cursor {
   position: absolute;
-  top: 404px;
-  left: 216px;
+  top: 408px;
+  left: 132px;
   filter: drop-shadow(0 4px 6px rgb(15 27 45 / 0.25));
 }
 
@@ -307,8 +293,8 @@
 
 .tooltip {
   position: absolute;
-  top: 456px;
-  left: 272px;
+  top: 468px;
+  left: 160px;
   display: flex;
   align-items: center;
   gap: 18px;
