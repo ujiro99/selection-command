@@ -122,7 +122,7 @@ CSS は `content_script.tsx` の Shadow DOM 初期化時に `insertCss()` で手
 **content script のスタイルはユーザーページと相互に干渉させない**
 
 content script はユーザーが閲覧中の任意のページ上で動作するため、ユーザーページへ影響を与えず、
-ユーザーページから影響も受けないようにする（詳細は `docs/design/tailwindcss-v4-migration.md`）。
+ユーザーページから影響も受けないようにする。
 
 - **`rem` を使わない**: `rem` は Shadow DOM 内でもユーザーページの root font-size に従う。
   Tailwind のテーマは `--spacing: 4px` をはじめ、rem で定義されるトークンをすべて px で再定義している。
