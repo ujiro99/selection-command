@@ -22,11 +22,9 @@
   font-family: var(--font-geist-sans), var(--jp);
   color: var(--ink);
   background:
-    radial-gradient(
-      ellipse 640px 420px at 100% 0%,
+    radial-gradient(ellipse 640px 420px at 100% 0%,
       rgb(205 225 252 / 0.85),
-      transparent 70%
-    ),
+      transparent 70%),
     linear-gradient(135deg, #fbfcff 0%, #f5f8fd 55%, #eef3fb 100%);
 }
 
@@ -36,11 +34,9 @@
   bottom: 40px;
   width: 520px;
   height: 260px;
-  background: radial-gradient(
-    ellipse at center,
-    rgb(36 104 230 / 0.12),
-    transparent 70%
-  );
+  background: radial-gradient(ellipse at center,
+      rgb(36 104 230 / 0.12),
+      transparent 70%);
   filter: blur(10px);
 }
 
@@ -56,24 +52,14 @@
 .brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
+  height: 39px;
+  color: var(--ink);
 }
 
 .brandIcon {
-  display: grid;
-  place-items: center;
-  width: 39px;
-  height: 39px;
-  border-radius: 10px;
-  color: #fff;
-  background: linear-gradient(145deg, #3b82f6, #1d5fe0);
-  box-shadow: 0 6px 14px rgb(36 104 230 / 0.3);
-}
-
-.brandName {
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  border-radius: 4px;
+  box-shadow: 0 6px 14px rgb(36 104 230 / 0.25);
 }
 
 .eyebrow {

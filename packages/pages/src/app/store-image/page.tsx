@@ -12,6 +12,8 @@ import {
   type LucideIcon,
 } from "lucide-react"
 
+import { Logo } from "@/components/Logo"
+
 import css from "./page.module.css"
 
 // Commands shown in the mock menu bar, left to right. The first one is hovered.
@@ -42,10 +44,17 @@ export default function StoreImagePage(): JSX.Element {
       {/* Left column: brand + copy */}
       <section className={css.copy}>
         <div className={css.brand}>
-          <span className={css.brandIcon}>
-            <ArrowUpRight size={20} strokeWidth={3} />
-          </span>
-          <span className={css.brandName}>Selection Command</span>
+          {/* Plain img: next/image would point at /_next/image, which
+              does not exist in the static export. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/store-image/icon128.png"
+            alt=""
+            width={44}
+            height={44}
+            className={css.brandIcon}
+          />
+          <Logo variant="lg" hub={false} />
         </div>
 
         <p className={css.eyebrow}>CHROME EXTENSION</p>

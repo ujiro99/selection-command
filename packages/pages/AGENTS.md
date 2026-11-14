@@ -81,6 +81,7 @@ This file provides guidance to AI Agent when working with code in this repositor
 - `public/data/experiments.json` - Extension のABテスト配分設定
 - `src/app/[lang]/test/` - e2e テストページ本体（`page.tsx`, `QuillWrapper.tsx`）
 - `src/app/store-image/` - Chrome Web Store 用プロモーション画像ページ
+- `src/components/Logo.tsx` - ロゴ（selection-command-hub から移植。store-image で使用）
 - `src/app/[lang]/layout.tsx`, `src/app/layout.tsx` - App Router の必須レイアウト（Header/Footer/LanguageProvider を保持）
 - `src/features/locale/` - 14言語分の辞書ファイル（layout.tsx が
   無条件にバレルインポートするため削除できない）
