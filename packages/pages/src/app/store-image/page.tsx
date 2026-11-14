@@ -117,7 +117,7 @@ export default function StoreImagePage(): JSX.Element {
             <p className={css.articleTitle}>仕事の進め方が変わる3つの理由</p>
             <div className={css.line} style={{ width: 548 }} />
             <p className={css.articleText}>
-              仕事の進め方を大きく変えつつあるのが、
+              仕事の進め方を大きく変えるテクノロジーが、
               <br />
               最近よく耳にする<mark className={css.selected}>生成AI</mark>だ。
             </p>
