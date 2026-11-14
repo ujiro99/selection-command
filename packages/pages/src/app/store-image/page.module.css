@@ -1,0 +1,371 @@
+/*
+ * Chrome Web Store promotional image (1280x800).
+ * All positions are absolute so the layout matches the screenshot exactly.
+ */
+
+.canvas {
+  --ink: #0f1b2d;
+  --ink-sub: #4a5a70;
+  --muted: #7b8aa0;
+  --blue: #2468e6;
+  --blue-deep: #1a5ad8;
+  --blue-soft: #eaf1fe;
+  --line: #e6eaf1;
+  --jp:
+    "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic",
+    "Meiryo", sans-serif;
+
+  position: relative;
+  width: 1280px;
+  height: 800px;
+  overflow: hidden;
+  font-family: var(--font-geist-sans), var(--jp);
+  color: var(--ink);
+  background:
+    radial-gradient(
+      ellipse 640px 420px at 100% 0%,
+      rgb(205 225 252 / 0.85),
+      transparent 70%
+    ),
+    linear-gradient(135deg, #fbfcff 0%, #f5f8fd 55%, #eef3fb 100%);
+}
+
+.glow {
+  position: absolute;
+  right: 40px;
+  bottom: 40px;
+  width: 520px;
+  height: 260px;
+  background: radial-gradient(
+    ellipse at center,
+    rgb(36 104 230 / 0.12),
+    transparent 70%
+  );
+  filter: blur(10px);
+}
+
+/* ---------- Left column ---------- */
+
+.copy {
+  position: absolute;
+  top: 54px;
+  left: 68px;
+  width: 540px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brandIcon {
+  display: grid;
+  place-items: center;
+  width: 39px;
+  height: 39px;
+  border-radius: 10px;
+  color: #fff;
+  background: linear-gradient(145deg, #3b82f6, #1d5fe0);
+  box-shadow: 0 6px 14px rgb(36 104 230 / 0.3);
+}
+
+.brandName {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.eyebrow {
+  margin-top: 87px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--blue);
+}
+
+.headline {
+  display: flex;
+  flex-direction: column;
+  margin-top: 22px;
+  font-family: var(--jp);
+  font-size: 49px;
+  font-weight: 800;
+  line-height: 1.38;
+  letter-spacing: -0.02em;
+}
+
+.headlineAccent {
+  background: linear-gradient(90deg, #1f63e4, #2d7cf0);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.lead {
+  margin-top: 26px;
+  font-family: var(--jp);
+  font-size: 21px;
+  font-weight: 500;
+  line-height: 1.85;
+  color: var(--ink-sub);
+}
+
+.chips {
+  display: flex;
+  gap: 14px;
+  margin: 30px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 50px;
+  padding: 0 16px;
+  border: 1px solid #dfe5ee;
+  border-radius: 10px;
+  font-family: var(--jp);
+  font-size: 15px;
+  font-weight: 700;
+  background: #fff;
+  box-shadow: 0 2px 6px rgb(15 27 45 / 0.04);
+}
+
+.chipIcon {
+  color: var(--blue);
+}
+
+.chipGlyph {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--blue);
+}
+
+/* ---------- Right column: browser mockup ---------- */
+
+.scene {
+  position: absolute;
+  top: 160px;
+  left: 632px;
+  width: 720px;
+  height: 540px;
+  transform: rotate(-1.8deg);
+  transform-origin: 0 0;
+}
+
+.browser {
+  position: absolute;
+  inset: 0 0 6px 0;
+  overflow: hidden;
+  border: 1px solid #dfe4ec;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow:
+    0 40px 80px -20px rgb(30 60 120 / 0.22),
+    0 10px 24px rgb(30 60 120 / 0.08);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  height: 62px;
+  padding: 0 20px;
+  border-bottom: 1px solid #e8ecf2;
+  background: #f4f6fa;
+}
+
+.dots {
+  display: flex;
+  gap: 8px;
+}
+
+.dots i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #cbd2dc;
+}
+
+.address {
+  flex: 1;
+  height: 38px;
+  padding: 0 16px;
+  border: 1px solid #e3e8ef;
+  border-radius: 9px;
+  font-size: 14px;
+  line-height: 36px;
+  color: #7a889c;
+  background: #fff;
+}
+
+.article {
+  padding: 42px 52px 0;
+}
+
+.articleLabel {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.articleTitle {
+  margin: 14px 0 22px;
+  font-family: var(--jp);
+  font-size: 26px;
+  font-weight: 700;
+  color: #1c2a3f;
+}
+
+.line {
+  height: 12px;
+  margin-bottom: 18px;
+  border-radius: 6px;
+  background: var(--line);
+}
+
+.articleText {
+  margin: 24px 0 26px;
+  font-family: var(--jp);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 2.05;
+  color: #2c3a50;
+}
+
+.selected {
+  padding: 6px 4px;
+  margin-right: 4px;
+  color: #1c2a3f;
+  background: #b9d3fb;
+}
+
+/* Command popup */
+
+.popup {
+  position: absolute;
+  top: 326px;
+  left: 118px;
+  display: flex;
+  gap: 4px;
+  padding: 10px;
+  border: 1px solid #e3e8ef;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow:
+    0 24px 48px -12px rgb(30 60 120 / 0.25),
+    0 4px 12px rgb(30 60 120 / 0.08);
+}
+
+.menuItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 98px;
+  height: 82px;
+  border-radius: 10px;
+  font-family: var(--jp);
+  font-size: 13px;
+  font-weight: 700;
+  color: #26344a;
+}
+
+.menuItemActive {
+  color: var(--blue);
+  background: var(--blue-soft);
+}
+
+.menuIcon {
+  height: 26px;
+}
+
+.menuGlyph {
+  font-size: 26px;
+  line-height: 26px;
+  font-weight: 800;
+}
+
+.menuIconBolt {
+  height: 26px;
+  color: #f5b20b;
+}
+
+.cursor {
+  position: absolute;
+  top: 404px;
+  left: 216px;
+  filter: drop-shadow(0 4px 6px rgb(15 27 45 / 0.25));
+}
+
+/* Result tooltip */
+
+.tooltip {
+  position: absolute;
+  top: 456px;
+  left: 272px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 20px 30px 20px 26px;
+  border-radius: 12px;
+  color: #fff;
+  background: linear-gradient(135deg, #2a73ee, var(--blue-deep));
+  box-shadow: 0 22px 44px -10px rgb(26 90 216 / 0.55);
+}
+
+.tooltip::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 30px;
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  background: #2a73ee;
+  transform: rotate(45deg);
+}
+
+.tooltipIcon {
+  flex-shrink: 0;
+}
+
+.tooltipTitle {
+  font-family: var(--jp);
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.tooltipSub {
+  font-family: var(--jp);
+  font-size: 13px;
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+/* ---------- Footer ---------- */
+
+.tagline {
+  position: absolute;
+  left: 70px;
+  bottom: 40px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.signature {
+  position: absolute;
+  right: 43px;
+  bottom: 33px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: #8291a6;
+}

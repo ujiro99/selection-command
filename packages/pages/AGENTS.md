@@ -18,7 +18,7 @@ This file provides guidance to AI Agent when working with code in this repositor
 （Next.js 15 フル機能アプリ）でしたが、そのアプリケーションは新しいリポジトリ
 （https://github.com/ujiro99/selection-command-hub、selection-command.com へデプロイ）に移行しました。
 
-このパッケージに残っているのは、以下の3つの責務のみです。
+このパッケージに残っているのは、以下の4つの責務のみです。
 
 1. **ai-services.json の静的ホスティング**
    - `public/data/ai-services.json` を GitHub Pages で静的配信する
@@ -59,6 +59,14 @@ This file provides guidance to AI Agent when working with code in this repositor
    - このページ配下のコンポーネント（Header/Footer/LocaleSelector など）は、App Router のレイアウト要件を満たすために
      最小限残っているだけで、機能的な意味は薄い
 
+4. **Chrome Web Store 用プロモーション画像の作成**
+   - `src/app/store-image/page.tsx`（`/store-image`）は、Chrome Web Store の
+     トップ画像（1280x800）を HTML/CSS で描画するためのページ
+   - `yarn dev` で起動し、ビューポートを 1280x800 にしてスクリーンショットを撮って画像化する
+     （dev 時は Next.js の開発インジケーターが左下に出るため、`yarn build` した `out/` を配信して撮影するとよい）
+   - 日本語フォントはシステムフォント（ヒラギノ角ゴ等）に依存するため、macOS での撮影を前提とする
+   - `noindex` を指定しており、言語別レイアウト（`[lang]`）の外に置いているため Header/Footer は表示されない
+
 ## 開発コマンド
 
 - `yarn dev` - Next.js開発サーバーの開始（Turbopack使用）
@@ -72,6 +80,7 @@ This file provides guidance to AI Agent when working with code in this repositor
 - `public/data/ai-services.json` - Extension が参照するデータファイル
 - `public/data/experiments.json` - Extension のABテスト配分設定
 - `src/app/[lang]/test/` - e2e テストページ本体（`page.tsx`, `QuillWrapper.tsx`）
+- `src/app/store-image/` - Chrome Web Store 用プロモーション画像ページ
 - `src/app/[lang]/layout.tsx`, `src/app/layout.tsx` - App Router の必須レイアウト（Header/Footer/LanguageProvider を保持）
 - `src/features/locale/` - 14言語分の辞書ファイル（layout.tsx が
   無条件にバレルインポートするため削除できない）
