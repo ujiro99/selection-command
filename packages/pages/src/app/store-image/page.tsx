@@ -116,7 +116,6 @@ export default function StoreImagePage(): JSX.Element {
             <p className={css.articleLabel}>ARTICLE · RESEARCH</p>
             <p className={css.articleTitle}>情報をもっと、スムーズに。</p>
             <div className={css.line} style={{ width: 548 }} />
-            <div className={css.line} style={{ width: 502 }} />
             <p className={css.articleText}>
               新しいアイデアを探すとき、
               <br />

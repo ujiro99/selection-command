@@ -22,9 +22,11 @@
   font-family: var(--font-geist-sans), var(--jp);
   color: var(--ink);
   background:
-    radial-gradient(ellipse 640px 420px at 100% 0%,
+    radial-gradient(
+      ellipse 640px 420px at 100% 0%,
       rgb(205 225 252 / 0.85),
-      transparent 70%),
+      transparent 70%
+    ),
     linear-gradient(135deg, #fbfcff 0%, #f5f8fd 55%, #eef3fb 100%);
 }
 
@@ -34,9 +36,11 @@
   bottom: 40px;
   width: 520px;
   height: 260px;
-  background: radial-gradient(ellipse at center,
-      rgb(36 104 230 / 0.12),
-      transparent 70%);
+  background: radial-gradient(
+    ellipse at center,
+    rgb(36 104 230 / 0.12),
+    transparent 70%
+  );
   filter: blur(10px);
 }
 
@@ -211,19 +215,20 @@
 }
 
 .articleText {
-  margin: 24px 0 26px;
+  margin: 28px 0 26px;
   font-family: var(--jp);
-  font-size: 18px;
+  font-size: 23px;
   font-weight: 600;
-  line-height: 2.05;
+  line-height: 2;
   color: #2c3a50;
 }
 
 .selected {
-  padding: 6px 4px;
+  padding: 5px 4px;
   margin-right: 4px;
-  color: #1c2a3f;
-  background: #b9d3fb;
+  border-radius: 3px;
+  color: #12203a;
+  background: #a9c9fb;
 }
 
 /* Command popup: an icon-only menu bar like the extension's real popup */
@@ -240,8 +245,8 @@
   font-size: 32px;
   background: #fff;
   box-shadow:
-    0 24px 48px -12px rgb(30 60 120 / 0.28),
-    0 4px 10px rgb(30 60 120 / 0.1);
+    0 30px 60px -12px rgb(20 45 100 / 0.38),
+    0 8px 18px rgb(20 45 100 / 0.16);
 }
 
 .menuItem {
