@@ -96,9 +96,9 @@
   margin-top: 26px;
   font-family: var(--jp);
   font-size: 24px;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1.8;
-  color: var(--ink-sub);
+  color: #2b394d;
 }
 
 .chips {
@@ -204,7 +204,7 @@
   font-family: var(--jp);
   font-size: 26px;
   font-weight: 700;
-  color: #1c2a3f;
+  color: #556378;
 }
 
 .line {
@@ -218,15 +218,16 @@
   margin: 28px 0 26px;
   font-family: var(--jp);
   font-size: 23px;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 2;
-  color: #2c3a50;
+  color: #6b788c;
 }
 
 .selected {
   padding: 5px 4px;
-  margin-right: 4px;
+  margin: 0 4px;
   border-radius: 3px;
+  font-weight: 700;
   color: #12203a;
   background: #a9c9fb;
 }

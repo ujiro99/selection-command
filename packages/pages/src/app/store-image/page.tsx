@@ -113,13 +113,13 @@ export default function StoreImagePage(): JSX.Element {
           </div>
 
           <div className={css.article}>
-            <p className={css.articleLabel}>ARTICLE · RESEARCH</p>
-            <p className={css.articleTitle}>情報をもっと、スムーズに。</p>
+            <p className={css.articleLabel}>ARTICLE · TECH</p>
+            <p className={css.articleTitle}>仕事の進め方が変わる3つの理由</p>
             <div className={css.line} style={{ width: 548 }} />
             <p className={css.articleText}>
-              新しいアイデアを探すとき、
+              仕事の進め方を大きく変えつつあるのが、
               <br />
-              <mark className={css.selected}>ユーザー体験</mark>を調べる。
+              最近よく耳にする<mark className={css.selected}>生成AI</mark>だ。
             </p>
             <div className={css.line} style={{ width: 548 }} />
             <div className={css.line} style={{ width: 470 }} />
