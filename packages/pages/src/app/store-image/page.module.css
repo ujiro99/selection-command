@@ -22,11 +22,9 @@
   font-family: var(--font-geist-sans), var(--jp);
   color: var(--ink);
   background:
-    radial-gradient(
-      ellipse 640px 420px at 100% 0%,
+    radial-gradient(ellipse 640px 420px at 100% 0%,
       rgb(205 225 252 / 0.85),
-      transparent 70%
-    ),
+      transparent 70%),
     linear-gradient(135deg, #fbfcff 0%, #f5f8fd 55%, #eef3fb 100%);
 }
 
@@ -36,11 +34,9 @@
   bottom: 40px;
   width: 520px;
   height: 260px;
-  background: radial-gradient(
-    ellipse at center,
-    rgb(36 104 230 / 0.12),
-    transparent 70%
-  );
+  background: radial-gradient(ellipse at center,
+      rgb(36 104 230 / 0.12),
+      transparent 70%);
   filter: blur(10px);
 }
 
@@ -271,7 +267,7 @@
 .cursor {
   position: absolute;
   top: 408px;
-  left: 106px;
+  left: 124px;
   filter: drop-shadow(0 4px 6px rgb(15 27 45 / 0.25));
 }
 
@@ -280,7 +276,7 @@
 .tooltip {
   position: absolute;
   top: 468px;
-  left: 134px;
+  left: 108px;
   display: flex;
   align-items: center;
   gap: 18px;
@@ -304,7 +300,13 @@
 }
 
 .tooltipIcon {
+  display: grid;
   flex-shrink: 0;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.2);
 }
 
 .tooltipTitle {
@@ -312,11 +314,4 @@
   font-size: 19px;
   font-weight: 700;
   line-height: 1.4;
-}
-
-.tooltipSub {
-  font-family: var(--jp);
-  font-size: 13px;
-  font-weight: 500;
-  opacity: 0.85;
 }

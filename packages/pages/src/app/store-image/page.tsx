@@ -1,6 +1,5 @@
 import type { Metadata } from "next"
 import {
-  ArrowUpRight,
   Bot,
   EllipsisVertical,
   Eye,
@@ -163,11 +162,15 @@ export default function StoreImagePage(): JSX.Element {
 
         {/* Result tooltip */}
         <div className={css.tooltip}>
-          <ArrowUpRight size={22} strokeWidth={3} className={css.tooltipIcon} />
-          <div>
-            <p className={css.tooltipTitle}>選択した言葉で検索</p>
-            <p className={css.tooltipSub}>コピー不要</p>
-          </div>
+          {/* Same icon as the hovered menu item, tying the tooltip to it */}
+          <span className={css.tooltipIcon}>
+            <Search size={22} strokeWidth={2.6} />
+          </span>
+          <p className={css.tooltipTitle}>
+            選択した言葉を
+            <br />
+            ワンクリックで検索
+          </p>
         </div>
       </div>
     </main>
