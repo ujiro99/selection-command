@@ -90,6 +90,7 @@ export default function StoreImagePage(): JSX.Element {
           その手間をなくそう。
         </p>
 
+        <p className={css.chipsHeading}>好きなメニューを登録できます</p>
         <ul className={css.chips}>
           {CHIPS.map(({ label, icon: Icon }) => (
             <li key={label} className={css.chip}>

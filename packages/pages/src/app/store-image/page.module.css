@@ -22,9 +22,11 @@
   font-family: var(--font-geist-sans), var(--jp);
   color: var(--ink);
   background:
-    radial-gradient(ellipse 640px 420px at 100% 0%,
+    radial-gradient(
+      ellipse 640px 420px at 100% 0%,
       rgb(205 225 252 / 0.85),
-      transparent 70%),
+      transparent 70%
+    ),
     linear-gradient(135deg, #fbfcff 0%, #f5f8fd 55%, #eef3fb 100%);
 }
 
@@ -34,9 +36,11 @@
   bottom: 40px;
   width: 520px;
   height: 260px;
-  background: radial-gradient(ellipse at center,
-      rgb(36 104 230 / 0.12),
-      transparent 70%);
+  background: radial-gradient(
+    ellipse at center,
+    rgb(36 104 230 / 0.12),
+    transparent 70%
+  );
   filter: blur(10px);
 }
 
@@ -97,12 +101,20 @@
   color: #2b394d;
 }
 
+.chipsHeading {
+  margin-top: 30px;
+  font-family: var(--jp);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
 .chips {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   max-width: 500px;
-  margin: 34px 0 0;
+  margin: 12px 0 0;
   padding: 0;
   list-style: none;
 }
