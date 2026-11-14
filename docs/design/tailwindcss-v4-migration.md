@@ -18,7 +18,7 @@
 | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | 共通設定                    | `/tailwind.config.js`（shadcn 系のカラートークン、`borderRadius`、`fontFamily`、`tailwindcss-animate`、`darkMode: ["class"]`、`container`）。extension と hub が spread して利用                                                           |
 | extension                   | `packages/extension/tailwind.config.js` が共通設定を spread して拡張（独自 keyframes/animation 多数、`fontSize` / `padding` / `translate` / `minWidth` を **px で上書き**、`listStyleType`）                                               |
-| hub                         | `packages/hub/tailwind.config.ts` が共通設定を spread して拡張（`chart` カラー、`scalePop` 等の keyframes、`data` variant）                                                                                                                |
+| hub                         | `packages/pages/tailwind.config.ts` が共通設定を spread して拡張（`chart` カラー、`scalePop` 等の keyframes、`data` variant）                                                                                                                |
 | PostCSS                     | extension: `postcss.config.cjs`（`tailwindcss` + `autoprefixer`） / hub: `postcss.config.mjs`（`tailwindcss`）                                                                                                                             |
 | エントリ CSS                | extension: `src/components/global.css`（`@import "tailwindcss/base"` 等）→ `App.css` から `@import` / hub: `src/app/globals.css`（`@tailwind base` 等）                                                                                    |
 | `@apply` を使う CSS Modules | extension 8 ファイル（`Popup` / `TableOfContents` / `HubBanner` / `ShortcutList` / `Option` / `CommandEditDialog` / `PageActionRecorder` / `help`）、hub 2 ファイル（`page` / `Header`）                                                   |
@@ -171,7 +171,7 @@ hub は「テストページ」と「設定値（`ai-services.json` / `experimen
 - ファイル: `tailwind.config.ts`、`postcss.config.mjs`、`components.json`、`src/components/ui/*`
 - `src/lib/utils.ts` の `cn` の再エクスポートと、`src/lib/__tests__/utils.test.ts` の `cn` のテストを削除（`cn` は shared に残り、extension が引き続き使用する）
 - `vitest.config.ts` のカバレッジ除外設定から `tailwind.config.ts` 等を削除
-- `packages/hub/AGENTS.md` / ルートの `AGENTS.md` に Tailwind・shadcn/ui に関する記述があれば更新し、「hub では Tailwind を使用しない」旨を明記する
+- `packages/pages/AGENTS.md` / ルートの `AGENTS.md` に Tailwind・shadcn/ui に関する記述があれば更新し、「hub では Tailwind を使用しない」旨を明記する
 
 #### 7.4 e2e テストページへの影響
 
@@ -242,7 +242,7 @@ extension の移行と独立して実施できるため先に行う。hub が ro
 - `yarn lint` / `yarn test`（extension でクラス名を検証するユニットテストが 5 ファイル程度あるため、リネームに追随させる）
 - `yarn build`（全パッケージ）、`yarn build:e2e` + `yarn test:e2e`
   - PR 内ではローカル配信した新テストページに対して実行する（7.4）
-- hub: `yarn build:hub` で静的出力（`/en/test` ページ、`ai-services.json`、`experiments.json`）が従来通り生成されること
+- hub: `yarn build:pages` で静的出力（`/en/test` ページ、`ai-services.json`、`experiments.json`）が従来通り生成されること
 - hub: ビルド成果物（`out/`）の CSS に Tailwind 由来のルールが含まれないこと、`package.json` に Tailwind 関連の依存が残っていないこと
 
 ### 目視確認（v3 時点のスクリーンショットと比較）

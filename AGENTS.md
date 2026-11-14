@@ -21,26 +21,26 @@
    - Manifest V3対応
    - React + TypeScript + Vite
 
-2. **packages/hub** (`@selection-command/hub`)
+2. **packages/pages** (`@selection-command/pages`)
    - `ai-services.json` の静的ホスティング + Extension の e2e テストページ配信のみを担う縮小版 Next.js アプリ
    - コマンド共有プラットフォームとしてのフル機能は新リポジトリ（[selection-command-hub](https://github.com/ujiro99/selection-command-hub)、selection-command.com）に移行済み
-   - 詳細は `packages/hub/AGENTS.md` を参照
+   - 詳細は `packages/pages/AGENTS.md` を参照
 
 3. **packages/shared** (`@selection-command/shared`)
    - 共通ユーティリティと型定義
-   - extension と hub で共有される基本型
+   - extension と pages で共有される基本型
 
 ## 開発コマンド（ルートレベル）
 
 ```bash
 # 拡張機能の開発
 yarn dev                   # extensionの開発モード開始
-yarn dev:hub               # hub（テストページ/ai-services.json配信用）の開発モード開始
+yarn dev:pages             # pages（テストページ/ai-services.json配信用）の開発モード開始
 
 # ビルド
 yarn build                 # 全パッケージのビルド
 yarn build:extension       # extensionのみビルド
-yarn build:hub             # hubのみビルド
+yarn build:pages           # pagesのみビルド
 
 # 品質チェック
 yarn lint                  # 全パッケージのlint実行
@@ -68,7 +68,7 @@ yarn lint                  # ESLint実行
 yarn zip                   # 配布用zip作成
 ```
 
-**Hub (packages/hub):**
+**Pages (packages/pages):**
 
 ```bash
 yarn dev                   # Next.js開発サーバー（Turbo）
@@ -90,8 +90,8 @@ yarn dev                   # watch モード
 
 ```
 ┌────────────────────────┐    ┌─────────────────────┐
-│   Chrome Extension     │    │  Hub（静的アセット）│
-│   (packages/ext)       │◄──►│   (packages/hub)    │
+│   Chrome Extension     │    │Pages（静的アセット）│
+│   (packages/ext)       │◄──►│  (packages/pages)   │
 │                        │    │                     │
 │ • コンテンツスクリプト │    │ • ai-services.json  │
 │ • Service Worker       │    │   配信              │
@@ -111,15 +111,15 @@ yarn dev                   # watch モード
 ```
 
 ※ コマンド共有・検索・発見のプラットフォーム（旧 Command Hub のフル機能）は
-新リポジトリ（selection-command-hub）に移行済み。上記の `packages/hub` は
+新リポジトリ（selection-command-hub）に移行済み。上記の `packages/pages` は
 その旧実装の残骸ではなく、Extension が依存する静的アセット配信専用に縮小した別物。
 
 ### 主要な連携ポイント
 
-1. **型システム共有**: SharedパッケージでBaseCommandなどの基本型を定義し、ExtensionとHubで拡張
-2. **AIサービス定義**: `packages/hub/public/data/ai-services.json` を Extension がビルド時/実行時の両方で参照
-3. **ABテスト配分設定**: `packages/hub/public/data/experiments.json` を Extension が実行時に参照し、オンボーディング等のABテストの配分比率を制御
-4. **e2eテスト**: `packages/hub` がデプロイする `/en/test` ページを Extension の Playwright テストが利用
+1. **型システム共有**: SharedパッケージでBaseCommandなどの基本型を定義し、ExtensionとPagesで拡張
+2. **AIサービス定義**: `packages/pages/public/data/ai-services.json` を Extension がビルド時/実行時の両方で参照
+3. **ABテスト配分設定**: `packages/pages/public/data/experiments.json` を Extension が実行時に参照し、オンボーディング等のABテストの配分比率を制御
+4. **e2eテスト**: `packages/pages` がデプロイする `/en/test` ページを Extension の Playwright テストが利用
 
 ### Chrome拡張機能の構造 (packages/extension)
 
@@ -139,10 +139,10 @@ yarn dev                   # watch モード
 - `src/services/pageAction/` - 自動化シーケンス処理
 - `src/lib/robula-plus/` - 堅牢なXPathセレクター生成
 
-### Hub の構造 (packages/hub)
+### Pages の構造 (packages/pages)
 
-`packages/hub` は「ai-services.json の静的ホスティング」と「Extension の
-e2eテストページ配信」のみを担う縮小版アプリ。詳細は `packages/hub/AGENTS.md`
+`packages/pages` は「ai-services.json の静的ホスティング」と「Extension の
+e2eテストページ配信」のみを担う縮小版アプリ。詳細は `packages/pages/AGENTS.md`
 を参照。
 
 ### 型システムの設計
@@ -186,9 +186,9 @@ interface PageActionOption {
 - Shadow DOMでスタイル分離
 - Chrome Storage APIの制限（QUOTA_BYTES等）
 
-**Hub開発:**
+**Pages開発:**
 
-- Hub は縮小版のため新機能は追加しない。コマンド共有プラットフォームとしての機能拡張は新リポジトリ（selection-command-hub）側で行う
+- Pages は縮小版のため新機能は追加しない。コマンド共有プラットフォームとしての機能拡張は新リポジトリ（selection-command-hub）側で行う
 - `ai-services.json` / `experiments.json` とテストページの変更時は Extension 側への影響を確認すること
 
 **テスト:**
@@ -201,7 +201,7 @@ interface PageActionOption {
 **ビルド・配布:**
 
 - Extension: `yarn zip`で配布用zipファイル作成
-- Hub: GitHub Pages（`.github/workflows/pages.yml`）で静的サイト配布
+- Pages: GitHub Pages（`.github/workflows/pages.yml`）で静的サイト配布
 - Shared: TypeScript declarations自動生成
 
 ## Github

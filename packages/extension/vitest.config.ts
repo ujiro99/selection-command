@@ -15,7 +15,7 @@ export default mergeConfig(
       __APP_NAME__: JSON.stringify(packageJson.name),
       __APP_VERSION__: JSON.stringify(packageJson.version),
       __AI_SERVICES_JSON__: fs.readFileSync(
-        resolve(__dirname, "../hub/public/data/ai-services.json"),
+        resolve(__dirname, "../pages/public/data/ai-services.json"),
         "utf-8",
       ),
     },

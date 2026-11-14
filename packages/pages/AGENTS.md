@@ -14,7 +14,7 @@ This file provides guidance to AI Agent when working with code in this repositor
 
 ## このパッケージの役割
 
-`packages/hub` は、かつて Selection Command のコマンド共有・発見プラットフォーム
+`packages/pages` は、かつて Selection Command のコマンド共有・発見プラットフォーム
 （Next.js 15 フル機能アプリ）でしたが、そのアプリケーションは新しいリポジトリ
 （https://github.com/ujiro99/selection-command-hub、selection-command.com へデプロイ）に移行しました。
 
@@ -24,7 +24,7 @@ This file provides guidance to AI Agent when working with code in this repositor
    - `public/data/ai-services.json` を GitHub Pages で静的配信する
    - Extension の AiPrompt コマンドが以下の2通りで参照する
      - ビルド時: `packages/extension/vite.config.ts` 等が
-       `fs.readFileSync("../hub/public/data/ai-services.json")` で直接読み込む
+       `fs.readFileSync("../pages/public/data/ai-services.json")` で直接読み込む
      - 実行時: `packages/extension/src/services/aiPrompt.ts` が
        `${HUB_URL}/data/ai-services.json` に fetch する
    - このファイルを変更・削除する際は、必ず Extension 側のこれら2箇所への
@@ -35,7 +35,7 @@ This file provides guidance to AI Agent when working with code in this repositor
    - Extension が実行時に `${HUB_URL}/data/experiments.json` へ fetch し、
      ABテストの variant 配分比率を決定する
      （`packages/extension/src/services/experiments/experimentConfig.ts`）
-   - このファイルを編集して hub をデプロイするだけで、Chrome Web Store への
+   - このファイルを編集して pages をデプロイするだけで、Chrome Web Store への
      再申請なしに配分比率の変更・実験の停止（`enabled: false`）ができる
    - 形式:
      ```json
@@ -45,10 +45,10 @@ This file provides guidance to AI Agent when working with code in this repositor
      ```
      `allocation` は treatment 側の variant（現在の `onboarding_v5` では variant E。対照群は variant C）に
      割り当てるユーザーの比率（0..1）
-   - Extension 側には hub 障害時用のフォールバック値が
+   - Extension 側には pages 障害時用のフォールバック値が
      `packages/extension/src/services/experiments/experimentConfig.ts` の
      `DEFAULT_CONFIGS` に定義されている。配分比率を恒久的に変更する場合は、
-     こちらも合わせて更新しないと hub 障害時だけ古い比率で割り当てられる
+     こちらも合わせて更新しないと pages 障害時だけ古い比率で割り当てられる
 
 3. **e2e テスト用ページの配信**
    - `src/app/[lang]/test/page.tsx`（`/en/test` など）は、Extension の
@@ -100,7 +100,7 @@ Google Analytics 連携・お問い合わせフォーム等は、全て新リポ
   対応する spec が壊れないことを確認すること（本番反映後の e2e 実行で最終確認）
   - デプロイ前の確認は、`yarn build` した `out/` をローカルで配信し、
     `E2E_HUB_BASE_URL` を指定して extension の e2e を実行する
-    （例: `python3 -m http.server 3100 -d packages/hub/out` →
+    （例: `python3 -m http.server 3100 -d packages/pages/out` →
     `E2E_HUB_BASE_URL=http://localhost:3100 yarn test:e2e`）。
     `ujiro99.github.io` へのリクエストがローカルへ転送される
     （`packages/extension/e2e/utils/hubRoute.ts`）。ただし拡張機能が自ら開く
