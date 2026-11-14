@@ -22,9 +22,11 @@
   font-family: var(--font-geist-sans), var(--jp);
   color: var(--ink);
   background:
-    radial-gradient(ellipse 640px 420px at 100% 0%,
+    radial-gradient(
+      ellipse 640px 420px at 100% 0%,
       rgb(205 225 252 / 0.85),
-      transparent 70%),
+      transparent 70%
+    ),
     linear-gradient(135deg, #fbfcff 0%, #f5f8fd 55%, #eef3fb 100%);
 }
 
@@ -34,9 +36,11 @@
   bottom: 40px;
   width: 520px;
   height: 260px;
-  background: radial-gradient(ellipse at center,
-      rgb(36 104 230 / 0.12),
-      transparent 70%);
+  background: radial-gradient(
+    ellipse at center,
+    rgb(36 104 230 / 0.12),
+    transparent 70%
+  );
   filter: blur(10px);
 }
 
@@ -63,8 +67,8 @@
 }
 
 .eyebrow {
-  margin-top: 87px;
-  font-size: 15px;
+  margin-top: 84px;
+  font-size: 18px;
   font-weight: 700;
   letter-spacing: 0.12em;
   color: var(--blue);
@@ -91,16 +95,18 @@
 .lead {
   margin-top: 26px;
   font-family: var(--jp);
-  font-size: 21px;
+  font-size: 24px;
   font-weight: 500;
-  line-height: 1.85;
+  line-height: 1.8;
   color: var(--ink-sub);
 }
 
 .chips {
   display: flex;
-  gap: 14px;
-  margin: 30px 0 0;
+  flex-wrap: wrap;
+  gap: 10px;
+  max-width: 500px;
+  margin: 34px 0 0;
   padding: 0;
   list-style: none;
 }
@@ -109,12 +115,12 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  height: 50px;
-  padding: 0 16px;
+  height: 52px;
+  padding: 0 17px;
   border: 1px solid #dfe5ee;
-  border-radius: 10px;
+  border-radius: 12px;
   font-family: var(--jp);
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 700;
   background: #fff;
   box-shadow: 0 2px 6px rgb(15 27 45 / 0.04);
@@ -124,21 +130,15 @@
   color: var(--blue);
 }
 
-.chipGlyph {
-  font-size: 17px;
-  font-weight: 800;
-  color: var(--blue);
-}
-
 /* ---------- Right column: browser mockup ---------- */
 
 .scene {
   position: absolute;
-  top: 108px;
+  top: 88px;
   left: 632px;
   width: 720px;
   height: 540px;
-  transform: rotate(-1.8deg);
+  transform: rotate(-1.8deg) scale(1.1);
   transform-origin: 0 0;
 }
 
@@ -235,7 +235,7 @@
 .popup {
   position: absolute;
   top: 350px;
-  left: 88px;
+  left: 62px;
   display: flex;
   align-items: center;
   padding: 0.15em 0.25em;
@@ -271,7 +271,7 @@
 .cursor {
   position: absolute;
   top: 408px;
-  left: 132px;
+  left: 106px;
   filter: drop-shadow(0 4px 6px rgb(15 27 45 / 0.25));
 }
 
@@ -280,7 +280,7 @@
 .tooltip {
   position: absolute;
   top: 468px;
-  left: 160px;
+  left: 134px;
   display: flex;
   align-items: center;
   gap: 18px;
@@ -319,25 +319,4 @@
   font-size: 13px;
   font-weight: 500;
   opacity: 0.85;
-}
-
-/* ---------- Footer ---------- */
-
-.tagline {
-  position: absolute;
-  left: 70px;
-  bottom: 40px;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--muted);
-}
-
-.signature {
-  position: absolute;
-  right: 43px;
-  bottom: 33px;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  color: #8291a6;
 }

@@ -3,10 +3,16 @@ import {
   ArrowUpRight,
   Bot,
   EllipsisVertical,
+  Eye,
+  FileText,
   Globe,
+  Image as ImageIcon,
   Languages,
+  MessageCircle,
   MonitorPlay,
+  MousePointerClick,
   Search,
+  ShoppingBag,
   Sparkle,
   Zap,
   type LucideIcon,
@@ -25,6 +31,21 @@ const MENU_ICONS: LucideIcon[] = [
   MonitorPlay,
   Zap,
   EllipsisVertical,
+]
+
+// Use cases listed under the lead copy, based on popular commands on
+// selection-command.com.
+const CHIPS: { label: string; icon: LucideIcon }[] = [
+  { label: "検索", icon: Search },
+  { label: "AIに聞く", icon: Sparkle },
+  { label: "翻訳", icon: Languages },
+  { label: "要約", icon: FileText },
+  { label: "画像検索", icon: ImageIcon },
+  { label: "動画検索", icon: MonitorPlay },
+  { label: "買い物", icon: ShoppingBag },
+  { label: "SNS検索", icon: MessageCircle },
+  { label: "リンクプレビュー", icon: Eye },
+  { label: "自動操作", icon: MousePointerClick },
 ]
 
 export const metadata: Metadata = {
@@ -57,7 +78,7 @@ export default function StoreImagePage(): JSX.Element {
           <Logo variant="lg" hub={false} />
         </div>
 
-        <p className={css.eyebrow}>CHROME EXTENSION</p>
+        <p className={css.eyebrow}>SELECTION → COMMAND</p>
 
         <h1 className={css.headline}>
           <span>気になる言葉から、</span>
@@ -71,18 +92,12 @@ export default function StoreImagePage(): JSX.Element {
         </p>
 
         <ul className={css.chips}>
-          <li className={css.chip}>
-            <Search size={14} strokeWidth={2.6} className={css.chipIcon} />
-            検索
-          </li>
-          <li className={css.chip}>
-            <Sparkle size={15} strokeWidth={2.2} className={css.chipIcon} />
-            AIに聞く
-          </li>
-          <li className={css.chip}>
-            <span className={css.chipGlyph}>文</span>
-            翻訳
-          </li>
+          {CHIPS.map(({ label, icon: Icon }) => (
+            <li key={label} className={css.chip}>
+              <Icon size={17} strokeWidth={2.4} className={css.chipIcon} />
+              {label}
+            </li>
+          ))}
         </ul>
       </section>
 
@@ -155,11 +170,6 @@ export default function StoreImagePage(): JSX.Element {
           </div>
         </div>
       </div>
-
-      <p className={css.tagline}>
-        Select text. Run commands. Get there faster.
-      </p>
-      <p className={css.signature}>SELECTION → COMMAND</p>
     </main>
   )
 }
