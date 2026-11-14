@@ -16,7 +16,7 @@ const REM_PATTERN =
  *
  * `rem` is relative to the font-size of the document root, so inside the
  * content script's Shadow DOM it depends on the user's page. The content
- * script CSS must not use it (see docs/design/tailwindcss-v4-migration.md).
+ * script CSS must not use it.
  * Media / container query conditions are not declarations and are therefore
  * not reported: `rem` there is based on the browser's initial font-size, not
  * on the page.

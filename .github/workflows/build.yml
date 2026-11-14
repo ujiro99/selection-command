@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths-ignore:
-      - "packages/hub/**"
+      - "packages/pages/**"
       - ".github/workflows/pages.yml"
       - ".github/workflows/update-data.yml"
       - "**.md"

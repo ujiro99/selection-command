@@ -15,7 +15,7 @@
 | パッケージ           | Unit Test | E2E Test |
 | -------------------- | --------- | -------- |
 | `packages/extension` | ◯         | ◯        |
-| `packages/hub`       | ◯         | -        |
+| `packages/pages`     | ◯         | -        |
 | `packages/shared`    | -         | -        |
 
 ---
@@ -121,7 +121,7 @@ yarn test src/services/settings/__tests__/settings.test.ts   # 単一ファイ�
 
 ### 対象
 
-テスト項目の一覧と実装状況は [E2Eテスト仕様書](./test/e2e-test-spec.md) で管理する。
+テスト項目の一覧と実装状況は [E2Eテスト仕様書](./e2e-test-spec.md) で管理する。
 
 | 優先度 | シナリオ例                                 |
 | ------ | ------------------------------------------ |
@@ -152,12 +152,12 @@ packages/extension/
 - **Arrange-Act-Assert (AAA)** パターンを使用
 - **Page Object Model (POM)** パターンで頻出する操作を抽象化
   - ページオブジェクトは `e2e/pages/` に配置
-- テスト ID は `E2E-XX` 形式とし、[E2Eテスト仕様書](./test/e2e-test-spec.md) を追加・更新すること
+- テスト ID は `E2E-XX` 形式とし、[E2Eテスト仕様書](./e2e-test-spec.md) を追加・更新すること
 
 ### 方針
 
 - **テスト対象**: クリティカルパスのみに絞る（全画面を網羅しない）
-- **テストページ**: `packages/hub` がデプロイする `/en/test` ページを利用する
+- **テストページ**: `packages/pages` がデプロイする `/en/test` ページを利用する
 - **フレーキー対策**: `page.waitForSelector` より `expect(locator).toBeVisible()` を優先
 - **並列実行**: `launchPersistentContext` の競合を避けるため `workers: 1` で実行
 - **スクリーンショット**: 失敗時のみ取得（`only-on-failure`）
@@ -177,7 +177,7 @@ yarn test:e2e              # E2E テスト実行
 
 ## AI サービスのセレクタチェック
 
-`packages/hub/public/data/ai-services.json` に定義された各 AI サービスのセレクタ（`inputSelectors` / `submitSelectors`）が実サイトで有効かを確認する仕組み。
+`packages/pages/public/data/ai-services.json` に定義された各 AI サービスのセレクタ（`inputSelectors` / `submitSelectors`）が実サイトで有効かを確認する仕組み。
 
 - スクリプト: `packages/extension/scripts/check-ai-selectors.ts`
 - 判定ロジック（CI と拡張機能内チェックで共有）: `packages/extension/src/services/aiSelectorCheck/`
@@ -239,7 +239,7 @@ yarn check:ai-selectors --only=gemini,claude # 対象を指定（除外リスト
      - 事前に拡張機能の詳細画面（`chrome://extensions`）で「シークレット モードでの実行を許可する」を有効にすること（無効の場合は Console にエラーを出して終了する）
      - シークレットウィンドウ同士はセッションを共有するため、他のシークレットウィンドウが開いていると未ログイン状態にならない（開いている場合は Console に警告を出す）
      - 拡張機能は manifest の既定（`incognito: "spanning"`）で動作するため、通常ウィンドウの設定画面からシークレットタブの content script へ `tabs.sendMessage` で通信できる
-   - Hub にデプロイ済みの最新 `ai-services.json`（キャッシュ無視。取得失敗時はビルド時同梱のもの）を使う
+   - pages（GitHub Pages）にデプロイ済みの最新 `ai-services.json`（キャッシュ無視。取得失敗時はビルド時同梱のもの）を使う
    - 全サービスをバックグラウンドタブで開き、各タブの content script がセレクタを判定する（判定ロジックは CI と共通）
    - 空の入力欄に一時的にダミーテキストを入力して入力後の状態を確認し、直後に削除する（送信はしない。下書きがある場合は触らない）
      - 入力はページアクションと同じ `inputContentEditable`（contenteditable）/ プロトタイプの `value` セッター + `input` イベント（textarea）で行う。`execCommand` はドキュメントのフォーカスが必要で、バックグラウンドタブでは Lexical（Perplexity）等に無視されるため使わない

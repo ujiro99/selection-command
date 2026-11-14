@@ -1,6 +1,6 @@
 name: Check AI Service Selectors
 
-# Daily check that the selectors in packages/hub/public/data/ai-services.json
+# Daily check that the selectors in packages/pages/public/data/ai-services.json
 # still match the live AI service pages.
 #
 # - Selector not found  -> open (or comment on) an issue, and fail the run.
@@ -102,7 +102,7 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           {
-            echo "The daily selector check found selectors in \`packages/hub/public/data/ai-services.json\` that no longer match."
+            echo "The daily selector check found selectors in \`packages/pages/public/data/ai-services.json\` that no longer match."
             echo "Please update the selectors."
             echo
             echo "- Broken services: \`${BROKEN_SERVICES}\`"

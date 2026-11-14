@@ -1,6 +1,6 @@
 #!/usr/bin/env vite-node
 /**
- * Checks that the selectors in hub/public/data/ai-services.json still match
+ * Checks that the selectors in pages/public/data/ai-services.json still match
  * the live AI service pages.
  *
  * For each service:
@@ -52,7 +52,7 @@ import {
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const AI_SERVICES_PATH = path.resolve(
   __dirname,
-  "../../hub/public/data/ai-services.json",
+  "../../pages/public/data/ai-services.json",
 )
 const OUT_DIR = path.resolve(__dirname, "../selector-check-results")
 

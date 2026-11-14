@@ -284,7 +284,7 @@
  * follows the page's root font-size. Every token that Tailwind defines in
  * `rem` is redefined in `px` (1rem = 16px) so the UI never changes with the
  * page. The build fails if the content script CSS still contains `rem`
- * (see src/lib/findRemUsages.ts and docs/design/tailwindcss-v4-migration.md).
+ * (see src/lib/findRemUsages.ts).
  */
 @theme {
   --spacing: 4px;
