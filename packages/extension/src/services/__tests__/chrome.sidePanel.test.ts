@@ -3,7 +3,13 @@ import {
   openSidePanel,
   closeSidePanel,
   updateSidePanelUrl,
+  setSidePanelUrlDirectly,
 } from "@/services/chrome"
+import {
+  buildRelayPath,
+  markDirectUrlSupported,
+  __test as sidePanelUrlTest,
+} from "@/services/sidePanelUrl"
 
 // Replace chrome.sidePanel to emulate browsers with/without the API.
 const setSidePanel = (value: unknown) => {
@@ -25,6 +31,7 @@ describe("chrome.ts side panel functions", () => {
     vi.useFakeTimers()
     sidePanel = createSidePanelMock()
     setSidePanel(sidePanel)
+    sidePanelUrlTest.reset()
   })
 
   afterEach(() => {
@@ -33,7 +40,7 @@ describe("chrome.ts side panel functions", () => {
   })
 
   describe("openSidePanel", () => {
-    it("CSP-OP-01: 正常系: setOptions と open を呼び出す", async () => {
+    it("CSP-OP-01: 正常系: 中継ページを path に指定して setOptions と open を呼び出す", async () => {
       const result = await openSidePanel({
         url: "https://example.com",
         tabId: 1,
@@ -41,11 +48,23 @@ describe("chrome.ts side panel functions", () => {
 
       expect(sidePanel.setOptions).toHaveBeenCalledWith({
         tabId: 1,
-        path: "https://example.com",
+        path: buildRelayPath("https://example.com", 1),
         enabled: true,
       })
       expect(sidePanel.open).toHaveBeenCalledWith({ tabId: 1 })
       expect(result).toEqual({ tabId: 1 })
+    })
+
+    it("CSP-OP-03: 正常系: URL の直接指定が検出済みなら URL をそのまま path に指定する", async () => {
+      await markDirectUrlSupported()
+
+      await openSidePanel({ url: "https://example.com", tabId: 1 })
+
+      expect(sidePanel.setOptions).toHaveBeenCalledWith({
+        tabId: 1,
+        path: "https://example.com",
+        enabled: true,
+      })
     })
 
     it("CSP-OP-02: 異常系: API 非対応時は reject し API を呼び出さない", async () => {
@@ -94,7 +113,19 @@ describe("chrome.ts side panel functions", () => {
   })
 
   describe("updateSidePanelUrl", () => {
-    it("CSP-UP-01: 正常系: setOptions で URL を更新する", async () => {
+    it("CSP-UP-01: 正常系: 中継ページ経由で URL を更新する", async () => {
+      await updateSidePanelUrl({ url: "https://example.com/next", tabId: 1 })
+
+      expect(sidePanel.setOptions).toHaveBeenCalledWith({
+        tabId: 1,
+        path: buildRelayPath("https://example.com/next", 1),
+        enabled: true,
+      })
+    })
+
+    it("CSP-UP-03: 正常系: URL の直接指定が検出済みなら URL をそのまま path に指定する", async () => {
+      await markDirectUrlSupported()
+
       await updateSidePanelUrl({ url: "https://example.com/next", tabId: 1 })
 
       expect(sidePanel.setOptions).toHaveBeenCalledWith({
@@ -109,6 +140,33 @@ describe("chrome.ts side panel functions", () => {
 
       await expect(
         updateSidePanelUrl({ url: "https://example.com/next", tabId: 1 }),
+      ).rejects.toThrow("not supported")
+    })
+  })
+
+  describe("setSidePanelUrlDirectly", () => {
+    it("CSP-SD-01: 正常系: URL をそのまま path に指定し、以降は中継ページを使わない", async () => {
+      await setSidePanelUrlDirectly({ url: "https://example.com", tabId: 1 })
+
+      expect(sidePanel.setOptions).toHaveBeenCalledWith({
+        tabId: 1,
+        path: "https://example.com",
+        enabled: true,
+      })
+
+      await openSidePanel({ url: "https://example.com/next", tabId: 2 })
+      expect(sidePanel.setOptions).toHaveBeenLastCalledWith({
+        tabId: 2,
+        path: "https://example.com/next",
+        enabled: true,
+      })
+    })
+
+    it("CSP-SD-02: 異常系: API 非対応時は reject する", async () => {
+      setSidePanel(undefined)
+
+      await expect(
+        setSidePanelUrlDirectly({ url: "https://example.com", tabId: 1 }),
       ).rejects.toThrow("not supported")
     })
   })

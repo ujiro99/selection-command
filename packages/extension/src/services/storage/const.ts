@@ -20,6 +20,7 @@ export enum LOCAL_STORAGE_KEY {
   HUB_SHARED_AT = "hubSharedAt",
   HUB_REGISTERED = "hubRegistered",
   EXPERIMENTS = "experiments",
+  SIDE_PANEL_DIRECT_URL = "sidePanelDirectUrl",
 }
 
 export enum SESSION_STORAGE_KEY {

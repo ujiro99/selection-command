@@ -19,6 +19,10 @@ import {
   isSidePanelSupported,
   isSidePanelCloseSupported,
 } from "@/services/sidePanelSupport"
+import {
+  toSidePanelPath,
+  markDirectUrlSupported,
+} from "@/services/sidePanelUrl"
 
 /**
  * Check if a window exists
@@ -601,7 +605,7 @@ export const openSidePanel = async (
   // Do not await here because sidePanel.open() must be executed within a user gesture.
   chrome.sidePanel.setOptions({
     tabId,
-    path: toUrl(url),
+    path: toSidePanelPath(toUrl(url), tabId),
     enabled: true,
   })
 
@@ -665,7 +669,7 @@ export const updateSidePanelUrl = async (
     // Update the side panel URL
     await chrome.sidePanel.setOptions({
       tabId: tabId,
-      path: url,
+      path: toSidePanelPath(url, tabId),
       enabled: true,
     })
     // console.debug("[updateSidePanelUrl] Updated:", { tabId, url })
@@ -673,6 +677,36 @@ export const updateSidePanelUrl = async (
     console.error("[updateSidePanelUrl] Failed:", error)
     throw error
   }
+}
+
+export type SidePanelRelayFallbackProps = {
+  url: string
+  tabId: number
+}
+
+/**
+ * Show the URL in the side panel by setting it as `path` directly.
+ * Called by the relay page when the browser does not allow it to navigate to
+ * a web URL (e.g. Chrome). Such browsers accept a web URL as `path`, so the
+ * relay page is skipped from now on.
+ * @param {SidePanelRelayFallbackProps} param - The target URL and tab ID.
+ * @returns {Promise<void>} A promise that resolves when the URL is set.
+ */
+export const setSidePanelUrlDirectly = async (
+  param: SidePanelRelayFallbackProps,
+): Promise<void> => {
+  const { url, tabId } = param
+
+  if (!isSidePanelSupported()) {
+    throw new Error("Side panel API is not supported in this browser")
+  }
+
+  await markDirectUrlSupported()
+  await chrome.sidePanel.setOptions({
+    tabId,
+    path: url,
+    enabled: true,
+  })
 }
 
 /** Test-only exports. Do not use in production code. */

@@ -1,0 +1,110 @@
+import { describe, it, expect, vi, beforeEach } from "vitest"
+import {
+  buildRelayPath,
+  initSidePanelUrlMode,
+  isRelayableUrl,
+  markDirectUrlSupported,
+  toSidePanelPath,
+  SIDE_PANEL_RELAY_PATH,
+  __test,
+} from "@/services/sidePanelUrl"
+import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
+
+vi.mock("@/services/storage", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/services/storage")>()
+  return {
+    ...actual,
+    Storage: {
+      get: vi.fn(),
+      set: vi.fn(),
+    },
+  }
+})
+
+describe("sidePanelUrl", () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    __test.reset()
+    vi.mocked(Storage.get).mockResolvedValue(undefined)
+    vi.mocked(Storage.set).mockResolvedValue(true)
+  })
+
+  describe("buildRelayPath", () => {
+    it("SPU-BR-01: 正常系: URL と tabId をクエリに含む中継ページのパスを返す", () => {
+      const path = buildRelayPath("https://example.com/?q=a b&x=1", 10)
+      const [base, query] = path.split("?")
+      const params = new URLSearchParams(query)
+
+      expect(base).toBe(SIDE_PANEL_RELAY_PATH)
+      expect(params.get("url")).toBe("https://example.com/?q=a b&x=1")
+      expect(params.get("tabId")).toBe("10")
+    })
+  })
+
+  describe("toSidePanelPath", () => {
+    it("SPU-TP-01: 正常系: 初期状態では中継ページのパスを返す", () => {
+      expect(toSidePanelPath("https://example.com", 1)).toBe(
+        buildRelayPath("https://example.com", 1),
+      )
+    })
+
+    it("SPU-TP-02: 正常系: 直接指定の検出後は URL をそのまま返す", async () => {
+      await markDirectUrlSupported()
+
+      expect(toSidePanelPath("https://example.com", 1)).toBe(
+        "https://example.com",
+      )
+      expect(Storage.set).toHaveBeenCalledWith(
+        LOCAL_STORAGE_KEY.SIDE_PANEL_DIRECT_URL,
+        true,
+      )
+    })
+
+    it("SPU-TP-03: 境界値: http(s) 以外の URL は中継しない", () => {
+      expect(toSidePanelPath("chrome-extension://id/page.html", 1)).toBe(
+        "chrome-extension://id/page.html",
+      )
+    })
+  })
+
+  describe("initSidePanelUrlMode", () => {
+    it("SPU-IN-01: 正常系: 保存済みの検出結果を読み込む", async () => {
+      vi.mocked(Storage.get).mockResolvedValue(true)
+
+      await initSidePanelUrlMode()
+
+      expect(toSidePanelPath("https://example.com", 1)).toBe(
+        "https://example.com",
+      )
+    })
+
+    it("SPU-IN-02: 正常系: 未保存なら中継ページを使う", async () => {
+      await initSidePanelUrlMode()
+
+      expect(toSidePanelPath("https://example.com", 1)).toBe(
+        buildRelayPath("https://example.com", 1),
+      )
+    })
+
+    it("SPU-IN-03: 異常系: 読み込みに失敗しても例外を投げない", async () => {
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {})
+      vi.mocked(Storage.get).mockRejectedValue(new Error("failed"))
+
+      await expect(initSidePanelUrlMode()).resolves.toBeUndefined()
+      warnSpy.mockRestore()
+    })
+  })
+
+  describe("isRelayableUrl", () => {
+    it.each([
+      ["https://example.com", true],
+      ["http://example.com", true],
+      ["javascript:alert(1)", false],
+      ["data:text/html,a", false],
+      ["not a url", false],
+      [null, false],
+    ])("SPU-RU-01: %s -> %s", (url, expected) => {
+      expect(isRelayableUrl(url)).toBe(expected)
+    })
+  })
+})

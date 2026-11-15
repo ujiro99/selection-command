@@ -45,6 +45,7 @@ import * as HubServiceWorker from "@/services/hub/serviceWorker"
 import { ensureOnboardingAssignment } from "@/services/experiments"
 import * as IconColorServiceWorker from "@/services/iconColor/serviceWorker"
 import { getSidePanelEvent } from "@/services/sidePanelSupport"
+import { initSidePanelUrlMode } from "@/services/sidePanelUrl"
 import { getCenteredOffsetInCurrentWindow } from "@/services/screen"
 import { resolvePopupSize } from "@/services/option/defaultSettings"
 
@@ -52,6 +53,7 @@ import { importIf } from "@import-if"
 importIf("production", "./lib/sentry/initialize")
 
 ServiceWorkerData.init()
+initSidePanelUrlMode()
 
 type Sender = chrome.runtime.MessageSender
 
@@ -157,6 +159,8 @@ const commandFuncs = {
   },
   [ServiceWorkerCommand.closeSidePanel]: ActionHelper.closeSidePanel,
   [ServiceWorkerCommand.navigateSidePanel]: ActionHelper.navigateSidePanel,
+  [ServiceWorkerCommand.sidePanelRelayFallback]:
+    ActionHelper.sidePanelRelayFallback,
   [ServiceWorkerCommand.execApi]: ActionHelper.execApi,
 
   [ServiceWorkerCommand.openOption]: (): boolean => {

@@ -4,12 +4,14 @@ import {
   openSidePanel,
   closeSidePanel,
   sidePanelClosed,
+  sidePanelRelayFallback,
 } from "../helper"
 import { ServiceWorkerData } from "@/services/serviceWorkerData"
 import {
   openSidePanel as _openSidePanel,
   closeSidePanel as _closeSidePanel,
   updateSidePanelUrl,
+  setSidePanelUrlDirectly,
 } from "@/services/chrome"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { incrementCommandExecutionCount } from "@/services/commandMetrics"
@@ -28,6 +30,7 @@ vi.mock("@/services/chrome", () => ({
   openSidePanel: vi.fn(),
   closeSidePanel: vi.fn(),
   updateSidePanelUrl: vi.fn(),
+  setSidePanelUrlDirectly: vi.fn(),
 }))
 
 vi.mock("@/services/settings/enhancedSettings", () => ({
@@ -759,6 +762,62 @@ describe("helper", () => {
         expect.any(Error),
       )
 
+      consoleWarnSpy.mockRestore()
+    })
+  })
+
+  describe("sidePanelRelayFallback", () => {
+    const relaySender = (url: string) =>
+      ({
+        id: chrome.runtime.id,
+        url: chrome.runtime.getURL(url),
+      }) as chrome.runtime.MessageSender
+
+    beforeEach(() => {
+      vi.mocked(setSidePanelUrlDirectly).mockResolvedValue(undefined)
+      vi.mocked(chrome.runtime.getURL).mockImplementation(
+        (path: string) => `chrome-extension://${chrome.runtime.id}/${path}`,
+      )
+    })
+
+    it("HSR-01: 正常系: 中継ページからの要求で URL を直接設定する", () => {
+      const result = sidePanelRelayFallback(
+        { url: "https://example.com", tabId: 1 },
+        relaySender("src/side_panel_relay.html?url=x&tabId=1"),
+      )
+
+      expect(result).toBe(false)
+      expect(setSidePanelUrlDirectly).toHaveBeenCalledWith({
+        url: "https://example.com",
+        tabId: 1,
+      })
+    })
+
+    it("HSR-02: 異常系: 中継ページ以外からの要求は無視する", () => {
+      const consoleWarnSpy = vi
+        .spyOn(console, "warn")
+        .mockImplementation(() => {})
+
+      sidePanelRelayFallback(
+        { url: "https://example.com", tabId: 1 },
+        { id: chrome.runtime.id, url: "https://evil.example.com/" },
+      )
+
+      expect(setSidePanelUrlDirectly).not.toHaveBeenCalled()
+      consoleWarnSpy.mockRestore()
+    })
+
+    it("HSR-03: 異常系: http(s) 以外の URL は無視する", () => {
+      const consoleWarnSpy = vi
+        .spyOn(console, "warn")
+        .mockImplementation(() => {})
+
+      sidePanelRelayFallback(
+        { url: "javascript:alert(1)", tabId: 1 },
+        relaySender("src/side_panel_relay.html"),
+      )
+
+      expect(setSidePanelUrlDirectly).not.toHaveBeenCalled()
       consoleWarnSpy.mockRestore()
     })
   })

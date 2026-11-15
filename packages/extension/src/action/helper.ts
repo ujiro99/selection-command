@@ -6,6 +6,8 @@ import {
   openSidePanel as _openSidePanel,
   closeSidePanel as _closeSidePanel,
   updateSidePanelUrl as _updateSidePanelUrl,
+  setSidePanelUrlDirectly,
+  SidePanelRelayFallbackProps,
   OpenPopupsProps,
   OpenPopupProps,
   OpenPopupAndClickProps,
@@ -18,6 +20,7 @@ import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { Ipc, TabCommand, NavigateSidePanelProps } from "@/services/ipc"
 import { ServiceWorkerData } from "@/services/serviceWorkerData"
 import { isSidePanelSupported } from "@/services/sidePanelSupport"
+import { SIDE_PANEL_RELAY_PATH, isRelayableUrl } from "@/services/sidePanelUrl"
 import type { CommandVariable } from "@/types"
 
 type Sender = chrome.runtime.MessageSender
@@ -279,6 +282,33 @@ export const navigateSidePanel = (
       console.error("[navigateSidePanel] Error:", error)
     })
 
+  return false
+}
+
+/**
+ * Handle a request from the side panel relay page that could not navigate to
+ * the target URL by itself. See services/sidePanelUrl.ts for details.
+ */
+export const sidePanelRelayFallback = (
+  param: SidePanelRelayFallbackProps,
+  sender: Sender,
+): boolean => {
+  const { url, tabId } = param
+
+  // Accept requests only from the relay page of this extension.
+  const relayUrl = chrome.runtime.getURL(SIDE_PANEL_RELAY_PATH)
+  if (sender.id !== chrome.runtime.id || !sender.url?.startsWith(relayUrl)) {
+    console.warn("[sidePanelRelayFallback] Invalid sender:", sender.url)
+    return false
+  }
+  if (!isRelayableUrl(url) || !Number.isInteger(tabId)) {
+    console.warn("[sidePanelRelayFallback] Invalid param:", param)
+    return false
+  }
+
+  setSidePanelUrlDirectly({ url, tabId }).catch((e) => {
+    console.error("[sidePanelRelayFallback] Failed:", e)
+  })
   return false
 }
 
