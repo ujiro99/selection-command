@@ -60,10 +60,16 @@ This file provides guidance to AI Agent when working with code in this repositor
      最小限残っているだけで、機能的な意味は薄い
 
 4. **Chrome Web Store 用プロモーション画像の作成**
-   - `src/app/store-image/page.tsx`（`/store-image`）は、Chrome Web Store の
-     トップ画像（1280x800）を HTML/CSS で描画するためのページ
+   - `src/app/store-image/[slide]/page.tsx`（`/store-image/1` 〜 `/store-image/5`）は、
+     Chrome Web Store に登録する画像（1280x800）を HTML/CSS で描画するためのページ
+   - `/store-image` は全スライドを縮小表示する一覧ページ（レビュー用）
+   - スライドの中身は `src/app/store-image/_slides/`、共通部品（左側のコピー、ブラウザモック、
+     メニューバー、カーソル、吹き出し）は `src/app/store-image/_components/` にある。
+     スライドの追加・並べ替えは `_slides/index.ts` の `SLIDES` を編集する
    - `yarn dev` で起動し、ビューポートを 1280x800 にしてスクリーンショットを撮って画像化する
-     （dev 時は Next.js の開発インジケーターが左下に出るため、`yarn build` した `out/` を配信して撮影するとよい）
+     （dev 時は Next.js の開発インジケーターが左下に出るため、`yarn build` した `out/` を配信して撮影するとよい。
+     ただし dev サーバー起動中に `yarn build` すると `.next` が上書きされて dev サーバーが 500 を返すため、
+     dev サーバーを止めてからビルドすること）
    - 日本語フォントはシステムフォント（ヒラギノ角ゴ等）に依存するため、macOS での撮影を前提とする
    - `noindex` を指定しており、言語別レイアウト（`[lang]`）の外に置いているため Header/Footer は表示されない
 
@@ -80,7 +86,7 @@ This file provides guidance to AI Agent when working with code in this repositor
 - `public/data/ai-services.json` - Extension が参照するデータファイル
 - `public/data/experiments.json` - Extension のABテスト配分設定
 - `src/app/[lang]/test/` - e2e テストページ本体（`page.tsx`, `QuillWrapper.tsx`）
-- `src/app/store-image/` - Chrome Web Store 用プロモーション画像ページ
+- `src/app/store-image/` - Chrome Web Store 用画像ページ（`/store-image/1`〜`5` と一覧）
 - `src/components/Logo.tsx` - ロゴ（selection-command-hub から移植。store-image で使用）
 - `src/app/[lang]/layout.tsx`, `src/app/layout.tsx` - App Router の必須レイアウト（Header/Footer/LanguageProvider を保持）
 - `src/features/locale/` - 14言語分の辞書ファイル（layout.tsx が

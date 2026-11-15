@@ -1,11 +1,11 @@
 /*
- * Chrome Web Store promotional image (1280x800).
- * All positions are absolute so the layout matches the screenshot exactly.
+ * Shared styles for the Chrome Web Store images (1280x800).
+ * Overlay positions are given per slide with inline styles, in the scene's
+ * own coordinates (before its rotate/scale transform).
  */
 
 .canvas {
   --ink: #0f1b2d;
-  --ink-sub: #4a5a70;
   --muted: #7b8aa0;
   --blue: #2468e6;
   --blue-deep: #1a5ad8;
@@ -70,7 +70,7 @@
   margin-top: 84px;
   font-size: 18px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.06em;
   color: var(--blue);
 }
 
@@ -83,6 +83,7 @@
   font-weight: 800;
   line-height: 1.38;
   letter-spacing: -0.02em;
+  white-space: nowrap;
 }
 
 .headlineAccent {
@@ -138,7 +139,15 @@
   color: var(--blue);
 }
 
-/* ---------- Right column: browser mockup ---------- */
+.note {
+  margin-top: 16px;
+  font-family: var(--jp);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+/* ---------- Right column: scene ---------- */
 
 .scene {
   position: absolute;
@@ -162,6 +171,18 @@
     0 10px 24px rgb(30 60 120 / 0.08);
 }
 
+/* A smaller window floating over the main browser (popup window etc.) */
+.window {
+  position: absolute;
+  overflow: hidden;
+  border: 1px solid #cdd4df;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow:
+    0 30px 60px -12px rgb(20 45 100 / 0.38),
+    0 8px 18px rgb(20 45 100 / 0.16);
+}
+
 .toolbar {
   display: flex;
   align-items: center;
@@ -170,6 +191,12 @@
   padding: 0 20px;
   border-bottom: 1px solid #e8ecf2;
   background: #f4f6fa;
+}
+
+.window .toolbar {
+  gap: 14px;
+  height: 46px;
+  padding: 0 14px;
 }
 
 .dots {
@@ -184,6 +211,15 @@
   background: #cbd2dc;
 }
 
+.window .dots {
+  gap: 6px;
+}
+
+.window .dots i {
+  width: 8px;
+  height: 8px;
+}
+
 .address {
   flex: 1;
   height: 38px;
@@ -195,6 +231,16 @@
   color: #7a889c;
   background: #fff;
 }
+
+.window .address {
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 7px;
+  font-size: 12px;
+  line-height: 26px;
+}
+
+/* ---------- Mock article ---------- */
 
 .article {
   padding: 42px 52px 0;
@@ -238,17 +284,17 @@
   font-weight: 700;
   color: #12203a;
   background: #a9c9fb;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
-/* Command popup: an icon-only menu bar like the extension's real popup */
+/* ---------- Menu bar: modeled after the extension's actual popup ---------- */
 
-.popup {
+.menuBar {
   position: absolute;
-  top: 350px;
-  left: 62px;
   display: flex;
   align-items: center;
-  padding: 0.2em 0.2em;
+  padding: 0.2em;
   border: 1px solid #cdd4df;
   border-radius: 0.6em;
   font-size: 32px;
@@ -262,10 +308,24 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2.1em;
+  gap: 0.25em;
+  min-width: 2.1em;
   height: 2.2em;
   border-radius: 0.45em;
   color: rgb(20 20 20 / 0.8);
+}
+
+/* Item with a text label, e.g. a folder */
+.menuItemLabeled {
+  padding: 0 0.4em;
+  font-family: var(--jp);
+  font-size: 0.62em;
+  font-weight: 600;
+}
+
+.menuItemLabeled .menuIcon {
+  width: 1.75em;
+  height: 1.75em;
 }
 
 .menuItemActive {
@@ -280,17 +340,13 @@
 
 .cursor {
   position: absolute;
-  top: 408px;
-  left: 124px;
   filter: drop-shadow(0 4px 6px rgb(15 27 45 / 0.25));
 }
 
-/* Result tooltip */
+/* ---------- Tooltip ---------- */
 
 .tooltip {
   position: absolute;
-  top: 468px;
-  left: 108px;
   display: flex;
   align-items: center;
   gap: 18px;
