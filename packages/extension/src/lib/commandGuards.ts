@@ -7,6 +7,7 @@ import type {
   AiPromptCommand,
   LinkPopupCommand,
   CopyCommand,
+  HoverCardCommand,
 } from "@/types"
 
 type SearchOpenMode = (typeof SEARCH_OPEN_MODE)[number]
@@ -74,4 +75,15 @@ export function isCopyCommand(
   data: unknown,
 ): data is WithOpenMode<CopyCommand, OPEN_MODE.COPY> {
   return hasOpenMode(data) && data.openMode === OPEN_MODE.COPY
+}
+
+export function isHoverCardCommand(
+  data: unknown,
+): data is WithOpenMode<HoverCardCommand, OPEN_MODE.HOVER_CARD> {
+  return (
+    hasOpenMode(data) &&
+    data.openMode === OPEN_MODE.HOVER_CARD &&
+    "hoverCardOption" in data &&
+    data.hoverCardOption != null
+  )
 }

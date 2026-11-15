@@ -398,6 +398,12 @@
   "Option_commandType_getTextStyles_desc": {
     "message": "Получить информацию о стиле выбранного текста"
   },
+  "Option_commandType_hoverCard_title": {
+    "message": "Карточка при наведении"
+  },
+  "Option_commandType_hoverCard_desc": {
+    "message": "Показывает результат, например перевод, при наведении"
+  },
   "Option_commandType_api_title": {
     "message": "API"
   },
@@ -1611,5 +1617,32 @@
   },
   "onboarding_closeButton": {
     "message": "Закрыть и попробовать"
+  },
+  "HoverCard_loading": {
+    "message": "Перевод…"
+  },
+  "HoverCard_downloading": {
+    "message": "Загрузка модели перевода… $percent$%",
+    "placeholders": {
+      "percent": {
+        "content": "$1",
+        "example": "42"
+      }
+    }
+  },
+  "HoverCard_needsActivation": {
+    "message": "Нажмите, чтобы подготовить перевод"
+  },
+  "HoverCard_unavailable": {
+    "message": "Перевод недоступен в этом браузере"
+  },
+  "HoverCard_unsupported": {
+    "message": "Этот язык не поддерживается"
+  },
+  "HoverCard_notApplicable": {
+    "message": "Уже на вашем языке"
+  },
+  "HoverCard_failed": {
+    "message": "Не удалось перевести"
   }
 }

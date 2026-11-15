@@ -398,6 +398,12 @@
   "Option_commandType_getTextStyles_desc": {
     "message": "Obter informações de estilo do texto selecionado"
   },
+  "Option_commandType_hoverCard_title": {
+    "message": "Cartão flutuante"
+  },
+  "Option_commandType_hoverCard_desc": {
+    "message": "Mostra um resultado, como uma tradução, ao passar o rato"
+  },
   "Option_commandType_api_title": {
     "message": "API"
   },
@@ -1614,5 +1620,32 @@
   },
   "onboarding_closeButton": {
     "message": "Fechar e experimentar"
+  },
+  "HoverCard_loading": {
+    "message": "A traduzir…"
+  },
+  "HoverCard_downloading": {
+    "message": "A transferir o modelo de tradução… $percent$%",
+    "placeholders": {
+      "percent": {
+        "content": "$1",
+        "example": "42"
+      }
+    }
+  },
+  "HoverCard_needsActivation": {
+    "message": "Clique para preparar a tradução"
+  },
+  "HoverCard_unavailable": {
+    "message": "A tradução não está disponível neste navegador"
+  },
+  "HoverCard_unsupported": {
+    "message": "Este idioma não é suportado"
+  },
+  "HoverCard_notApplicable": {
+    "message": "Já está no seu idioma"
+  },
+  "HoverCard_failed": {
+    "message": "Não foi possível traduzir"
   }
 }

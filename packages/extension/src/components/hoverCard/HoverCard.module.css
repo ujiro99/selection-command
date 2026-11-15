@@ -1,0 +1,55 @@
+@reference "../global.css";
+
+/* Lengths follow --sc-zoom-compensation to cancel the browser zoom. */
+
+.card {
+  max-width: calc(320px * var(--sc-zoom-compensation, 1));
+  padding: calc(8px * var(--sc-zoom-compensation, 1))
+    calc(10px * var(--sc-zoom-compensation, 1));
+  font-family: var(--font-family);
+  font-size: calc(14px * var(--sc-zoom-compensation, 1));
+  line-height: 1.5;
+  color: var(--color-gray-700);
+
+  @variant dark {
+    color: var(--color-gray-200);
+  }
+}
+
+.header {
+  margin: 0 0 calc(4px * var(--sc-zoom-compensation, 1));
+  font-size: calc(11px * var(--sc-zoom-compensation, 1));
+  color: var(--color-gray-500);
+
+  @variant dark {
+    color: var(--color-gray-400);
+  }
+}
+
+.body {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.translate {
+  user-select: text;
+}
+
+.message {
+  margin: 0;
+  font-size: calc(13px * var(--sc-zoom-compensation, 1));
+  color: var(--color-gray-500);
+
+  @variant dark {
+    color: var(--color-gray-400);
+  }
+}
+
+.actionable {
+  color: var(--color-blue-600);
+
+  @variant dark {
+    color: var(--color-blue-400);
+  }
+}

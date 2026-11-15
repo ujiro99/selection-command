@@ -45,6 +45,7 @@ export type SelectionCommand =
   | PageActionCommand
   | AiPromptCommand
   | LinkPopupCommand
+  | HoverCardCommand
 
 export type SearchCommand = {
   id: string
@@ -100,6 +101,17 @@ export type LinkPopupCommand = SearchCommand & {
   // Optional for commands created before this option was added,
   // which are opened in popups.
   linkPopupOption?: LinkPopupOption
+}
+
+/** Identifier of the feature that produces the hover card content. */
+export type HoverCardProviderId = "translate"
+
+export type HoverCardOption = {
+  provider: HoverCardProviderId
+}
+
+export type HoverCardCommand = SearchCommand & {
+  hoverCardOption: HoverCardOption
 }
 
 export type LinkCommand = Omit<SelectionCommand, "openMode"> & {

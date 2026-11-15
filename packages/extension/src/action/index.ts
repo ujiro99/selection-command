@@ -12,6 +12,7 @@ import { AiPrompt } from "./aiPrompt"
 import { Option } from "./option"
 import { GetStyles as GetTextStyles } from "./getStyles"
 import { AddPageRule } from "./addPageRule"
+import { HoverCard } from "./hoverCard"
 import { executeAction } from "./executor"
 import type { ExecuteCommandParams } from "@/types"
 
@@ -29,6 +30,7 @@ export const actions = {
   [OPEN_MODE.GET_TEXT_STYLES]: GetTextStyles,
   [OPEN_MODE.OPTION]: Option,
   [OPEN_MODE.ADD_PAGE_RULE]: AddPageRule,
+  [OPEN_MODE.HOVER_CARD]: HoverCard,
 }
 
 export async function execute({

@@ -398,6 +398,12 @@
   "Option_commandType_getTextStyles_desc": {
     "message": "获取选中文本的样式信息"
   },
+  "Option_commandType_hoverCard_title": {
+    "message": "悬停卡片"
+  },
+  "Option_commandType_hoverCard_desc": {
+    "message": "悬停即可显示翻译等结果"
+  },
   "Option_commandType_api_title": {
     "message": "API"
   },
@@ -1611,5 +1617,32 @@
   },
   "onboarding_closeButton": {
     "message": "关闭并试用"
+  },
+  "HoverCard_loading": {
+    "message": "正在翻译…"
+  },
+  "HoverCard_downloading": {
+    "message": "正在下载翻译模型… $percent$%",
+    "placeholders": {
+      "percent": {
+        "content": "$1",
+        "example": "42"
+      }
+    }
+  },
+  "HoverCard_needsActivation": {
+    "message": "点击以准备翻译"
+  },
+  "HoverCard_unavailable": {
+    "message": "此浏览器无法使用翻译"
+  },
+  "HoverCard_unsupported": {
+    "message": "不支持此语言"
+  },
+  "HoverCard_notApplicable": {
+    "message": "已是您使用的语言"
+  },
+  "HoverCard_failed": {
+    "message": "无法翻译"
   }
 }

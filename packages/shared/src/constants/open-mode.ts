@@ -15,6 +15,7 @@ export enum OPEN_MODE {
   GET_TEXT_STYLES = "getTextStyles",
   OPTION = "option",
   ADD_PAGE_RULE = "addPageRule",
+  HOVER_CARD = "hoverCard",
 }
 
 /**
@@ -26,7 +27,7 @@ export const SEARCH_OPEN_MODE = [
   OPEN_MODE.BACKGROUND_TAB,
   OPEN_MODE.WINDOW,
   OPEN_MODE.SIDE_PANEL,
-] as const;
+] as const
 
 export enum SPACE_ENCODING {
   PLUS = "plus",
