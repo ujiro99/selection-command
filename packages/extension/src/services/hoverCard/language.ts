@@ -74,6 +74,7 @@ const detectWithBuiltinAi = async (
 export async function detectLanguage(
   text: string,
   signal: AbortSignal,
+  pageLang?: string,
 ): Promise<DetectedLanguage | null> {
   const i18n = await detectWithI18n(text)
   if (i18n?.confident) return { language: i18n.language, source: "chrome.i18n" }
@@ -81,7 +82,6 @@ export async function detectLanguage(
   const ai = await detectWithBuiltinAi(text, signal).catch(() => null)
   if (ai) return { language: ai, source: "LanguageDetector" }
   // A short selection is most likely in the page's language.
-  const pageLang = document.documentElement.lang
   if (pageLang) return { language: pageLang, source: "pageLang" }
   // Fall back to the best guess, as SelectON does.
   if (i18n) return { language: i18n.language, source: "chrome.i18n" }

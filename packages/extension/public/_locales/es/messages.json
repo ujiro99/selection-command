@@ -1644,5 +1644,11 @@
   },
   "HoverCard_failed": {
     "message": "No se pudo traducir"
+  },
+  "HoverCard_keep": {
+    "message": "Mantener"
+  },
+  "HoverCard_empty": {
+    "message": "No hay nada que mostrar para esta selección"
   }
 }

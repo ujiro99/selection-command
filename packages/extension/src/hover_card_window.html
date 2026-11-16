@@ -1,0 +1,23 @@
+<!doctype html>
+<html translate="no">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Selection Command</title>
+    <!-- Sets data-sc-theme before the first paint. -->
+    <script src="/theme-init.js"></script>
+    <style>
+      /* Paint the dark background before the styles load (see options_page.html). */
+      html[data-sc-theme="dark"] {
+        color-scheme: dark;
+        background-color: hsl(224 71% 4%);
+      }
+    </style>
+  </head>
+
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <script type="module" src="/src/hover_card_window.tsx"></script>
+  </body>
+</html>

@@ -1644,5 +1644,11 @@
   },
   "HoverCard_failed": {
     "message": "Impossible de traduire"
+  },
+  "HoverCard_keep": {
+    "message": "Garder"
+  },
+  "HoverCard_empty": {
+    "message": "Rien à afficher pour cette sélection"
   }
 }

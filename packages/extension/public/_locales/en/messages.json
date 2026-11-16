@@ -1709,5 +1709,13 @@
   },
   "HoverCard_failed": {
     "message": "Couldn't translate"
+  },
+  "HoverCard_keep": {
+    "message": "Keep",
+    "description": "Button on the hover card. Reopens the result in a separate window that stays open and follows the selection."
+  },
+  "HoverCard_empty": {
+    "message": "Nothing to show for this selection",
+    "description": "Shown in the hover card window when the selection does not apply (e.g. the text is too long)."
   }
 }

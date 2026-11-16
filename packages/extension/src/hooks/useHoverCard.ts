@@ -4,14 +4,18 @@ import {
   HoverCardError,
   type HoverCardErrorKind,
 } from "@/services/hoverCard"
+import type { OpenHoverCardWindowProps } from "@/services/hoverCard/window"
 import { getUILanguage } from "@/services/i18n"
+import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
 import { isHoverCardCommand } from "@/lib/commandGuards"
-import type { Command, SelectionCommand } from "@/types"
+import type { Command, HoverCardProviderId, SelectionCommand } from "@/types"
 
 // Delay before revealing the card on hover; shorter delays cause false triggers.
 export const HOVER_CARD_SHOW_DELAY_MS = 700
 // Grace period to move the pointer from the button to the card.
 export const HOVER_CARD_HIDE_DELAY_MS = 150
+// Gap between the menu item and the kept window.
+const KEEP_WINDOW_GAP = 8
 
 export type HoverCardState =
   | { status: "idle" }
@@ -19,6 +23,63 @@ export type HoverCardState =
   | { status: "success"; content: React.ReactNode }
   | { status: "empty" }
   | { status: "error"; kind: HoverCardErrorKind }
+
+/**
+ * Runs a hover card provider and tracks its state.
+ * Starting a new load cancels the previous one.
+ */
+export function useHoverCardLoader(providerId: HoverCardProviderId | null) {
+  const [state, setState] = useState<HoverCardState>({ status: "idle" })
+  const controller = useRef<AbortController>()
+
+  useEffect(() => () => controller.current?.abort(), [])
+
+  const reset = useCallback(() => {
+    controller.current?.abort()
+    setState({ status: "idle" })
+  }, [])
+
+  const load = useCallback(
+    async (text: string, pageLang?: string) => {
+      if (!providerId) return
+      controller.current?.abort()
+      const ac = new AbortController()
+      controller.current = ac
+
+      setState({ status: "loading" })
+      try {
+        const content = await loadHoverCard(providerId, text, {
+          signal: ac.signal,
+          ctx: {
+            uiLanguage: getUILanguage(),
+            pageLang,
+            onProgress: (progress) => {
+              if (!ac.signal.aborted) setState({ status: "loading", progress })
+            },
+          },
+        })
+        if (ac.signal.aborted) return
+        setState(
+          content == null
+            ? { status: "empty" }
+            : { status: "success", content },
+        )
+      } catch (e) {
+        if (ac.signal.aborted) return
+        const kind = e instanceof HoverCardError ? e.kind : "failed"
+        setState({ status: "error", kind })
+      }
+    },
+    [providerId],
+  )
+
+  return { state, load, reset }
+}
+
+/** Whether loading again may help, e.g. after a click gave a user activation. */
+export const needsLoad = (state: HoverCardState): boolean =>
+  state.status === "idle" ||
+  (state.status === "error" && state.kind === "needsActivation")
 
 type Params = {
   command: Command | SelectionCommand
@@ -30,18 +91,16 @@ type Params = {
  * Inert for other commands, so it can be called unconditionally.
  */
 export function useHoverCard({ command, selectionText }: Params) {
-  const providerId = isHoverCardCommand(command)
-    ? command.hoverCardOption.provider
-    : null
+  const hoverCardCommand = isHoverCardCommand(command) ? command : null
+  const providerId = hoverCardCommand?.hoverCardOption.provider ?? null
   const enabled = providerId != null
 
   const [open, setOpen] = useState(false)
   const [pinned, setPinned] = useState(false)
-  const [state, setState] = useState<HoverCardState>({ status: "idle" })
+  const { state, load: loadText, reset } = useHoverCardLoader(providerId)
 
   const showTimer = useRef<number>()
   const hideTimer = useRef<number>()
-  const controller = useRef<AbortController>()
 
   const clearTimers = () => {
     window.clearTimeout(showTimer.current)
@@ -50,51 +109,14 @@ export function useHoverCard({ command, selectionText }: Params) {
 
   // Reset when the selection changes.
   useEffect(() => {
-    controller.current?.abort()
-    setState({ status: "idle" })
+    reset()
     setOpen(false)
     setPinned(false)
-  }, [selectionText, providerId])
+  }, [selectionText, providerId, reset])
 
-  useEffect(
-    () => () => {
-      clearTimers()
-      controller.current?.abort()
-    },
-    [],
-  )
+  useEffect(() => () => clearTimers(), [])
 
-  const load = useCallback(async () => {
-    if (!providerId) return
-    controller.current?.abort()
-    const ac = new AbortController()
-    controller.current = ac
-
-    setState({ status: "loading" })
-    try {
-      const content = await loadHoverCard(providerId, selectionText, {
-        signal: ac.signal,
-        ctx: {
-          uiLanguage: getUILanguage(),
-          onProgress: (progress) => {
-            if (!ac.signal.aborted) setState({ status: "loading", progress })
-          },
-        },
-      })
-      if (ac.signal.aborted) return
-      setState(
-        content == null ? { status: "empty" } : { status: "success", content },
-      )
-    } catch (e) {
-      if (ac.signal.aborted) return
-      const kind = e instanceof HoverCardError ? e.kind : "failed"
-      setState({ status: "error", kind })
-    }
-  }, [providerId, selectionText])
-
-  const needsLoad =
-    state.status === "idle" ||
-    (state.status === "error" && state.kind === "needsActivation")
+  const load = () => loadText(selectionText, document.documentElement.lang)
 
   const show = () => {
     setOpen(true)
@@ -126,8 +148,35 @@ export function useHoverCard({ command, selectionText }: Params) {
     if (!enabled) return
     clearTimers()
     setOpen(true)
-    setPinned((p) => !p || needsLoad)
-    if (needsLoad) load()
+    const reload = needsLoad(state)
+    setPinned((p) => !p || reload)
+    if (reload) load()
+  }
+
+  /**
+   * Reopen the card as a separate window that stays open and follows
+   * the selection. The window is placed beside the anchor (menu item).
+   */
+  const keep = (anchor: Element | null) => {
+    if (!hoverCardCommand) return
+    clearTimers()
+    setOpen(false)
+    setPinned(false)
+
+    const rect = anchor?.getBoundingClientRect()
+    // Screen coordinates; the browser UI height is added to the page offset.
+    const toolbarHeight = window.outerHeight - window.innerHeight
+    Ipc.send<OpenHoverCardWindowProps>(
+      ServiceWorkerCommand.openHoverCardWindow,
+      {
+        providerId: hoverCardCommand.hoverCardOption.provider,
+        title: hoverCardCommand.title,
+        text: selectionText,
+        pageLang: document.documentElement.lang,
+        top: Math.floor(window.screenY + toolbarHeight + (rect?.top ?? 0)),
+        left: Math.floor(window.screenX + (rect?.right ?? 0) + KEEP_WINDOW_GAP),
+      },
+    )
   }
 
   return {
@@ -136,6 +185,7 @@ export function useHoverCard({ command, selectionText }: Params) {
     pinned,
     state,
     onClick,
+    keep,
     triggerProps: {
       onMouseEnter: onPointerEnter,
       onMouseLeave: onPointerLeave,

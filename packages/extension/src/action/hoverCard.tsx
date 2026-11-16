@@ -20,7 +20,10 @@ export const HoverCard = {
         selectionText,
         {
           signal: new AbortController().signal,
-          ctx: { uiLanguage: getUILanguage() },
+          ctx: {
+            uiLanguage: getUILanguage(),
+            pageLang: document.documentElement.lang,
+          },
         },
       )
       if (content == null) return

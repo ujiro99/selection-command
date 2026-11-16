@@ -1644,5 +1644,11 @@
   },
   "HoverCard_failed": {
     "message": "अनुवाद नहीं हो सका"
+  },
+  "HoverCard_keep": {
+    "message": "बनाए रखें"
+  },
+  "HoverCard_empty": {
+    "message": "इस चयन के लिए दिखाने को कुछ नहीं है"
   }
 }

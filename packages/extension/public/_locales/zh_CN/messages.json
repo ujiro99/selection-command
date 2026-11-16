@@ -1644,5 +1644,11 @@
   },
   "HoverCard_failed": {
     "message": "无法翻译"
+  },
+  "HoverCard_keep": {
+    "message": "固定"
+  },
+  "HoverCard_empty": {
+    "message": "此选中内容没有可显示的结果"
   }
 }

@@ -73,7 +73,7 @@ export const chromeTranslatorBackend: HoverCardBackend<
   },
 
   async run(input, { signal, ctx }) {
-    const detected = await detectLanguage(input.text, signal)
+    const detected = await detectLanguage(input.text, signal, ctx.pageLang)
     logHoverCard("detected language:", detected)
     if (!detected) {
       throw new HoverCardError("unsupported", "Source language not detected")

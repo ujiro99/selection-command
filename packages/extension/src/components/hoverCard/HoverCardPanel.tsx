@@ -4,6 +4,8 @@ import { Popover, PopoverContent, PopoverAnchor } from "@/components/ui/popover"
 import { useUserSettings } from "@/hooks/useSettings"
 import { useZoomCompensation } from "@/hooks/usePageZoom"
 import { SIDE } from "@/const"
+import { t } from "@/services/i18n"
+import { AppWindow } from "lucide-react"
 import type { HoverCardState } from "@/hooks/useHoverCard"
 import { HoverCardError, HoverCardLoading } from "./HoverCardMessage"
 import css from "./HoverCard.module.css"
@@ -17,10 +19,18 @@ type Props = {
   state: HoverCardState
   anchorRef: React.RefObject<Element>
   cardProps: React.HTMLAttributes<HTMLDivElement>
+  /** Reopens the card as a window that stays open. */
+  onKeep: () => void
 }
 
 /** Card attached to a menu item that shows the hover card result. */
-export function HoverCardPanel({ open, state, anchorRef, cardProps }: Props) {
+export function HoverCardPanel({
+  open,
+  state,
+  anchorRef,
+  cardProps,
+  onKeep,
+}: Props) {
   const { userSettings } = useUserSettings()
   const isBottom = userSettings?.popupPlacement?.side === SIDE.bottom
   const zoomCompensation = useZoomCompensation()
@@ -47,13 +57,19 @@ export function HoverCardPanel({ open, state, anchorRef, cardProps }: Props) {
       >
         <div className={css.card}>
           <HoverCardBody state={state} />
+          <div className={css.footer}>
+            <button type="button" className={css.keepButton} onClick={onKeep}>
+              <AppWindow className={css.keepIcon} aria-hidden />
+              {t("HoverCard_keep")}
+            </button>
+          </div>
         </div>
       </PopoverContent>
     </Popover>
   )
 }
 
-function HoverCardBody({ state }: { state: HoverCardState }) {
+export function HoverCardBody({ state }: { state: HoverCardState }) {
   switch (state.status) {
     case "success":
       return <>{state.content}</>

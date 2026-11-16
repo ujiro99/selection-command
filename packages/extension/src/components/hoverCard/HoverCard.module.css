@@ -53,3 +53,79 @@
     color: var(--color-blue-400);
   }
 }
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: calc(6px * var(--sc-zoom-compensation, 1));
+}
+
+.keepButton {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(4px * var(--sc-zoom-compensation, 1));
+  padding: calc(2px * var(--sc-zoom-compensation, 1))
+    calc(6px * var(--sc-zoom-compensation, 1));
+  border-radius: calc(4px * var(--sc-zoom-compensation, 1));
+  font-size: calc(12px * var(--sc-zoom-compensation, 1));
+  color: var(--color-gray-500);
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--color-gray-100);
+    color: var(--color-gray-700);
+  }
+
+  @variant dark {
+    color: var(--color-gray-400);
+
+    &:hover {
+      background-color: var(--color-gray-800);
+      color: var(--color-gray-200);
+    }
+  }
+}
+
+.keepIcon {
+  width: calc(14px * var(--sc-zoom-compensation, 1));
+  height: calc(14px * var(--sc-zoom-compensation, 1));
+}
+
+/* Hover card window (a separate browser window). */
+
+.window {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 100vh;
+  padding: 12px 14px;
+  font-family: var(--font-family);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-gray-700);
+
+  @variant dark {
+    color: var(--color-gray-200);
+  }
+}
+
+.source {
+  margin: 0;
+  max-height: 7.5em;
+  overflow-y: auto;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--color-gray-200);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: var(--color-gray-500);
+
+  @variant dark {
+    border-bottom-color: var(--color-gray-700);
+    color: var(--color-gray-400);
+  }
+}
+
+.retryButton {
+  text-align: left;
+  cursor: pointer;
+}

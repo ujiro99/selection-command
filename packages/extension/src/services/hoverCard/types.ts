@@ -26,6 +26,11 @@ export class HoverCardError extends Error {
 export type HoverCardContext = {
   /** User's language as a BCP 47 tag (e.g. "ja", "en-US"). */
   uiLanguage: string
+  /**
+   * Language of the page the text was selected on (its lang attribute).
+   * Passed explicitly because the hover card window is not that page.
+   */
+  pageLang?: string
   /** Reports model download progress as a fraction between 0 and 1. */
   onProgress?: (fraction: number) => void
 }

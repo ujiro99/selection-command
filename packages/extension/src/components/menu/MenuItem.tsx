@@ -30,7 +30,8 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
     useCommandExecutor()
   const onlyIcon = props.onlyIcon
   const { iconUrl, title, preserveOriginalColor } = props.command
-  const { isPreview, inTransition, inOnboarding } = usePopupContext()
+  const { isPreview, inTransition, inOnboarding, clearHover } =
+    usePopupContext()
   const { selectionText, target } = useSelectContext()
   // Searching URLs in a large selection is costly, so the result is kept
   // while the command and the selection are unchanged.
@@ -133,6 +134,11 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
           state={hoverCard.state}
           anchorRef={buttonRef}
           cardProps={hoverCard.cardProps}
+          onKeep={() => {
+            hoverCard.keep(buttonRef.current)
+            // The card under the pointer closes without a mouseleave.
+            clearHover?.()
+          }}
         />
       )}
     </>

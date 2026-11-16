@@ -1641,5 +1641,11 @@
   },
   "HoverCard_failed": {
     "message": "翻訳できませんでした"
+  },
+  "HoverCard_keep": {
+    "message": "固定"
+  },
+  "HoverCard_empty": {
+    "message": "この選択範囲には表示できる結果がありません"
   }
 }

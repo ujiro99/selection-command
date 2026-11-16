@@ -1644,5 +1644,11 @@
   },
   "HoverCard_failed": {
     "message": "번역하지 못했습니다"
+  },
+  "HoverCard_keep": {
+    "message": "고정"
+  },
+  "HoverCard_empty": {
+    "message": "이 선택 항목에 표시할 결과가 없습니다"
   }
 }

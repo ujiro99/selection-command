@@ -1647,5 +1647,11 @@
   },
   "HoverCard_failed": {
     "message": "Não foi possível traduzir"
+  },
+  "HoverCard_keep": {
+    "message": "Manter"
+  },
+  "HoverCard_empty": {
+    "message": "Nada para mostrar nesta seleção"
   }
 }

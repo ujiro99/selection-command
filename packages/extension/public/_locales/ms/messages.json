@@ -1647,5 +1647,11 @@
   },
   "HoverCard_failed": {
     "message": "Tidak dapat menterjemah"
+  },
+  "HoverCard_keep": {
+    "message": "Kekalkan"
+  },
+  "HoverCard_empty": {
+    "message": "Tiada apa untuk dipaparkan bagi pilihan ini"
   }
 }

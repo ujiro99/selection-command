@@ -1644,5 +1644,11 @@
   },
   "HoverCard_failed": {
     "message": "Не удалось перевести"
+  },
+  "HoverCard_keep": {
+    "message": "Закрепить"
+  },
+  "HoverCard_empty": {
+    "message": "Для этого выделения нечего показать"
   }
 }

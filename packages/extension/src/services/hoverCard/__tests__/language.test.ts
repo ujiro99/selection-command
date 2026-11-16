@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
+import { describe, it, expect, vi, afterEach } from "vitest"
 import { toTranslatorLanguage, detectLanguage } from "../language"
 
 describe("toTranslatorLanguage", () => {
@@ -28,12 +28,7 @@ describe("detectLanguage", () => {
     ) as unknown as typeof chrome.i18n.detectLanguage
   }
 
-  beforeEach(() => {
-    document.documentElement.lang = "en"
-  })
-
   afterEach(() => {
-    document.documentElement.lang = ""
     vi.restoreAllMocks()
   })
 
@@ -44,7 +39,9 @@ describe("detectLanguage", () => {
       languages: [{ language: "fr", percentage: 100 }],
     })
 
-    await expect(detectLanguage("Bonjour le monde", signal)).resolves.toEqual({
+    await expect(
+      detectLanguage("Bonjour le monde", signal, "en"),
+    ).resolves.toEqual({
       language: "fr",
       source: "chrome.i18n",
     })
@@ -56,14 +53,13 @@ describe("detectLanguage", () => {
       languages: [{ language: "no", percentage: 40 }],
     })
 
-    await expect(detectLanguage("Bonjour", signal)).resolves.toEqual({
+    await expect(detectLanguage("Bonjour", signal, "en")).resolves.toEqual({
       language: "en",
       source: "pageLang",
     })
   })
 
   it("HC-L-04: uses CLD's best guess when there is no page language", async () => {
-    document.documentElement.lang = ""
     mockI18n({
       isReliable: false,
       languages: [{ language: "no", percentage: 40 }],
@@ -76,7 +72,6 @@ describe("detectLanguage", () => {
   })
 
   it("HC-L-05: returns null when nothing is detected", async () => {
-    document.documentElement.lang = ""
     mockI18n({
       isReliable: false,
       languages: [{ language: "und", percentage: 100 }],
