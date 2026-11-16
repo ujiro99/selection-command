@@ -1,15 +1,12 @@
 /*
- * Shared styles for the Chrome Web Store images (1280x800).
- * Overlay positions are given per slide with inline styles, in the scene's
- * own coordinates (before its rotate/scale transform).
+ * Shared parts of the Chrome Web Store images (1280x800).
+ * Slides place these parts with absolute positions.
  */
 
 .canvas {
   --ink: #0f1b2d;
-  --muted: #7b8aa0;
   --blue: #2468e6;
-  --blue-deep: #1a5ad8;
-  --blue-soft: #eaf1fe;
+  --blue-soft: #e8f0fd;
   --line: #e6eaf1;
   --jp:
     "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic",
@@ -21,187 +18,67 @@
   overflow: hidden;
   font-family: var(--font-geist-sans), var(--jp);
   color: var(--ink);
-  background:
-    radial-gradient(
-      ellipse 640px 420px at 100% 0%,
-      rgb(205 225 252 / 0.85),
-      transparent 70%
-    ),
-    linear-gradient(135deg, #fbfcff 0%, #f5f8fd 55%, #eef3fb 100%);
-}
-
-.glow {
-  position: absolute;
-  right: 40px;
-  bottom: 40px;
-  width: 520px;
-  height: 260px;
-  background: radial-gradient(
-    ellipse at center,
-    rgb(36 104 230 / 0.12),
-    transparent 70%
-  );
-  filter: blur(10px);
-}
-
-/* ---------- Left column ---------- */
-
-.copy {
-  position: absolute;
-  top: 54px;
-  left: 68px;
-  width: 540px;
 }
 
 .brand {
+  position: absolute;
   display: flex;
   align-items: center;
   gap: 14px;
-  height: 39px;
-  color: var(--ink);
 }
 
 .brandIcon {
   border-radius: 4px;
-  box-shadow: 0 6px 14px rgb(36 104 230 / 0.25);
-}
-
-.eyebrow {
-  margin-top: 84px;
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  color: var(--blue);
 }
 
 .headline {
-  display: flex;
-  flex-direction: column;
-  margin-top: 22px;
+  position: absolute;
   font-family: var(--jp);
-  font-size: 49px;
   font-weight: 800;
-  line-height: 1.38;
+  line-height: 1.3;
   letter-spacing: -0.02em;
   white-space: nowrap;
 }
 
-.headlineAccent {
-  background: linear-gradient(90deg, #1f63e4, #2d7cf0);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.lead {
-  margin-top: 26px;
-  font-family: var(--jp);
-  font-size: 24px;
-  font-weight: 600;
-  line-height: 1.8;
-  color: #2b394d;
-}
-
-.chipsHeading {
-  margin-top: 30px;
-  font-family: var(--jp);
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--muted);
-}
-
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  max-width: 500px;
-  margin: 12px 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.chip {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  height: 52px;
-  padding: 0 17px;
-  border: 1px solid #dfe5ee;
-  border-radius: 12px;
-  font-family: var(--jp);
-  font-size: 17px;
-  font-weight: 700;
-  background: #fff;
-  box-shadow: 0 2px 6px rgb(15 27 45 / 0.04);
-}
-
-.chipIcon {
+.accent {
   color: var(--blue);
 }
 
-.note {
-  margin-top: 16px;
-  font-family: var(--jp);
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--muted);
-}
-
-/* ---------- Right column: scene ---------- */
-
-.scene {
+.sub {
   position: absolute;
-  top: 88px;
-  left: 632px;
-  width: 720px;
-  height: 540px;
-  transform: rotate(-1.8deg) scale(1.1);
-  transform-origin: 0 0;
+  font-family: var(--jp);
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1.7;
 }
+
+/* Soft shadow for UI floating over the background */
+.float {
+  box-shadow: 0 14px 40px rgb(15 27 45 / 0.15);
+}
+
+/* ---------- Browser frame (a page the extension runs on) ---------- */
 
 .browser {
   position: absolute;
-  inset: 0 0 6px 0;
   overflow: hidden;
-  border: 1px solid #dfe4ec;
-  border-radius: 18px;
+  border-radius: 16px;
   background: #fff;
-  box-shadow:
-    0 40px 80px -20px rgb(30 60 120 / 0.22),
-    0 10px 24px rgb(30 60 120 / 0.08);
-}
-
-/* A smaller window floating over the main browser (popup window etc.) */
-.window {
-  position: absolute;
-  overflow: hidden;
-  border: 1px solid #cdd4df;
-  border-radius: 14px;
-  background: #fff;
-  box-shadow:
-    0 30px 60px -12px rgb(20 45 100 / 0.38),
-    0 8px 18px rgb(20 45 100 / 0.16);
 }
 
 .toolbar {
   display: flex;
   align-items: center;
-  gap: 20px;
-  height: 62px;
-  padding: 0 20px;
+  gap: 16px;
+  height: 52px;
+  padding: 0 18px;
   border-bottom: 1px solid #e8ecf2;
   background: #f4f6fa;
 }
 
-.window .toolbar {
-  gap: 14px;
-  height: 46px;
-  padding: 0 14px;
-}
-
 .dots {
   display: flex;
-  gap: 8px;
+  gap: 7px;
 }
 
 .dots i {
@@ -211,75 +88,21 @@
   background: #cbd2dc;
 }
 
-.window .dots {
-  gap: 6px;
-}
-
-.window .dots i {
-  width: 8px;
-  height: 8px;
-}
-
 .address {
   flex: 1;
-  height: 38px;
-  padding: 0 16px;
+  height: 32px;
+  padding: 0 14px;
   border: 1px solid #e3e8ef;
-  border-radius: 9px;
-  font-size: 14px;
-  line-height: 36px;
+  border-radius: 8px;
+  font-size: 15px;
+  line-height: 30px;
   color: #7a889c;
   background: #fff;
 }
 
-.window .address {
-  height: 28px;
-  padding: 0 12px;
-  border-radius: 7px;
-  font-size: 12px;
-  line-height: 26px;
-}
-
-/* ---------- Mock article ---------- */
-
-.article {
-  padding: 42px 52px 0;
-}
-
-.articleLabel {
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--muted);
-}
-
-.articleTitle {
-  margin: 14px 0 22px;
-  font-family: var(--jp);
-  font-size: 26px;
-  font-weight: 700;
-  color: #556378;
-}
-
-.line {
-  height: 12px;
-  margin-bottom: 18px;
-  border-radius: 6px;
-  background: var(--line);
-}
-
-.articleText {
-  margin: 28px 0 26px;
-  font-family: var(--jp);
-  font-size: 23px;
-  font-weight: 500;
-  line-height: 2;
-  color: #6b788c;
-}
-
 .selected {
-  padding: 5px 4px;
-  margin: 0 4px;
+  padding: 4px 3px;
+  margin: 0 3px;
   border-radius: 3px;
   font-weight: 700;
   color: #12203a;
@@ -288,100 +111,19 @@
   box-decoration-break: clone;
 }
 
-/* ---------- Menu bar: modeled after the extension's actual popup ---------- */
-
-.menuBar {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  padding: 0.2em;
-  border: 1px solid #cdd4df;
-  border-radius: 0.6em;
-  font-size: 32px;
-  background: #fff;
-  box-shadow:
-    0 30px 60px -12px rgb(20 45 100 / 0.38),
-    0 8px 18px rgb(20 45 100 / 0.16);
-}
-
-.menuItem {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.25em;
-  min-width: 2.1em;
-  height: 2.2em;
-  border-radius: 0.45em;
-  color: rgb(20 20 20 / 0.8);
-}
-
-/* Item with a text label, e.g. a folder */
-.menuItemLabeled {
-  padding: 0 0.4em;
-  font-family: var(--jp);
-  font-size: 0.62em;
-  font-weight: 600;
-}
-
-.menuItemLabeled .menuIcon {
-  width: 1.75em;
-  height: 1.75em;
-}
-
-.menuItemActive {
-  color: var(--blue);
-  background: var(--blue-soft);
-}
-
-.menuIcon {
-  width: 1.1em;
-  height: 1.1em;
-}
-
 .cursor {
   position: absolute;
   filter: drop-shadow(0 4px 6px rgb(15 27 45 / 0.25));
 }
 
-/* ---------- Tooltip ---------- */
+/* ---------- Product screenshot ---------- */
 
-.tooltip {
+.shot {
   position: absolute;
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  padding: 20px 30px 20px 26px;
-  border-radius: 12px;
-  color: #fff;
-  background: linear-gradient(135deg, #2a73ee, var(--blue-deep));
-  box-shadow: 0 22px 44px -10px rgb(26 90 216 / 0.55);
+  overflow: hidden;
 }
 
-.tooltip::before {
-  content: "";
-  position: absolute;
-  top: -8px;
-  left: 30px;
-  width: 16px;
-  height: 16px;
-  border-radius: 3px;
-  background: #2a73ee;
-  transform: rotate(45deg);
-}
-
-.tooltipIcon {
-  display: grid;
-  flex-shrink: 0;
-  place-items: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: rgb(255 255 255 / 0.2);
-}
-
-.tooltipTitle {
-  font-family: var(--jp);
-  font-size: 19px;
-  font-weight: 700;
-  line-height: 1.4;
+.shot img {
+  display: block;
+  max-width: none;
 }

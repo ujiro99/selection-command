@@ -62,15 +62,18 @@ This file provides guidance to AI Agent when working with code in this repositor
 4. **Chrome Web Store 用プロモーション画像の作成**
    - `src/app/store-image/[slide]/page.tsx`（`/store-image/1` 〜 `/store-image/5`）は、
      Chrome Web Store に登録する画像（1280x800）を HTML/CSS で描画するためのページ
-   - `/store-image` は全スライドを縮小表示する一覧ページ（レビュー用）
-   - スライドの中身は `src/app/store-image/_slides/`、共通部品（左側のコピー、ブラウザモック、
-     メニューバー、カーソル、吹き出し）は `src/app/store-image/_components/` にある。
-     スライドの追加・並べ替えは `_slides/index.ts` の `SLIDES` を編集する
-   - `yarn dev` で起動し、ビューポートを 1280x800 にしてスクリーンショットを撮って画像化する
-     （dev 時は Next.js の開発インジケーターが左下に出るため、`yarn build` した `out/` を配信して撮影するとよい。
-     ただし dev サーバー起動中に `yarn build` すると `.next` が上書きされて dev サーバーが 500 を返すため、
-     dev サーバーを止めてからビルドすること）
-   - 日本語フォントはシステムフォント（ヒラギノ角ゴ等）に依存するため、macOS での撮影を前提とする
+   - `/store-image` は全スライドを 50%（ストアのプレビューと同じ 640x400）で並べる一覧ページ。
+     各スライドの「Export」ボタン、または「Export all」で PNG を書き出せる（html-to-image を使用。
+     開発インジケーターは写り込まない）
+   - スライドの中身は `src/app/store-image/_slides/`、共通部品は `src/app/store-image/_components/parts.tsx`。
+     スライドの追加・並べ替え・書き出しファイル名は `_slides/index.ts` の `SLIDES` で管理する
+   - 製品 UI は作り直さず、実際のスクリーンショット（`public/store-image/screenshots/`）を
+     切り抜き・拡大して使う。UI が変わったらスクリーンショットを差し替える
+   - デザイン方針は `.claude/skills/chrome-store-screenshots` の Design rules に従う
+     （隣り合うスライドでレイアウト・背景色を変える、1枚1メッセージ、機能一覧を載せない 等）
+   - dev サーバー起動中に `yarn build` すると `.next` が上書きされて dev サーバーが 500 を返すため、
+     dev サーバーを止めてからビルドすること
+   - 日本語フォントはシステムフォント（ヒラギノ角ゴ等）に依存するため、macOS での書き出しを前提とする
    - `noindex` を指定しており、言語別レイアウト（`[lang]`）の外に置いているため Header/Footer は表示されない
 
 ## 開発コマンド

@@ -1,17 +1,30 @@
-import { AiPromptSlide } from "./AiPromptSlide"
+import { AiResultSlide } from "./AiResultSlide"
 import { CustomizeSlide } from "./CustomizeSlide"
 import { HeroSlide } from "./HeroSlide"
 import { LinkPreviewSlide } from "./LinkPreviewSlide"
-import { PageActionSlide } from "./PageActionSlide"
+import { TriggerSlide } from "./TriggerSlide"
+
+type SlideEntry = {
+  /** Shown in the gallery */
+  title: string
+  /** File name of the exported PNG */
+  fileName: string
+  Slide: () => JSX.Element
+}
 
 /** Store images in display order. The key is the URL segment. */
-export const SLIDES: Record<
-  string,
-  { title: string; Slide: () => JSX.Element }
-> = {
-  "1": { title: "概要", Slide: HeroSlide },
-  "2": { title: "AIプロンプト", Slide: AiPromptSlide },
-  "3": { title: "カスタマイズ", Slide: CustomizeSlide },
-  "4": { title: "リンクプレビュー", Slide: LinkPreviewSlide },
-  "5": { title: "ページアクション", Slide: PageActionSlide },
+export const SLIDES: Record<string, SlideEntry> = {
+  "1": { title: "Hero", fileName: "01_hero.png", Slide: HeroSlide },
+  "2": { title: "Trigger", fileName: "02_trigger.png", Slide: TriggerSlide },
+  "3": { title: "AI result", fileName: "03_ai.png", Slide: AiResultSlide },
+  "4": {
+    title: "Customize",
+    fileName: "04_customize.png",
+    Slide: CustomizeSlide,
+  },
+  "5": {
+    title: "Link preview",
+    fileName: "05_link_preview.png",
+    Slide: LinkPreviewSlide,
+  },
 }
