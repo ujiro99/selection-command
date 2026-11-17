@@ -3,18 +3,22 @@ import {
   Browser,
   Canvas,
   Cursor,
+  Fit,
   Headline,
+  Lines,
   Sub,
 } from "../_components/parts"
+import type { SlideProps } from "../_components/i18n"
 import s from "./slides.module.css"
 
 /**
  * 5 Link preview: peek at a link in a popup window, no new tab. The gesture
  * that opens it is configurable, so the slide does not name one.
  */
-export function LinkPreviewSlide(): JSX.Element {
+export function LinkPreviewSlide({ t, lang }: SlideProps): JSX.Element {
+  const c = t.linkPreview
   return (
-    <Canvas background="#ffffff">
+    <Canvas lang={lang} background="#ffffff">
       {/* Split composition: copy on a tinted panel, UI on white */}
       <div
         style={{
@@ -24,17 +28,13 @@ export function LinkPreviewSlide(): JSX.Element {
           background: "#e8f0fd",
         }}
       />
-      <Headline size={52} style={{ top: 220, left: 70 }}>
-        タブを増やさず、
+      <Headline size={52} maxWidth={430} style={{ top: 220, left: 70 }}>
+        {c.headline}
         <br />
-        <Accent>リンク先を確認。</Accent>
+        <Accent>{c.accent}</Accent>
       </Headline>
-      <Sub color="#2b394d" style={{ top: 390, left: 70 }}>
-        ポップアップでさっと表示。
-        <br />
-        元のページに戻るだけで、
-        <br />
-        自動で閉じます。
+      <Sub color="#2b394d" maxWidth={430} style={{ top: 390, left: 70 }}>
+        <Lines lines={c.sub} />
       </Sub>
 
       <Browser
@@ -42,12 +42,14 @@ export function LinkPreviewSlide(): JSX.Element {
         style={{ top: 40, left: 600, width: 720, height: 420 }}
       >
         <p className={s.pageTitle} style={{ top: 96, left: 44 }}>
-          仕事の進め方が変わる3つの理由
+          <Fit maxWidth={580}>{t.hero.pageTitle}</Fit>
         </p>
         <div className={s.line} style={{ top: 156, left: 44, width: 560 }} />
         <p className={s.pageText} style={{ top: 186, left: 44, fontSize: 26 }}>
-          <span className={s.link}>生成AI活用ガイド</span>
-          で、具体的な使い方を紹介。
+          <Fit maxWidth={580}>
+            <span className={s.link}>{c.link}</span>
+            {c.linkAfter}
+          </Fit>
         </p>
         <div className={s.line} style={{ top: 268, left: 44, width: 560 }} />
         <div className={s.line} style={{ top: 298, left: 44, width: 480 }} />
@@ -82,7 +84,7 @@ export function LinkPreviewSlide(): JSX.Element {
         style={{ top: 440, left: 720, width: 540, height: 340 }}
       >
         <div className={s.preview}>
-          <p className={s.previewTitle}>生成AI活用ガイド</p>
+          <p className={s.previewTitle}>{c.link}</p>
           <div className={s.previewImage} />
           <div className={s.previewLine} style={{ width: "92%" }} />
           <div className={s.previewLine} style={{ width: "70%" }} />

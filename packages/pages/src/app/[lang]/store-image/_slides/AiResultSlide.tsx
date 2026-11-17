@@ -5,6 +5,8 @@ import {
   Browser,
   Canvas,
   Cursor,
+  Fit,
+  Lines,
   Headline,
   POPUP_MENU,
   SCREENSHOTS,
@@ -13,6 +15,7 @@ import {
   Sub,
   storeCss,
 } from "../_components/parts"
+import type { SlideProps } from "../_components/i18n"
 import s from "./slides.module.css"
 
 const BROWSER_TOP = 220
@@ -35,14 +38,16 @@ const CHATGPT_ICON = { x: 700, y: 558, width: 56, height: 56 }
  * 3 AI prompt: one click on the selected text runs a saved prompt, and the
  * answer opens in the side panel next to the page.
  */
-export function AiResultSlide(): JSX.Element {
+export function AiResultSlide({ t, lang }: SlideProps): JSX.Element {
+  const c = t.ai
   return (
-    <Canvas background="#f1eee8">
-      <Headline size={56} style={{ top: 50, left: 80 }}>
-        選んだ文章を、<Accent>ワンクリックでAI処理。</Accent>
+    <Canvas lang={lang} background="#f1eee8">
+      <Headline size={56} maxWidth={1120} style={{ top: 50, left: 80 }}>
+        {c.headline}
+        <Accent>{c.accent}</Accent>
       </Headline>
-      <Sub color="#3d4a5c" style={{ top: 134, left: 80 }}>
-        要約・翻訳・解説など、よく使うプロンプトをそのまま実行。
+      <Sub color="#3d4a5c" maxWidth={1120} style={{ top: 134, left: 80 }}>
+        {c.sub}
       </Sub>
 
       {/* Scene: browser, popup menu, arrow and cursor tilted together */}
@@ -61,19 +66,17 @@ export function AiResultSlide(): JSX.Element {
         >
           {/* The page: a selected paragraph */}
           <p className={s.pageTitle} style={{ top: 92, left: 44 }}>
-            生成AI、導入の前に知っておくこと
+            <Fit maxWidth={600}>{c.pageTitle}</Fit>
           </p>
           <p
             className={s.pageText}
             style={{ top: 152, left: 40, fontSize: 25, lineHeight: 1.95 }}
           >
-            <Selected>
-              生成AIの導入で、資料作成や情報収集に
-              <br />
-              かかる時間は大幅に短縮された。一方で、
-              <br />
-              出力の正確性を確かめる工程も欠かせない。
-            </Selected>
+            <Fit maxWidth={600}>
+              <Selected>
+                <Lines lines={c.paragraph} />
+              </Selected>
+            </Fit>
           </p>
           <div className={s.line} style={{ top: 460, left: 44, width: 560 }} />
           <div className={s.line} style={{ top: 492, left: 44, width: 480 }} />
@@ -93,18 +96,18 @@ export function AiResultSlide(): JSX.Element {
             <div className={s.sideChat}>
               <span className={s.promptTag}>
                 <Sparkle size={16} strokeWidth={2.6} />
-                プロンプト「3行で要約」を実行
+                {c.promptTag}
               </span>
               <div className={s.userBubble}>
-                次の文章を3行で要約して：
-                <span className={s.quote}>「生成AIの導入で、資料作成や…」</span>
+                {c.request}
+                <span className={s.quote}>{c.quote}</span>
               </div>
               <div className={s.answer}>
                 <Sparkle size={24} strokeWidth={2.2} className={s.answerIcon} />
                 <ul>
-                  <li>資料作成や情報収集の時間を短縮</li>
-                  <li>一方で出力の正確性の確認は必須</li>
-                  <li>確認の工程まで含めた導入が重要</li>
+                  {c.answer.map((line) => (
+                    <li key={line}>{line}</li>
+                  ))}
                 </ul>
               </div>
             </div>

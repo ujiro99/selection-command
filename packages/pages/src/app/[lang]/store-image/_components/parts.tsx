@@ -3,18 +3,28 @@ import type { CSSProperties, ReactNode } from "react"
 
 import { Logo } from "@/components/Logo"
 
+import { Fit } from "./Fit"
+
 import css from "./store.module.css"
 
 /** Fixed 1280x800 canvas of one store image. */
 export function Canvas({
+  lang,
   background,
   children,
 }: {
+  /** Language of the copy; picks the font for that script */
+  lang: string
   background: string
   children: ReactNode
 }): JSX.Element {
   return (
-    <div className={css.canvas} style={{ background }} data-store-slide="">
+    <div
+      lang={lang}
+      className={css.canvas}
+      style={{ background }}
+      data-store-slide=""
+    >
       {children}
     </div>
   )
@@ -39,23 +49,34 @@ export function Brand({ style }: { style: CSSProperties }): JSX.Element {
   )
 }
 
-/** Headline. Wrap the accented part in <Accent>. */
+/**
+ * Headline. Wrap the accented part in <Accent>. Text wider than `maxWidth`
+ * is scaled down to fit.
+ */
 export function Headline({
   size,
   color,
+  maxWidth,
   style,
   children,
 }: {
   size: number
   color?: string
+  maxWidth: number
   style: CSSProperties
   children: ReactNode
 }): JSX.Element {
   return (
     <h1 className={css.headline} style={{ fontSize: size, color, ...style }}>
-      {children}
+      <Fit maxWidth={maxWidth} align={alignOf(style)}>
+        {children}
+      </Fit>
     </h1>
   )
+}
+
+function alignOf(style: CSSProperties): "left" | "center" {
+  return style.textAlign === "center" ? "center" : "left"
 }
 
 /** Accented part of a headline. Use `onDark` on navy or blue backgrounds. */
@@ -71,21 +92,42 @@ export function Accent({
   )
 }
 
+/** Subheadline. Text wider than `maxWidth` is scaled down to fit. */
 export function Sub({
   color,
+  maxWidth,
   style,
   children,
 }: {
   color: string
+  maxWidth: number
   style: CSSProperties
   children: ReactNode
 }): JSX.Element {
   return (
     <p className={css.sub} style={{ color, ...style }}>
-      {children}
+      <Fit maxWidth={maxWidth} align={alignOf(style)}>
+        {children}
+      </Fit>
     </p>
   )
 }
+
+/** Lines of copy joined with line breaks. */
+export function Lines({ lines }: { lines: readonly string[] }): JSX.Element {
+  return (
+    <>
+      {lines.map((line, i) => (
+        <span key={line}>
+          {i > 0 && <br />}
+          {line}
+        </span>
+      ))}
+    </>
+  )
+}
+
+export { Fit }
 
 /** Browser window with an address bar. */
 export function Browser({
@@ -149,6 +191,11 @@ export function Cursor({
 export const SCREENSHOTS = {
   popupMenu: { src: "/store-image/screenshots/popup-menu.png", width: 662 },
   settings: { src: "/store-image/screenshots/settings.png", width: 2569 },
+  /** English settings page, used for every language other than Japanese */
+  settingsEn: {
+    src: "/store-image/screenshots/settings-en.png",
+    width: 2594,
+  },
   hub: { src: "/store-image/screenshots/hub.png", width: 1800 },
 } as const
 
@@ -214,7 +261,9 @@ const ARROW_CLASS: Record<ArrowSide, string> = {
 /**
  * Navy speech bubble telling what a part of the UI does. The arrow sits on
  * `arrow.side`, `arrow.offset` px along that edge (centered on left and right
- * edges by default, 30px on top and bottom). The arrow tip sticks out 8px
+ * edges by default, 30px on top and bottom). On the top and bottom edges,
+ * `fromEnd` measures the offset from the right, for bubbles anchored on the
+ * right whose width changes with the language. The arrow tip sticks out 8px
  * beyond the edge, 8px past the offset. `compact` fits a list row.
  */
 export function Tooltip({
@@ -227,7 +276,7 @@ export function Tooltip({
   icon: LucideIcon
   children: ReactNode
   style: CSSProperties
-  arrow?: { side: ArrowSide; offset?: number }
+  arrow?: { side: ArrowSide; offset?: number; fromEnd?: boolean }
   compact?: boolean
 }): JSX.Element {
   const offset = arrow.offset === undefined ? undefined : `${arrow.offset}px`
@@ -236,6 +285,7 @@ export function Tooltip({
       className={[
         css.tooltip,
         ARROW_CLASS[arrow.side],
+        arrow.fromEnd && css.arrowFromEnd,
         compact && css.tooltipCompact,
       ]
         .filter(Boolean)

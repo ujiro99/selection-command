@@ -20,6 +20,25 @@
   color: var(--ink);
 }
 
+/* Fonts for scripts that the Japanese font does not cover well */
+.canvas:lang(zh-CN) {
+  --jp: "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif;
+}
+
+.canvas:lang(ko) {
+  --jp: "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+}
+
+/* Hiragino has full-width Cyrillic, so Russian needs its own font */
+.canvas:lang(ru) {
+  --jp: "Helvetica Neue", "Arial", sans-serif;
+}
+
+.canvas:lang(hi) {
+  --jp:
+    "Kohinoor Devanagari", "Noto Sans Devanagari", "Hiragino Sans", sans-serif;
+}
+
 .brand {
   position: absolute;
   display: flex;
@@ -55,6 +74,8 @@
   font-size: 28px;
   font-weight: 500;
   line-height: 1.7;
+  /* Line breaks come from the copy; Fit scales long lines down */
+  white-space: nowrap;
 }
 
 /* Soft shadow for UI floating over the background */
@@ -172,6 +193,12 @@
 .arrowBottom::before {
   bottom: -8px;
   left: var(--arrow-offset, 30px);
+}
+
+.arrowTop.arrowFromEnd::before,
+.arrowBottom.arrowFromEnd::before {
+  left: auto;
+  right: var(--arrow-offset, 30px);
 }
 
 .arrowLeft::before {

@@ -3,13 +3,14 @@ import { CustomizeSlide } from "./CustomizeSlide"
 import { HeroSlide } from "./HeroSlide"
 import { LinkPreviewSlide } from "./LinkPreviewSlide"
 import { TriggerSlide } from "./TriggerSlide"
+import type { SlideProps } from "../_components/i18n"
 
 type SlideEntry = {
   /** Shown in the gallery */
   title: string
-  /** File name of the exported PNG */
+  /** File name of the exported PNG, after the language code */
   fileName: string
-  Slide: () => JSX.Element
+  Slide: (props: SlideProps) => JSX.Element
 }
 
 /** Store images in display order. The key is the URL segment. */

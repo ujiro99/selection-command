@@ -3,6 +3,9 @@
 import { useRef, useState } from "react"
 import { toPng } from "html-to-image"
 
+import type { LanguageType } from "@/features/locale"
+
+import { getStoreText } from "./_components/i18n"
 import { SLIDES } from "./_slides"
 import css from "./gallery.module.css"
 
@@ -27,18 +30,23 @@ async function exportSlide(root: HTMLElement, fileName: string) {
   link.click()
 }
 
-/** All store images at 50%, with PNG export buttons. */
-export function Gallery(): JSX.Element {
+/**
+ * All store images of one language at 50%, with PNG export buttons. Files
+ * are named with the language code first, such as ja_01_hero.png.
+ */
+export function Gallery({ lang }: { lang: LanguageType }): JSX.Element {
   const refs = useRef<Record<string, HTMLDivElement | null>>({})
   const [busy, setBusy] = useState(false)
   const entries = Object.entries(SLIDES)
+  const t = getStoreText(lang)
+  const fileNameOf = (key: string) => `${lang}_${SLIDES[key].fileName}`
 
   const run = async (keys: string[]) => {
     setBusy(true)
     try {
       for (const key of keys) {
         const root = refs.current[key]
-        if (root) await exportSlide(root, SLIDES[key].fileName)
+        if (root) await exportSlide(root, fileNameOf(key))
       }
     } finally {
       setBusy(false)
@@ -48,7 +56,7 @@ export function Gallery(): JSX.Element {
   return (
     <main className={css.gallery}>
       <div className={css.header}>
-        <h1 className={css.title}>Chrome Web Store images</h1>
+        <h1 className={css.title}>Chrome Web Store images ({lang})</h1>
         <button
           type="button"
           className={css.button}
@@ -59,10 +67,10 @@ export function Gallery(): JSX.Element {
         </button>
       </div>
       <ol className={css.list}>
-        {entries.map(([key, { title, fileName, Slide }]) => (
+        {entries.map(([key, { title, Slide }]) => (
           <li key={key}>
             <div className={css.caption}>
-              <a href={`/store-image/${key}`}>
+              <a href={`/${lang}/store-image/${key}`}>
                 {key}. {title}
               </a>
               <button
@@ -71,7 +79,7 @@ export function Gallery(): JSX.Element {
                 disabled={busy}
                 onClick={() => run([key])}
               >
-                Export {fileName}
+                Export {fileNameOf(key)}
               </button>
             </div>
             <div className={css.frame}>
@@ -81,7 +89,7 @@ export function Gallery(): JSX.Element {
                   refs.current[key] = el
                 }}
               >
-                <Slide />
+                <Slide t={t} lang={lang} />
               </div>
             </div>
           </li>

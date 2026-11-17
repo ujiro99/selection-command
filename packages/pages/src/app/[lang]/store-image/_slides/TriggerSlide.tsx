@@ -5,6 +5,7 @@ import {
   Browser,
   Canvas,
   Cursor,
+  Fit,
   Headline,
   POPUP_MENU,
   SCREENSHOTS,
@@ -13,6 +14,7 @@ import {
   Sub,
   storeCss,
 } from "../_components/parts"
+import type { SlideProps } from "../_components/i18n"
 import s from "./slides.module.css"
 
 const ICON = POPUP_MENU.hoveredIcon
@@ -45,21 +47,25 @@ const CHIPS_LEFT =
  * 2 How it works: select, pick a command, and the result opens in a popup
  * window. Any search engine can be added to the menu.
  */
-export function TriggerSlide(): JSX.Element {
+export function TriggerSlide({ t, lang }: SlideProps): JSX.Element {
+  const c = t.trigger
   return (
-    <Canvas background="#0f1b2d">
+    <Canvas lang={lang} background="#0f1b2d">
       <Headline
         size={56}
         color="#fff"
+        maxWidth={1180}
         style={{ top: 48, left: 0, width: 1280, textAlign: "center" }}
       >
-        選んでクリック、<Accent onDark>結果はポップアップで。</Accent>
+        {c.headline}
+        <Accent onDark>{c.accent}</Accent>
       </Headline>
       <Sub
         color="#b8c4d6"
+        maxWidth={1180}
         style={{ top: 136, left: 0, width: 1280, textAlign: "center" }}
       >
-        Google・Amazon・YouTubeなど、いつもの検索エンジンでそのまま検索。
+        {c.sub}
       </Sub>
 
       {/* Services that can be added as commands */}
@@ -101,7 +107,11 @@ export function TriggerSlide(): JSX.Element {
           className={s.pageText}
           style={{ top: 76, left: 44, fontSize: 30, color: "#556378" }}
         >
-          週末は<Selected>インターステラー</Selected>を観たい。
+          <Fit maxWidth={560}>
+            {c.before}
+            <Selected>{c.selected}</Selected>
+            {c.after}
+          </Fit>
         </p>
         <div className={s.line} style={{ top: 280, left: 44, width: 600 }} />
         <div className={s.line} style={{ top: 312, left: 44, width: 520 }} />
@@ -146,19 +156,19 @@ export function TriggerSlide(): JSX.Element {
 
       {/* The result, opened in a popup window over the page */}
       <Browser
-        url="google.com/search?q=インターステラー"
+        url={`google.com/search?q=${c.selected}`}
         style={{ top: 312, left: 712, width: 528, height: 470 }}
       >
         <div className={s.result}>
           <p className={s.searchBox}>
             <Search size={20} strokeWidth={2.6} />
-            インターステラー
+            {c.selected}
           </p>
           <p className={s.resultUrl}>youtube.com</p>
-          <p className={s.resultTitle}>インターステラー 予告編</p>
+          <p className={s.resultTitle}>{c.results[0]}</p>
           <div className={s.previewLine} style={{ width: "90%" }} />
           <p className={s.resultUrl}>wikipedia.org</p>
-          <p className={s.resultTitle}>インターステラー - Wikipedia</p>
+          <p className={s.resultTitle}>{c.results[1]}</p>
           <div className={s.previewLine} style={{ width: "84%" }} />
           <div className={s.previewLine} style={{ width: "60%" }} />
         </div>

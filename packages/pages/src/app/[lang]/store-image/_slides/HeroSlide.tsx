@@ -3,6 +3,8 @@ import { Search } from "lucide-react"
 import {
   Accent,
   Brand,
+  Fit,
+  Lines,
   Browser,
   Canvas,
   Cursor,
@@ -15,6 +17,7 @@ import {
   storeCss,
   Tooltip,
 } from "../_components/parts"
+import type { SlideProps } from "../_components/i18n"
 import s from "./slides.module.css"
 
 const POPUP_SCALE = 0.83
@@ -32,27 +35,24 @@ const HERO_BACKGROUND = [
 ].join(", ")
 
 /** 1 Hero: brand, the core promise, and the real popup in action. */
-export function HeroSlide(): JSX.Element {
+export function HeroSlide({ t, lang }: SlideProps): JSX.Element {
+  const c = t.hero
   return (
-    <Canvas background={HERO_BACKGROUND}>
+    <Canvas lang={lang} background={HERO_BACKGROUND}>
       <Brand style={{ top: 56, left: 68 }} />
 
       {/* Copy block, vertically centered against the browser on the right */}
       <p className={s.badge} style={{ top: 230, left: 68 }}>
-        <span className={s.badgePill}>無料</span>
-        AI連携も追加料金なし
+        <span className={s.badgePill}>{c.badge}</span>
+        {c.badgeNote}
       </p>
-      <Headline size={56} style={{ top: 300, left: 68 }}>
-        気になる言葉から、
+      <Headline size={56} maxWidth={560} style={{ top: 300, left: 68 }}>
+        {c.headline}
         <br />
-        <Accent>検索もAIもすぐ実行。</Accent>
+        <Accent>{c.accent}</Accent>
       </Headline>
-      <Sub color="#2b394d" style={{ top: 476, left: 68 }}>
-        コピーして、タブを開いて、貼り付ける。
-        <br />
-        この手間をなくして、
-        <br />
-        情報収集をもっとスムーズに。
+      <Sub color="#2b394d" maxWidth={560} style={{ top: 476, left: 68 }}>
+        <Lines lines={c.sub} />
       </Sub>
 
       {/* Scene: browser, popup and cursor tilted together */}
@@ -62,16 +62,20 @@ export function HeroSlide(): JSX.Element {
           style={{ top: 140, left: 660, width: 680, height: 570 }}
         >
           <p className={s.pageTitle} style={{ top: 100, left: 40 }}>
-            仕事の進め方が変わる3つの理由
+            <Fit maxWidth={530}>{c.pageTitle}</Fit>
           </p>
           <div className={s.line} style={{ top: 160, left: 40, width: 540 }} />
           <p
             className={s.pageText}
             style={{ top: 196, left: 40, fontSize: 24 }}
           >
-            仕事の進め方を大きく変えるテクノロジーが、
-            <br />
-            最近よく耳にする<Selected>生成AI</Selected>だ。
+            <Fit maxWidth={530}>
+              {c.pageLine}
+              <br />
+              {c.pageBefore}
+              <Selected>{c.pageSelected}</Selected>
+              {c.pageAfter}
+            </Fit>
           </p>
         </Browser>
 
@@ -92,9 +96,7 @@ export function HeroSlide(): JSX.Element {
           icon={Search}
           style={{ top: CURSOR_TOP + 70, left: CURSOR_LEFT - 22 }}
         >
-          クリックで「生成AI」を
-          <br />
-          Googleで検索
+          <Lines lines={c.tooltip} />
         </Tooltip>
         <Cursor scale={1.2} style={{ top: CURSOR_TOP, left: CURSOR_LEFT }} />
       </div>

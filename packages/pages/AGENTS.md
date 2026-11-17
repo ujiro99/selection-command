@@ -60,13 +60,21 @@ This file provides guidance to AI Agent when working with code in this repositor
      最小限残っているだけで、機能的な意味は薄い
 
 4. **Chrome Web Store 用プロモーション画像の作成**
-   - `src/app/store-image/[slide]/page.tsx`（`/store-image/1` 〜 `/store-image/5`）は、
-     Chrome Web Store に登録する画像（1280x800）を HTML/CSS で描画するためのページ
-   - `/store-image` は全スライドを 50%（ストアのプレビューと同じ 640x400）で並べる一覧ページ。
+   - `src/app/[lang]/store-image/[slide]/page.tsx`（`/ja/store-image/1` 〜 `/ja/store-image/5`）は、
+     Chrome Web Store に登録する画像（1280x800）を HTML/CSS で描画するためのページ。
+     `[lang]` は `src/features/locale` の14言語
+   - `/{lang}/store-image` は全スライドを 50%（ストアのプレビューと同じ 640x400）で並べる一覧ページ。
      各スライドの「Export」ボタン、または「Export all」で PNG を書き出せる（html-to-image を使用。
-     開発インジケーターは写り込まない）
-   - スライドの中身は `src/app/store-image/_slides/`、共通部品は `src/app/store-image/_components/parts.tsx`。
+     開発インジケーターは写り込まない）。ファイル名は `ja_01_hero.png` のように言語コードが先頭に付く。
+     右下の LocaleSelector で言語を切り替えられる
+   - スライドの中身は `src/app/[lang]/store-image/_slides/`、共通部品は `_components/parts.tsx`。
      スライドの追加・並べ替え・書き出しファイル名は `_slides/index.ts` の `SLIDES` で管理する
+   - コピーは各言語の辞書ファイル（`src/features/locale/*.ts`）の `storeImage` に書く。
+     スライドは `t`（その言語の `storeImage`）を props で受け取る。長い訳文は `Fit` が
+     指定幅に収まるよう縮小するので、`Headline` / `Sub` には `maxWidth` を指定する
+   - 言語ごとのフォントは `store.module.css` の `.canvas:lang(...)` で指定する
+     （ヒラギノは中国語・韓国語・ヒンディー語の字形が合わず、ロシア語は全角幅になるため）
+   - 設定画面のスクリーンショットは日本語 UI のまま全言語で使っている
    - 製品 UI は作り直さず、実際のスクリーンショット（`public/store-image/screenshots/`）を
      切り抜き・拡大して使う。UI が変わったらスクリーンショットを差し替える
    - デザイン方針は `.claude/skills/chrome-store-screenshots` の Design rules に従う
@@ -74,7 +82,8 @@ This file provides guidance to AI Agent when working with code in this repositor
    - dev サーバー起動中に `yarn build` すると `.next` が上書きされて dev サーバーが 500 を返すため、
      dev サーバーを止めてからビルドすること
    - 日本語フォントはシステムフォント（ヒラギノ角ゴ等）に依存するため、macOS での書き出しを前提とする
-   - `noindex` を指定しており、言語別レイアウト（`[lang]`）の外に置いているため Header/Footer は表示されない
+   - `noindex` を指定している。Header/Footer は `src/app/[lang]/(site)/layout.tsx`（route group）にあり、
+     store-image には適用されない
 
 ## 開発コマンド
 
@@ -88,10 +97,11 @@ This file provides guidance to AI Agent when working with code in this repositor
 
 - `public/data/ai-services.json` - Extension が参照するデータファイル
 - `public/data/experiments.json` - Extension のABテスト配分設定
-- `src/app/[lang]/test/` - e2e テストページ本体（`page.tsx`, `QuillWrapper.tsx`）
-- `src/app/store-image/` - Chrome Web Store 用画像ページ（`/store-image/1`〜`5` と一覧）
+- `src/app/[lang]/(site)/test/` - e2e テストページ本体（`page.tsx`, `QuillWrapper.tsx`）。URL は `/{lang}/test` のまま
+- `src/app/[lang]/(site)/layout.tsx` - テストページ用の Header/Footer
+- `src/app/[lang]/store-image/` - Chrome Web Store 用画像ページ（`/{lang}/store-image/1`〜`5` と一覧）
 - `src/components/Logo.tsx` - ロゴ（selection-command-hub から移植。store-image で使用）
-- `src/app/[lang]/layout.tsx`, `src/app/layout.tsx` - App Router の必須レイアウト（Header/Footer/LanguageProvider を保持）
+- `src/app/[lang]/layout.tsx`, `src/app/layout.tsx` - App Router の必須レイアウト（言語の静的パラメータ、LanguageProvider を保持）
 - `src/features/locale/` - 14言語分の辞書ファイル（layout.tsx が
   無条件にバレルインポートするため削除できない）
 - `src/components/MovedNotice.tsx` - ルートページと 404 ページで共有する移転案内
