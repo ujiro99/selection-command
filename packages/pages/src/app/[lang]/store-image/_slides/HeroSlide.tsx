@@ -37,31 +37,31 @@ const HERO_BACKGROUND = [
 /** 1 Hero: brand, the core promise, and the real popup in action. */
 export function HeroSlide({ t, lang }: SlideProps): JSX.Element {
   const c = t.hero
+  const headlineLineCount =
+    c.headline.split("\n").length + c.accent.split("\n").length
+  const badgeTop =
+    headlineLineCount >= 4 ? 160 : headlineLineCount === 3 ? 200 : 232
+  const headlineTop =
+    headlineLineCount >= 4 ? 240 : headlineLineCount === 3 ? 280 : 312
+  const subTop =
+    headlineLineCount >= 4 ? 568 : headlineLineCount === 3 ? 532 : 456
   return (
     <Canvas lang={lang} background={HERO_BACKGROUND}>
       <Brand style={{ top: 56, left: 68 }} />
 
       {/* Copy block, vertically centered against the browser on the right */}
-      <p className={s.badge} style={{ top: lang === "ja" ? 200 : 232, left: 68 }}>
+      <p className={s.badge} style={{ top: badgeTop, left: 68 }}>
         <span className={s.badgePill}>{c.badge}</span>
         <span style={{ whiteSpace: "pre-line" }}>{c.badgeNote}</span>
       </p>
-      <Headline
-        size={56}
-        maxWidth={560}
-        style={{ top: lang === "ja" ? 280 : 312, left: 68 }}
-      >
+      <Headline size={56} maxWidth={560} style={{ top: headlineTop, left: 68 }}>
         <Lines lines={c.headline.split("\n")} />
         <br />
         <Accent>
           <Lines lines={c.accent.split("\n")} />
         </Accent>
       </Headline>
-      <Sub
-        color="#2b394d"
-        maxWidth={560}
-        style={{ top: lang === "ja" ? 532 : 456, left: 68 }}
-      >
+      <Sub color="#2b394d" maxWidth={560} style={{ top: subTop, left: 68 }}>
         <Lines lines={c.sub} />
       </Sub>
 

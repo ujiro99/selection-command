@@ -35,7 +35,11 @@ export function Fit({
     <span
       ref={ref}
       style={{
-        display: "inline-block",
+        display: align === "center" ? "block" : "inline-block",
+        width: align === "center" ? "max-content" : undefined,
+        position: align === "center" ? "relative" : undefined,
+        left: align === "center" ? "50%" : undefined,
+        translate: align === "center" ? "-50% 0" : undefined,
         transformOrigin: align === "center" ? "50% 0" : "0 0",
       }}
     >

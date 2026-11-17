@@ -55,7 +55,7 @@ export function AiResultSlide({ t, lang }: SlideProps): JSX.Element {
         className={s.tilt}
         style={{
           transformOrigin: `${BROWSER_LEFT}px ${BROWSER_TOP}px`,
-          translate: lang === "ja" ? "0 24px" : undefined,
+          translate: c.sub.includes("\n") ? "0 24px" : undefined,
         }}
       >
         <Browser
