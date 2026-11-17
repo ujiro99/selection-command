@@ -15,8 +15,8 @@ const lang = {
       badge: "無料",
       badgeNote: "いつものAIサービスと連携※",
       serviceNote: "※ 対応AIサービス：ChatGPT・Gemini・Claude・Perplexity",
-      headline: "選んだ文字を、",
-      accent: "その場で検索・要約・翻訳。",
+      headline: "選んだ文字を、\nその場ですぐに",
+      accent: "検索・要約・翻訳。",
       sub: [
         "コピーして、タブを開いて、貼り付ける。",
         "その手間を、ワンクリックに。",
@@ -40,7 +40,7 @@ const lang = {
     ai: {
       headline: "好きなプロンプトを、",
       accent: "ワンクリックで実行。",
-      sub: "要約・翻訳だけでなく、好きなプロンプトをコマンド化。文章も指示もコピペ不要。",
+      sub: "要約・翻訳だけでなく、好きなプロンプトをコマンド化。\n文章も指示もコピペ不要。",
       pageTitle: "生成AI、導入の前に知っておくこと",
       paragraph: [
         "生成AIの導入で、資料作成や情報収集に",

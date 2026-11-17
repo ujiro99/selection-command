@@ -47,13 +47,16 @@ export function AiResultSlide({ t, lang }: SlideProps): JSX.Element {
         <Accent>{c.accent}</Accent>
       </Headline>
       <Sub color="#3d4a5c" maxWidth={1120} style={{ top: 134, left: 80 }}>
-        {c.sub}
+        <Lines lines={c.sub.split("\n")} />
       </Sub>
 
       {/* Scene: browser, popup menu, arrow and cursor tilted together */}
       <div
         className={s.tilt}
-        style={{ transformOrigin: `${BROWSER_LEFT}px ${BROWSER_TOP}px` }}
+        style={{
+          transformOrigin: `${BROWSER_LEFT}px ${BROWSER_TOP}px`,
+          translate: lang === "ja" ? "0 24px" : undefined,
+        }}
       >
         <Browser
           url="example.com / article"

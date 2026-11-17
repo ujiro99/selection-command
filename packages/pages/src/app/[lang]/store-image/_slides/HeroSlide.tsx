@@ -42,16 +42,26 @@ export function HeroSlide({ t, lang }: SlideProps): JSX.Element {
       <Brand style={{ top: 56, left: 68 }} />
 
       {/* Copy block, vertically centered against the browser on the right */}
-      <p className={s.badge} style={{ top: 232, left: 68 }}>
+      <p className={s.badge} style={{ top: lang === "ja" ? 200 : 232, left: 68 }}>
         <span className={s.badgePill}>{c.badge}</span>
         <span style={{ whiteSpace: "pre-line" }}>{c.badgeNote}</span>
       </p>
-      <Headline size={56} maxWidth={560} style={{ top: 312, left: 68 }}>
-        {c.headline}
+      <Headline
+        size={56}
+        maxWidth={560}
+        style={{ top: lang === "ja" ? 280 : 312, left: 68 }}
+      >
+        <Lines lines={c.headline.split("\n")} />
         <br />
-        <Accent>{c.accent}</Accent>
+        <Accent>
+          <Lines lines={c.accent.split("\n")} />
+        </Accent>
       </Headline>
-      <Sub color="#2b394d" maxWidth={560} style={{ top: 456, left: 68 }}>
+      <Sub
+        color="#2b394d"
+        maxWidth={560}
+        style={{ top: lang === "ja" ? 532 : 456, left: 68 }}
+      >
         <Lines lines={c.sub} />
       </Sub>
 
