@@ -140,6 +140,7 @@ export function Cursor({
 export const SCREENSHOTS = {
   popupMenu: { src: "/store-image/screenshots/popup-menu.png", width: 662 },
   settings: { src: "/store-image/screenshots/settings.png", width: 2569 },
+  hub: { src: "/store-image/screenshots/hub.png", width: 1800 },
 } as const
 
 /**

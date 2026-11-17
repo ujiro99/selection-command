@@ -22,8 +22,8 @@ const POPUP_TOP = 446
 const POPUP_LEFT = 686
 const ICON = POPUP_MENU.hoveredIcon
 // Top-left of the cursor, a little below and right of the hovered icon
-const CURSOR_TOP = POPUP_TOP + ICON.y * POPUP_SCALE + 6
-const CURSOR_LEFT = POPUP_LEFT + ICON.x * POPUP_SCALE + 8
+const CURSOR_TOP = POPUP_TOP + ICON.y * POPUP_SCALE + 16
+const CURSOR_LEFT = POPUP_LEFT + ICON.x * POPUP_SCALE + 16
 
 // Soft blue glow from the top right, as in the earlier design
 const HERO_BACKGROUND = [

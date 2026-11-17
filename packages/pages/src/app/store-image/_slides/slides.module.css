@@ -187,3 +187,78 @@
   inset: 0;
   transform: rotate(-1.8deg);
 }
+
+/* ---------- 2: How it works ---------- */
+
+/* White square holding one service icon */
+.engineChip {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.engineMore {
+  font-size: 26px;
+  font-weight: 800;
+  color: #8a97aa;
+}
+
+/* Search results inside the popup window */
+.result {
+  padding: 26px 30px;
+  font-family: var(--jp);
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 26px;
+  padding: 12px 20px;
+  border: 1px solid #dfe4ec;
+  border-radius: 999px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #26344a;
+}
+
+.resultUrl {
+  margin: 0;
+  font-size: 16px;
+  color: #6b788c;
+}
+
+.resultTitle {
+  margin: 2px 0 12px;
+  font-size: 25px;
+  font-weight: 700;
+  color: #1a4fc4;
+}
+
+/* ---------- 4: Customize (callouts) ---------- */
+
+.callout {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-family: var(--jp);
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  background: var(--ink);
+  box-shadow: 0 10px 24px -6px rgb(15 27 45 / 0.45);
+}
+
+.calloutLight {
+  color: var(--ink);
+  background: #ffd84d;
+}
