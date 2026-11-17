@@ -18,13 +18,13 @@ import {
 import type { SlideProps } from "../_components/i18n"
 import s from "./slides.module.css"
 
-const BROWSER_TOP = 220
+const BROWSER_TOP = 252
 const BROWSER_LEFT = 80
 // The side panel takes the right part of the browser window
 const PANEL_LEFT = 680
 
 const MENU_SCALE = 0.8
-const MENU_TOP = 548
+const MENU_TOP = BROWSER_TOP + 328
 const MENU_LEFT = 116
 // The ChatGPT icon, next to Google in the popup menu screenshot
 const AI_ICON = { x: 148, y: 50 }
@@ -129,7 +129,7 @@ export function AiResultSlide({ t, lang }: SlideProps): JSX.Element {
         {/* From the clicked command to the side panel */}
         <svg
           className={s.dragPath}
-          style={{ top: 560, left: 270 }}
+          style={{ top: BROWSER_TOP + 340, left: 270 }}
           width="480"
           height="150"
         >

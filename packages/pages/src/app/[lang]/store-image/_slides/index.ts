@@ -19,13 +19,13 @@ export const SLIDES: Record<string, SlideEntry> = {
   "2": { title: "Trigger", fileName: "02_trigger.png", Slide: TriggerSlide },
   "3": { title: "AI result", fileName: "03_ai.png", Slide: AiResultSlide },
   "4": {
-    title: "Customize",
-    fileName: "04_customize.png",
-    Slide: CustomizeSlide,
+    title: "Link preview",
+    fileName: "04_link_preview.png",
+    Slide: LinkPreviewSlide,
   },
   "5": {
-    title: "Link preview",
-    fileName: "05_link_preview.png",
-    Slide: LinkPreviewSlide,
+    title: "Customize",
+    fileName: "05_customize.png",
+    Slide: CustomizeSlide,
   },
 }

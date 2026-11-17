@@ -13,13 +13,13 @@ const lang = {
   storeImage: {
     hero: {
       badge: "無料",
-      badgeNote: "AI連携も追加料金なし",
-      headline: "気になる言葉から、",
-      accent: "検索もAIもすぐ実行。",
+      badgeNote: "いつものAIサービスと連携※",
+      serviceNote: "※ 対応AIサービス：ChatGPT・Gemini・Claude・Perplexity",
+      headline: "選んだ文字を、",
+      accent: "その場で検索・要約・翻訳。",
       sub: [
         "コピーして、タブを開いて、貼り付ける。",
-        "この手間をなくして、",
-        "情報収集をもっとスムーズに。",
+        "その手間を、ワンクリックに。",
       ],
       pageTitle: "仕事の進め方が変わる3つの理由",
       pageLine: "仕事の進め方を大きく変えるテクノロジーが、",
@@ -29,8 +29,8 @@ const lang = {
       tooltip: ["クリックで「生成AI」を", "Googleで検索"],
     },
     trigger: {
-      headline: "選んでクリック、",
-      accent: "結果はポップアップで。",
+      headline: "選んで検索。",
+      accent: "結果はその場で確認。",
       sub: "Google・Amazon・YouTubeなど、いつもの検索エンジンでそのまま検索。",
       before: "週末は",
       selected: "インターステラー",
@@ -38,9 +38,9 @@ const lang = {
       results: ["インターステラー 予告編", "インターステラー - Wikipedia"],
     },
     ai: {
-      headline: "選んだ文章を、",
-      accent: "ワンクリックでAI処理。",
-      sub: "要約・翻訳・解説など、よく使うプロンプトをそのまま実行。",
+      headline: "好きなプロンプトを、",
+      accent: "ワンクリックで実行。",
+      sub: "要約・翻訳だけでなく、好きなプロンプトをコマンド化。文章も指示もコピペ不要。",
       pageTitle: "生成AI、導入の前に知っておくこと",
       paragraph: [
         "生成AIの導入で、資料作成や情報収集に",
@@ -61,18 +61,20 @@ const lang = {
       add: "自分で追加・削除",
       folder: "フォルダで整理",
       reorder: "ドラッグで並べ替え",
-      hub: "Hubから追加",
+      hub: "公開コマンドを追加",
       headline: "よく使うサービスを、",
       accent: "自分専用メニューに。",
-      sub: ["使う分だけ、好きな順に。", "Hubで、コマンドの発見・共有も可能。"],
+      sub: [
+        "使うサービスだけ、好きな順に。",
+        "公開されたコマンドも追加できます。",
+      ],
     },
     linkPreview: {
       headline: "タブを増やさず、",
       accent: "リンク先を確認。",
       sub: [
-        "ポップアップでさっと表示。",
-        "元のページに戻るだけで、",
-        "自動で閉じます。",
+        "リンク先をポップアップで表示。",
+        "元のページを開いたまま確認できます。",
       ],
       link: "生成AI活用ガイド",
       linkAfter: "で、具体的な使い方を紹介。",

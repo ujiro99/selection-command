@@ -42,16 +42,16 @@ export function HeroSlide({ t, lang }: SlideProps): JSX.Element {
       <Brand style={{ top: 56, left: 68 }} />
 
       {/* Copy block, vertically centered against the browser on the right */}
-      <p className={s.badge} style={{ top: 230, left: 68 }}>
+      <p className={s.badge} style={{ top: 232, left: 68 }}>
         <span className={s.badgePill}>{c.badge}</span>
-        {c.badgeNote}
+        <span style={{ whiteSpace: "pre-line" }}>{c.badgeNote}</span>
       </p>
-      <Headline size={56} maxWidth={560} style={{ top: 300, left: 68 }}>
+      <Headline size={56} maxWidth={560} style={{ top: 312, left: 68 }}>
         {c.headline}
         <br />
         <Accent>{c.accent}</Accent>
       </Headline>
-      <Sub color="#2b394d" maxWidth={560} style={{ top: 476, left: 68 }}>
+      <Sub color="#2b394d" maxWidth={560} style={{ top: 456, left: 68 }}>
         <Lines lines={c.sub} />
       </Sub>
 
@@ -100,6 +100,15 @@ export function HeroSlide({ t, lang }: SlideProps): JSX.Element {
         </Tooltip>
         <Cursor scale={1.2} style={{ top: CURSOR_TOP, left: CURSOR_LEFT }} />
       </div>
+      {"serviceNote" in c && typeof c.serviceNote === "string" && (
+        <Sub
+          color="#3d4a5c"
+          maxWidth={1144}
+          style={{ bottom: 36, left: 68, fontSize: 22 }}
+        >
+          {c.serviceNote}
+        </Sub>
+      )}
     </Canvas>
   )
 }
