@@ -8,6 +8,7 @@ import {
   Screenshot,
   Sub,
   storeCss,
+  Tooltip,
 } from "../_components/parts"
 import s from "./slides.module.css"
 
@@ -16,9 +17,10 @@ import s from "./slides.module.css"
 const COMMAND_LIST = { x: 625, y: 320, width: 1215, height: 1120 }
 const LIST_SCALE = 0.44
 
-// Hub list page: logo, filters and the first shared commands
-const HUB_LIST = { x: 0, y: 0, width: 1500, height: 1040 }
-const HUB_SCALE = 0.36
+// Hub list page: logo, filters and the first shared commands with their
+// download buttons
+const HUB_LIST = { x: 0, y: 0, width: 1800, height: 1100 }
+const HUB_SCALE = 0.3
 
 /**
  * 4 Power feature: users add, remove, group and reorder commands, and can
@@ -41,29 +43,27 @@ export function CustomizeSlide(): JSX.Element {
         />
       </div>
 
-      {/* Callouts on what the list can do */}
-      <p className={s.callout} style={{ top: 124, left: 388 }}>
-        <Plus size={20} strokeWidth={2.8} />
+      {/* Tooltips on what the list can do. Each arrow tip is 38px right of
+          the tooltip's left and 8px above its top. */}
+      <Tooltip navy icon={Plus} style={{ top: 228, left: 382 }}>
         自分で追加・削除
-      </p>
-      <p className={s.callout} style={{ top: 322, left: 290 }}>
-        <Folder size={20} strokeWidth={2.6} />
+      </Tooltip>
+      <Tooltip navy icon={Folder} style={{ top: 362, left: 122 }}>
         フォルダで整理
-      </p>
-      <p className={s.callout} style={{ top: 520, left: 290 }}>
-        <GripVertical size={20} strokeWidth={2.6} />
+      </Tooltip>
+      <Tooltip navy icon={GripVertical} style={{ top: 562, left: 52 }}>
         ドラッグで並べ替え
-      </p>
+      </Tooltip>
 
-      <Headline size={56} color="#fff" style={{ top: 70, left: 690 }}>
-        メニューは、
+      <Headline size={52} color="#fff" style={{ top: 70, left: 690 }}>
+        よく使うサービスを、
         <br />
-        <span style={{ color: "#bcd3ff" }}>自分好みに。</span>
+        <span style={{ color: "#bcd3ff" }}>自分専用メニューに。</span>
       </Headline>
       <Sub color="#dbe6ff" style={{ top: 236, left: 690 }}>
         使う分だけ、好きな順に。
         <br />
-        Hubで、みんなのコマンドも。
+        Hubで、コマンドの発見・共有も可能。
       </Sub>
 
       {/* Selection Command Hub, where shared commands are found */}
@@ -78,13 +78,15 @@ export function CustomizeSlide(): JSX.Element {
           style={{ top: 52, left: 0 }}
         />
       </Browser>
-      <p
-        className={`${s.callout} ${s.calloutLight}`}
-        style={{ top: 704, left: 520 }}
+      {/* Points at the download button of "Page Summary by AI" */}
+      <Tooltip
+        navy
+        icon={Download}
+        arrowLeft={182}
+        style={{ top: 590, left: 968 }}
       >
-        <Download size={20} strokeWidth={2.8} />
         Hubから追加
-      </p>
+      </Tooltip>
     </Canvas>
   )
 }

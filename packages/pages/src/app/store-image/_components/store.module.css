@@ -153,12 +153,22 @@
   content: "";
   position: absolute;
   top: -8px;
-  left: 30px;
+  left: var(--arrow-left, 30px);
   width: 16px;
   height: 16px;
   border-radius: 3px;
   background: #2a73ee;
   transform: rotate(45deg);
+}
+
+/* Navy bubble, the color of slide 2's background */
+.tooltipNavy {
+  background: #0f1b2d;
+  box-shadow: 0 20px 40px -10px rgb(5 12 25 / 0.55);
+}
+
+.tooltipNavy::before {
+  background: #0f1b2d;
 }
 
 .tooltipIcon {

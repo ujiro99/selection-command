@@ -239,26 +239,57 @@
   color: #1a4fc4;
 }
 
-/* ---------- 4: Customize (callouts) ---------- */
+/* ---------- 3: AI prompt (side panel) ---------- */
 
-.callout {
+.sidePanel {
   position: absolute;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0;
-  padding: 8px 16px;
-  border-radius: 999px;
-  font-family: var(--jp);
-  font-size: 20px;
-  font-weight: 700;
-  color: #fff;
-  white-space: nowrap;
-  background: var(--ink);
-  box-shadow: 0 10px 24px -6px rgb(15 27 45 / 0.45);
+  top: 52px;
+  right: 0;
+  bottom: 0;
+  border-left: 1px solid #e3e8ef;
+  background: #fff;
+  box-shadow: -12px 0 30px -18px rgb(15 27 45 / 0.25);
 }
 
-.calloutLight {
-  color: var(--ink);
-  background: #ffd84d;
+.sidePanelHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 14px 20px;
+  border-bottom: 1px solid #eef1f6;
+  font-size: 18px;
+  font-weight: 700;
+  color: #26344a;
+}
+
+.sidePanelClose {
+  margin-left: auto;
+  color: #8a97aa;
+}
+
+/* The chat in the side panel, a size smaller than a full page */
+.sideChat {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 22px 24px;
+  font-family: var(--jp);
+}
+
+.sideChat .promptTag {
+  font-size: 15px;
+}
+
+.sideChat .userBubble {
+  font-size: 18px;
+}
+
+.sideChat .answer {
+  gap: 10px;
+  font-size: 20px;
+}
+
+.sideChat .answer ul {
+  padding-left: 22px;
 }

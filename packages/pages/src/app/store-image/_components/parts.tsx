@@ -194,20 +194,30 @@ export function Screenshot({
 }
 
 /**
- * Blue speech bubble telling what the hovered command does. Its arrow is on
- * the top edge, 30px from the left, so it can point up at the cursor.
+ * Speech bubble telling what a part of the UI does. Its arrow is on the top
+ * edge, `arrowLeft` px from the left (30 by default), so the tip is at
+ * (left + arrowLeft + 8, top - 8). `navy` suits bubbles on a blue background.
  */
 export function Tooltip({
   icon: Icon,
   children,
   style,
+  arrowLeft = 30,
+  navy = false,
 }: {
   icon: LucideIcon
   children: ReactNode
   style: CSSProperties
+  arrowLeft?: number
+  navy?: boolean
 }): JSX.Element {
   return (
-    <div className={css.tooltip} style={style}>
+    <div
+      className={[css.tooltip, navy && css.tooltipNavy]
+        .filter(Boolean)
+        .join(" ")}
+      style={{ "--arrow-left": `${arrowLeft}px`, ...style } as CSSProperties}
+    >
       <span className={css.tooltipIcon}>
         <Icon size={22} strokeWidth={2.6} />
       </span>
