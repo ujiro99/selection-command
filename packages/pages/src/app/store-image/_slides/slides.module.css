@@ -6,7 +6,7 @@
   align-items: center;
   gap: 12px;
   font-family: var(--jp);
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 700;
   color: #2b394d;
 }
@@ -179,4 +179,11 @@
 .dragPath {
   position: absolute;
   overflow: visible;
+}
+
+/* Tilts a group of absolutely placed parts together */
+.tilt {
+  position: absolute;
+  inset: 0;
+  transform: rotate(-1.8deg);
 }

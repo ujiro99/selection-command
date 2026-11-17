@@ -3,15 +3,18 @@ import {
   Canvas,
   Cursor,
   Headline,
+  POPUP_MENU,
   SCREENSHOTS,
   Screenshot,
   Selected,
   Sub,
+  storeCss,
 } from "../_components/parts"
 import s from "./slides.module.css"
 
-const POPUP = { x: 0, y: 0, width: 746, height: 262 }
-const SCALE = 1.3
+const POPUP = POPUP_MENU.crop
+const ICON = POPUP_MENU.hoveredIcon
+const SCALE = 1.24
 
 /** 2 Trigger: selecting text is all it takes to bring up the menu. */
 export function TriggerSlide(): JSX.Element {
@@ -43,16 +46,24 @@ export function TriggerSlide(): JSX.Element {
         週末に観る映画、<Selected>インターステラー</Selected>の予告編を探す。
       </p>
 
-      {/* The real popup menu: the Media folder is open */}
+      {/* The real popup menu */}
       <Screenshot
         shot={SCREENSHOTS.popupMenu}
         crop={POPUP}
         scale={SCALE}
-        style={{ top: 396, left: popupLeft }}
+        className={storeCss.shotShadow}
+        style={{
+          top: 420,
+          left: popupLeft,
+          borderRadius: POPUP_MENU.radius * SCALE,
+        }}
       />
       <Cursor
         scale={1.3}
-        style={{ top: 396 + 134 * SCALE, left: popupLeft + 282 * SCALE }}
+        style={{
+          top: 420 + ICON.y * SCALE + 8,
+          left: popupLeft + ICON.x * SCALE + 10,
+        }}
       />
     </Canvas>
   )

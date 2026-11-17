@@ -1,3 +1,4 @@
+import type { LucideIcon } from "lucide-react"
 import type { CSSProperties, ReactNode } from "react"
 
 import { Logo } from "@/components/Logo"
@@ -137,8 +138,19 @@ export function Cursor({
 
 /** Real screenshots of the extension, with their natural pixel width. */
 export const SCREENSHOTS = {
-  popupMenu: { src: "/store-image/screenshots/popup-menu.png", width: 746 },
+  popupMenu: { src: "/store-image/screenshots/popup-menu.png", width: 662 },
   settings: { src: "/store-image/screenshots/settings.png", width: 2569 },
+} as const
+
+/**
+ * The whole popup menu screenshot (bar only, no shadow), the radius of its
+ * rounded corners (the corners outside it are white), and where its hovered
+ * Google icon is.
+ */
+export const POPUP_MENU = {
+  crop: { x: 0, y: 0, width: 662, height: 102 },
+  radius: 11,
+  hoveredIcon: { x: 52, y: 50 },
 } as const
 
 type Crop = { x: number; y: number; width: number; height: number }
@@ -176,6 +188,29 @@ export function Screenshot({
         width={shot.width * scale}
         style={{ marginLeft: -crop.x * scale, marginTop: -crop.y * scale }}
       />
+    </div>
+  )
+}
+
+/**
+ * Blue speech bubble telling what the hovered command does. Its arrow is on
+ * the top edge, 30px from the left, so it can point up at the cursor.
+ */
+export function Tooltip({
+  icon: Icon,
+  children,
+  style,
+}: {
+  icon: LucideIcon
+  children: ReactNode
+  style: CSSProperties
+}): JSX.Element {
+  return (
+    <div className={css.tooltip} style={style}>
+      <span className={css.tooltipIcon}>
+        <Icon size={22} strokeWidth={2.6} />
+      </span>
+      <p className={css.tooltipText}>{children}</p>
     </div>
   )
 }
