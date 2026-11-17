@@ -44,6 +44,11 @@
   color: var(--blue);
 }
 
+/* Accent on navy or blue backgrounds, light enough for both */
+.accentOnDark {
+  color: #9cc2ff;
+}
+
 .sub {
   position: absolute;
   font-family: var(--jp);
@@ -136,7 +141,7 @@
   max-width: none;
 }
 
-/* Blue speech bubble with an arrow on its top edge */
+/* Navy speech bubble. The arrow side is set by one of the arrow* classes. */
 .tooltip {
   position: absolute;
   display: flex;
@@ -145,30 +150,38 @@
   padding: 16px 26px 16px 20px;
   border-radius: 12px;
   color: #fff;
-  background: linear-gradient(135deg, #2a73ee, #1a5ad8);
-  box-shadow: 0 20px 40px -10px rgb(26 90 216 / 0.55);
+  background: #0f1b2d;
+  box-shadow: 0 20px 40px -10px rgb(5 12 25 / 0.5);
 }
 
 .tooltip::before {
   content: "";
   position: absolute;
-  top: -8px;
-  left: var(--arrow-left, 30px);
   width: 16px;
   height: 16px;
   border-radius: 3px;
-  background: #2a73ee;
+  background: #0f1b2d;
   transform: rotate(45deg);
 }
 
-/* Navy bubble, the color of slide 2's background */
-.tooltipNavy {
-  background: #0f1b2d;
-  box-shadow: 0 20px 40px -10px rgb(5 12 25 / 0.55);
+.arrowTop::before {
+  top: -8px;
+  left: var(--arrow-offset, 30px);
 }
 
-.tooltipNavy::before {
-  background: #0f1b2d;
+.arrowBottom::before {
+  bottom: -8px;
+  left: var(--arrow-offset, 30px);
+}
+
+.arrowLeft::before {
+  left: -8px;
+  top: var(--arrow-offset, calc(50% - 8px));
+}
+
+.arrowRight::before {
+  right: -8px;
+  top: var(--arrow-offset, calc(50% - 8px));
 }
 
 .tooltipIcon {
@@ -178,7 +191,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: rgb(255 255 255 / 0.2);
+  background: rgb(255 255 255 / 0.16);
 }
 
 .tooltipText {
@@ -188,4 +201,20 @@
   font-weight: 700;
   line-height: 1.45;
   white-space: nowrap;
+}
+
+/* Smaller bubble that fits in one row of a list */
+.tooltipCompact {
+  gap: 10px;
+  padding: 8px 18px 8px 9px;
+  border-radius: 10px;
+}
+
+.tooltipCompact .tooltipIcon {
+  width: 32px;
+  height: 32px;
+}
+
+.tooltipCompact .tooltipText {
+  font-size: 18px;
 }

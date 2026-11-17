@@ -58,8 +58,17 @@ export function Headline({
   )
 }
 
-export function Accent({ children }: { children: ReactNode }): JSX.Element {
-  return <span className={css.accent}>{children}</span>
+/** Accented part of a headline. Use `onDark` on navy or blue backgrounds. */
+export function Accent({
+  children,
+  onDark = false,
+}: {
+  children: ReactNode
+  onDark?: boolean
+}): JSX.Element {
+  return (
+    <span className={onDark ? css.accentOnDark : css.accent}>{children}</span>
+  )
 }
 
 export function Sub({
@@ -193,33 +202,48 @@ export function Screenshot({
   )
 }
 
+type ArrowSide = "top" | "bottom" | "left" | "right"
+
+const ARROW_CLASS: Record<ArrowSide, string> = {
+  top: css.arrowTop,
+  bottom: css.arrowBottom,
+  left: css.arrowLeft,
+  right: css.arrowRight,
+}
+
 /**
- * Speech bubble telling what a part of the UI does. Its arrow is on the top
- * edge, `arrowLeft` px from the left (30 by default), so the tip is at
- * (left + arrowLeft + 8, top - 8). `navy` suits bubbles on a blue background.
+ * Navy speech bubble telling what a part of the UI does. The arrow sits on
+ * `arrow.side`, `arrow.offset` px along that edge (centered on left and right
+ * edges by default, 30px on top and bottom). The arrow tip sticks out 8px
+ * beyond the edge, 8px past the offset. `compact` fits a list row.
  */
 export function Tooltip({
   icon: Icon,
   children,
   style,
-  arrowLeft = 30,
-  navy = false,
+  arrow = { side: "top" },
+  compact = false,
 }: {
   icon: LucideIcon
   children: ReactNode
   style: CSSProperties
-  arrowLeft?: number
-  navy?: boolean
+  arrow?: { side: ArrowSide; offset?: number }
+  compact?: boolean
 }): JSX.Element {
+  const offset = arrow.offset === undefined ? undefined : `${arrow.offset}px`
   return (
     <div
-      className={[css.tooltip, navy && css.tooltipNavy]
+      className={[
+        css.tooltip,
+        ARROW_CLASS[arrow.side],
+        compact && css.tooltipCompact,
+      ]
         .filter(Boolean)
         .join(" ")}
-      style={{ "--arrow-left": `${arrowLeft}px`, ...style } as CSSProperties}
+      style={{ "--arrow-offset": offset, ...style } as CSSProperties}
     >
       <span className={css.tooltipIcon}>
-        <Icon size={22} strokeWidth={2.6} />
+        <Icon size={compact ? 18 : 22} strokeWidth={2.6} />
       </span>
       <p className={css.tooltipText}>{children}</p>
     </div>

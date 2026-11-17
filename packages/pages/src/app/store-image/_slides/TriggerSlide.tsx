@@ -1,6 +1,7 @@
 import { Search } from "lucide-react"
 
 import {
+  Accent,
   Browser,
   Canvas,
   Cursor,
@@ -50,14 +51,13 @@ export function TriggerSlide(): JSX.Element {
         color="#fff"
         style={{ top: 48, left: 0, width: 1280, textAlign: "center" }}
       >
-        選んでクリック、{/* Brighter than the default accent for contrast on navy */}
-        <span style={{ color: "#78acff" }}>結果はポップアップで。</span>
+        選んでクリック、<Accent onDark>結果はポップアップで。</Accent>
       </Headline>
       <Sub
         color="#b8c4d6"
         style={{ top: 136, left: 0, width: 1280, textAlign: "center" }}
       >
-        よく使う検索エンジンを、好きなだけメニューに追加できます。
+        Google・Amazon・YouTubeなど、いつもの検索エンジンでそのまま検索。
       </Sub>
 
       {/* Services that can be added as commands */}

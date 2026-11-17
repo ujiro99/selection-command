@@ -1,6 +1,7 @@
 import { Download, Folder, GripVertical, Plus } from "lucide-react"
 
 import {
+  Accent,
   Browser,
   Canvas,
   Headline,
@@ -43,22 +44,37 @@ export function CustomizeSlide(): JSX.Element {
         />
       </div>
 
-      {/* Tooltips on what the list can do. Each arrow tip is 38px right of
-          the tooltip's left and 8px above its top. */}
-      <Tooltip navy icon={Plus} style={{ top: 228, left: 382 }}>
+      {/* Tooltips on what the list can do, placed in the empty part of each
+          row so the commands and folders stay visible */}
+      <Tooltip
+        compact
+        icon={Plus}
+        arrow={{ side: "right" }}
+        style={{ top: 164, right: 1280 - 396 }}
+      >
         自分で追加・削除
       </Tooltip>
-      <Tooltip navy icon={Folder} style={{ top: 362, left: 122 }}>
+      <Tooltip
+        compact
+        icon={Folder}
+        arrow={{ side: "left" }}
+        style={{ top: 313, left: 202 }}
+      >
         フォルダで整理
       </Tooltip>
-      <Tooltip navy icon={GripVertical} style={{ top: 562, left: 52 }}>
+      <Tooltip
+        compact
+        icon={GripVertical}
+        arrow={{ side: "left" }}
+        style={{ top: 514, left: 196 }}
+      >
         ドラッグで並べ替え
       </Tooltip>
 
       <Headline size={52} color="#fff" style={{ top: 70, left: 690 }}>
         よく使うサービスを、
         <br />
-        <span style={{ color: "#bcd3ff" }}>自分専用メニューに。</span>
+        <Accent onDark>自分専用メニューに。</Accent>
       </Headline>
       <Sub color="#dbe6ff" style={{ top: 236, left: 690 }}>
         使う分だけ、好きな順に。
@@ -80,10 +96,10 @@ export function CustomizeSlide(): JSX.Element {
       </Browser>
       {/* Points at the download button of "Page Summary by AI" */}
       <Tooltip
-        navy
+        compact
         icon={Download}
-        arrowLeft={182}
-        style={{ top: 590, left: 968 }}
+        arrow={{ side: "top", offset: 140 }}
+        style={{ top: 590, left: 1010 }}
       >
         Hubから追加
       </Tooltip>
