@@ -36,6 +36,21 @@ const ICON_LIBRARY_PATTERNS = [
 /** Matches a bare IPv6 literal, which always contains at least two colons. */
 const BARE_IPV6 = /^[0-9a-f]*(?::[0-9a-f]*){2,}$/i
 
+/**
+ * Builds a Google favicon service URL for the site of the given URL.
+ * Only the origin is passed so that search placeholders such as `%s` and
+ * query strings do not break the service URL.
+ */
+export function getGoogleFaviconUrl(url: string): string {
+  let target = url
+  try {
+    target = new URL(url).origin
+  } catch {
+    // Not an absolute URL; pass it through as is.
+  }
+  return `https://www.google.com/s2/favicons?sz=64&domain_url=${encodeURIComponent(target)}`
+}
+
 const includesAny = (value: string, patterns: string[]): boolean =>
   patterns.some((pattern) => value.includes(pattern))
 

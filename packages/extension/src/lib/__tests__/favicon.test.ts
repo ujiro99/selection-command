@@ -1,5 +1,9 @@
 import { describe, it, expect } from "vitest"
-import { shouldPreserveIconColor, getRegistrableDomain } from "../favicon"
+import {
+  shouldPreserveIconColor,
+  getRegistrableDomain,
+  getGoogleFaviconUrl,
+} from "../favicon"
 import { OPEN_MODE } from "@shared/constants/open-mode"
 import type { Command } from "@/types"
 
@@ -418,5 +422,19 @@ describe("getRegistrableDomain", () => {
     expect(getRegistrableDomain("   ")).toBe("")
     expect(getRegistrableDomain("invalid")).toBe("")
     expect(getRegistrableDomain("com")).toBe("")
+  })
+})
+
+describe("getGoogleFaviconUrl", () => {
+  it("GF-01: 正常系: 検索URLのオリジンのみを渡す", () => {
+    expect(getGoogleFaviconUrl("https://seenr.app/tr/app?q=%s")).toBe(
+      "https://www.google.com/s2/favicons?sz=64&domain_url=https%3A%2F%2Fseenr.app",
+    )
+  })
+
+  it("GF-02: 異常系: 絶対URLでなければそのままエンコードして渡す", () => {
+    expect(getGoogleFaviconUrl("example.com/?q=%s")).toBe(
+      "https://www.google.com/s2/favicons?sz=64&domain_url=example.com%2F%3Fq%3D%25s",
+    )
   })
 })

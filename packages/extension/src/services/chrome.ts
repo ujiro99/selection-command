@@ -1,5 +1,6 @@
 import { sleep, isOverBytes } from "@/lib/utils"
 import { toUrl, needsClipboard } from "@/lib/url"
+import { getGoogleFaviconUrl } from "@/lib/favicon"
 import type { ScreenSize } from "@/services/dom"
 import type { ShowToastParam, UrlParam, WindowLayer } from "@/types"
 import {
@@ -42,70 +43,101 @@ export const windowExists = async (
 const failsafe = (url: string, favicon: string) => {
   if (isOverBytes(favicon, 1000)) {
     console.warn("favicon failsafe", url)
-    return `https://www.google.com/s2/favicons?sz=64&domain_url=${url}`
+    return getGoogleFaviconUrl(url)
   }
   return favicon
 }
 
+/** Max time to wait for the page to finish loading. */
+const FETCH_ICON_LOAD_TIMEOUT_MS = 5000
+/**
+ * Max time to wait for `favIconUrl` after the page has finished loading.
+ * Chrome downloads the favicon only after the load completes and reports
+ * `favIconUrl` in a separate `onUpdated` event once the download finishes,
+ * so a large or uncached favicon can arrive hundreds of milliseconds later.
+ */
+const FETCH_ICON_FAVICON_WAIT_MS = 3000
+
 /**
  * Get favicon url from url.
+ * Opens the url in a minimized window and reads the favicon reported by the
+ * browser. Falls back to the Google favicon service when the browser does not
+ * report a favicon in time.
  *
  * @param {string} url
  * @returns {Promise<string>} favicon url
  */
 export const fetchIconUrl = async (url: string): Promise<string> => {
-  const p = new Promise<string>((resolve, reject) => {
-    const timeoutId = setTimeout(async () => {
-      if (w?.id) {
-        await closeWindow(w.id, "fetchIconUrl timeout")
-      }
-      chrome.tabs.onUpdated.removeListener(onUpdated)
-      console.warn("timeout", url)
-      reject("timeout")
-    }, 5000)
+  let tabId: number | undefined
+  let latestFavIconUrl: string | undefined
+  let loadTimer: ReturnType<typeof setTimeout> | undefined
+  let faviconTimer: ReturnType<typeof setTimeout> | undefined
+  let settle: () => void = () => {}
+  const settled = new Promise<void>((resolve) => {
+    settle = resolve
+  })
 
-    const onUpdated = async (
-      tabId: number,
-      changeInfo: chrome.tabs.OnUpdatedInfo,
-      tab: chrome.tabs.Tab,
-    ) => {
-      if (w == null) {
-        // illigal state
-        chrome.tabs.onUpdated.removeListener(onUpdated)
-        return
-      }
-      if (tabId === w.tabs?.[0].id && changeInfo.status === "complete") {
-        clearTimeout(timeoutId)
-        chrome.tabs.onUpdated.removeListener(onUpdated)
-        if (tab.favIconUrl) {
-          resolve(failsafe(url, tab.favIconUrl))
-        } else {
-          // retry
-          await sleep(100)
-          const t = await chrome.tabs.get(tabId)
-          if (t.favIconUrl) {
-            resolve(failsafe(url, t.favIconUrl))
-          } else {
-            // failed...
-            console.warn(tab)
-            reject()
-          }
-        }
-        if (w?.id) {
-          await closeWindow(w.id, "fetchIconUrl close window")
-        }
-      }
+  const handleTab = (tab: chrome.tabs.Tab) => {
+    if (tab.favIconUrl) latestFavIconUrl = tab.favIconUrl
+    if (tab.status !== "complete") return
+    if (latestFavIconUrl) {
+      settle()
+    } else if (faviconTimer == null) {
+      // The favicon is reported after the load completes; keep waiting.
+      clearTimeout(loadTimer)
+      faviconTimer = setTimeout(settle, FETCH_ICON_FAVICON_WAIT_MS)
     }
-    chrome.tabs.onUpdated.addListener(onUpdated)
-  })
-  const w = await chrome.windows.create({
-    url: toUrl({
-      searchUrl: url,
-      selectionText: "test",
-    }),
-    state: "minimized",
-  })
-  return p
+  }
+
+  const onUpdated = (
+    id: number,
+    _changeInfo: chrome.tabs.OnUpdatedInfo,
+    tab: chrome.tabs.Tab,
+  ) => {
+    // Events that arrive before the window is created are ignored here and
+    // caught up by reading the tab state right after creation.
+    if (tabId == null || id !== tabId) return
+    handleTab(tab)
+  }
+
+  chrome.tabs.onUpdated.addListener(onUpdated)
+  let windowId: number | undefined
+  try {
+    loadTimer = setTimeout(() => {
+      console.warn("fetchIconUrl timeout", url)
+      settle()
+    }, FETCH_ICON_LOAD_TIMEOUT_MS)
+    const w = await chrome.windows.create({
+      url: toUrl({
+        searchUrl: url,
+        selectionText: "test",
+      }),
+      state: "minimized",
+    })
+    windowId = w?.id
+    tabId = w?.tabs?.[0]?.id
+    if (tabId == null) {
+      settle()
+    } else {
+      handleTab(await chrome.tabs.get(tabId))
+    }
+    await settled
+  } catch (e) {
+    console.warn("fetchIconUrl failed", url, e)
+  } finally {
+    clearTimeout(loadTimer)
+    clearTimeout(faviconTimer)
+    chrome.tabs.onUpdated.removeListener(onUpdated)
+    if (windowId != null) {
+      await closeWindow(windowId, "fetchIconUrl close window")
+    }
+  }
+
+  if (latestFavIconUrl) {
+    return failsafe(url, latestFavIconUrl)
+  }
+  console.warn("favicon not reported, use fallback", url)
+  return getGoogleFaviconUrl(url)
 }
 
 export type OpenPopupProps = {
