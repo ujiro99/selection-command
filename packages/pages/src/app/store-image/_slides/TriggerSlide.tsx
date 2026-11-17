@@ -22,17 +22,19 @@ const MENU_LEFT = 104
 const CURSOR_TOP = MENU_TOP + ICON.y * MENU_SCALE + 16
 const CURSOR_LEFT = MENU_LEFT + ICON.x * MENU_SCALE + 16
 
-// Service icons cropped from the real settings screenshot (56px squares)
+// Service icons in the real settings screenshot: the center and size of
+// each icon's visible bounds, measured from its pixels, plus a 2px margin.
 const ENGINE_ICONS = [
-  { x: 700, y: 444 }, // Google
-  { x: 764, y: 899 }, // Amazon
-  { x: 764, y: 1013 }, // Yahoo! Japan
-  { x: 764, y: 1239 }, // YouTube
-  { x: 764, y: 1353 }, // Netflix
-  { x: 700, y: 558 }, // ChatGPT
-  { x: 764, y: 1581 }, // Gemini
+  { name: "Google", cx: 731.5, cy: 473.5, size: 44 },
+  { name: "Amazon", cx: 795.5, cy: 929.5, size: 58 },
+  { name: "Yahoo! Japan", cx: 795.5, cy: 1043, size: 58 },
+  { name: "YouTube", cx: 795.5, cy: 1271.5, size: 58 },
+  { name: "Netflix", cx: 795.5, cy: 1385.5, size: 58 },
+  { name: "ChatGPT", cx: 731.5, cy: 587.5, size: 50 },
+  { name: "Gemini", cx: 795.5, cy: 1613.5, size: 54 },
 ]
-const ICON_CROP = 56
+// Rendered size of the longer side of each icon
+const ICON_SIZE = 34
 const CHIP = 60
 const CHIP_GAP = 14
 const CHIP_COUNT = ENGINE_ICONS.length + 1
@@ -63,14 +65,19 @@ export function TriggerSlide(): JSX.Element {
       {/* Services that can be added as commands */}
       {ENGINE_ICONS.map((icon, i) => (
         <div
-          key={`${icon.x}-${icon.y}`}
+          key={icon.name}
           className={s.engineChip}
           style={{ top: 206, left: CHIPS_LEFT + i * (CHIP + CHIP_GAP) }}
         >
           <Screenshot
             shot={SCREENSHOTS.settings}
-            crop={{ ...icon, width: ICON_CROP, height: ICON_CROP }}
-            scale={34 / ICON_CROP}
+            crop={{
+              x: icon.cx - icon.size / 2,
+              y: icon.cy - icon.size / 2,
+              width: icon.size,
+              height: icon.size,
+            }}
+            scale={ICON_SIZE / icon.size}
             style={{ position: "static" }}
           />
         </div>
