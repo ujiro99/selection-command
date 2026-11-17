@@ -4,8 +4,8 @@ import { useLayoutEffect, useRef, type ReactNode } from "react"
 
 /**
  * Scales its content down when it is wider than `maxWidth`, so translated
- * copy keeps the slide layout. The scale does not change the layout box, so
- * the parts below stay where they are.
+ * copy keeps the slide layout. It uses `zoom`, which shrinks the layout box
+ * too, so the parts stacked below move up with it instead of leaving a gap.
  */
 export function Fit({
   maxWidth,
@@ -22,9 +22,10 @@ export function Fit({
     const el = ref.current
     if (!el) return
     const fit = () => {
-      // offsetWidth ignores transforms, so it is the natural width
+      // Measure the natural width without the previous zoom
+      el.style.zoom = ""
       const width = el.offsetWidth
-      el.style.transform = width > maxWidth ? `scale(${maxWidth / width})` : ""
+      el.style.zoom = width > maxWidth ? String(maxWidth / width) : ""
     }
     fit()
     // Measure again once web fonts are in
@@ -37,10 +38,7 @@ export function Fit({
       style={{
         display: align === "center" ? "block" : "inline-block",
         width: align === "center" ? "max-content" : undefined,
-        position: align === "center" ? "relative" : undefined,
-        left: align === "center" ? "50%" : undefined,
-        translate: align === "center" ? "-50% 0" : undefined,
-        transformOrigin: align === "center" ? "50% 0" : "0 0",
+        marginInline: align === "center" ? "auto" : undefined,
       }}
     >
       {children}

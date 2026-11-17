@@ -4,6 +4,7 @@ import {
   Accent,
   Browser,
   Canvas,
+  CopyBlock,
   Headline,
   Lines,
   SCREENSHOTS,
@@ -89,41 +90,40 @@ export function CustomizeSlide({ t, lang }: SlideProps): JSX.Element {
         {c.reorder}
       </Tooltip>
 
-      <Headline
-        size={52}
-        color="#fff"
-        maxWidth={560}
-        style={{ top: 70, left: 690 }}
+      {/* Copy, with the Hub at the bottom of the column */}
+      <CopyBlock
+        style={{ top: 70, bottom: 40, left: 690, width: 560, gap: 22 }}
       >
-        {c.headline}
-        <br />
-        <Accent onDark>{c.accent}</Accent>
-      </Headline>
-      <Sub color="#dbe6ff" maxWidth={560} style={{ top: 236, left: 690 }}>
-        <Lines lines={c.sub} />
-      </Sub>
+        <Headline size={52} color="#fff" maxWidth={560}>
+          {c.headline}
+          <br />
+          <Accent onDark>{c.accent}</Accent>
+        </Headline>
+        <Sub color="#dbe6ff" maxWidth={560}>
+          <Lines lines={c.sub} />
+        </Sub>
 
-      {/* Selection Command Hub, where shared commands are found */}
-      <Browser
-        url="selection-command.com"
-        style={{ top: 380, left: 690, width: 540, height: 380 }}
-      >
-        <Screenshot
-          shot={SCREENSHOTS.hub}
-          crop={HUB_LIST}
-          scale={HUB_SCALE}
-          style={{ top: 52, left: 0 }}
-        />
-      </Browser>
-      {/* Points at the download button of "Page Summary by AI" */}
-      <Tooltip
-        compact
-        icon={Download}
-        arrow={{ side: "top", offset: 34, fromEnd: true }}
-        style={{ top: 590, right: 80 }}
-      >
-        {c.hub}
-      </Tooltip>
+        {/* Selection Command Hub, where shared commands are found */}
+        <div className={s.hub}>
+          <Browser url="selection-command.com" style={{ inset: 0 }}>
+            <Screenshot
+              shot={SCREENSHOTS.hub}
+              crop={HUB_LIST}
+              scale={HUB_SCALE}
+              style={{ top: 52, left: 0 }}
+            />
+          </Browser>
+          {/* Points at the download button of "Page Summary by AI" */}
+          <Tooltip
+            compact
+            icon={Download}
+            arrow={{ side: "top", offset: 34, fromEnd: true }}
+            style={{ top: 210, right: 30 }}
+          >
+            {c.hub}
+          </Tooltip>
+        </div>
+      </CopyBlock>
     </Canvas>
   )
 }

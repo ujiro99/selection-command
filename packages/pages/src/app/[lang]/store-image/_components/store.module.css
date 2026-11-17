@@ -1,6 +1,7 @@
 /*
  * Shared parts of the Chrome Web Store images (1280x800).
- * Slides place these parts with absolute positions.
+ * Copy is stacked with flexbox in a .copy column; UI parts are placed with
+ * absolute positions.
  */
 
 .canvas {
@@ -13,6 +14,8 @@
     "Meiryo", sans-serif;
 
   position: relative;
+  display: flex;
+  flex-direction: column;
   width: 1280px;
   height: 800px;
   overflow: hidden;
@@ -50,8 +53,21 @@
   border-radius: 4px;
 }
 
-.headline {
+/* Column of copy. Spacing between its items is set with gap and margins. */
+.copy {
   position: absolute;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The rest of the canvas below an in-flow .copy */
+.scene {
+  position: relative;
+  flex: 1;
+}
+
+.headline {
+  margin: 0;
   font-family: var(--jp);
   font-weight: 800;
   line-height: 1.3;
@@ -69,13 +85,19 @@
 }
 
 .sub {
-  position: absolute;
+  margin: 0;
   font-family: var(--jp);
   font-size: 28px;
   font-weight: 500;
   line-height: 1.7;
-  /* Line breaks come from the copy; Fit scales long lines down */
-  white-space: nowrap;
+  /* Line breaks come from the copy. Lines too long for the column wrap,
+     at phrase boundaries in Japanese and between words in Korean. */
+  word-break: auto-phrase;
+  text-wrap: balance;
+}
+
+.canvas:lang(ko) .sub {
+  word-break: keep-all;
 }
 
 /* Soft shadow for UI floating over the background */

@@ -2,6 +2,7 @@ import {
   Accent,
   Browser,
   Canvas,
+  CopyBlock,
   Cursor,
   Fit,
   Headline,
@@ -24,22 +25,34 @@ export function LinkPreviewSlide({ t, lang }: SlideProps): JSX.Element {
         style={{
           position: "absolute",
           inset: "0 auto 0 0",
-          width: 540,
+          width: 580,
           background: "#e8f0fd",
         }}
       />
-      <Headline size={52} maxWidth={430} style={{ top: 220, left: 70 }}>
-        {c.headline}
-        <br />
-        <Accent>{c.accent}</Accent>
-      </Headline>
-      <Sub color="#2b394d" maxWidth={430} style={{ top: 390, left: 70 }}>
-        <Lines lines={c.sub} />
-      </Sub>
+      {/* Copy, vertically centered on the panel */}
+      <CopyBlock
+        style={{
+          top: 0,
+          bottom: 0,
+          left: 70,
+          width: 470,
+          justifyContent: "center",
+          gap: 26,
+        }}
+      >
+        <Headline size={52} maxWidth={470}>
+          {c.headline}
+          <br />
+          <Accent>{c.accent}</Accent>
+        </Headline>
+        <Sub color="#2b394d" maxWidth={470}>
+          <Lines lines={c.sub} />
+        </Sub>
+      </CopyBlock>
 
       <Browser
         url="example.com / article"
-        style={{ top: 40, left: 600, width: 720, height: 420 }}
+        style={{ top: 40, left: 620, width: 720, height: 420 }}
       >
         <p className={s.pageTitle} style={{ top: 96, left: 44 }}>
           <Fit maxWidth={580}>{t.hero.pageTitle}</Fit>
@@ -58,7 +71,7 @@ export function LinkPreviewSlide({ t, lang }: SlideProps): JSX.Element {
       {/* From the link to the popup window */}
       <svg
         className={s.dragPath}
-        style={{ top: 300, left: 790 }}
+        style={{ top: 300, left: 810 }}
         width="200"
         height="150"
       >
@@ -81,7 +94,14 @@ export function LinkPreviewSlide({ t, lang }: SlideProps): JSX.Element {
 
       <Browser
         url="example.com / guide"
-        style={{ top: 440, left: 720, width: 540, height: 340 }}
+        style={{
+          top: 440,
+          left: 740,
+          width: 540,
+          height: 340,
+          // Edge against the white background and the window behind
+          border: "1.5px solid #cdd5e1",
+        }}
       >
         <div className={s.preview}>
           <p className={s.previewTitle}>{c.link}</p>
@@ -91,7 +111,7 @@ export function LinkPreviewSlide({ t, lang }: SlideProps): JSX.Element {
         </div>
       </Browser>
       {/* On the link. Drawn last so it stays above the preview window. */}
-      <Cursor scale={1.2} style={{ top: 256, left: 780 }} />
+      <Cursor scale={1.2} style={{ top: 256, left: 800 }} />
     </Canvas>
   )
 }

@@ -50,8 +50,51 @@ export function Brand({ style }: { style: CSSProperties }): JSX.Element {
 }
 
 /**
- * Headline. Wrap the accented part in <Accent>. Text wider than `maxWidth`
- * is scaled down to fit.
+ * Column of copy (badge, headline, sub and so on) stacked with flexbox, so
+ * the spacing stays the same whatever the length of the translated copy.
+ * Placed absolutely by `style`, or in the flow of the canvas with
+ * `position: "relative"` when a `Scene` follows it.
+ */
+export function CopyBlock({
+  style,
+  children,
+}: {
+  style: CSSProperties
+  children: ReactNode
+}): JSX.Element {
+  return (
+    <div className={css.copy} style={style}>
+      {children}
+    </div>
+  )
+}
+
+/**
+ * Area below an in-flow `CopyBlock`, filling the rest of the canvas. Parts in
+ * it are placed absolutely, relative to the bottom of the copy.
+ */
+export function Scene({
+  className,
+  style,
+  children,
+}: {
+  className?: string
+  style?: CSSProperties
+  children: ReactNode
+}): JSX.Element {
+  return (
+    <div
+      className={[css.scene, className].filter(Boolean).join(" ")}
+      style={style}
+    >
+      {children}
+    </div>
+  )
+}
+
+/**
+ * Headline. Wrap the accented part in <Accent>. Line breaks come from the
+ * copy; text wider than `maxWidth` is scaled down to fit.
  */
 export function Headline({
   size,
@@ -63,7 +106,7 @@ export function Headline({
   size: number
   color?: string
   maxWidth: number
-  style: CSSProperties
+  style?: CSSProperties
   children: ReactNode
 }): JSX.Element {
   return (
@@ -75,8 +118,8 @@ export function Headline({
   )
 }
 
-function alignOf(style: CSSProperties): "left" | "center" {
-  return style.textAlign === "center" ? "center" : "left"
+function alignOf(style?: CSSProperties): "left" | "center" {
+  return style?.textAlign === "center" ? "center" : "left"
 }
 
 /** Accented part of a headline. Use `onDark` on navy or blue backgrounds. */
@@ -92,7 +135,10 @@ export function Accent({
   )
 }
 
-/** Subheadline. Text wider than `maxWidth` is scaled down to fit. */
+/**
+ * Subheadline. Keeps the same font size in every language: lines longer than
+ * `maxWidth` wrap (at phrase boundaries in Japanese) instead of shrinking.
+ */
 export function Sub({
   color,
   maxWidth,
@@ -101,14 +147,12 @@ export function Sub({
 }: {
   color: string
   maxWidth: number
-  style: CSSProperties
+  style?: CSSProperties
   children: ReactNode
 }): JSX.Element {
   return (
-    <p className={css.sub} style={{ color, ...style }}>
-      <Fit maxWidth={maxWidth} align={alignOf(style)}>
-        {children}
-      </Fit>
+    <p className={css.sub} style={{ color, maxWidth, ...style }}>
+      {children}
     </p>
   )
 }

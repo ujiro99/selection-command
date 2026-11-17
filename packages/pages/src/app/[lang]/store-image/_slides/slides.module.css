@@ -1,8 +1,8 @@
 /* Slide-specific parts of the store images. */
 
 .badge {
-  position: absolute;
   display: flex;
+  margin: 0;
   align-items: center;
   gap: 12px;
   font-family: var(--jp);
@@ -139,6 +139,15 @@
   color: #1c2a3f;
 }
 
+/* Hub window, kept at the bottom of the copy column */
+.hub {
+  position: relative;
+  flex-shrink: 0;
+  width: 540px;
+  height: 380px;
+  margin-top: auto;
+}
+
 /* ---------- 5: Link preview ---------- */
 
 .link {
@@ -183,16 +192,25 @@
 
 /* Tilts a group of absolutely placed parts together */
 .tilt {
+  transform: rotate(-1.8deg);
+}
+
+/* Layer covering the whole canvas */
+.cover {
   position: absolute;
   inset: 0;
-  transform: rotate(-1.8deg);
 }
 
 /* ---------- 2: How it works ---------- */
 
+.engineRow {
+  display: flex;
+  gap: 14px;
+  margin-top: 10px;
+}
+
 /* White square holding one service icon */
 .engineChip {
-  position: absolute;
   display: grid;
   place-items: center;
   width: 60px;

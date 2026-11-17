@@ -7,6 +7,7 @@ import {
   Lines,
   Browser,
   Canvas,
+  CopyBlock,
   Cursor,
   Headline,
   POPUP_MENU,
@@ -20,8 +21,12 @@ import {
 import type { SlideProps } from "../_components/i18n"
 import s from "./slides.module.css"
 
+const BROWSER_TOP = 110
+// Bottom of the selected text in the browser
+const TEXT_BOTTOM = BROWSER_TOP + 172 + 24 * 1.9 * 2
 const POPUP_SCALE = 0.83
-const POPUP_TOP = 446
+// Open space above and below the popup so it stands out from the page
+const POPUP_TOP = TEXT_BOTTOM + 48
 const POPUP_LEFT = 686
 const ICON = POPUP_MENU.hoveredIcon
 // Top-left of the cursor, a little below and right of the hovered icon
@@ -37,47 +42,52 @@ const HERO_BACKGROUND = [
 /** 1 Hero: brand, the core promise, and the real popup in action. */
 export function HeroSlide({ t, lang }: SlideProps): JSX.Element {
   const c = t.hero
-  const headlineLineCount =
-    c.headline.split("\n").length + c.accent.split("\n").length
-  const badgeTop =
-    headlineLineCount >= 4 ? 160 : headlineLineCount === 3 ? 200 : 232
-  const headlineTop =
-    headlineLineCount >= 4 ? 240 : headlineLineCount === 3 ? 280 : 312
-  const subTop =
-    headlineLineCount >= 4 ? 568 : headlineLineCount === 3 ? 532 : 456
   return (
     <Canvas lang={lang} background={HERO_BACKGROUND}>
       <Brand style={{ top: 56, left: 68 }} />
 
-      {/* Copy block, vertically centered against the browser on the right */}
-      <p className={s.badge} style={{ top: badgeTop, left: 68 }}>
-        <span className={s.badgePill}>{c.badge}</span>
-        <span style={{ whiteSpace: "pre-line" }}>{c.badgeNote}</span>
-      </p>
-      <Headline size={56} maxWidth={560} style={{ top: headlineTop, left: 68 }}>
-        <Lines lines={c.headline.split("\n")} />
-        <br />
-        <Accent>
-          <Lines lines={c.accent.split("\n")} />
-        </Accent>
-      </Headline>
-      <Sub color="#2b394d" maxWidth={560} style={{ top: subTop, left: 68 }}>
-        <Lines lines={c.sub} />
-      </Sub>
+      {/* Copy, vertically centered between the brand and the note */}
+      <CopyBlock
+        style={{
+          top: 110,
+          bottom: 80,
+          left: 68,
+          width: 560,
+          justifyContent: "center",
+        }}
+      >
+        <p className={s.badge}>
+          <span className={s.badgePill}>{c.badge}</span>
+          <span style={{ whiteSpace: "pre-line" }}>{c.badgeNote}</span>
+        </p>
+        <Headline size={56} maxWidth={560} style={{ margin: "36px 0 30px" }}>
+          <Lines lines={c.headline.split("\n")} />
+          <br />
+          <Accent>
+            <Lines lines={c.accent.split("\n")} />
+          </Accent>
+        </Headline>
+        <Sub color="#2b394d" maxWidth={560}>
+          <Lines lines={c.sub} />
+        </Sub>
+      </CopyBlock>
 
       {/* Scene: browser, popup and cursor tilted together */}
-      <div className={s.tilt} style={{ transformOrigin: "660px 140px" }}>
+      <div
+        className={`${s.tilt} ${s.cover}`}
+        style={{ transformOrigin: `660px ${BROWSER_TOP}px` }}
+      >
         <Browser
           url="example.com / article"
-          style={{ top: 140, left: 660, width: 680, height: 570 }}
+          style={{ top: BROWSER_TOP, left: 660, width: 680, height: 580 }}
         >
-          <p className={s.pageTitle} style={{ top: 100, left: 40 }}>
+          <p className={s.pageTitle} style={{ top: 84, left: 40 }}>
             <Fit maxWidth={530}>{c.pageTitle}</Fit>
           </p>
-          <div className={s.line} style={{ top: 160, left: 40, width: 540 }} />
+          <div className={s.line} style={{ top: 140, left: 40, width: 540 }} />
           <p
             className={s.pageText}
-            style={{ top: 196, left: 40, fontSize: 24 }}
+            style={{ top: 172, left: 40, fontSize: 24 }}
           >
             <Fit maxWidth={530}>
               {c.pageLine}
@@ -104,7 +114,7 @@ export function HeroSlide({ t, lang }: SlideProps): JSX.Element {
         {/* What the click does: the arrow comes out from under the cursor */}
         <Tooltip
           icon={Search}
-          style={{ top: CURSOR_TOP + 70, left: CURSOR_LEFT - 22 }}
+          style={{ top: CURSOR_TOP + 76, left: CURSOR_LEFT - 22 }}
         >
           <Lines lines={c.tooltip} />
         </Tooltip>
@@ -114,7 +124,7 @@ export function HeroSlide({ t, lang }: SlideProps): JSX.Element {
         <Sub
           color="#3d4a5c"
           maxWidth={1144}
-          style={{ bottom: 36, left: 68, fontSize: 22 }}
+          style={{ position: "absolute", bottom: 36, left: 68, fontSize: 22 }}
         >
           {c.serviceNote}
         </Sub>

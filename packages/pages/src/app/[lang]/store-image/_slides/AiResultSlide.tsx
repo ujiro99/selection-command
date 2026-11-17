@@ -4,11 +4,13 @@ import {
   Accent,
   Browser,
   Canvas,
+  CopyBlock,
   Cursor,
   Fit,
   Lines,
   Headline,
   POPUP_MENU,
+  Scene,
   SCREENSHOTS,
   Screenshot,
   Selected,
@@ -18,7 +20,8 @@ import {
 import type { SlideProps } from "../_components/i18n"
 import s from "./slides.module.css"
 
-const BROWSER_TOP = 252
+// Positions in the scene are from the bottom of the copy
+const BROWSER_TOP = 47
 const BROWSER_LEFT = 80
 // The side panel takes the right part of the browser window
 const PANEL_LEFT = 680
@@ -42,21 +45,22 @@ export function AiResultSlide({ t, lang }: SlideProps): JSX.Element {
   const c = t.ai
   return (
     <Canvas lang={lang} background="#f1eee8">
-      <Headline size={56} maxWidth={1120} style={{ top: 50, left: 80 }}>
-        {c.headline}
-        <Accent>{c.accent}</Accent>
-      </Headline>
-      <Sub color="#3d4a5c" maxWidth={1120} style={{ top: 134, left: 80 }}>
-        <Lines lines={c.sub.split("\n")} />
-      </Sub>
+      <CopyBlock
+        style={{ position: "relative", gap: 8, padding: "50px 80px 0" }}
+      >
+        <Headline size={56} maxWidth={1120}>
+          {c.headline}
+          <Accent>{c.accent}</Accent>
+        </Headline>
+        <Sub color="#3d4a5c" maxWidth={1120}>
+          <Lines lines={c.sub.split("\n")} />
+        </Sub>
+      </CopyBlock>
 
       {/* Scene: browser, popup menu, arrow and cursor tilted together */}
-      <div
+      <Scene
         className={s.tilt}
-        style={{
-          transformOrigin: `${BROWSER_LEFT}px ${BROWSER_TOP}px`,
-          translate: c.sub.includes("\n") ? "0 24px" : undefined,
-        }}
+        style={{ transformOrigin: `${BROWSER_LEFT}px ${BROWSER_TOP}px` }}
       >
         <Browser
           url="example.com / article"
@@ -154,7 +158,7 @@ export function AiResultSlide({ t, lang }: SlideProps): JSX.Element {
         </svg>
 
         <Cursor scale={1.2} style={{ top: CURSOR_TOP, left: CURSOR_LEFT }} />
-      </div>
+      </Scene>
     </Canvas>
   )
 }

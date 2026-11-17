@@ -70,11 +70,17 @@ This file provides guidance to AI Agent when working with code in this repositor
    - スライドの中身は `src/app/[lang]/store-image/_slides/`、共通部品は `_components/parts.tsx`。
      スライドの追加・並べ替え・書き出しファイル名は `_slides/index.ts` の `SLIDES` で管理する
    - コピーは各言語の辞書ファイル（`src/features/locale/*.ts`）の `storeImage` に書く。
-     スライドは `t`（その言語の `storeImage`）を props で受け取る。長い訳文は `Fit` が
-     指定幅に収まるよう縮小するので、`Headline` / `Sub` には `maxWidth` を指定する
+     スライドは `t`（その言語の `storeImage`）を props で受け取る
+   - コピー（バッジ・見出し・サブコピー）は `CopyBlock` に入れて flex で縦に積み、
+     絶対座標で 1 行ずつ置かない。訳文の行数が変わっても余白が保たれる。
+     コピーの下に UI を置くスライドは `CopyBlock` をフローに置き（`position: "relative"`）、
+     UI は `Scene` の中にコピー下端からの座標で置く
+   - `Headline` は `maxWidth` を超えると `Fit` が `zoom` で縮小する（レイアウト上の高さも縮む）。
+     `Sub` は縮小せず `maxWidth` で折り返す（日本語は文節単位、`text-wrap: balance`）ので、
+     文字サイズは全言語で揃う
    - 言語ごとのフォントは `store.module.css` の `.canvas:lang(...)` で指定する
      （ヒラギノは中国語・韓国語・ヒンディー語の字形が合わず、ロシア語は全角幅になるため）
-   - 設定画面のスクリーンショットは日本語 UI のまま全言語で使っている
+   - 設定画面のスクリーンショットは、日本語は日本語 UI、それ以外の言語は英語 UI を使う
    - 製品 UI は作り直さず、実際のスクリーンショット（`public/store-image/screenshots/`）を
      切り抜き・拡大して使う。UI が変わったらスクリーンショットを差し替える
    - デザイン方針は `.claude/skills/chrome-store-screenshots` の Design rules に従う
