@@ -17,13 +17,14 @@ import {
   WINDOW_STATE,
   FOLDER_STYLE,
   COMMAND_SOURCE_TYPE,
+  LINK_POPUP_ICON_URL,
 } from "@/const"
 
 import { t } from "@/services/i18n"
-import { isEmpty, isReservedVariableName, parseGeminiUrl } from "@/lib/utils"
+import { isEmpty, isReservedVariableName } from "@/lib/utils"
+import { parseGeminiUrl } from "@/lib/url"
 import { SEARCH_OPEN_MODE } from "@shared/constants/open-mode"
 import { countHtmlAttachments } from "@/services/pageAction"
-import type { AiPromptCommand } from "@/types"
 
 export const COMMAND_TITLE_MIN_LENGTH = 2
 export const COMMAND_TITLE_MAX_LENGTH = 100
@@ -89,20 +90,6 @@ const searchSchema = z.object({
   windowState: z.nativeEnum(WINDOW_STATE).optional(),
 })
 
-type SearchType = z.infer<typeof searchSchema>
-
-export const isSearchType = (data: unknown): data is SearchType => {
-  if (!data || typeof data !== "object") {
-    return false
-  }
-  if (!("openMode" in data)) {
-    return false
-  }
-  return SEARCH_OPEN_MODE.includes(
-    data.openMode as (typeof SEARCH_OPEN_MODE)[number],
-  )
-}
-
 const apiSchema = z.object({
   openMode: z.literal(OPEN_MODE.API),
   id: z.string(),
@@ -132,18 +119,23 @@ const linkPopupSchema = z.object({
   id: z.string(),
   parentFolderId: z.string().optional(),
   ...commandSourceSchema,
-  title: commandTitleSchema.default("Link Popup"),
+  title: commandTitleSchema.default("Open Links"),
   iconUrl: z
     .string()
     .url({ message: t("Option_zod_url") })
     .max(1000, { message: t("Option_zod_string_max", ["1000"]) })
-    .default(
-      "https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/folder-archive-document-archives-fold-1024.png",
-    ),
+    .default(LINK_POPUP_ICON_URL),
   popupOption: z.object({
     width: z.number().min(1),
     height: z.number().min(1),
   }),
+  windowState: z.nativeEnum(WINDOW_STATE).optional(),
+  linkPopupOption: z
+    .object({
+      openMode: z.enum(SEARCH_OPEN_MODE),
+      openModeSecondary: z.enum(SEARCH_OPEN_MODE).optional(),
+    })
+    .optional(),
 })
 
 const copySchema = z.object({
@@ -347,18 +339,6 @@ const pageActionSchema = z.object({
   pageActionOption: PageActionOption,
 })
 
-export const isPageActionType = (
-  data: unknown,
-): data is z.infer<typeof pageActionSchema> => {
-  if (!data || typeof data !== "object") {
-    return false
-  }
-  if (!("openMode" in data)) {
-    return false
-  }
-  return data.openMode === OPEN_MODE.PAGE_ACTION
-}
-
 export const AiPromptOptionSchema = z
   .object({
     serviceId: z.string().min(1),
@@ -393,16 +373,6 @@ const aiPromptSchema = z.object({
     .optional(),
   aiPromptOption: AiPromptOptionSchema,
 })
-
-export const isAiPromptType = (data: unknown): data is AiPromptCommand => {
-  if (!data || typeof data !== "object") {
-    return false
-  }
-  if (!("openMode" in data)) {
-    return false
-  }
-  return data.openMode === OPEN_MODE.AI_PROMPT
-}
 
 export const commandSchema = z.discriminatedUnion("openMode", [
   searchSchema,

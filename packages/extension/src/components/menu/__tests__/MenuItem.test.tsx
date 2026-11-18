@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from "vitest"
-import { render } from "@testing-library/react"
+import { describe, it, expect, vi, beforeEach } from "vitest"
+import { render, screen } from "@testing-library/react"
 import css from "../Menu.module.css"
 import { MenuItem } from "../MenuItem"
 import { popupContext, ContextType } from "@/hooks/usePopupContext"
@@ -23,11 +23,28 @@ vi.mock("@/hooks/useSelectContext", () => ({
   }),
 }))
 
-vi.mock("@/lib/commandEnabled", () => ({
-  getCommandEnabled: () => ({ enabled: true, message: "" }),
+// Render the tooltip props so that the text and the side can be asserted.
+vi.mock("@/components/Tooltip", () => ({
+  Tooltip: (props: { text: string; disabled?: boolean; side?: string }) =>
+    props.disabled ? null : (
+      <div data-testid="tooltip" data-side={props.side ?? "default"}>
+        {props.text}
+      </div>
+    ),
 }))
 
-const renderMenuItem = (command: ResolvedCommand, hasIconColor = true) => {
+const mockGetCommandEnabled = vi.hoisted(() =>
+  vi.fn((): { enabled: boolean; detail?: string } => ({ enabled: true })),
+)
+vi.mock("@/lib/commandEnabled", () => ({
+  getCommandEnabled: mockGetCommandEnabled,
+}))
+
+const renderMenuItem = (
+  command: ResolvedCommand,
+  hasIconColor = true,
+  onlyIcon = true,
+) => {
   const fullContext: ContextType = {
     side: SIDE.top,
     align: ALIGN.start,
@@ -37,7 +54,7 @@ const renderMenuItem = (command: ResolvedCommand, hasIconColor = true) => {
 
   return render(
     <popupContext.Provider value={fullContext}>
-      <MenuItem menuRef={menuRef} onlyIcon={true} command={command} />
+      <MenuItem menuRef={menuRef} onlyIcon={onlyIcon} command={command} />
     </popupContext.Provider>,
   )
 }
@@ -116,5 +133,56 @@ describe("MenuItem - AI Prompt Command Icon Recoloring", () => {
     const img = button?.querySelector("img")
     expect(img).not.toBeNull()
     expect(button?.querySelector("span[class*='itemImgMasked']")).toBeNull()
+  })
+})
+
+describe("MenuItem - Tooltip", () => {
+  const command = {
+    id: "link-popup",
+    title: "Open Links",
+    openMode: OPEN_MODE.LINK_POPUP,
+    iconUrl: "",
+  } as unknown as ResolvedCommand
+
+  beforeEach(() => {
+    mockGetCommandEnabled.mockReturnValue({ enabled: true })
+  })
+
+  const tooltip = () => screen.queryByTestId("tooltip")
+
+  it("MIT-01: shows the title and the detail for an icon-only item", () => {
+    mockGetCommandEnabled.mockReturnValue({
+      enabled: true,
+      detail: "https://example.com/",
+    })
+    renderMenuItem(command, true, true)
+    expect(tooltip()?.textContent).toBe("Open Links\nhttps://example.com/")
+    expect(tooltip()?.getAttribute("data-side")).toBe("default")
+  })
+
+  it("MIT-02: shows only the title for an icon-only item without a detail", () => {
+    renderMenuItem(command, true, true)
+    expect(tooltip()?.textContent).toBe("Open Links")
+  })
+
+  it("MIT-03: shows only the detail beside a vertical item", () => {
+    mockGetCommandEnabled.mockReturnValue({ enabled: true, detail: "2 links" })
+    renderMenuItem(command, true, false)
+    expect(tooltip()?.textContent).toBe("2 links")
+    expect(tooltip()?.getAttribute("data-side")).toBe("right")
+  })
+
+  it("MIT-04: shows the reason for a disabled vertical item", () => {
+    mockGetCommandEnabled.mockReturnValue({
+      enabled: false,
+      detail: "Menu_disabled_notUrl",
+    })
+    renderMenuItem(command, true, false)
+    expect(tooltip()?.textContent).toBe("Menu_disabled_notUrl")
+  })
+
+  it("MIT-05: hides the tooltip for a vertical item without a detail", () => {
+    renderMenuItem(command, true, false)
+    expect(tooltip()).toBeNull()
   })
 })

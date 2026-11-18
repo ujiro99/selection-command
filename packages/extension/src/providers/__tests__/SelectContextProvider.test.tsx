@@ -7,7 +7,6 @@ import { getSelectionText } from "@/services/dom"
 vi.mock("@/services/ipc", () => ({
   Ipc: {
     addListener: vi.fn(),
-    removeListener: vi.fn(),
   },
   TabCommand: {
     getSelection: "getSelection",
@@ -20,6 +19,7 @@ vi.mock("@/services/dom", () => ({
 
 const mockAddListener = vi.mocked(Ipc.addListener)
 const mockGetSelectionText = vi.mocked(getSelectionText)
+const mockRemoveListener = vi.fn()
 
 // Calls the getSelection listener as the service worker does.
 const requestSelection = () => {
@@ -42,6 +42,7 @@ const selectText = (text: string) => {
 describe("SelectContextProvider", () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockAddListener.mockReturnValue(mockRemoveListener)
   })
 
   it("SC-01: 正常系: 現在の選択テキストを返す", () => {
@@ -59,6 +60,6 @@ describe("SelectContextProvider", () => {
 
     unmount()
 
-    expect(Ipc.removeListener).toHaveBeenCalledWith(TabCommand.getSelection)
+    expect(mockRemoveListener).toHaveBeenCalledTimes(1)
   })
 })

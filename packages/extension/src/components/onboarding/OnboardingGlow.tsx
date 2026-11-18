@@ -29,7 +29,7 @@ type Props = {
 }
 
 // Brand-blue radial glow that blooms outward from the center of the screen
-// shortly after it mounts. Used by the welcome overlay, and by variant D's
+// shortly after it mounts. Used by the welcome overlay, and by variant E's
 // layout as the background of every step. Both mount at the same time, so
 // when the overlay fades out the identical glow is already in place beneath
 // it.

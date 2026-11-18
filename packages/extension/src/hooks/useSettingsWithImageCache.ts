@@ -5,7 +5,8 @@ import { useSection, useUserSettings } from "./useSettings"
 import { Ipc, IpcTimeoutError, ServiceWorkerCommand } from "@/services/ipc"
 import type { IconColorQuery } from "@/services/ipc"
 import { sendEvent, ANALYTICS_EVENTS } from "@/services/analytics"
-import { getCommandTargetUrl, isAiPromptCommand, isEmpty } from "@/lib/utils"
+import { getCommandTargetUrl, isEmpty } from "@/lib/utils"
+import { isAiPromptCommand } from "@/lib/commandGuards"
 import type { Command, CommandFolder } from "@/types"
 
 /**

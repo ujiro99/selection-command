@@ -1,41 +1,6 @@
-import type {
-  Command,
-  CommandFolder,
-  SelectionCommand,
-  PageActionCommand,
-} from "@/types"
-import { OPEN_MODE, ROOT_FOLDER } from "@/const"
-import { e2a, isEmpty } from "@/lib/utils"
-
-/**
- * Type guard to check if the content is a SelectionCommand
- * @param content - The content to check
- * @returns True if the content is a SelectionCommand, false otherwise
- */
-export function isCommand(
-  content: Command | CommandFolder | undefined,
-): content is SelectionCommand {
-  if (content == null) return false
-  if ("openMode" in content) {
-    return e2a(OPEN_MODE).includes(content.openMode)
-  }
-  return false
-}
-
-/**
- * Type guard to check if the content is a PageActionCommand
- * @param content - The content to check
- * @returns True if the content is a PageActionCommand, false otherwise
- */
-export function isPageActionCommand(
-  content: Command | CommandFolder | undefined,
-): content is PageActionCommand {
-  if (content == null) return false
-  if ("openMode" in content) {
-    return OPEN_MODE.PAGE_ACTION === content.openMode
-  }
-  return false
-}
+import type { Command, CommandFolder } from "@/types"
+import { ROOT_FOLDER } from "@/const"
+import { isEmpty } from "@/lib/utils"
 
 /**
  * Type guard to check if the content is a CommandFolder

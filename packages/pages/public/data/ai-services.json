@@ -1,0 +1,65 @@
+[
+  {
+    "id": "chatgpt",
+    "name": "ChatGPT",
+    "url": "https://chatgpt.com",
+    "queryUrl": "https://chatgpt.com/#?q=%s",
+    "autoSubmit": true,
+    "faviconUrl": "https://chatgpt.com/cdn/assets/favicon-light.2e21f504de.svg",
+    "inputSelectors": ["[contenteditable='true']", "#mobile-composer-prompt"],
+    "submitSelectors": [
+      "form button[type='submit']",
+      "button[data-composer-submit]",
+      "button:has(svg.icon-primary-action)"
+    ]
+  },
+  {
+    "id": "gemini",
+    "name": "Gemini",
+    "url": "https://gemini.google.com/app",
+    "faviconUrl": "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
+    "inputSelectors": [".ql-editor[contenteditable='true']"],
+    "submitSelectors": [
+      "[data-test-id='send-button-container'] button",
+      "button mat-icon[fonticon='arrow_upward']",
+      "button mat-icon[fonticon='mic']"
+    ],
+    "copySelectors": [
+      "copy-button button",
+      "message-actions button[aria-label='Copy']"
+    ]
+  },
+  {
+    "id": "claude",
+    "name": "Claude",
+    "url": "https://claude.ai/new",
+    "queryUrl": "https://claude.ai/new?q=%s",
+    "autoSubmit": false,
+    "faviconUrl": "https://favicon.im/claude.ai",
+    "inputSelectors": [
+      "div[contenteditable='true'][aria-label]",
+      "div[contenteditable='true'].ProseMirror"
+    ],
+    "submitSelectors": [
+      "button:has(span.bg-fill-brand)",
+      "[data-cds='SplitDropdownButton'] button"
+    ]
+  },
+  {
+    "id": "perplexity",
+    "name": "Perplexity",
+    "url": "https://www.perplexity.ai",
+    "queryUrl": "https://www.perplexity.ai/search/new?q=%s",
+    "autoSubmit": true,
+    "urlToMarkdown": true,
+    "faviconUrl": "https://favicon.im/perplexity.ai",
+    "inputSelectors": [
+      "div[contenteditable='true'][role='textbox']",
+      "div[data-lexical-editor='true']"
+    ],
+    "submitSelectors": [
+      "button[aria-label='Submit']",
+      "div.col-end-3:has(div[contenteditable='true'][role='textbox']) ~ div > button.bg-button-bg"
+    ]
+  }
+]

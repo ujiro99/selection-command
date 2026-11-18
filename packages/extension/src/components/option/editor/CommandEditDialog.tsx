@@ -72,6 +72,7 @@ import {
   WINDOW_STATE,
   COMMAND_SOURCE_TYPE,
   COMMAND_SOURCE_ID,
+  LINK_POPUP_ICON_URL,
 } from "@/const"
 
 import { FaviconEvent } from "@/context/faviconContext"
@@ -84,19 +85,20 @@ import { getScreenSize } from "@/services/screen"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
 
-import { isEmpty, e2a, cn, parseGeminiUrl, generateId } from "@/lib/utils"
+import { isEmpty, e2a, cn, generateId } from "@/lib/utils"
+import {
+  isSearchCommand,
+  isPageActionCommand,
+  isLinkPopupCommand,
+  isSearchOpenMode,
+} from "@/lib/commandGuards"
+import { parseGeminiUrl } from "@/lib/url"
 import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
 import { SEARCH_OPEN_MODE } from "@shared/constants/open-mode"
-import { isSearchOpenMode } from "@shared/utils/type-guards"
 
-import {
-  isSearchType,
-  commandSchema,
-  CommandSchemaType,
-  isPageActionType,
-} from "@/types/schema"
+import { commandSchema, CommandSchemaType } from "@/types/schema"
 import type {
   SelectionCommand,
   CommandFolder,
@@ -111,6 +113,16 @@ const EmptyFolder = {
   id: ROOT_FOLDER,
   title: t("Command_rootFolder"),
 } as CommandFolder
+
+// Defaults of the options added to the Link Popup command later. Also used to
+// fill them in when editing a command created before they were added.
+const LINK_POPUP_OPTION_DEFAULTS = {
+  windowState: WINDOW_STATE.NORMAL,
+  linkPopupOption: {
+    openMode: OPEN_MODE.POPUP as (typeof SEARCH_OPEN_MODE)[number],
+    openModeSecondary: OPEN_MODE.TAB as (typeof SEARCH_OPEN_MODE)[number],
+  },
+}
 
 const getDefault = (
   openMode: OPEN_MODE,
@@ -134,7 +146,7 @@ const getDefault = (
       // Staying in search mode: add default windowState when switching to WINDOW
       if (
         openMode === OPEN_MODE.WINDOW &&
-        isSearchType(base) &&
+        isSearchCommand(base) &&
         base.windowState == null
       ) {
         return { ...base, ...sourceDefaults, windowState: WINDOW_STATE.NORMAL }
@@ -144,7 +156,7 @@ const getDefault = (
 
     // Switching from non-search mode (e.g. PAGE_ACTION) to search mode
     let searchUrl = ""
-    if (base && isPageActionType(base) && base.pageActionOption.startUrl) {
+    if (base && isPageActionCommand(base) && base.pageActionOption.startUrl) {
       searchUrl = base.pageActionOption.startUrl
     }
 
@@ -203,15 +215,15 @@ const getDefault = (
     return {
       ...base,
       ...sourceDefaults,
-      title: "Link Popup",
-      iconUrl:
-        "https://cdn3.iconfinder.com/data/icons/fluent-regular-24px-vol-5/24/ic_fluent_open_24_regular-1024.png",
+      title: "Open Links",
+      iconUrl: LINK_POPUP_ICON_URL,
       openMode: OPEN_MODE.LINK_POPUP as const,
       parentFolderId: ROOT_FOLDER,
       popupOption: {
         width: POPUP_OPTION.width,
         height: POPUP_OPTION.height,
       },
+      ...LINK_POPUP_OPTION_DEFAULTS,
     }
   }
   if (openMode === OPEN_MODE.COPY) {
@@ -340,7 +352,7 @@ const CommandEditDialogInner = ({
     if (d.parentFolderId === ROOT_FOLDER) {
       d.parentFolderId = undefined
     }
-    if (isSearchType(d)) {
+    if (isSearchCommand(d)) {
       if (d.popupOption != null) {
         d.popupOption = {
           width: Number(d.popupOption.width),
@@ -396,6 +408,16 @@ const CommandEditDialogInner = ({
     name: "pageActionOption",
   })
 
+  const linkPopupOpenMode = useWatch({
+    control: form.control,
+    name: "linkPopupOption.openMode",
+  })
+
+  const linkPopupOpenModeSecondary = useWatch({
+    control: form.control,
+    name: "linkPopupOption.openModeSecondary",
+  })
+
   const aiPromptPrompt = useWatch({
     control: form.control,
     name: "aiPromptOption.prompt",
@@ -436,6 +458,17 @@ const CommandEditDialogInner = ({
       // edit mode
       if (isEmpty(initialCommand.parentFolderId)) {
         initialCommand.parentFolderId = ROOT_FOLDER
+      }
+      if (isLinkPopupCommand(initialCommand)) {
+        reset({
+          ...LINK_POPUP_OPTION_DEFAULTS,
+          ...initialCommand,
+          linkPopupOption: {
+            ...LINK_POPUP_OPTION_DEFAULTS.linkPopupOption,
+            ...initialCommand.linkPopupOption,
+          },
+        } as CommandSchemaType)
+        return
       }
       reset((initialCommand as any) ?? InitialValues)
     } else {
@@ -774,6 +807,16 @@ const CommandEditDialogInner = ({
                   </>
                 )}
 
+                {openMode === OPEN_MODE.LINK_POPUP && (
+                  <OpenModeToggleField
+                    control={form.control}
+                    name="linkPopupOption.openMode"
+                    formLabel={t("displayMode")}
+                    type="search"
+                    description={t("linkPopup_displayMode_desc")}
+                  />
+                )}
+
                 {openMode === OPEN_MODE.COPY && (
                   <SelectField
                     control={form.control}
@@ -811,6 +854,19 @@ const CommandEditDialogInner = ({
                       "w-full space-y-3 py-2",
                     )}
                   >
+                    {openMode === OPEN_MODE.LINK_POPUP && (
+                      <SelectField
+                        control={form.control}
+                        name="linkPopupOption.openModeSecondary"
+                        formLabel={t("openModeSecondary")}
+                        description={t("openModeSecondary_desc")}
+                        options={SEARCH_OPEN_MODE.map((mode) => ({
+                          name: t(`openMode_${mode}`),
+                          value: mode,
+                        }))}
+                      />
+                    )}
+
                     <IconField
                       control={form.control}
                       nameUrl="iconUrl"
@@ -842,7 +898,11 @@ const CommandEditDialogInner = ({
                       />
                     )}
 
-                    {openMode === OPEN_MODE.WINDOW && (
+                    {(openMode === OPEN_MODE.WINDOW ||
+                      (openMode === OPEN_MODE.LINK_POPUP &&
+                        (linkPopupOpenMode === OPEN_MODE.WINDOW ||
+                          linkPopupOpenModeSecondary ===
+                            OPEN_MODE.WINDOW))) && (
                       <SelectField
                         control={form.control}
                         name="windowState"

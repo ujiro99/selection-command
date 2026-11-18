@@ -8,7 +8,7 @@ const DEPLOYED_HUB_BASE_PATH = "/selection-command"
  * hub build, so that hub changes can be verified with e2e before deploying.
  *
  * Enabled only when E2E_HUB_BASE_URL is set (e.g. "http://localhost:3100"),
- * pointing at a static server for `packages/hub/out`.
+ * pointing at a static server for `packages/pages/out`.
  * The local build has no basePath, so both "/selection-command/*" pages and
  * the root-relative "/_next/*" assets they reference are mapped to the
  * server root. Extensionless paths are mapped to their exported ".html" file.

@@ -5,6 +5,8 @@ import { Settings } from "@/services/settings/settings"
 import { capitalize, scrollToSelector } from "@/lib/utils"
 import { APP_ID, VERSION, SCREEN } from "@/const"
 import { useTheme, themeContext } from "@/hooks/useTheme"
+import { useUserSettings } from "@/hooks/useSettings"
+import { usePageZoom, zoomCompensationContext } from "@/hooks/usePageZoom"
 import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
 
 import { Popup } from "@/components/Popup"
@@ -28,6 +30,10 @@ export function Option() {
   const hasSentScreenOpenedRef = useRef(false)
 
   const theme = useTheme(document.documentElement)
+
+  // The preview shows the zoom setting on the zoom of the options page.
+  const { userSettings } = useUserSettings()
+  const zoomFactor = usePageZoom(userSettings.followBrowserZoom === false)
 
   useEffect(() => {
     const updateHeight = () => {
@@ -101,11 +107,13 @@ export function Option() {
                 style={{ marginBottom: Math.max(popupHeight + 5, 30) }}
               >
                 <SelectContextProvider>
-                  <Popup
-                    positionElm={previewElm}
-                    isPreview={true}
-                    ref={setPopupElm}
-                  />
+                  <zoomCompensationContext.Provider value={1 / zoomFactor}>
+                    <Popup
+                      positionElm={previewElm}
+                      isPreview={true}
+                      ref={setPopupElm}
+                    />
+                  </zoomCompensationContext.Provider>
                 </SelectContextProvider>
               </div>
               <div className="pt-3">

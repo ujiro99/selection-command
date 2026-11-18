@@ -128,4 +128,33 @@ describe("executeAction", () => {
       }),
     )
   })
+
+  it("passes useSecondary to the link popup action without switching the action", async () => {
+    const linkPopup = vi.fn().mockResolvedValue("ok")
+    const tab = vi.fn().mockResolvedValue("ok")
+    const actions = {
+      [OPEN_MODE.LINK_POPUP]: { execute: linkPopup },
+      [OPEN_MODE.TAB]: { execute: tab },
+    } as Record<string, { execute: () => Promise<string> }>
+
+    await executeAction({
+      actions,
+      command: {
+        id: "cmd-4",
+        openMode: OPEN_MODE.LINK_POPUP,
+        linkPopupOption: {
+          openMode: OPEN_MODE.POPUP,
+          openModeSecondary: OPEN_MODE.TAB,
+        },
+      } as any,
+      position: null,
+      selectionText: "text",
+      useSecondary: true,
+    })
+
+    expect(linkPopup).toHaveBeenCalledWith(
+      expect.objectContaining({ useSecondary: true }),
+    )
+    expect(tab).not.toHaveBeenCalled()
+  })
 })

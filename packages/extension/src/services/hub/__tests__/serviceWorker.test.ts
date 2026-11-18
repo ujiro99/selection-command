@@ -19,6 +19,7 @@ import { sendEvent, getOrCreateClientId } from "@/services/analytics"
 import { Ipc, TabCommand } from "@/services/ipc"
 import { calcContentHash } from "@/services/hub/commandContent"
 import { openOptionPage } from "@/services/chrome"
+import { ensureIconsCached } from "@/services/iconCache"
 
 vi.mock("@/services/storage", () => ({
   Storage: {
@@ -37,6 +38,7 @@ vi.mock("@/services/storage", () => ({
 }))
 
 vi.mock("@/services/chrome", () => ({ openOptionPage: vi.fn() }))
+vi.mock("@/services/iconCache", () => ({ ensureIconsCached: vi.fn() }))
 
 vi.mock("@/services/settings/settings", () => ({
   Settings: { addCommands: vi.fn(), updateCommandId: vi.fn() },
@@ -142,6 +144,7 @@ beforeEach(() => {
   resetEditSession()
   vi.mocked(Storage.updateCommands).mockResolvedValue(true)
   vi.mocked(Settings.addCommands).mockResolvedValue(true)
+  vi.mocked(ensureIconsCached).mockResolvedValue(new Set())
   vi.mocked(Settings.updateCommandId).mockResolvedValue(undefined)
   vi.mocked(Storage.setCommands).mockResolvedValue(true)
   vi.mocked(Storage.set).mockResolvedValue(true)
@@ -339,6 +342,47 @@ describe("handleAddCommand", () => {
       })
     }
     expect(Settings.addCommands).not.toHaveBeenCalled()
+  })
+
+  it("AC-11: caches the icon of an added command", async () => {
+    const iconUrl = "https://example.com/icon.png"
+    await handleAddCommand(
+      JSON.stringify({ ...JSON.parse(searchCommandJson), iconUrl }),
+      vi.fn(),
+    )
+
+    expect(ensureIconsCached).toHaveBeenCalledWith([iconUrl])
+  })
+
+  it("AC-12: does not download an icon that is not an http(s) URL", async () => {
+    await handleAddCommand(
+      JSON.stringify({
+        ...JSON.parse(searchCommandJson),
+        iconUrl: "data:image/png;base64,AAAA",
+      }),
+      vi.fn(),
+    )
+
+    expect(ensureIconsCached).not.toHaveBeenCalled()
+  })
+
+  it("AC-13: still responds with success when the icon cannot be cached", async () => {
+    vi.mocked(ensureIconsCached).mockRejectedValue(new Error("storage failed"))
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {})
+    const sendResponse = vi.fn()
+
+    await handleAddCommand(
+      JSON.stringify({
+        ...JSON.parse(searchCommandJson),
+        iconUrl: "https://example.com/icon.png",
+      }),
+      sendResponse,
+    )
+    await vi.waitFor(() => expect(warn).toHaveBeenCalled())
+
+    expect(sendResponse).toHaveBeenCalledWith(
+      expect.objectContaining({ result: true }),
+    )
   })
 
   it("AC-07: normalizes unknown sourceType to undefined", async () => {

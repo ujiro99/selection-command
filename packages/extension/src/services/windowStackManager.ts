@@ -2,6 +2,14 @@ import { ServiceWorkerData } from "./serviceWorkerData"
 import type { WindowType, WindowLayer } from "@/types"
 
 /**
+ * A layer holding a keep open window is not shared with popups opened later.
+ * Otherwise those popups would be siblings of the keep open window, and
+ * returning to it would not close them.
+ */
+const canJoinLayer = (layer: WindowLayer): boolean =>
+  !layer.some((w) => w.keepOpen)
+
+/**
  * Insert a window into the stack, placing it in the layer after its parent
  * (or a new layer if none exists). Mutates and returns the given stack.
  */
@@ -17,19 +25,38 @@ const insertWindow = (
     )
 
     if (parentLayerIndex >= 0) {
-      // Check if there's already a layer after the parent layer
       const nextLayerIndex = parentLayerIndex + 1
-      if (nextLayerIndex < stack.length) {
-        // Add to existing next layer
-        stack[nextLayerIndex].push(window)
-      } else {
+      const nextLayer = stack[nextLayerIndex]
+      if (!nextLayer) {
         // Create new layer after the parent layer
         stack.splice(nextLayerIndex, 0, [window])
+      } else if (canJoinLayer(nextLayer)) {
+        // Add to existing next layer
+        nextLayer.push(window)
+      } else {
+        // The next layer holds a keep open window. Place this one after it so
+        // that focusing the keep open window closes this one, joining the
+        // parent's other children already there (e.g. links opened at once).
+        const afterIndex = nextLayerIndex + 1
+        const afterLayer = stack[afterIndex]
+        if (
+          afterLayer &&
+          afterLayer.length > 0 &&
+          afterLayer[0].srcWindowId === parentWindowId &&
+          canJoinLayer(afterLayer)
+        ) {
+          afterLayer.push(window)
+        } else {
+          stack.splice(afterIndex, 0, [window])
+        }
       }
     } else {
       // Parent not found, check if there's already a layer with the same srcWindowId
       const existingLayerWithSameSrc = stack.find(
-        (layer) => layer.length > 0 && layer[0].srcWindowId === parentWindowId,
+        (layer) =>
+          layer.length > 0 &&
+          layer[0].srcWindowId === parentWindowId &&
+          canJoinLayer(layer),
       )
 
       if (existingLayerWithSameSrc) {
@@ -108,6 +135,8 @@ export class WindowStackManager {
    * Remove window from stack
    */
   static async removeWindow(windowId: number): Promise<void> {
+    // Skip the storage write for windows that aren't in the stack.
+    if (!(await this.findWindow(windowId))) return
     await ServiceWorkerData.update((data) => {
       const stack = cloneStack(data.windowStack ?? [])
 
@@ -132,7 +161,50 @@ export class WindowStackManager {
   }
 
   /**
-   * Get windows to close based on focus change
+   * Find a window in the stack by its id.
+   */
+  static async findWindow(windowId: number): Promise<WindowType | undefined> {
+    const stack = await this.loadStack()
+    return stack.flat().find((w) => w.id === windowId)
+  }
+
+  /**
+   * Set whether a window is excluded from auto-close.
+   * Does nothing when the window is not in the stack or already has the value.
+   */
+  static async setKeepOpen(windowId: number, keepOpen: boolean): Promise<void> {
+    const window = await this.findWindow(windowId)
+    if (!window || (window.keepOpen ?? false) === keepOpen) return
+    await ServiceWorkerData.update((data) => ({
+      windowStack: (data.windowStack ?? []).map((layer) =>
+        layer.map((w) => (w.id === windowId ? { ...w, keepOpen } : w)),
+      ),
+    }))
+  }
+
+  /**
+   * Check whether a window is excluded from auto-close.
+   */
+  static async isKeepOpen(windowId: number): Promise<boolean> {
+    return (await this.findWindow(windowId))?.keepOpen === true
+  }
+
+  /**
+   * Get the ids of windows excluded from auto-close.
+   */
+  static async getKeepOpenIds(): Promise<Set<number>> {
+    const stack = await this.loadStack()
+    return new Set(
+      stack
+        .flat()
+        .filter((w) => w.keepOpen)
+        .map((w) => w.id),
+    )
+  }
+
+  /**
+   * Get windows to close based on focus change.
+   * Windows marked as keep open are never included.
    */
   static async getWindowsToClose(
     focusedWindowId: number,
@@ -146,13 +218,13 @@ export class WindowStackManager {
 
     // If focused window is not in stack, close all windows
     if (focusedLayerIndex < 0) {
-      return stack.flat()
+      return stack.flat().filter((w) => !w.keepOpen)
     }
 
     // Close all windows in layers after the focused layer
     const windowsToClose: WindowType[] = []
     for (let i = focusedLayerIndex + 1; i < stack.length; i++) {
-      windowsToClose.push(...stack[i])
+      windowsToClose.push(...stack[i].filter((w) => !w.keepOpen))
     }
 
     return windowsToClose

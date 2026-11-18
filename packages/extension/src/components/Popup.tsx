@@ -1,4 +1,4 @@
-import { useState, useEffect, forwardRef } from "react"
+import { useState, useEffect, forwardRef, type CSSProperties } from "react"
 import { Popover, PopoverContent, PopoverAnchor } from "@/components/ui/popover"
 import { Menu } from "@/components/menu/Menu"
 import { useUserSettings } from "@/hooks/useSettings"
@@ -9,6 +9,7 @@ import { useSidePanelAutoClose } from "@/hooks/useSidePanelAutoClose"
 import { useSelectContext } from "@/hooks/useSelectContext"
 import { popupContext } from "@/hooks/usePopupContext"
 import { useThemeContext } from "@/hooks/useTheme"
+import { useZoomCompensation } from "@/hooks/usePageZoom"
 import { isMac, onHover, cn } from "@/lib/utils"
 import {
   findUserStyleValue,
@@ -19,6 +20,7 @@ import { t } from "@/services/i18n"
 import { STYLE_VARIABLE, EXIT_DURATION, SIDE, ALIGN } from "@/const"
 
 import css from "./Popup.module.css"
+import zc from "./zoomCompensation.module.css"
 
 export type PopupProps = {
   positionElm: Element | null
@@ -50,7 +52,13 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
     const sideOffset = isPreview ? 0 : (placement?.sideOffset ?? 0)
     const alignOffset = isPreview ? 0 : (placement?.alignOffset ?? 0)
 
-    const userStyles = toCssVariables(userSettings?.userStyles)
+    const zoomCompensation = useZoomCompensation()
+    const userStyles = {
+      ...toCssVariables(userSettings?.userStyles),
+      "--sc-zoom-compensation": zoomCompensation,
+      // mt-2, scaled like the other fixed lengths
+      ...(isPreview && { marginTop: 8 * zoomCompensation }),
+    } as CSSProperties
 
     useEffect(() => {
       let transitionTimer: NodeJS.Timeout
@@ -129,9 +137,14 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
               ref={ref}
               side={side}
               align={align}
-              sideOffset={sideOffset}
-              alignOffset={alignOffset}
-              className={cn(css.popup, isPreview && "z-10 mt-2")}
+              sideOffset={sideOffset * zoomCompensation}
+              alignOffset={alignOffset * zoomCompensation}
+              className={cn(
+                css.popup,
+                zc.rounded,
+                zc.shadowXl,
+                isPreview && "z-10",
+              )}
               style={userStyles}
               {...onHover(handleOnHover, true)}
             >

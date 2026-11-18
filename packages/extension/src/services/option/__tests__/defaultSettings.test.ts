@@ -1,14 +1,15 @@
 import { describe, it, expect } from "vitest"
-import {
+import DefaultSettings, {
   DefaultCommands,
   getDefaultCommands,
   COMMAND_SEARCH_ID,
+  emptySettings,
 } from "../defaultSettings"
-import { isLinkCommand } from "@/lib/utils"
 import { INSERT, toInsertTemplate } from "@/services/pageAction"
 import { getAiServicesFallback } from "@/services/aiPrompt"
 import { COMMAND_SOURCE_TYPE, COMMAND_SOURCE_ID } from "@/const"
 import { ONBOARDING_AI_PROMPT_COMMAND_ID } from "@/components/onboarding/onboardingCommand"
+import { isLinkCommand } from "@/lib/commandGuards"
 
 const SYM_SELECTED_TEXT = toInsertTemplate(INSERT.SELECTED_TEXT)
 const SYM_URL = toInsertTemplate(INSERT.URL)
@@ -310,5 +311,12 @@ describe("getDefaultCommands", () => {
       expect((cmd as any).aiPromptOption.prompt).toContain(SYM_SELECTED_TEXT)
       expect((cmd as any).parentFolderId).toBeUndefined()
     }
+  })
+})
+
+describe("followBrowserZoom default", () => {
+  it("DS-26: new installs do not follow the browser zoom", () => {
+    expect(DefaultSettings.followBrowserZoom).toBe(false)
+    expect(emptySettings.followBrowserZoom).toBe(false)
   })
 })

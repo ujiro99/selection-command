@@ -26,14 +26,13 @@ import {
   PAGE_ACTION_EXEC_STATE as EXEC_STATE,
   PAGE_ACTION_EVENT as EVENT,
 } from "@/const"
+import { generateRandomID, sleep } from "@/lib/utils"
 import {
-  generateRandomID,
   isUrl,
   isUrlParam,
   matchesPageActionUrl,
   needsClipboard,
-  sleep,
-} from "@/lib/utils"
+} from "@/lib/url"
 import type {
   PageActionRecordingData,
   PageActionStep,

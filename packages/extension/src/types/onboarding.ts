@@ -11,11 +11,9 @@ export enum OnboardingStep {
 // user to select text, waiting for them to run the command, waiting for
 // them to come back from the popup/tab it opened, then showing the value
 // message. Not every step uses every phase (e.g. INTRO/CUSTOMIZE/COMPLETE
-// only ever use EXPLAIN, and WELCOME only ever precedes SEARCH's EXPLAIN in
-// variant C).
+// only ever use EXPLAIN, and WELCOME only ever precedes SEARCH's EXPLAIN).
 export enum StepPhase {
-  // Variant C only: the welcome overlay shown before the first step's
-  // explanation (variant A shows the INTRO step instead).
+  // The welcome overlay shown before the first step's explanation.
   WELCOME = "welcome",
   EXPLAIN = "explain",
   WAIT_SELECTION = "wait_selection",

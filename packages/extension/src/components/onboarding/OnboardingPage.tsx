@@ -28,8 +28,8 @@ export function OnboardingPage() {
       {variant == null ? (
         // Hold a blank canvas until the A/B assignment is known (normally a
         // single chrome.storage.local read, since the service worker assigns
-        // on install). Rendering a default arm first would flash variant A's
-        // INTRO screen at variant C users.
+        // on install). Rendering a default arm first would flash the wrong
+        // arm's welcome overlay at the other arm's users.
         <div className="min-h-screen bg-white dark:bg-background" />
       ) : (
         <OnboardingFlow variant={variant} />
@@ -42,9 +42,9 @@ function OnboardingFlow({ variant }: { variant: ExperimentVariant }) {
   const onboarding = useOnboardingState(variant)
   const [positionElm, setPositionElm] = useState<Element | null>(null)
 
-  // Variant C opens on a welcome overlay instead of the INTRO step. The step
-  // below it stays unmounted meanwhile, so its own entrance animations start
-  // only once the greeting is out of the way.
+  // Every variant opens on a welcome overlay. The step below it stays
+  // unmounted meanwhile, so its own entrance animations start only once the
+  // greeting is out of the way.
   const isWelcome = onboarding.phase === StepPhase.WELCOME
   const { setPhase } = onboarding
   const goToExplain = useCallback(() => setPhase(StepPhase.EXPLAIN), [setPhase])

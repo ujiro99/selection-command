@@ -10,6 +10,7 @@ import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js"
 import viteTouchCss from "./src/lib/vite-plugin-touch-css"
 import removeCssFromContentScript from "./src/lib/vite-plugin-manifest"
 import refreshLocales from "./src/lib/vite-plugin-refresh-locales"
+import publicScript from "./src/lib/vite-plugin-public-script"
 import packageJson from "./package.json"
 import { importIfPlugin } from "./src/lib/vite-plugin-import-if"
 import { CONTENT_SCRIPT_CSS_PLACEHOLDER } from "./src/lib/contentScriptCss"
@@ -59,6 +60,7 @@ export default defineConfig(({ mode }) => {
     }),
     removeCssFromContentScript(),
     refreshLocales(),
+    publicScript(["/theme-init.js"]),
   ]
 
   if (mode === "development") {
@@ -133,7 +135,7 @@ export default defineConfig(({ mode }) => {
       __APP_NAME__: JSON.stringify(packageJson.name),
       __APP_VERSION__: JSON.stringify(packageJson.version),
       __AI_SERVICES_JSON__: fs.readFileSync(
-        path.resolve(__dirname, "../hub/public/data/ai-services.json"),
+        path.resolve(__dirname, "../pages/public/data/ai-services.json"),
         "utf-8",
       ),
       // Replaced with the real content_script CSS file list post-build.

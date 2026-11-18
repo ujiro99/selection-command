@@ -21,11 +21,10 @@ type Props = {
   ui?: OnboardingWelcomeUi
 }
 
-// Variants C and D's opening beat, replacing variant A's INTRO step: the brand mark
-// and a short greeting, then straight into the first step. Rendered as an
-// opaque full-screen overlay so the layout chrome (progress pills, Skip)
-// stays hidden until the greeting is done, matching how INTRO looks in
-// variant A. Advances on its own after `ui.durationMs`, or immediately
+// The opening beat of every variant: the brand mark and a short greeting,
+// then straight into the first step. Rendered as an opaque full-screen
+// overlay so the layout chrome (progress pills, Skip) stays hidden until
+// the greeting is done. Advances on its own after `ui.durationMs`, or immediately
 // when the user clicks - there is nothing to read here, so making people
 // wait out the timer would just be a second thing to sit through.
 export function OnboardingWelcome({ onDone, ui = DEFAULT_WELCOME_UI }: Props) {

@@ -59,7 +59,7 @@ describe("sendOnboardingEvent", () => {
   })
 
   it("tags the event with the experiment id and the assigned A/B variant", () => {
-    overrideOnboardingAssignment("D")
+    overrideOnboardingAssignment("E")
 
     sendOnboardingEvent(ANALYTICS_EVENTS.ONBOARDING_SKIP, {
       step: OnboardingStep.SEARCH,
@@ -67,7 +67,7 @@ describe("sendOnboardingEvent", () => {
 
     expect(sendEvent).toHaveBeenCalledWith(
       ANALYTICS_EVENTS.ONBOARDING_SKIP,
-      { step: "search", experiment_id: "onboarding_v4", variant: "D" },
+      { step: "search", experiment_id: "onboarding_v5", variant: "E" },
       SCREEN.ONBOARDING,
     )
   })

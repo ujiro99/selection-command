@@ -17,7 +17,7 @@ type Props = {
 // Shared chrome around every onboarding step: a constant-strength vignette
 // (unlike the old per-step OnboardingOverlay spotlight, this never changes
 // between screens, so nothing about the background shifts on transition) or,
-// for variant D, the welcome overlay's blue glow kept in place for the whole
+// for variant E, the welcome overlay's blue glow kept in place for the whole
 // flow, a header with the brand mark and a 4-segment progress indicator, and
 // a Skip button fixed to the bottom-right corner. Individual step components
 // now render only their own content.

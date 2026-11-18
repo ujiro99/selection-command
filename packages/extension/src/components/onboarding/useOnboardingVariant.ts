@@ -3,18 +3,22 @@ import {
   ensureOnboardingAssignment,
   overrideOnboardingAssignment,
   ONBOARDING_CONTROL_VARIANT,
+  ONBOARDING_TREATMENT_VARIANT,
 } from "@/services/experiments"
 import type { ExperimentVariant } from "@/services/experiments"
 
-// development or e2e build-only escape hatch (`?variant=D`), mirroring
+// development or e2e build-only escape hatch (`?variant=E`), mirroring
 // useOnboardingState's `?step=/?phase=` override so screenshot and manual QA
-// tooling can land on either arm of the experiment on demand. "A" is still
-// accepted while its code path remains, though it is no longer assigned.
+// tooling can land on either arm of the experiment on demand.
 function readVariantOverride(): ExperimentVariant | null {
   if (!["e2e", "development"].includes(import.meta.env.MODE)) return null
   const param = new URLSearchParams(window.location.search).get("variant")
-  if (param !== "A" && param !== "C" && param !== "D") return null
-  return overrideOnboardingAssignment(param).variant
+  const variant = [
+    ONBOARDING_CONTROL_VARIANT,
+    ONBOARDING_TREATMENT_VARIANT,
+  ].find((v) => v === param)
+  if (variant == null) return null
+  return overrideOnboardingAssignment(variant).variant
 }
 
 /**

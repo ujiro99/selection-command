@@ -13,8 +13,7 @@ import { findRemUsages } from "./findRemUsages"
 // `self.__WB_MANIFEST` precache list.
 // The content script UI lives in the user's page, where `rem` follows the
 // page's root font-size. Fail the build if any content script CSS uses it, so
-// the UI never changes with the page (see
-// docs/design/tailwindcss-v4-migration.md).
+// the UI never changes with the page.
 function assertNoRemInCss(distDir: string, cssFiles: string[]) {
   // An empty list means the manifest could not be processed. Fail instead of
   // silently skipping the check.

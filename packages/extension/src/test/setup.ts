@@ -332,12 +332,19 @@ global.chrome = {
     onActivated: {
       addListener: vi.fn(),
     },
+    onZoomChange: {
+      addListener: vi.fn(),
+    },
+    getZoom: vi.fn(),
   },
   contextMenus: {
     create: vi.fn(),
     update: vi.fn(),
     remove: vi.fn(),
     removeAll: vi.fn(),
+    onClicked: {
+      addListener: vi.fn(),
+    },
   },
   i18n: {
     getMessage: vi.fn((key: string) => key),

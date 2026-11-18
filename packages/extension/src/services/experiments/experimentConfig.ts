@@ -17,13 +17,13 @@ const FETCH_TIMEOUT_MS = 3000
  * control), so a hub outage doesn't skew one arm towards users who happened
  * to have connectivity problems at install time.
  *
- * These intentionally duplicate packages/hub/public/data/experiments.json:
+ * These intentionally duplicate packages/pages/public/data/experiments.json:
  * that file is the live control plane, this is the offline safety net. When
  * the hub-side ratio is changed for good (as opposed to a temporary tweak),
  * update these values too, or the fallback path keeps using the old split.
  */
 export const DEFAULT_CONFIGS: Record<string, ExperimentConfig> = {
-  onboarding_v4: { enabled: true, allocation: 0.5 },
+  onboarding_v5: { enabled: true, allocation: 0.5 },
 }
 
 const DEFAULT_CONFIG: ExperimentConfig = { enabled: false, allocation: 0 }

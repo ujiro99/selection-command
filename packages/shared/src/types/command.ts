@@ -66,7 +66,7 @@ export type AiPromptCommand = SearchCommand & {
 export type AiPromptOption = {
   /**
    * The ID of the AI service to use.
-   * @see `packages/hub/public/data/ai-services.json`
+   * @see `packages/pages/public/data/ai-services.json`
    */
   serviceId: string
   /**

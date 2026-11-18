@@ -15,7 +15,7 @@ import type {
   UserSettings,
   PageRule,
 } from "@/types"
-import { findMatchingPageRule } from "@/lib/utils"
+import { findMatchingPageRule } from "@/lib/url"
 import { INHERIT } from "@/const"
 
 // Apply page rule to settings, modifying popupPlacement if needed

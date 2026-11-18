@@ -7,20 +7,20 @@ import DefaultSettings, {
   getDefaultCommands,
   COMMAND_SEARCH_ID,
 } from "../../option/defaultSettings"
-import { toDataURL } from "../../dom"
+import { ensureIconsCached } from "../../iconCache"
 import { OPTION_FOLDER, VERSION, OPEN_MODE } from "@/const"
 import type { Command, SettingsType, Star } from "@/types"
-import { isLinkCommand } from "@/lib/utils"
 import * as utils from "@/lib/utils"
+import { isLinkCommand } from "@/lib/commandGuards"
 
 // Mock dependencies
 vi.mock("../../storage")
 vi.mock("../../option/optionSettings")
-vi.mock("../../dom")
+vi.mock("../../iconCache")
 
 const mockStorage = vi.mocked(Storage)
 const mockOptionSettings = vi.mocked(OptionSettings)
-const mockToDataURL = vi.mocked(toDataURL)
+const mockEnsureIcons = vi.mocked(ensureIconsCached)
 
 describe("Settings", () => {
   // Setup function to create clean mocks for each test
@@ -42,7 +42,7 @@ describe("Settings", () => {
       onlyIcon: true,
     }
 
-    mockToDataURL.mockResolvedValue("data:image/png;base64,test")
+    mockEnsureIcons.mockResolvedValue(new Set())
   }
 
   afterEach(() => {
@@ -226,8 +226,16 @@ describe("Settings", () => {
     })
 
     it("ST-09: should skip image cache processing when serviceWorker is true", async () => {
-      await Settings.set(mockSettings, true)
-      expect(mockToDataURL).not.toHaveBeenCalled()
+      const originalGetUrls = Settings.getUrls
+      mockStorage.get.mockResolvedValueOnce({ images: {} })
+      Settings.getUrls = vi.fn().mockReturnValue(["http://example.com/a.png"])
+
+      try {
+        await Settings.set(mockSettings, true)
+        expect(mockEnsureIcons).not.toHaveBeenCalled()
+      } finally {
+        Settings.getUrls = originalGetUrls
+      }
     })
 
     it("ST-10: should remove unused cache entries", async () => {
@@ -259,29 +267,30 @@ describe("Settings", () => {
       }
     })
 
-    it("ST-11: should process image URLs and create cache when serviceWorker is false", async () => {
+    it("ST-11: should cache only the missing icons after storing the settings", async () => {
       const imageUrl = "http://example.com/icon.png"
+      const cachedUrl = "http://example.com/cached.png"
       const settingsWithImage = {
         ...mockSettings,
         commands: DefaultCommands,
       }
 
       const originalGetUrls = Settings.getUrls
-      mockStorage.get.mockResolvedValueOnce({ images: {} })
-      Settings.getUrls = vi.fn().mockReturnValue([imageUrl])
+      mockStorage.get.mockResolvedValueOnce({
+        images: { [cachedUrl]: "data:cached" },
+      })
+      Settings.getUrls = vi
+        .fn()
+        .mockReturnValue([imageUrl, cachedUrl, "", "data:image/png;base64,x"])
 
       try {
         await Settings.set(settingsWithImage, false)
 
-        expect(mockToDataURL).toHaveBeenCalledWith(imageUrl)
-        expect(mockStorage.set).toHaveBeenCalledWith(
-          "caches",
-          expect.objectContaining({
-            images: expect.objectContaining({
-              [imageUrl]: "data:image/png;base64,test",
-            }),
-          }),
-        )
+        expect(mockEnsureIcons).toHaveBeenCalledWith([imageUrl], 3000)
+        // The settings are stored before the icons are downloaded.
+        expect(
+          mockStorage.setCommands.mock.invocationCallOrder[0],
+        ).toBeLessThan(mockEnsureIcons.mock.invocationCallOrder[0])
       } finally {
         Settings.getUrls = originalGetUrls
       }
@@ -313,7 +322,7 @@ describe("Settings", () => {
       )
     })
 
-    it("ST-14: should handle toDataURL errors gracefully", async () => {
+    it("ST-14: should handle icon conversion errors gracefully", async () => {
       const imageUrl = "http://example.com/invalid.png"
       const settingsWithImage = {
         ...mockSettings,
@@ -331,12 +340,15 @@ describe("Settings", () => {
       mockStorage.get.mockResolvedValueOnce({ images: {} })
 
       Settings.getUrls = vi.fn().mockReturnValue([imageUrl])
-      mockToDataURL.mockRejectedValue(new Error("Network error"))
+      mockEnsureIcons.mockRejectedValue(new Error("QUOTA_BYTES exceeded"))
+      vi.spyOn(console, "warn").mockImplementation(() => {})
 
       try {
-        // Should not throw error
+        // The settings are stored, so a failure to cache icons is not an error.
         const result = await Settings.set(settingsWithImage, false)
         expect(result).toBe(true)
+        expect(mockEnsureIcons).toHaveBeenCalledWith([imageUrl], 3000)
+        expect(mockStorage.setCommands).toHaveBeenCalled()
       } finally {
         // Restore original methods
         Settings.getUrls = originalGetUrls
@@ -398,6 +410,26 @@ describe("Settings", () => {
         Settings.set = originalSet
       }
     })
+    it("ST-16b: does not cache icons on an update from a content script", async () => {
+      const originalGet = Settings.get
+      const originalGetUrls = Settings.getUrls
+      Settings.get = vi.fn().mockResolvedValue({
+        ...DefaultSettings,
+        stars: [],
+      })
+      Settings.getUrls = vi.fn().mockReturnValue(["http://example.com/a.png"])
+      mockStorage.get.mockResolvedValue({ images: {} })
+
+      try {
+        await Settings.update("hasShownReviewRequest", () => true, true)
+
+        expect(mockStorage.set).toHaveBeenCalled()
+        expect(mockEnsureIcons).not.toHaveBeenCalled()
+      } finally {
+        Settings.get = originalGet
+        Settings.getUrls = originalGetUrls
+      }
+    })
   })
 
   describe("addCommands method", () => {
@@ -453,6 +485,37 @@ describe("Settings", () => {
 
       expect(result).toBe(true)
       expect(mockStorage.updateCommands).toHaveBeenCalledWith(updatedCommands)
+    })
+  })
+
+  describe("saveForExistingInstall method", () => {
+    beforeEach(() => {
+      setupDefaultMocks()
+    })
+
+    it("ST-35: should save the existing install that has no saved settings to follow the browser zoom", async () => {
+      mockStorage.has.mockResolvedValue(false)
+      // Storage.get falls back to the defaults for new installs.
+      mockStorage.get.mockImplementation(async (key) =>
+        key === STORAGE_KEY.USER ? structuredClone(DefaultSettings) : {},
+      )
+
+      await Settings.saveForExistingInstall()
+
+      expect(mockStorage.has).toHaveBeenCalledWith(STORAGE_KEY.USER)
+      expect(mockStorage.set).toHaveBeenCalledWith(
+        STORAGE_KEY.USER,
+        expect.objectContaining({ followBrowserZoom: true }),
+      )
+    })
+
+    it("ST-36: should not change the saved settings", async () => {
+      mockStorage.has.mockResolvedValue(true)
+
+      await Settings.saveForExistingInstall()
+
+      expect(mockStorage.set).not.toHaveBeenCalled()
+      expect(mockStorage.setCommands).not.toHaveBeenCalled()
     })
   })
 

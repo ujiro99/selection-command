@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react"
+import type { CSSProperties } from "react"
 import { restrictToParentElement } from "@dnd-kit/modifiers"
 import { DndContext, DragEndEvent } from "@dnd-kit/core"
 
 import { usePageActionContext } from "@/hooks/pageAction/usePageActionContext"
+import { usePageZoom, zoomCompensationContext } from "@/hooks/usePageZoom"
 import { InputPopup } from "@/components/pageAction/InputPopup"
 import { InputEditor } from "@/components/pageAction/InputEditor"
 import { RemoveDialog } from "@/components/option/RemoveDialog"
@@ -22,13 +24,24 @@ import type {
   DeepPartial,
   UserVariable,
 } from "@/types"
-import { isEmpty, capitalize } from "@/lib/utils"
+import { isEmpty, capitalize, cn } from "@/lib/utils"
+
+import zc from "@/components/zoomCompensation.module.css"
+import css from "./PageActionRecorder.module.css"
 
 export function PageActionRecorder(): JSX.Element {
   const { isRecording } = usePageActionContext()
+  // The controller and the input menu always cancel the browser zoom,
+  // regardless of the followBrowserZoom setting of the selection menu.
+  const zoomCompensation = 1 / usePageZoom(isRecording === true)
+  const zoomStyle = {
+    "--sc-zoom-compensation": zoomCompensation,
+  } as CSSProperties
   const [steps, setSteps] = useState<PageActionStep[]>([])
   const [userVariables, setUserVariables] = useState<UserVariable[]>([])
-  const [windowSize, setWindowSize] = useState<PopupOption>({
+  // The viewport size in CSS px, the same unit as the controller position.
+  // It also changes with the browser zoom.
+  const [viewportSize, setViewportSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
   })
@@ -121,75 +134,96 @@ export function PageActionRecorder(): JSX.Element {
           STORAGE_KEY.PA_RECORDING,
           data,
         )
-        setWindowSize(param)
       }
       update()
       return false
     }
-    Ipc.addListener(TabCommand.sendWindowSize, listener)
-    return () => {
-      Ipc.removeListener(TabCommand.sendWindowSize)
-    }
+    return Ipc.addListener(TabCommand.sendWindowSize, listener)
   }, [])
 
+  useEffect(() => {
+    const handleResize = () => {
+      setViewportSize({ width: window.innerWidth, height: window.innerHeight })
+    }
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
+
+  // Reset the controller to the initial position when it overflows the
+  // viewport. The zoom compensation is a dependency because the size of the
+  // controller in CSS px follows it, and it may be updated after the resize.
   useEffect(() => {
     if (controllerElm && position) {
       const rect = controllerElm.getBoundingClientRect()
       const over =
-        windowSize.width < position.x + rect.width ||
-        windowSize.height < position.y + rect.height
+        viewportSize.width < position.x + rect.width ||
+        viewportSize.height < position.y + rect.height
       if (over) {
         setPosition(undefined)
       }
     }
-  }, [controllerElm, position, windowSize])
+  }, [controllerElm, position, viewportSize, zoomCompensation])
 
   if (!isRecording) return <></>
 
   return (
     <DndContext onDragEnd={handleDragEnd} modifiers={[restrictToParentElement]}>
       <div className="fixed inset-0 pointer-events-none z-2147483647">
-        <Draggable id="controller" position={position} className="z-10">
-          <Controller
-            steps={steps}
-            onClickRemove={setRemoveId}
-            onClickEdit={setEditId}
-            onChange={handleOnChangeStep}
-            isRecordEnabled={!(editorOpen || removeOpen)}
-            ref={setControllerElm}
-          />
-        </Draggable>
-        {!editorOpen && <InputPopup userVariables={userVariables} />}
-        <InputEditor
-          open={editorOpen}
-          onOpenChange={(o) => !o && setEditId(null)}
-          value={editorValue}
-          onSubmit={editInputAction}
-          userVariables={userVariables}
-        />
-        <RemoveDialog
-          open={removeOpen}
-          onOpenChange={(o) => !o && setRemoveId(null)}
-          onRemove={() => removeAction(removeId)}
-        >
-          {removeStep && (
-            <div>
-              <p className="text-base font-medium font-mono flex items-center gap-1.5">
-                <TypeIcon
-                  type={removeStep.param.type}
-                  className="stroke-gray-700 dark:stroke-gray-300"
-                  size={20}
-                />
-                {capitalize(removeStep.param.type)}
-              </p>
-              {hasLabel && (
-                <p className="mt-2 px-3 py-2 rounded-md text-balance whitespace-pre-line text-sm max-h-80 overflow-x-hidden overflow-y-auto bg-gray-100 dark:bg-gray-800">
-                  <span>{removeStep.param.label}</span>
-                </p>
+        <zoomCompensationContext.Provider value={zoomCompensation}>
+          {/* dnd-kit measures the parent of the draggable node, so the scope
+              is set on the draggable itself rather than on a wrapper. */}
+          <Draggable
+            id="controller"
+            position={position}
+            className={cn("z-10", css.zoomScope)}
+            style={zoomStyle}
+          >
+            <Controller
+              steps={steps}
+              onClickRemove={setRemoveId}
+              onClickEdit={setEditId}
+              onChange={handleOnChangeStep}
+              isRecordEnabled={!(editorOpen || removeOpen)}
+              ref={setControllerElm}
+            />
+          </Draggable>
+          <div className={cn("contents", css.zoomScope)} style={zoomStyle}>
+            {!editorOpen && <InputPopup userVariables={userVariables} />}
+            <InputEditor
+              open={editorOpen}
+              onOpenChange={(o) => !o && setEditId(null)}
+              value={editorValue}
+              onSubmit={editInputAction}
+              userVariables={userVariables}
+            />
+            <RemoveDialog
+              open={removeOpen}
+              onOpenChange={(o) => !o && setRemoveId(null)}
+              onRemove={() => removeAction(removeId)}
+              className={cn(zc.border, zc.shadowLg)}
+              // Pin the sm layout: breakpoints follow the viewport width in
+              // CSS px, which changes with the browser zoom.
+              footerClassName="flex-row justify-end space-x-2"
+            >
+              {removeStep && (
+                <div>
+                  <p className="text-base font-medium font-mono flex items-center gap-1.5">
+                    <TypeIcon
+                      type={removeStep.param.type}
+                      className="size-5 stroke-gray-700 dark:stroke-gray-300"
+                    />
+                    {capitalize(removeStep.param.type)}
+                  </p>
+                  {hasLabel && (
+                    <p className="mt-2 px-3 py-2 rounded-md text-balance whitespace-pre-line text-sm max-h-80 overflow-x-hidden overflow-y-auto bg-gray-100 dark:bg-gray-800">
+                      <span>{removeStep.param.label}</span>
+                    </p>
+                  )}
+                </div>
               )}
-            </div>
-          )}
-        </RemoveDialog>
+            </RemoveDialog>
+          </div>
+        </zoomCompensationContext.Provider>
       </div>
     </DndContext>
   )

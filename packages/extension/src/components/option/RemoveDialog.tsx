@@ -21,6 +21,8 @@ type RemoveDialogProps = {
   onRemove: () => void
   children: React.ReactNode
   portal?: boolean
+  className?: string
+  footerClassName?: string
   "data-testid-ok"?: string
 }
 
@@ -36,7 +38,10 @@ export const RemoveDialog = ({
   return (
     <Dialog open={props.open} onOpenChange={props.onOpenChange}>
       <DialogPortal portal={props.portal}>
-        <DialogContent onOpenAutoFocus={handleOpenAutoFocus}>
+        <DialogContent
+          className={props.className}
+          onOpenAutoFocus={handleOpenAutoFocus}
+        >
           <DialogHeader>
             <DialogTitle>{t("Option_remove_title")}</DialogTitle>
           </DialogHeader>
@@ -44,7 +49,7 @@ export const RemoveDialog = ({
           <div className="py-1 flex items-center justify-center">
             {props.children}
           </div>
-          <DialogFooter>
+          <DialogFooter className={props.footerClassName}>
             <DialogClose asChild>
               <Button type="button" variant="secondary" size="lg">
                 {t("Option_labelCancel")}

@@ -175,6 +175,16 @@ export const BaseStorage = {
     }
   },
 
+  /**
+   * Whether a value is saved for the key. Unlike get, it does not fall back
+   * to the default value.
+   */
+  has: async (key: KEY): Promise<boolean> => {
+    const area = detectStorageArea(key)
+    const result = await area.get(`${key}`)
+    return result[key] != null
+  },
+
   set: async <T>(key: KEY, value: T): Promise<boolean> => {
     const area = detectStorageArea(key)
     try {

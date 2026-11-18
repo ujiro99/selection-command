@@ -9,7 +9,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "packages/hub/**"
+      - "packages/pages/**"
       - ".github/workflows/pages.yml"
   # Allows you to run this workflow from another workflow
   workflow_call:
@@ -30,7 +30,7 @@ concurrency:
 
 defaults:
   run:
-    working-directory: ./packages/hub
+    working-directory: ./packages/pages
 
 jobs:
   # Build job
@@ -47,7 +47,7 @@ jobs:
             echo "command=install" >> $GITHUB_OUTPUT
             echo "runner=yarn" >> $GITHUB_OUTPUT
             exit 0
-          elif [ -f "${{ github.workspace }}/packages/hub/package.json" ]; then
+          elif [ -f "${{ github.workspace }}/packages/pages/package.json" ]; then
             echo "manager=npm" >> $GITHUB_OUTPUT
             echo "command=ci" >> $GITHUB_OUTPUT
             echo "runner=npx --no-install" >> $GITHUB_OUTPUT
@@ -70,11 +70,11 @@ jobs:
           #
           # You may remove this line if you want to manage the configuration yourself.
           static_site_generator: next
-          generator_config_file: packages/hub/next.config.mjs
+          generator_config_file: packages/pages/next.config.mjs
       - name: Restore cache for Next.js
         uses: actions/cache@v4
         with:
-          path: ./packages/hub/.next/cache
+          path: ./packages/pages/.next/cache
           # Generate a new cache whenever packages or source files change.
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
           # If source files changed but packages didn't, rebuild from a prior cache.
@@ -83,7 +83,7 @@ jobs:
       - name: Restore cache for node_modules
         uses: actions/cache@v4
         with:
-          path: "./packages/hub/node_modules"
+          path: "./packages/pages/node_modules"
           key: ${{ runner.os }}-node-package-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-node-package-
@@ -94,7 +94,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./packages/hub/out
+          path: ./packages/pages/out
 
   # Deployment job
   deploy:

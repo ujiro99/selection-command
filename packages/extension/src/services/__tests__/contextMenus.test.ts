@@ -629,5 +629,24 @@ describe("Context Menu Multi-level Hierarchy", () => {
         }),
       )
     })
+
+    it("CM-16: should not send executeAction when command is not found", async () => {
+      const mockSendMessage = vi.fn().mockResolvedValue("success")
+      global.chrome.tabs = {
+        sendMessage: mockSendMessage,
+      } as any
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {})
+
+      ContextMenu.commandIdObj = {}
+
+      await ContextMenu.onClicked(
+        { menuItemId: "unknown-menu-id" } as any,
+        { id: 123 } as any,
+      )
+
+      expect(mockSendMessage).not.toHaveBeenCalled()
+      expect(warnSpy).toHaveBeenCalled()
+      warnSpy.mockRestore()
+    })
   })
 })
