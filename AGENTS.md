@@ -22,7 +22,7 @@
    - React + TypeScript + Vite
 
 2. **packages/pages** (`@selection-command/pages`)
-   - `ai-services.json` の静的ホスティング + Extension の e2e テストページ配信のみを担う縮小版 Next.js アプリ
+   - `ai-services.json` の静的ホスティング + Extension の e2e テストページ配信 + Chrome Web Store 用画像の作成のみを担う縮小版 Next.js アプリ
    - コマンド共有プラットフォームとしてのフル機能は新リポジトリ（[selection-command-hub](https://github.com/ujiro99/selection-command-hub)、selection-command.com）に移行済み
    - 詳細は `packages/pages/AGENTS.md` を参照
 
@@ -141,9 +141,9 @@ yarn dev                   # watch モード
 
 ### Pages の構造 (packages/pages)
 
-`packages/pages` は「ai-services.json の静的ホスティング」と「Extension の
-e2eテストページ配信」のみを担う縮小版アプリ。詳細は `packages/pages/AGENTS.md`
-を参照。
+`packages/pages` は「ai-services.json の静的ホスティング」「Extension の
+e2eテストページ配信」「Chrome Web Store 用画像の作成」のみを担う縮小版アプリ。
+詳細は `packages/pages/AGENTS.md` を参照。
 
 ### 型システムの設計
 

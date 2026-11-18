@@ -1,0 +1,88 @@
+/* Ported from selection-command-hub (src/components/hub/logo.tsx). */
+
+.logo {
+  display: inline-flex;
+  gap: 0.4ch;
+  font-weight: 600;
+  color: inherit;
+}
+
+.selection {
+  letter-spacing: -0.025em;
+}
+
+.command {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 0.34ch;
+  border-radius: 0.4ch;
+  background: rgb(21 151 201 / 0.2);
+}
+
+.pointer {
+  position: absolute;
+  fill: #fff;
+}
+
+.hub {
+  margin-left: 0.1ch;
+  font-weight: 300;
+}
+
+/* Size variants: font size plus the pointer's size and position. */
+
+.default,
+.sm {
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.sm {
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.default .pointer,
+.sm .pointer {
+  top: 2ex;
+  right: -1.1ch;
+  width: 0.9em;
+  height: 0.9em;
+}
+
+.lg {
+  font-size: 24px;
+  line-height: 32px;
+}
+
+.lg .pointer {
+  top: 1.8ex;
+  right: -0.95ch;
+  width: 0.8em;
+  height: 0.8em;
+}
+
+.xl {
+  font-size: 36px;
+  line-height: 44px;
+}
+
+.xl .pointer {
+  top: 1.7ex;
+  right: -0.8ch;
+  width: 0.75em;
+  height: 0.75em;
+}
+
+.xxl {
+  font-size: 48px;
+  line-height: 56px;
+}
+
+.xxl .pointer {
+  top: 1.7ex;
+  right: -0.7ch;
+  width: 0.7em;
+  height: 0.7em;
+}

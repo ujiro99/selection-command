@@ -1,0 +1,269 @@
+/*
+ * Shared parts of the Chrome Web Store images (1280x800).
+ * Copy is stacked with flexbox in a .copy column; UI parts are placed with
+ * absolute positions.
+ */
+
+.canvas {
+  --ink: #0f1b2d;
+  --blue: #2468e6;
+  --blue-soft: #e8f0fd;
+  --line: #e6eaf1;
+  --jp:
+    "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic",
+    "Meiryo", sans-serif;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 1280px;
+  height: 800px;
+  overflow: hidden;
+  font-family: var(--font-geist-sans), var(--jp);
+  color: var(--ink);
+}
+
+/* Fonts for scripts that the Japanese font does not cover well */
+.canvas:lang(zh-CN) {
+  --jp: "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif;
+}
+
+.canvas:lang(ko) {
+  --jp: "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+}
+
+/* Hiragino has full-width Cyrillic, so Russian needs its own font */
+.canvas:lang(ru) {
+  --jp: "Helvetica Neue", "Arial", sans-serif;
+}
+
+.canvas:lang(hi) {
+  --jp:
+    "Kohinoor Devanagari", "Noto Sans Devanagari", "Hiragino Sans", sans-serif;
+}
+
+.brand {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brandIcon {
+  border-radius: 4px;
+}
+
+/* Column of copy. Spacing between its items is set with gap and margins. */
+.copy {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The rest of the canvas below an in-flow .copy */
+.scene {
+  position: relative;
+  flex: 1;
+}
+
+.headline {
+  margin: 0;
+  font-family: var(--jp);
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.accent {
+  color: var(--blue);
+}
+
+/* Accent on navy or blue backgrounds, light enough for both */
+.accentOnDark {
+  color: #9cc2ff;
+}
+
+.sub {
+  margin: 0;
+  font-family: var(--jp);
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 1.7;
+  /* Line breaks come from the copy. Lines too long for the column wrap,
+     at phrase boundaries in Japanese and between words in Korean. */
+  word-break: auto-phrase;
+  text-wrap: balance;
+}
+
+.canvas:lang(ko) .sub {
+  word-break: keep-all;
+}
+
+/* Soft shadow for UI floating over the background */
+.float {
+  box-shadow: 0 14px 40px rgb(15 27 45 / 0.15);
+}
+
+/* ---------- Browser frame (a page the extension runs on) ---------- */
+
+.browser {
+  position: absolute;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #fff;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 52px;
+  padding: 0 18px;
+  border-bottom: 1px solid #e8ecf2;
+  background: #f4f6fa;
+}
+
+.dots {
+  display: flex;
+  gap: 7px;
+}
+
+.dots i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #cbd2dc;
+}
+
+.address {
+  flex: 1;
+  height: 32px;
+  padding: 0 14px;
+  border: 1px solid #e3e8ef;
+  border-radius: 8px;
+  font-size: 15px;
+  line-height: 30px;
+  color: #7a889c;
+  background: #fff;
+}
+
+.selected {
+  padding: 4px 3px;
+  margin: 0 3px;
+  border-radius: 3px;
+  font-weight: 700;
+  color: #12203a;
+  background: #a9c9fb;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.cursor {
+  position: absolute;
+  filter: drop-shadow(0 4px 6px rgb(15 27 45 / 0.25));
+}
+
+/* ---------- Product screenshot ---------- */
+
+.shot {
+  position: absolute;
+  overflow: hidden;
+}
+
+/* Shadow for a floating screenshot such as the popup menu. Combine with a
+   border radius matching the screenshot's own corners. */
+.shotShadow {
+  box-shadow:
+    0 18px 36px -6px rgb(20 45 100 / 0.28),
+    0 4px 10px rgb(20 45 100 / 0.12);
+}
+
+.shot img {
+  display: block;
+  max-width: none;
+}
+
+/* Navy speech bubble. The arrow side is set by one of the arrow* classes. */
+.tooltip {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 26px 16px 20px;
+  border-radius: 12px;
+  color: #fff;
+  background: #0f1b2d;
+  box-shadow: 0 20px 40px -10px rgb(5 12 25 / 0.5);
+}
+
+.tooltip::before {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  background: #0f1b2d;
+  transform: rotate(45deg);
+}
+
+.arrowTop::before {
+  top: -8px;
+  left: var(--arrow-offset, 30px);
+}
+
+.arrowBottom::before {
+  bottom: -8px;
+  left: var(--arrow-offset, 30px);
+}
+
+.arrowTop.arrowFromEnd::before,
+.arrowBottom.arrowFromEnd::before {
+  left: auto;
+  right: var(--arrow-offset, 30px);
+}
+
+.arrowLeft::before {
+  left: -8px;
+  top: var(--arrow-offset, calc(50% - 8px));
+}
+
+.arrowRight::before {
+  right: -8px;
+  top: var(--arrow-offset, calc(50% - 8px));
+}
+
+.tooltipIcon {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.16);
+}
+
+.tooltipText {
+  margin: 0;
+  font-family: var(--jp);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.45;
+  white-space: nowrap;
+}
+
+/* Smaller bubble that fits in one row of a list */
+.tooltipCompact {
+  gap: 10px;
+  padding: 8px 18px 8px 9px;
+  border-radius: 10px;
+}
+
+.tooltipCompact .tooltipIcon {
+  width: 32px;
+  height: 32px;
+}
+
+.tooltipCompact .tooltipText {
+  font-size: 18px;
+}
