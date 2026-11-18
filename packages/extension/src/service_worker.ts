@@ -27,6 +27,11 @@ import * as IconColorServiceWorker from "@/services/iconColor/serviceWorker"
 import { getSidePanelEvent } from "@/services/sidePanelSupport"
 import { registerLifecycleListeners } from "@/services/lifecycle/serviceWorker"
 import { registerShortcutListeners } from "@/services/shortcut/serviceWorker"
+import {
+  openHoverCardWindow,
+  onHoverCardWindowRemoved,
+} from "@/services/hoverCard/windowService"
+import type { OpenHoverCardWindowProps } from "@/services/hoverCard/window"
 
 import { importIf } from "@import-if"
 importIf("production", "./lib/sentry/initialize")
@@ -409,6 +414,20 @@ const commandFuncs = {
   [ServiceWorkerCommand.resolveIconColors]:
     IconColorServiceWorker.resolveIconColors,
 
+  [ServiceWorkerCommand.openHoverCardWindow]: (
+    param: OpenHoverCardWindowProps,
+    _: Sender,
+    response: (res: unknown) => void,
+  ): boolean => {
+    openHoverCardWindow(param)
+      .then(() => response(true))
+      .catch((e) => {
+        console.error("Failed to open the hover card window", e)
+        response(false)
+      })
+    return true
+  },
+
   //
   // Hub
   //
@@ -488,6 +507,11 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
 })
 
 chrome.windows.onRemoved.addListener(async (windowId: number) => {
+  // Stop following the selection once the hover card window is closed.
+  onHoverCardWindowRemoved(windowId).catch((e) =>
+    console.error("Failed to clear the hover card window state", e),
+  )
+
   // Wait for the persisted state so we never write back the empty default.
   await ServiceWorkerData.ready()
 

@@ -401,6 +401,13 @@
   "Option_commandType_getTextStyles_desc": {
     "message": "Get style information of selected text"
   },
+  "Option_commandType_hoverCard_title": {
+    "message": "Hover Card",
+    "description": "Command type that shows a result in a small card attached to the menu item when hovered."
+  },
+  "Option_commandType_hoverCard_desc": {
+    "message": "Show a result such as a translation when you hover"
+  },
   "Option_commandType_api_title": {
     "message": "API"
   },
@@ -1672,5 +1679,43 @@
   "onboarding_closeButton": {
     "message": "Close and try it out",
     "description": "Onboarding Step5 button that closes the onboarding tab and returns the user to the page they were on - doubles as the step's main call to action."
+  },
+  "HoverCard_loading": {
+    "message": "Translating…"
+  },
+  "HoverCard_downloading": {
+    "message": "Downloading translation model… $percent$%",
+    "placeholders": {
+      "percent": {
+        "content": "$1",
+        "example": "42"
+      }
+    }
+  },
+  "HoverCard_needsActivation": {
+    "message": "Click to set up translation",
+    "description": "Shown when the on-device translation model must be downloaded. Browsers require a click before the download starts."
+  },
+  "HoverCard_unavailable": {
+    "message": "Translation isn't available in this browser",
+    "description": "Shown when the browser does not provide the built-in Translator API."
+  },
+  "HoverCard_unsupported": {
+    "message": "This language isn't supported"
+  },
+  "HoverCard_notApplicable": {
+    "message": "Already in your language",
+    "description": "Shown when the selected text is already in the user's language."
+  },
+  "HoverCard_failed": {
+    "message": "Couldn't translate"
+  },
+  "HoverCard_keep": {
+    "message": "Keep",
+    "description": "Button on the hover card. Reopens the result in a separate window that stays open and follows the selection."
+  },
+  "HoverCard_empty": {
+    "message": "Nothing to show for this selection",
+    "description": "Shown in the hover card window when the selection does not apply (e.g. the text is too long)."
   }
 }

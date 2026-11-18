@@ -398,6 +398,12 @@
   "Option_commandType_getTextStyles_desc": {
     "message": "Stilinformationen des ausgewählten Textes abrufen"
   },
+  "Option_commandType_hoverCard_title": {
+    "message": "Hover-Karte"
+  },
+  "Option_commandType_hoverCard_desc": {
+    "message": "Zeigt beim Darüberfahren ein Ergebnis wie eine Übersetzung an"
+  },
   "Option_commandType_api_title": {
     "message": "API"
   },
@@ -1611,5 +1617,38 @@
   },
   "onboarding_closeButton": {
     "message": "Schließen und ausprobieren"
+  },
+  "HoverCard_loading": {
+    "message": "Wird übersetzt…"
+  },
+  "HoverCard_downloading": {
+    "message": "Übersetzungsmodell wird heruntergeladen… $percent$%",
+    "placeholders": {
+      "percent": {
+        "content": "$1",
+        "example": "42"
+      }
+    }
+  },
+  "HoverCard_needsActivation": {
+    "message": "Klicken, um die Übersetzung einzurichten"
+  },
+  "HoverCard_unavailable": {
+    "message": "Übersetzung ist in diesem Browser nicht verfügbar"
+  },
+  "HoverCard_unsupported": {
+    "message": "Diese Sprache wird nicht unterstützt"
+  },
+  "HoverCard_notApplicable": {
+    "message": "Bereits in Ihrer Sprache"
+  },
+  "HoverCard_failed": {
+    "message": "Übersetzung nicht möglich"
+  },
+  "HoverCard_keep": {
+    "message": "Behalten"
+  },
+  "HoverCard_empty": {
+    "message": "Für diese Auswahl gibt es nichts anzuzeigen"
   }
 }

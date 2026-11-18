@@ -398,6 +398,12 @@
   "Option_commandType_getTextStyles_desc": {
     "message": "चयनित टेक्स्ट की स्टाइल जानकारी प्राप्त करें"
   },
+  "Option_commandType_hoverCard_title": {
+    "message": "होवर कार्ड"
+  },
+  "Option_commandType_hoverCard_desc": {
+    "message": "होवर करते ही अनुवाद जैसा परिणाम दिखाएँ"
+  },
   "Option_commandType_api_title": {
     "message": "API"
   },
@@ -1611,5 +1617,38 @@
   },
   "onboarding_closeButton": {
     "message": "बंद करें और आज़माएं"
+  },
+  "HoverCard_loading": {
+    "message": "अनुवाद हो रहा है…"
+  },
+  "HoverCard_downloading": {
+    "message": "अनुवाद मॉडल डाउनलोड हो रहा है… $percent$%",
+    "placeholders": {
+      "percent": {
+        "content": "$1",
+        "example": "42"
+      }
+    }
+  },
+  "HoverCard_needsActivation": {
+    "message": "अनुवाद तैयार करने के लिए क्लिक करें"
+  },
+  "HoverCard_unavailable": {
+    "message": "इस ब्राउज़र में अनुवाद उपलब्ध नहीं है"
+  },
+  "HoverCard_unsupported": {
+    "message": "यह भाषा समर्थित नहीं है"
+  },
+  "HoverCard_notApplicable": {
+    "message": "पहले से आपकी भाषा में है"
+  },
+  "HoverCard_failed": {
+    "message": "अनुवाद नहीं हो सका"
+  },
+  "HoverCard_keep": {
+    "message": "बनाए रखें"
+  },
+  "HoverCard_empty": {
+    "message": "इस चयन के लिए दिखाने को कुछ नहीं है"
   }
 }

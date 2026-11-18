@@ -127,6 +127,7 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
           side,
           align,
           hasIconColor,
+          clearHover: () => handleOnHover(false),
         }}
       >
         {isPreview && <PreviewDesc {...props} />}

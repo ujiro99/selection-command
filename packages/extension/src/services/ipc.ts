@@ -79,6 +79,7 @@ export enum ServiceWorkerCommand {
   getZoom = "getZoom",
   closeTab = "closeTab",
   resolveIconColors = "resolveIconColors",
+  openHoverCardWindow = "openHoverCardWindow",
   // Hub
   shareCommandToHub = "shareCommandToHub",
   editCommandToHub = "editCommandToHub",

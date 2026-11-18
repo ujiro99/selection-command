@@ -398,6 +398,12 @@
   "Option_commandType_getTextStyles_desc": {
     "message": "Dapatkan maklumat gaya teks yang dipilih"
   },
+  "Option_commandType_hoverCard_title": {
+    "message": "Kad Hover"
+  },
+  "Option_commandType_hoverCard_desc": {
+    "message": "Tunjukkan hasil seperti terjemahan apabila kursor dihalakan"
+  },
   "Option_commandType_api_title": {
     "message": "API"
   },
@@ -1614,5 +1620,38 @@
   },
   "onboarding_closeButton": {
     "message": "Tutup dan cuba sekarang"
+  },
+  "HoverCard_loading": {
+    "message": "Menterjemah…"
+  },
+  "HoverCard_downloading": {
+    "message": "Memuat turun model terjemahan… $percent$%",
+    "placeholders": {
+      "percent": {
+        "content": "$1",
+        "example": "42"
+      }
+    }
+  },
+  "HoverCard_needsActivation": {
+    "message": "Klik untuk menyediakan terjemahan"
+  },
+  "HoverCard_unavailable": {
+    "message": "Terjemahan tidak tersedia dalam pelayar ini"
+  },
+  "HoverCard_unsupported": {
+    "message": "Bahasa ini tidak disokong"
+  },
+  "HoverCard_notApplicable": {
+    "message": "Sudah dalam bahasa anda"
+  },
+  "HoverCard_failed": {
+    "message": "Tidak dapat menterjemah"
+  },
+  "HoverCard_keep": {
+    "message": "Kekalkan"
+  },
+  "HoverCard_empty": {
+    "message": "Tiada apa untuk dipaparkan bagi pilihan ini"
   }
 }

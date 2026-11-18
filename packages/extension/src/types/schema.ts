@@ -169,6 +169,27 @@ const textStyleSchema = z.object({
     ),
 })
 
+export const HOVER_CARD_DEFAULT_ICON_URL =
+  "https://cdn0.iconfinder.com/data/icons/phosphor-light-vol-4/256/translate-light-1024.png"
+
+const hoverCardSchema = z.object({
+  openMode: z.enum([OPEN_MODE.HOVER_CARD]),
+  id: z.string(),
+  parentFolderId: z.string().optional(),
+  ...commandSourceSchema,
+  title: commandTitleSchema.default("Translate"),
+  iconUrl: z
+    .string()
+    .url({ message: t("Option_zod_url") })
+    .max(1000, { message: t("Option_zod_string_max", ["1000"]) })
+    .default(HOVER_CARD_DEFAULT_ICON_URL),
+  hoverCardOption: z
+    .object({
+      provider: z.enum(["translate"]),
+    })
+    .default({ provider: "translate" }),
+})
+
 const PageActionStartSchema = z.object({
   type: z.literal(PAGE_ACTION_CONTROL.start),
   label: z.string(),
@@ -382,6 +403,7 @@ export const commandSchema = z.discriminatedUnion("openMode", [
   linkPopupSchema,
   copySchema,
   textStyleSchema,
+  hoverCardSchema,
 ])
 
 export type CommandSchemaType = z.infer<typeof commandSchema>
