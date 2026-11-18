@@ -112,8 +112,8 @@ export function AiResultSlide({ t, lang }: SlideProps): JSX.Element {
               <div className={s.answer}>
                 <Sparkle size={24} strokeWidth={2.2} className={s.answerIcon} />
                 <ul>
-                  {c.answer.map((line) => (
-                    <li key={line}>{line}</li>
+                  {c.answer.map((line, i) => (
+                    <li key={i}>{line}</li>
                   ))}
                 </ul>
               </div>

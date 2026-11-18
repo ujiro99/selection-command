@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useMemo, useRef, useState } from "react"
 import { toPng } from "html-to-image"
 
 import type { LanguageType } from "@/features/locale"
@@ -38,18 +38,41 @@ export function Gallery({ lang }: { lang: LanguageType }): JSX.Element {
   const refs = useRef<Record<string, HTMLDivElement | null>>({})
   const [busy, setBusy] = useState(false)
   const entries = Object.entries(SLIDES)
-  const t = getStoreText(lang)
   const fileNameOf = (key: string) => `${lang}_${SLIDES[key].fileName}`
+
+  // Rendered once per language, so toggling `busy` does not re-render the
+  // slides (and re-run every Fit measurement)
+  const slides = useMemo(
+    () =>
+      Object.fromEntries(
+        Object.entries(SLIDES).map(([key, { Slide }]) => [
+          key,
+          <Slide key={key} t={getStoreText(lang)} lang={lang} />,
+        ]),
+      ),
+    [lang],
+  )
 
   const run = async (keys: string[]) => {
     setBusy(true)
+    const failed: string[] = []
     try {
       for (const key of keys) {
         const root = refs.current[key]
-        if (root) await exportSlide(root, fileNameOf(key))
+        if (!root) continue
+        // Keep exporting the other slides when one fails
+        try {
+          await exportSlide(root, fileNameOf(key))
+        } catch (e) {
+          console.error(`Failed to export ${fileNameOf(key)}`, e)
+          failed.push(fileNameOf(key))
+        }
       }
     } finally {
       setBusy(false)
+    }
+    if (failed.length > 0) {
+      alert(`Failed to export: ${failed.join(", ")}`)
     }
   }
 
@@ -67,7 +90,7 @@ export function Gallery({ lang }: { lang: LanguageType }): JSX.Element {
         </button>
       </div>
       <ol className={css.list}>
-        {entries.map(([key, { title, Slide }]) => (
+        {entries.map(([key, { title }]) => (
           <li key={key}>
             <div className={css.caption}>
               <a href={`/${lang}/store-image/${key}`}>
@@ -89,7 +112,7 @@ export function Gallery({ lang }: { lang: LanguageType }): JSX.Element {
                   refs.current[key] = el
                 }}
               >
-                <Slide t={t} lang={lang} />
+                {slides[key]}
               </div>
             </div>
           </li>

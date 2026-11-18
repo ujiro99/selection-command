@@ -162,7 +162,8 @@ export function Lines({ lines }: { lines: readonly string[] }): JSX.Element {
   return (
     <>
       {lines.map((line, i) => (
-        <span key={line}>
+        // Static copy that never reorders; the index keeps duplicate lines unique
+        <span key={i}>
           {i > 0 && <br />}
           {line}
         </span>

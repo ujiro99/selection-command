@@ -28,14 +28,6 @@
   white-space: nowrap;
 }
 
-.pageLabel {
-  position: absolute;
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: #8a97aa;
-}
-
 .pageTitle {
   position: absolute;
   font-family: var(--jp);
@@ -52,22 +44,7 @@
   background: var(--line);
 }
 
-/* White page card used on dark backgrounds */
-.paper {
-  position: absolute;
-  border-radius: 20px;
-  background: #fff;
-}
-
 /* ---------- 3: AI result ---------- */
-
-.chat {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
-  font-family: var(--jp);
-}
 
 .promptTag {
   display: inline-flex;

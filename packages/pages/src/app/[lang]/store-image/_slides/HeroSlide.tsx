@@ -120,15 +120,13 @@ export function HeroSlide({ t, lang }: SlideProps): JSX.Element {
         </Tooltip>
         <Cursor scale={1.2} style={{ top: CURSOR_TOP, left: CURSOR_LEFT }} />
       </div>
-      {"serviceNote" in c && typeof c.serviceNote === "string" && (
-        <Sub
-          color="#3d4a5c"
-          maxWidth={1144}
-          style={{ position: "absolute", bottom: 36, left: 68, fontSize: 22 }}
-        >
-          {c.serviceNote}
-        </Sub>
-      )}
+      <Sub
+        color="#3d4a5c"
+        maxWidth={1144}
+        style={{ position: "absolute", bottom: 36, left: 68, fontSize: 22 }}
+      >
+        {c.serviceNote}
+      </Sub>
     </Canvas>
   )
 }
