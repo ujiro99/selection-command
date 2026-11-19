@@ -162,6 +162,14 @@ describe("chrome.ts side panel functions", () => {
       })
     })
 
+    it("CSP-SD-03: 異常系: setOptions が失敗したら reject する", async () => {
+      sidePanel.setOptions.mockRejectedValue(new Error("setOptions failed"))
+
+      await expect(
+        setSidePanelUrlDirectly({ url: "https://example.com", tabId: 1 }),
+      ).rejects.toThrow("setOptions failed")
+    })
+
     it("CSP-SD-02: 異常系: API 非対応時は reject する", async () => {
       setSidePanel(undefined)
 

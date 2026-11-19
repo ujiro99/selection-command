@@ -3,6 +3,7 @@ import {
   buildRelayPath,
   initSidePanelUrlMode,
   isRelayableUrl,
+  isValidTabId,
   markDirectUrlSupported,
   toSidePanelPath,
   SIDE_PANEL_RELAY_PATH,
@@ -111,6 +112,21 @@ describe("sidePanelUrl", () => {
 
       await expect(initSidePanelUrlMode()).resolves.toBeUndefined()
       warnSpy.mockRestore()
+    })
+  })
+
+  describe("isValidTabId", () => {
+    it.each([
+      [1, true],
+      [123, true],
+      [0, false],
+      [-1, false],
+      [1.5, false],
+      [NaN, false],
+      ["1", false],
+      [undefined, false],
+    ])("SPU-VT-01: %s -> %s", (tabId, expected) => {
+      expect(isValidTabId(tabId)).toBe(expected)
     })
   })
 

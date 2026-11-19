@@ -35,6 +35,12 @@ export const RELAY_PARAM = {
  * Whether the browser accepts a web URL as `path` directly.
  * Kept in memory because setOptions must be called synchronously to keep the
  * user gesture for chrome.sidePanel.open().
+ *
+ * Known limitation: initSidePanelUrlMode() loads the cached result
+ * asynchronously, so a side panel opened right after the service worker wakes
+ * up may still go through the relay page even in direct mode. It still shows
+ * the page via the fallback, at the cost of an extra load. This is accepted
+ * because awaiting the storage would break the user gesture.
  */
 let directUrlSupported = false
 
@@ -98,6 +104,14 @@ export const toSidePanelPath = (url: string, tabId: number): string => {
   if (directUrlSupported || !isRelayableUrl(url)) return url
   return buildRelayPath(url, tabId)
 }
+
+/**
+ * Check whether the value is a valid tab ID.
+ * @param {unknown} tabId - The value to check.
+ * @returns {boolean} True if the value is a positive integer.
+ */
+export const isValidTabId = (tabId: unknown): tabId is number =>
+  Number.isInteger(tabId) && (tabId as number) > 0
 
 /**
  * Check whether the URL can be shown in the side panel via the relay page.

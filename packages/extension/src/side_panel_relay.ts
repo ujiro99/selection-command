@@ -1,6 +1,10 @@
 import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
 import type { SidePanelRelayFallbackProps } from "@/services/chrome"
-import { RELAY_PARAM, isRelayableUrl } from "@/services/sidePanelUrl"
+import {
+  RELAY_PARAM,
+  isRelayableUrl,
+  isValidTabId,
+} from "@/services/sidePanelUrl"
 
 /**
  * Relay page opened in the side panel before showing a web page.
@@ -11,11 +15,20 @@ import { RELAY_PARAM, isRelayableUrl } from "@/services/sidePanelUrl"
  * - Otherwise (e.g. Chrome), navigation from an extension side panel page to a
  *   web URL is blocked silently, so it asks the service worker to set the URL
  *   as the side panel path directly.
+ *
+ * @param {string} search - The query string of the relay page.
+ * @param {(url: string) => void} navigate - Navigates this page to the URL.
+ * @returns {Promise<void>} A promise that resolves when the relay is done.
  */
-const relay = async (): Promise<void> => {
-  const params = new URLSearchParams(location.search)
+export const relay = async (
+  search: string,
+  navigate: (url: string) => void,
+): Promise<void> => {
+  const params = new URLSearchParams(search)
   const url = params.get(RELAY_PARAM.URL)
-  const tabId = Number(params.get(RELAY_PARAM.TAB_ID))
+  const tabIdParam = params.get(RELAY_PARAM.TAB_ID)
+  // Number(null) and Number("") are 0, so check the presence first.
+  const tabId = tabIdParam ? Number(tabIdParam) : NaN
 
   if (!isRelayableUrl(url)) {
     console.warn("[sidePanelRelay] Invalid URL:", url)
@@ -25,7 +38,12 @@ const relay = async (): Promise<void> => {
   // Chrome returns undefined because its side panel is not a tab.
   const currentTab = await chrome.tabs.getCurrent()
   if (currentTab != null) {
-    location.replace(url)
+    navigate(url)
+    return
+  }
+
+  if (!isValidTabId(tabId)) {
+    console.warn("[sidePanelRelay] Invalid tab ID:", tabIdParam)
     return
   }
 
@@ -35,6 +53,6 @@ const relay = async (): Promise<void> => {
   )
 }
 
-relay().catch((e) => {
+relay(location.search, (url) => location.replace(url)).catch((e) => {
   console.error("[sidePanelRelay] Failed:", e)
 })

@@ -807,6 +807,40 @@ describe("helper", () => {
       consoleWarnSpy.mockRestore()
     })
 
+    it("HSR-04: 異常系: 他の拡張機能からの要求は無視する", () => {
+      const consoleWarnSpy = vi
+        .spyOn(console, "warn")
+        .mockImplementation(() => {})
+
+      sidePanelRelayFallback(
+        { url: "https://example.com", tabId: 1 },
+        {
+          id: "other-extension-id",
+          url: chrome.runtime.getURL("src/side_panel_relay.html"),
+        },
+      )
+
+      expect(setSidePanelUrlDirectly).not.toHaveBeenCalled()
+      consoleWarnSpy.mockRestore()
+    })
+
+    it.each([[0], [-1], [1.5], [NaN]])(
+      "HSR-05: 異常系: tabId が不正 (%s) なら無視する",
+      (tabId) => {
+        const consoleWarnSpy = vi
+          .spyOn(console, "warn")
+          .mockImplementation(() => {})
+
+        sidePanelRelayFallback(
+          { url: "https://example.com", tabId },
+          relaySender("src/side_panel_relay.html"),
+        )
+
+        expect(setSidePanelUrlDirectly).not.toHaveBeenCalled()
+        consoleWarnSpy.mockRestore()
+      },
+    )
+
     it("HSR-03: 異常系: http(s) 以外の URL は無視する", () => {
       const consoleWarnSpy = vi
         .spyOn(console, "warn")

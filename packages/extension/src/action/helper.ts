@@ -23,7 +23,11 @@ import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { Ipc, TabCommand, NavigateSidePanelProps } from "@/services/ipc"
 import { ServiceWorkerData } from "@/services/serviceWorkerData"
 import { isSidePanelSupported } from "@/services/sidePanelSupport"
-import { SIDE_PANEL_RELAY_PATH, isRelayableUrl } from "@/services/sidePanelUrl"
+import {
+  SIDE_PANEL_RELAY_PATH,
+  isRelayableUrl,
+  isValidTabId,
+} from "@/services/sidePanelUrl"
 import type { CommandVariable } from "@/types"
 
 type Sender = chrome.runtime.MessageSender
@@ -321,7 +325,7 @@ export const sidePanelRelayFallback = (
     console.warn("[sidePanelRelayFallback] Invalid sender:", sender.url)
     return false
   }
-  if (!isRelayableUrl(url) || !Number.isInteger(tabId)) {
+  if (!isRelayableUrl(url) || !isValidTabId(tabId)) {
     console.warn("[sidePanelRelayFallback] Invalid param:", param)
     return false
   }
