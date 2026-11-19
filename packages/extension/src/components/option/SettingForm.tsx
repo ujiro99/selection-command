@@ -19,7 +19,11 @@ import { SelectField } from "@/components/option/field/SelectField"
 import { SwitchField } from "@/components/option/field/SwitchField"
 import { getDragOpenModes } from "@/components/option/field/openModes"
 import { PopupPlacement } from "@/components/option/editor/PopupPlacement"
-import { PopupAnimation } from "@/components/option/editor/PopupAnimation"
+import { PopupSpeed } from "@/components/option/editor/PopupSpeed"
+import {
+  getValuesOnStartupMethodChange,
+  type PopupSpeedValues,
+} from "@/services/option/popupSpeed"
 import { CommandList } from "@/components/option/editor/CommandList"
 import {
   PageRuleList,
@@ -135,6 +139,7 @@ export function SettingForm({ className }: { className?: string }) {
   const [isSaving, setIsSaving] = useState(false)
   const saveToRef = useRef<number>()
   const isLoadingRef = useRef<boolean>()
+  const prevStartupMethodRef = useRef<STARTUP_METHOD>()
   const loadingRef = useRef<HTMLDivElement>(null)
   const os = isMac() ? "mac" : "windows"
 
@@ -286,10 +291,7 @@ export function SettingForm({ className }: { className?: string }) {
     setValue("popupPlacement", popupPlacement)
   }
 
-  const handlePopupAnimationSubmit = async (data: {
-    popupDelay: number
-    popupDuration: number
-  }) => {
+  const handlePopupSpeedSubmit = async (data: PopupSpeedValues) => {
     const userStyles = getValues("userStyles")
     const updatedStyles = userStyles.filter(
       (style) =>
@@ -303,7 +305,7 @@ export function SettingForm({ className }: { className?: string }) {
     setValue("userStyles", updatedStyles)
   }
 
-  const getAnimationDefaultValues = () => {
+  const getPopupSpeedValues = (): PopupSpeedValues => {
     const userStyles = getValues("userStyles") || []
     let popupDelay = userStyles.find(
       (s) => s.name === STYLE_VARIABLE.POPUP_DELAY,
@@ -340,22 +342,18 @@ export function SettingForm({ className }: { className?: string }) {
       }
     }
 
-    let newDelay
-    if (
-      startupMethod === STARTUP_METHOD.KEYBOARD ||
-      startupMethod === STARTUP_METHOD.LEFT_CLICK_HOLD
-    ) {
-      newDelay = 0
-    } else {
-      newDelay = POPUP_DELAY_DEFAULT
-    }
-    const userStyles = getValues("userStyles").filter(
-      (s) => s.name !== STYLE_VARIABLE.POPUP_DELAY,
+    // Re-apply the menu display speed for the new startup method.
+    // Skip while loading: the stored values are already consistent with it.
+    const prevMethod = prevStartupMethodRef.current
+    prevStartupMethodRef.current = startupMethod
+    if (isLoadingRef.current || prevMethod === startupMethod) return
+    handlePopupSpeedSubmit(
+      getValuesOnStartupMethodChange(
+        getPopupSpeedValues(),
+        prevMethod,
+        startupMethod,
+      ),
     )
-    setValue("userStyles", [
-      ...userStyles,
-      { name: STYLE_VARIABLE.POPUP_DELAY, value: newDelay },
-    ])
   }, [startupMethod, setValue, getValues])
 
   // Set default value for linkCommand.startupMethod.
@@ -501,9 +499,10 @@ export function SettingForm({ className }: { className?: string }) {
 
           {startupMethod !== STARTUP_METHOD.CONTEXT_MENU && (
             <>
-              <PopupAnimation
-                onSubmit={handlePopupAnimationSubmit}
-                defaultValues={getAnimationDefaultValues()}
+              <PopupSpeed
+                onSubmit={handlePopupSpeedSubmit}
+                defaultValues={getPopupSpeedValues()}
+                startupMethod={startupMethod}
               />
 
               <SwitchField

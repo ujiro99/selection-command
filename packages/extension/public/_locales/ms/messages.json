@@ -212,8 +212,26 @@
   "Option_inheritPopupPlacement": {
     "message": "Warisi Kedudukan Paparan Menu dari tetapan global"
   },
-  "Option_popupAnimation": {
-    "message": "Animasi Paparan Menu"
+  "Option_popupSpeed": {
+    "message": "Kelajuan Paparan Menu"
+  },
+  "Option_popupSpeed_preset": {
+    "message": "Kelajuan"
+  },
+  "Option_popupSpeed_standard": {
+    "message": "Standard"
+  },
+  "Option_popupSpeed_fast": {
+    "message": "Pantas"
+  },
+  "Option_popupSpeed_instant": {
+    "message": "Serta-merta"
+  },
+  "Option_popupSpeed_previewHint": {
+    "message": "Halakan kursor pada butang untuk pratonton"
+  },
+  "Option_popupSpeed_delayIgnored": {
+    "message": "Ditetapkan pada 0 ms untuk kaedah permulaan ini."
   },
   "Option_popupAutoCloseDelay": {
     "message": "Kelewatan Penutupan Auto Popup"

@@ -212,8 +212,26 @@
   "Option_inheritPopupPlacement": {
     "message": "Menü-Anzeigeposition von globalen Einstellungen erben"
   },
-  "Option_popupAnimation": {
-    "message": "Menü-Anzeigeanimation"
+  "Option_popupSpeed": {
+    "message": "Menü-Anzeigegeschwindigkeit"
+  },
+  "Option_popupSpeed_preset": {
+    "message": "Geschwindigkeit"
+  },
+  "Option_popupSpeed_standard": {
+    "message": "Standard"
+  },
+  "Option_popupSpeed_fast": {
+    "message": "Schnell"
+  },
+  "Option_popupSpeed_instant": {
+    "message": "Sofort"
+  },
+  "Option_popupSpeed_previewHint": {
+    "message": "Für Vorschau über eine Schaltfläche fahren"
+  },
+  "Option_popupSpeed_delayIgnored": {
+    "message": "Bei dieser Startmethode fest auf 0 ms."
   },
   "Option_popupAutoCloseDelay": {
     "message": "Popup-Autoschluss-Verzögerung"

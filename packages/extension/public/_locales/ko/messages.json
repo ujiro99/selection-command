@@ -212,8 +212,26 @@
   "Option_inheritPopupPlacement": {
     "message": "전역 설정에서 메뉴 표시 위치 상속"
   },
-  "Option_popupAnimation": {
-    "message": "메뉴 표시 애니메이션"
+  "Option_popupSpeed": {
+    "message": "메뉴 표시 속도"
+  },
+  "Option_popupSpeed_preset": {
+    "message": "속도"
+  },
+  "Option_popupSpeed_standard": {
+    "message": "표준"
+  },
+  "Option_popupSpeed_fast": {
+    "message": "빠름"
+  },
+  "Option_popupSpeed_instant": {
+    "message": "즉시"
+  },
+  "Option_popupSpeed_previewHint": {
+    "message": "버튼에 마우스를 올려 미리보기"
+  },
+  "Option_popupSpeed_delayIgnored": {
+    "message": "이 실행 방법에서는 0 ms로 고정됩니다."
   },
   "Option_popupAutoCloseDelay": {
     "message": "팝업 자동 닫기 지연"

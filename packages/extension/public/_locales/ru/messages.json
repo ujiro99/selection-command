@@ -212,8 +212,26 @@
   "Option_inheritPopupPlacement": {
     "message": "Наследовать позицию меню из глобальных настроек"
   },
-  "Option_popupAnimation": {
-    "message": "Анимация Отображения Меню"
+  "Option_popupSpeed": {
+    "message": "Скорость Отображения Меню"
+  },
+  "Option_popupSpeed_preset": {
+    "message": "Скорость"
+  },
+  "Option_popupSpeed_standard": {
+    "message": "Стандартная"
+  },
+  "Option_popupSpeed_fast": {
+    "message": "Быстрая"
+  },
+  "Option_popupSpeed_instant": {
+    "message": "Мгновенная"
+  },
+  "Option_popupSpeed_previewHint": {
+    "message": "Наведите на кнопку для предпросмотра"
+  },
+  "Option_popupSpeed_delayIgnored": {
+    "message": "Для этого способа запуска фиксировано 0 мс."
   },
   "Option_popupAutoCloseDelay": {
     "message": "Задержка Автозакрытия Всплывающего Окна"

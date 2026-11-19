@@ -17,6 +17,7 @@ import {
   toCssVariables,
 } from "@/services/option/userStyles"
 import { t } from "@/services/i18n"
+import { isPopupDelayIgnored } from "@/services/option/popupSpeed"
 import { STYLE_VARIABLE, EXIT_DURATION, SIDE, ALIGN } from "@/const"
 
 import css from "./Popup.module.css"
@@ -84,7 +85,12 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
           STYLE_VARIABLE.POPUP_DELAY,
         )
         const duration = durationValue != null ? parseInt(durationValue) : 150
-        const delay = delayValue != null ? parseInt(delayValue) : 250
+        // The delay has no effect when the menu is opened explicitly.
+        const delay = isPopupDelayIgnored(userSettings?.startupMethod?.method)
+          ? 0
+          : delayValue != null
+            ? parseInt(delayValue)
+            : 250
         setInTransition(true)
         transitionTimer = setTimeout(() => {
           setInTransition(false)
@@ -97,7 +103,7 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
         clearTimeout(transitionTimer)
         clearTimeout(delayTimer)
       }
-    }, [visible, userSettings?.userStyles])
+    }, [visible, userSettings?.userStyles, userSettings?.startupMethod?.method])
 
     useEffect(() => {
       if (!visible || props.positionElm == null) {

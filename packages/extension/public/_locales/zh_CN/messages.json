@@ -212,8 +212,26 @@
   "Option_inheritPopupPlacement": {
     "message": "从全局设置获取菜单位置"
   },
-  "Option_popupAnimation": {
-    "message": "菜单显示动画"
+  "Option_popupSpeed": {
+    "message": "菜单显示速度"
+  },
+  "Option_popupSpeed_preset": {
+    "message": "速度"
+  },
+  "Option_popupSpeed_standard": {
+    "message": "标准"
+  },
+  "Option_popupSpeed_fast": {
+    "message": "快速"
+  },
+  "Option_popupSpeed_instant": {
+    "message": "即时"
+  },
+  "Option_popupSpeed_previewHint": {
+    "message": "悬停在按钮上进行预览"
+  },
+  "Option_popupSpeed_delayIgnored": {
+    "message": "此启动方式下固定为 0 ms。"
   },
   "Option_popupAutoCloseDelay": {
     "message": "弹出窗口自动关闭延迟"
