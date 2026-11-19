@@ -18,7 +18,8 @@ import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
  * extension (see side_panel_relay.ts). The relay page navigates to the target
  * URL when it can, and otherwise asks the service worker to set the URL as
  * `path` directly. Once the direct mode is detected, it is cached so later
- * calls skip the relay page.
+ * calls skip the relay page. The cache is keyed by the user agent, so it is
+ * detected again after the browser is updated, in case the behavior changes.
  */
 
 /** Path of the relay page inside the extension package. */
@@ -39,14 +40,18 @@ let directUrlSupported = false
 
 /**
  * Load the cached detection result. Call once when the service worker starts.
+ * The result is ignored when it was detected on a different browser version.
  */
 export const initSidePanelUrlMode = async (): Promise<void> => {
   try {
-    const cached = await Storage.get<boolean | undefined>(
+    // The user agent at the time the direct mode was detected.
+    const detectedUserAgent = await Storage.get<string | undefined>(
       LOCAL_STORAGE_KEY.SIDE_PANEL_DIRECT_URL,
     )
     // Do not overwrite a result detected while the storage was being read.
-    directUrlSupported = directUrlSupported || cached === true
+    directUrlSupported =
+      directUrlSupported ||
+      (!!detectedUserAgent && detectedUserAgent === navigator.userAgent)
   } catch (e) {
     console.warn("Failed to load side panel URL mode:", e)
   }
@@ -59,7 +64,10 @@ export const markDirectUrlSupported = async (): Promise<void> => {
   if (directUrlSupported) return
   directUrlSupported = true
   try {
-    await Storage.set(LOCAL_STORAGE_KEY.SIDE_PANEL_DIRECT_URL, true)
+    await Storage.set(
+      LOCAL_STORAGE_KEY.SIDE_PANEL_DIRECT_URL,
+      navigator.userAgent,
+    )
   } catch (e) {
     console.warn("Failed to save side panel URL mode:", e)
   }

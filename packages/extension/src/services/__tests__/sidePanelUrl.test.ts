@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest"
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import {
   buildRelayPath,
   initSidePanelUrlMode,
@@ -21,12 +21,19 @@ vi.mock("@/services/storage", async (importOriginal) => {
   }
 })
 
+const USER_AGENT = "Mozilla/5.0 (Test Browser) Chrome/120.0.0.0"
+
 describe("sidePanelUrl", () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    vi.stubGlobal("navigator", { userAgent: USER_AGENT })
     __test.reset()
     vi.mocked(Storage.get).mockResolvedValue(undefined)
     vi.mocked(Storage.set).mockResolvedValue(true)
+  })
+
+  afterEach(() => {
+    vi.unstubAllGlobals()
   })
 
   describe("buildRelayPath", () => {
@@ -56,7 +63,7 @@ describe("sidePanelUrl", () => {
       )
       expect(Storage.set).toHaveBeenCalledWith(
         LOCAL_STORAGE_KEY.SIDE_PANEL_DIRECT_URL,
-        true,
+        USER_AGENT,
       )
     })
 
@@ -68,8 +75,8 @@ describe("sidePanelUrl", () => {
   })
 
   describe("initSidePanelUrlMode", () => {
-    it("SPU-IN-01: 正常系: 保存済みの検出結果を読み込む", async () => {
-      vi.mocked(Storage.get).mockResolvedValue(true)
+    it("SPU-IN-01: 正常系: 同じブラウザバージョンで保存された検出結果を読み込む", async () => {
+      vi.mocked(Storage.get).mockResolvedValue(USER_AGENT)
 
       await initSidePanelUrlMode()
 
@@ -79,6 +86,18 @@ describe("sidePanelUrl", () => {
     })
 
     it("SPU-IN-02: 正常系: 未保存なら中継ページを使う", async () => {
+      await initSidePanelUrlMode()
+
+      expect(toSidePanelPath("https://example.com", 1)).toBe(
+        buildRelayPath("https://example.com", 1),
+      )
+    })
+
+    it("SPU-IN-04: 正常系: ブラウザバージョンが変わっていれば検出し直す（中継ページを使う）", async () => {
+      vi.mocked(Storage.get).mockResolvedValue(
+        "Mozilla/5.0 (Old Browser) Chrome/100.0.0.0",
+      )
+
       await initSidePanelUrlMode()
 
       expect(toSidePanelPath("https://example.com", 1)).toBe(

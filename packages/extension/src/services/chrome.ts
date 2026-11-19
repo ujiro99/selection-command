@@ -759,12 +759,16 @@ export const setSidePanelUrlDirectly = async (
     throw new Error("Side panel API is not supported in this browser")
   }
 
-  await markDirectUrlSupported()
-  await chrome.sidePanel.setOptions({
-    tabId,
-    path: url,
-    enabled: true,
-  })
+  // Persist the detection result in parallel so that showing the page is not
+  // delayed by the storage write. markDirectUrlSupported never rejects.
+  await Promise.all([
+    markDirectUrlSupported(),
+    chrome.sidePanel.setOptions({
+      tabId,
+      path: url,
+      enabled: true,
+    }),
+  ])
 }
 
 /** Test-only exports. Do not use in production code. */
