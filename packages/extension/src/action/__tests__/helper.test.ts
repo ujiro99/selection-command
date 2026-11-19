@@ -824,6 +824,27 @@ describe("helper", () => {
       consoleWarnSpy.mockRestore()
     })
 
+    it.each([
+      ["src/side_panel_relay.html.evil"],
+      ["src/side_panel_relay.htmlx?url=x"],
+      ["src/other_page.html#src/side_panel_relay.html"],
+    ])(
+      "HSR-06: 異常系: 中継ページと似たパス (%s) からの要求は無視する",
+      (path) => {
+        const consoleWarnSpy = vi
+          .spyOn(console, "warn")
+          .mockImplementation(() => {})
+
+        sidePanelRelayFallback(
+          { url: "https://example.com", tabId: 1 },
+          relaySender(path),
+        )
+
+        expect(setSidePanelUrlDirectly).not.toHaveBeenCalled()
+        consoleWarnSpy.mockRestore()
+      },
+    )
+
     it.each([[0], [-1], [1.5], [NaN]])(
       "HSR-05: 異常系: tabId が不正 (%s) なら無視する",
       (tabId) => {

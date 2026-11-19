@@ -20,6 +20,12 @@ import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
  * `path` directly. Once the direct mode is detected, it is cached so later
  * calls skip the relay page. The cache is keyed by the user agent, so it is
  * detected again after the browser is updated, in case the behavior changes.
+ * Note that Chrome's user agent only contains the major version, so it is
+ * detected again only on major updates.
+ *
+ * Assumption: a browser whose side panel is not a tab is assumed to accept a
+ * web URL as `path` like Chrome. This is verified only on Chrome and Vivaldi;
+ * other Chromium-based browsers (e.g. Edge, Brave, Opera) are not verified.
  */
 
 /** Path of the relay page inside the extension package. */

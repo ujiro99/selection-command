@@ -320,8 +320,10 @@ export const sidePanelRelayFallback = (
   const { url, tabId } = param
 
   // Accept requests only from the relay page of this extension.
+  // Compare without the query and hash so that other pages are not accepted.
   const relayUrl = chrome.runtime.getURL(SIDE_PANEL_RELAY_PATH)
-  if (sender.id !== chrome.runtime.id || !sender.url?.startsWith(relayUrl)) {
+  const senderPage = sender.url?.split(/[?#]/)[0]
+  if (sender.id !== chrome.runtime.id || senderPage !== relayUrl) {
     console.warn("[sidePanelRelayFallback] Invalid sender:", sender.url)
     return false
   }

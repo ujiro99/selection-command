@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeAll, beforeEach } from "vitest"
 import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
+import { relay } from "@/services/sidePanelRelay"
 
 vi.mock("@/services/ipc", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/services/ipc")>()
@@ -12,17 +13,12 @@ vi.mock("@/services/ipc", async (importOriginal) => {
 const buildSearch = (params: Record<string, string>) =>
   `?${new URLSearchParams(params).toString()}`
 
-describe("side_panel_relay", () => {
-  let relay: typeof import("../side_panel_relay").relay
+describe("sidePanelRelay", () => {
   const getCurrent = vi.fn()
   const navigate = vi.fn()
 
-  beforeAll(async () => {
-    // Importing the entry runs relay() once with the empty test location.
+  beforeAll(() => {
     ;(chrome.tabs as unknown as { getCurrent: unknown }).getCurrent = getCurrent
-    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {})
-    relay = (await import("../side_panel_relay")).relay
-    warnSpy.mockRestore()
   })
 
   beforeEach(() => {

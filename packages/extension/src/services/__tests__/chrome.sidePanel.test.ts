@@ -168,6 +168,15 @@ describe("chrome.ts side panel functions", () => {
       await expect(
         setSidePanelUrlDirectly({ url: "https://example.com", tabId: 1 }),
       ).rejects.toThrow("setOptions failed")
+
+      // The direct mode must not be remembered when setOptions fails.
+      sidePanel.setOptions.mockResolvedValue(undefined)
+      await openSidePanel({ url: "https://example.com/next", tabId: 2 })
+      expect(sidePanel.setOptions).toHaveBeenLastCalledWith({
+        tabId: 2,
+        path: buildRelayPath("https://example.com/next", 2),
+        enabled: true,
+      })
     })
 
     it("CSP-SD-02: 異常系: API 非対応時は reject する", async () => {
