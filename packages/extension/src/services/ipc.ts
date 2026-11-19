@@ -65,6 +65,7 @@ export enum ServiceWorkerCommand {
   closeSidePanel = "closeSidePanel",
   navigateSidePanel = "navigateSidePanel",
   sidePanelRelayFallback = "sidePanelRelayFallback",
+  registerSidePanelHostTab = "registerSidePanelHostTab",
   openOption = "openOption",
   openShortcuts = "openShortcuts",
   addPageRule = "addPageRule",

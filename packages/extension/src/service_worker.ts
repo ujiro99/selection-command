@@ -118,12 +118,15 @@ const onConnect = async function (port: chrome.runtime.Port) {
   if (port.name !== CONNECTION_APP) return
   port.onDisconnect.addListener(() => onDisconnect(port))
   const tabId = port.sender?.tab?.id
-  if (tabId) {
+  // Side panel pages have no tab.id (port.sender.origin is set instead),
+  // except for side panels hosted as tabs (e.g. Vivaldi), which are registered
+  // by the relay page. Such tabs are not added to connectedTabs so that their
+  // content scripts reconnect after navigation like other side panels.
+  if (tabId && !(await PageActionServiceWorker.isSidePanelHostTab(tabId))) {
     ServiceWorkerData.update((data) => ({
       connectedTabs: [...data.connectedTabs, tabId],
     }))
   } else {
-    // Side panel pages have no tab.id (port.sender.origin is set instead).
     await PageActionServiceWorker.handleSidePanelConnect(port)
   }
 }
@@ -199,6 +202,8 @@ const commandFuncs = {
   [ServiceWorkerCommand.navigateSidePanel]: ActionHelper.navigateSidePanel,
   [ServiceWorkerCommand.sidePanelRelayFallback]:
     ActionHelper.sidePanelRelayFallback,
+  [ServiceWorkerCommand.registerSidePanelHostTab]:
+    ActionHelper.registerSidePanelHostTab,
   [ServiceWorkerCommand.execApi]: ActionHelper.execApi,
 
   [ServiceWorkerCommand.openOption]: (): boolean => {
@@ -599,6 +604,7 @@ chrome.tabs.onZoomChange.addListener(({ tabId, newZoomFactor }) => {
 chrome.tabs.onRemoved.addListener((tabId) => {
   ActionHelper.sidePanelClosed(tabId)
   updateActiveTabId()
+  PageActionServiceWorker.unregisterSidePanelHostTab(tabId)
 })
 getSidePanelEvent("onClosed")?.addListener(({ tabId }) =>
   ActionHelper.sidePanelClosed(tabId),

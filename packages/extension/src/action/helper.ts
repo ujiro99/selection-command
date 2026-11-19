@@ -17,7 +17,10 @@ import {
   OpenTabsProps,
   OpenSidePanelProps,
 } from "@/services/chrome"
-import { registerSidePanelTab } from "@/services/pageAction/serviceWorker-sidePanel"
+import {
+  registerSidePanelTab,
+  registerSidePanelHostTab as _registerSidePanelHostTab,
+} from "@/services/pageAction/serviceWorker-sidePanel"
 import { incrementCommandExecutionCount } from "@/services/commandMetrics"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { Ipc, TabCommand, NavigateSidePanelProps } from "@/services/ipc"
@@ -310,6 +313,45 @@ export const navigateSidePanel = (
 }
 
 /**
+ * Check whether the message was sent from the side panel relay page of this
+ * extension. The URL is compared without the query and hash so that other
+ * pages are not accepted.
+ */
+const isRelayPageSender = (sender: Sender): boolean => {
+  const relayUrl = chrome.runtime.getURL(SIDE_PANEL_RELAY_PATH)
+  const senderPage = sender.url?.split(/[?#]/)[0]
+  return sender.id === chrome.runtime.id && senderPage === relayUrl
+}
+
+/**
+ * Register the tab hosting the side panel, sent from the relay page when the
+ * side panel is hosted as a tab (e.g. Vivaldi). Content scripts in such a side
+ * panel connect with sender.tab like normal tabs, so the service worker needs
+ * this to treat them as side panels. Responds after the registration so the
+ * relay page can navigate safely.
+ */
+export const registerSidePanelHostTab = (
+  _: unknown,
+  sender: Sender,
+  response: (res: boolean) => void,
+): boolean => {
+  const tabId = sender.tab?.id
+  if (!isRelayPageSender(sender) || !isValidTabId(tabId)) {
+    console.warn("[registerSidePanelHostTab] Invalid sender:", sender.url)
+    response(false)
+    return false
+  }
+
+  _registerSidePanelHostTab(tabId)
+    .then(() => response(true))
+    .catch((e) => {
+      console.error("[registerSidePanelHostTab] Failed:", e)
+      response(false)
+    })
+  return true
+}
+
+/**
  * Handle a request from the side panel relay page that could not navigate to
  * the target URL by itself. See services/sidePanelUrl.ts for details.
  */
@@ -320,10 +362,7 @@ export const sidePanelRelayFallback = (
   const { url, tabId } = param
 
   // Accept requests only from the relay page of this extension.
-  // Compare without the query and hash so that other pages are not accepted.
-  const relayUrl = chrome.runtime.getURL(SIDE_PANEL_RELAY_PATH)
-  const senderPage = sender.url?.split(/[?#]/)[0]
-  if (sender.id !== chrome.runtime.id || senderPage !== relayUrl) {
+  if (!isRelayPageSender(sender)) {
     console.warn("[sidePanelRelayFallback] Invalid sender:", sender.url)
     return false
   }

@@ -34,8 +34,29 @@ describe("sidePanelRelay", () => {
       navigate,
     )
 
+    expect(Ipc.send).toHaveBeenCalledTimes(1)
+    expect(Ipc.send).toHaveBeenCalledWith(
+      ServiceWorkerCommand.registerSidePanelHostTab,
+    )
     expect(navigate).toHaveBeenCalledWith("https://example.com/?q=1")
-    expect(Ipc.send).not.toHaveBeenCalled()
+    // The registration must complete before navigating.
+    expect(vi.mocked(Ipc.send).mock.invocationCallOrder[0]).toBeLessThan(
+      navigate.mock.invocationCallOrder[0],
+    )
+  })
+
+  it("SPR-07: 異常系: タブの登録に失敗しても URL へ遷移する", async () => {
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
+    getCurrent.mockResolvedValue({ id: 5 })
+    vi.mocked(Ipc.send).mockRejectedValue(new Error("failed"))
+
+    await relay(
+      buildSearch({ url: "https://example.com", tabId: "1" }),
+      navigate,
+    )
+
+    expect(navigate).toHaveBeenCalledWith("https://example.com")
+    errorSpy.mockRestore()
   })
 
   it("SPR-02: 正常系: サイドパネルがタブでなければ Service Worker にフォールバックを要求する", async () => {

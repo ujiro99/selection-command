@@ -12,7 +12,9 @@ import {
  * is side_panel_relay.ts.
  *
  * - When the side panel is hosted as a tab (e.g. Vivaldi), navigating this
- *   page to the web URL is allowed, so it navigates by itself.
+ *   page to the web URL is allowed, so it navigates by itself. Before that, it
+ *   registers the tab to the service worker so that the content script of the
+ *   web page is treated as a side panel (e.g. to run page actions).
  * - Otherwise (e.g. Chrome), navigation from an extension side panel page to a
  *   web URL is blocked silently, so it asks the service worker to set the URL
  *   as the side panel path directly.
@@ -39,6 +41,12 @@ export const relay = async (
   // Chrome returns undefined because its side panel is not a tab.
   const currentTab = await chrome.tabs.getCurrent()
   if (currentTab != null) {
+    try {
+      await Ipc.send(ServiceWorkerCommand.registerSidePanelHostTab)
+    } catch (e) {
+      // Still show the page even if the registration fails.
+      console.error("[sidePanelRelay] Failed to register the host tab:", e)
+    }
     navigate(url)
     return
   }

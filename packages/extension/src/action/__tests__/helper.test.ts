@@ -5,6 +5,7 @@ import {
   closeSidePanel,
   sidePanelClosed,
   sidePanelRelayFallback,
+  registerSidePanelHostTab,
 } from "../helper"
 import { ServiceWorkerData } from "@/services/serviceWorkerData"
 import {
@@ -15,6 +16,7 @@ import {
 } from "@/services/chrome"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { incrementCommandExecutionCount } from "@/services/commandMetrics"
+import { registerSidePanelHostTab as _registerSidePanelHostTab } from "@/services/pageAction/serviceWorker-sidePanel"
 import { isSidePanelSupported } from "@/services/sidePanelSupport"
 
 // Mock dependencies
@@ -24,6 +26,11 @@ vi.mock("@/services/serviceWorkerData", () => ({
     update: vi.fn(),
     ready: vi.fn(),
   },
+}))
+
+vi.mock("@/services/pageAction/serviceWorker-sidePanel", () => ({
+  registerSidePanelTab: vi.fn(),
+  registerSidePanelHostTab: vi.fn(),
 }))
 
 vi.mock("@/services/chrome", () => ({
@@ -873,6 +880,60 @@ describe("helper", () => {
       )
 
       expect(setSidePanelUrlDirectly).not.toHaveBeenCalled()
+      consoleWarnSpy.mockRestore()
+    })
+  })
+
+  describe("registerSidePanelHostTab", () => {
+    const relayUrl = (path: string) =>
+      `chrome-extension://${chrome.runtime.id}/${path}`
+
+    beforeEach(() => {
+      vi.mocked(_registerSidePanelHostTab).mockResolvedValue(undefined)
+      vi.mocked(chrome.runtime.getURL).mockImplementation(relayUrl)
+    })
+
+    it("HSH-01: 正常系: 中継ページのタブを登録してから応答する", async () => {
+      const response = vi.fn()
+
+      const result = registerSidePanelHostTab(
+        undefined,
+        {
+          id: chrome.runtime.id,
+          url: relayUrl("src/side_panel_relay.html?url=x&tabId=1"),
+          tab: { id: 77 } as chrome.tabs.Tab,
+        },
+        response,
+      )
+
+      expect(result).toBe(true)
+      expect(_registerSidePanelHostTab).toHaveBeenCalledWith(77)
+      await vi.waitFor(() => expect(response).toHaveBeenCalledWith(true))
+    })
+
+    it.each([
+      [
+        "他のページ",
+        {
+          id: chrome.runtime.id,
+          url: "https://evil.example.com/",
+          tab: { id: 77 } as chrome.tabs.Tab,
+        },
+      ],
+      [
+        "タブが無い",
+        { id: chrome.runtime.id, url: relayUrl("src/side_panel_relay.html") },
+      ],
+    ])("HSH-02: 異常系: 送信元が不正 (%s) なら登録しない", (_label, sender) => {
+      const consoleWarnSpy = vi
+        .spyOn(console, "warn")
+        .mockImplementation(() => {})
+      const response = vi.fn()
+
+      registerSidePanelHostTab(undefined, sender, response)
+
+      expect(_registerSidePanelHostTab).not.toHaveBeenCalled()
+      expect(response).toHaveBeenCalledWith(false)
       consoleWarnSpy.mockRestore()
     })
   })
