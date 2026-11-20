@@ -36,6 +36,76 @@ const ICON_LIBRARY_PATTERNS = [
 /** Matches a bare IPv6 literal, which always contains at least two colons. */
 const BARE_IPV6 = /^[0-9a-f]*(?::[0-9a-f]*){2,}$/i
 
+/** Private, loopback, link-local and other non-public IPv4 ranges. */
+const PRIVATE_IPV4_RANGES: Array<[number, number]> = [
+  [0x00000000, 8], // 0.0.0.0/8
+  [0x0a000000, 8], // 10.0.0.0/8
+  [0x64400000, 10], // 100.64.0.0/10 (carrier-grade NAT)
+  [0x7f000000, 8], // 127.0.0.0/8
+  [0xa9fe0000, 16], // 169.254.0.0/16
+  [0xac100000, 12], // 172.16.0.0/12
+  [0xc0a80000, 16], // 192.168.0.0/16
+]
+
+/** Matches an IPv4-mapped IPv6 address as normalized by the URL parser. */
+const IPV4_MAPPED_IPV6 = /^::ffff:([0-9a-f]{1,4}):([0-9a-f]{1,4})$/
+
+const isPrivateIpv4Number = (ip: number): boolean =>
+  PRIVATE_IPV4_RANGES.some(
+    ([base, bits]) => ip >>> (32 - bits) === base >>> (32 - bits),
+  )
+
+const parseIpv4 = (host: string): number | null => {
+  const parts = host.split(".")
+  if (parts.length !== 4) return null
+  const octets = parts.map(Number)
+  if (octets.some((o) => !Number.isInteger(o) || o < 0 || o > 255)) return null
+  return (
+    ((octets[0] << 24) | (octets[1] << 16) | (octets[2] << 8) | octets[3]) >>> 0
+  )
+}
+
+const isPrivateIpv6 = (host: string): boolean => {
+  if (host === "::" || host === "::1") return true
+  const mapped = host.match(IPV4_MAPPED_IPV6)
+  if (mapped) {
+    const ip = ((parseInt(mapped[1], 16) << 16) | parseInt(mapped[2], 16)) >>> 0
+    return isPrivateIpv4Number(ip)
+  }
+  const firstHextet = parseInt(host.split(":")[0] || "0", 16)
+  // fc00::/7 (unique local) and fe80::/10 (link-local).
+  return (firstHextet & 0xfe00) === 0xfc00 || (firstHextet & 0xffc0) === 0xfe80
+}
+
+/**
+ * Checks whether the URL obviously points at a private host that must not be
+ * disclosed to external services: private/loopback IP addresses, localhost,
+ * single-label names and names under a non-public TLD (e.g. .local, .internal).
+ * Internal hosts under a public domain cannot be detected from the URL alone.
+ */
+export function isPrivateHost(url: string): boolean {
+  let hostname: string
+  try {
+    hostname = new URL(url).hostname.toLowerCase()
+  } catch {
+    return false // Not an absolute URL; nothing to judge.
+  }
+  if (!hostname) return false
+
+  if (hostname.startsWith("[") && hostname.endsWith("]")) {
+    return isPrivateIpv6(hostname.slice(1, -1))
+  }
+  const ipv4 = parseIpv4(hostname)
+  if (ipv4 != null) return isPrivateIpv4Number(ipv4)
+
+  const parsed = parse(hostname)
+  // home.arpa is a public suffix reserved for residential networks (RFC 8375).
+  if (parsed.publicSuffix === "home.arpa") return true
+  // Hosts outside the ICANN TLDs (single labels, .local, .internal, ...)
+  // only resolve on private networks.
+  return parsed.isIcann !== true
+}
+
 /**
  * Builds a Google favicon service URL for the site of the given URL.
  * Only the origin is passed so that search placeholders such as `%s` and

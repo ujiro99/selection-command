@@ -151,6 +151,27 @@ describe("fetchIconUrl", () => {
     expect(chrome.windows.remove).not.toHaveBeenCalled()
   })
 
+  it("FI-11: 異常系: プライベートなホストは Google のサービスにフォールバックせずエラーにする", async () => {
+    const p = fetchIconUrl("https://wiki.corp.local/search?q=%s")
+    const assertion = expect(p).rejects.toThrow()
+    await vi.advanceTimersByTimeAsync(5000)
+
+    await assertion
+    expect(chrome.windows.remove).toHaveBeenCalledWith(WINDOW_ID)
+  })
+
+  it("FI-12: 正常系: プライベートなホストでも favIconUrl が届けばそれを返す", async () => {
+    const p = fetchIconUrl("http://192.168.1.5/search?q=%s")
+    await vi.advanceTimersByTimeAsync(0)
+
+    emit(
+      { status: "complete", favIconUrl: "http://192.168.1.5/favicon.ico" },
+      tab({ status: "complete", favIconUrl: "http://192.168.1.5/favicon.ico" }),
+    )
+
+    await expect(p).resolves.toBe("http://192.168.1.5/favicon.ico")
+  })
+
   it("FI-10: 正常系: リダイレクト前のページの favIconUrl は使わずに遷移先の favIconUrl を待つ", async () => {
     const p = fetchIconUrl(SEARCH_URL)
     await vi.advanceTimersByTimeAsync(0)

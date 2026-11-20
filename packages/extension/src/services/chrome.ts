@@ -1,6 +1,6 @@
 import { sleep, isOverBytes } from "@/lib/utils"
 import { toUrl, needsClipboard } from "@/lib/url"
-import { getGoogleFaviconUrl } from "@/lib/favicon"
+import { getGoogleFaviconUrl, isPrivateHost } from "@/lib/favicon"
 import type { ScreenSize } from "@/services/dom"
 import type { ShowToastParam, UrlParam, WindowLayer } from "@/types"
 import {
@@ -62,10 +62,11 @@ const FETCH_ICON_FAVICON_WAIT_MS = 3000
  * Get favicon url from url.
  * Opens the url in a minimized window and reads the favicon reported by the
  * browser. Falls back to the Google favicon service when the browser does not
- * report a favicon in time.
+ * report a favicon in time, unless the url points at a private host.
  *
  * @param {string} url
  * @returns {Promise<string>} favicon url
+ * @throws When no favicon is reported for a private host.
  */
 export const fetchIconUrl = async (url: string): Promise<string> => {
   let tabId: number | undefined
@@ -138,6 +139,10 @@ export const fetchIconUrl = async (url: string): Promise<string> => {
 
   if (latestFavIconUrl) {
     return failsafe(url, latestFavIconUrl)
+  }
+  if (isPrivateHost(url)) {
+    // Do not disclose private host names to the external favicon service.
+    throw new Error(`favicon not reported: ${url}`)
   }
   console.warn("favicon not reported, use fallback", url)
   return getGoogleFaviconUrl(url)

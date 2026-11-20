@@ -3,6 +3,7 @@ import {
   shouldPreserveIconColor,
   getRegistrableDomain,
   getGoogleFaviconUrl,
+  isPrivateHost,
 } from "../favicon"
 import { OPEN_MODE } from "@shared/constants/open-mode"
 import type { Command } from "@/types"
@@ -442,5 +443,45 @@ describe("getGoogleFaviconUrl", () => {
     expect(getGoogleFaviconUrl("data:text/plain,a")).toBe(
       "https://www.google.com/s2/favicons?sz=64&domain_url=data%3Atext%2Fplain%2Ca",
     )
+  })
+})
+
+describe("isPrivateHost", () => {
+  it.each([
+    ["http://localhost:3000/?q=%s"],
+    ["http://intranet/?q=%s"],
+    ["https://wiki.corp.local/search?q=%s"],
+    ["https://foo.internal/?q=%s"],
+    ["https://nas.home.arpa/?q=%s"],
+    ["http://10.1.2.3/?q=%s"],
+    ["http://172.16.0.1/"],
+    ["http://172.31.255.255/"],
+    ["http://192.168.1.5/"],
+    ["http://127.0.0.1/"],
+    ["http://169.254.1.1/"],
+    ["http://100.64.0.1/"],
+    ["http://[::1]/"],
+    ["http://[fd00::1]/"],
+    ["http://[fe80::1]/"],
+    ["http://[::ffff:192.168.1.5]/"],
+  ])("PH-01: 正常系: プライベートなホスト %s は true", (url) => {
+    expect(isPrivateHost(url)).toBe(true)
+  })
+
+  it.each([
+    ["https://www.google.com/search?q=%s"],
+    ["https://example.co.jp/?q=%s"],
+    ["https://user.github.io/?q=%s"],
+    ["http://172.32.0.1/"],
+    ["http://8.8.8.8/"],
+    ["http://[2001:4860::8888]/"],
+    ["http://[::ffff:8.8.8.8]/"],
+  ])("PH-02: 正常系: 公開ホスト %s は false", (url) => {
+    expect(isPrivateHost(url)).toBe(false)
+  })
+
+  it("PH-03: 異常系: 絶対URLでなければ false", () => {
+    expect(isPrivateHost("example.com/?q=%s")).toBe(false)
+    expect(isPrivateHost("")).toBe(false)
   })
 })
