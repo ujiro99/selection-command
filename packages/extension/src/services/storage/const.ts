@@ -20,6 +20,7 @@ export enum LOCAL_STORAGE_KEY {
   HUB_SHARED_AT = "hubSharedAt",
   HUB_REGISTERED = "hubRegistered",
   EXPERIMENTS = "experiments",
+  SIDE_PANEL_DIRECT_URL = "sidePanelDirectUrl",
 }
 
 export enum SESSION_STORAGE_KEY {
@@ -32,6 +33,7 @@ export enum SESSION_STORAGE_KEY {
   PA_CONTEXT = "pageActionContext",
   PA_RECORDER_OPTION = "pageActionRecorderOption",
   PA_SIDE_PANEL_PENDING = "pageActionSidePanelPending",
+  SIDE_PANEL_HOST_TABS = "sidePanelHostTabs",
   DEV_TOOLS_ENABLED = "devToolsEnabled",
 }
 

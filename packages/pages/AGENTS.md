@@ -18,7 +18,7 @@ This file provides guidance to AI Agent when working with code in this repositor
 （Next.js 15 フル機能アプリ）でしたが、そのアプリケーションは新しいリポジトリ
 （https://github.com/ujiro99/selection-command-hub、selection-command.com へデプロイ）に移行しました。
 
-このパッケージに残っているのは、以下の3つの責務のみです。
+このパッケージに残っているのは、以下の4つの責務のみです。
 
 1. **ai-services.json の静的ホスティング**
    - `public/data/ai-services.json` を GitHub Pages で静的配信する
@@ -59,6 +59,38 @@ This file provides guidance to AI Agent when working with code in this repositor
    - このページ配下のコンポーネント（Header/Footer/LocaleSelector など）は、App Router のレイアウト要件を満たすために
      最小限残っているだけで、機能的な意味は薄い
 
+4. **Chrome Web Store 用プロモーション画像の作成**
+   - `src/app/[lang]/store-image/[slide]/page.tsx`（`/ja/store-image/1` 〜 `/ja/store-image/5`）は、
+     Chrome Web Store に登録する画像（1280x800）を HTML/CSS で描画するためのページ。
+     `[lang]` は `src/features/locale` の14言語
+   - `/{lang}/store-image` は全スライドを 50%（ストアのプレビューと同じ 640x400）で並べる一覧ページ。
+     各スライドの「Export」ボタン、または「Export all」で PNG を書き出せる（html-to-image を使用。
+     開発インジケーターは写り込まない）。ファイル名は `ja_01_hero.png` のように言語コードが先頭に付く。
+     右下の LocaleSelector で言語を切り替えられる
+   - スライドの中身は `src/app/[lang]/store-image/_slides/`、共通部品は `_components/parts.tsx`。
+     スライドの追加・並べ替え・書き出しファイル名は `_slides/index.ts` の `SLIDES` で管理する
+   - コピーは各言語の辞書ファイル（`src/features/locale/*.ts`）の `storeImage` に書く。
+     スライドは `t`（その言語の `storeImage`）を props で受け取る
+   - コピー（バッジ・見出し・サブコピー）は `CopyBlock` に入れて flex で縦に積み、
+     絶対座標で 1 行ずつ置かない。訳文の行数が変わっても余白が保たれる。
+     コピーの下に UI を置くスライドは `CopyBlock` をフローに置き（`position: "relative"`）、
+     UI は `Scene` の中にコピー下端からの座標で置く
+   - `Headline` は `maxWidth` を超えると `Fit` が `zoom` で縮小する（レイアウト上の高さも縮む）。
+     `Sub` は縮小せず `maxWidth` で折り返す（日本語は文節単位、`text-wrap: balance`）ので、
+     文字サイズは全言語で揃う
+   - 言語ごとのフォントは `store.module.css` の `.canvas:lang(...)` で指定する
+     （ヒラギノは中国語・韓国語・ヒンディー語の字形が合わず、ロシア語は全角幅になるため）
+   - 設定画面のスクリーンショットは、日本語は日本語 UI、それ以外の言語は英語 UI を使う
+   - 製品 UI は作り直さず、実際のスクリーンショット（`public/store-image/screenshots/`）を
+     切り抜き・拡大して使う。UI が変わったらスクリーンショットを差し替える
+   - デザイン方針は `.claude/skills/chrome-store-screenshots` の Design rules に従う
+     （隣り合うスライドでレイアウト・背景色を変える、1枚1メッセージ、機能一覧を載せない 等）
+   - dev サーバー起動中に `yarn build` すると `.next` が上書きされて dev サーバーが 500 を返すため、
+     dev サーバーを止めてからビルドすること
+   - 日本語フォントはシステムフォント（ヒラギノ角ゴ等）に依存するため、macOS での書き出しを前提とする
+   - `noindex` を指定している。Header/Footer は `src/app/[lang]/(site)/layout.tsx`（route group）にあり、
+     store-image には適用されない
+
 ## 開発コマンド
 
 - `yarn dev` - Next.js開発サーバーの開始（Turbopack使用）
@@ -71,8 +103,11 @@ This file provides guidance to AI Agent when working with code in this repositor
 
 - `public/data/ai-services.json` - Extension が参照するデータファイル
 - `public/data/experiments.json` - Extension のABテスト配分設定
-- `src/app/[lang]/test/` - e2e テストページ本体（`page.tsx`, `QuillWrapper.tsx`）
-- `src/app/[lang]/layout.tsx`, `src/app/layout.tsx` - App Router の必須レイアウト（Header/Footer/LanguageProvider を保持）
+- `src/app/[lang]/(site)/test/` - e2e テストページ本体（`page.tsx`, `QuillWrapper.tsx`）。URL は `/{lang}/test` のまま
+- `src/app/[lang]/(site)/layout.tsx` - テストページ用の Header/Footer
+- `src/app/[lang]/store-image/` - Chrome Web Store 用画像ページ（`/{lang}/store-image/1`〜`5` と一覧）
+- `src/components/Logo.tsx` - ロゴ（selection-command-hub から移植。store-image で使用）
+- `src/app/[lang]/layout.tsx`, `src/app/layout.tsx` - App Router の必須レイアウト（言語の静的パラメータ、LanguageProvider を保持）
 - `src/features/locale/` - 14言語分の辞書ファイル（layout.tsx が
   無条件にバレルインポートするため削除できない）
 - `src/components/MovedNotice.tsx` - ルートページと 404 ページで共有する移転案内
