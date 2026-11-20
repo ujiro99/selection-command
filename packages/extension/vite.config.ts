@@ -185,6 +185,7 @@ export default defineConfig(({ mode }) => {
         input: {
           offscreenClipboard: "src/offscreen_clipboard.html",
           onboarding: "src/onboarding_page.html",
+          sidePanelRelay: "src/side_panel_relay.html",
         },
       },
     },

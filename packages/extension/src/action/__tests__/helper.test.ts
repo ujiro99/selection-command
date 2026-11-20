@@ -4,15 +4,19 @@ import {
   openSidePanel,
   closeSidePanel,
   sidePanelClosed,
+  sidePanelRelayFallback,
+  registerSidePanelHostTab,
 } from "../helper"
 import { ServiceWorkerData } from "@/services/serviceWorkerData"
 import {
   openSidePanel as _openSidePanel,
   closeSidePanel as _closeSidePanel,
   updateSidePanelUrl,
+  setSidePanelUrlDirectly,
 } from "@/services/chrome"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { incrementCommandExecutionCount } from "@/services/commandMetrics"
+import { registerSidePanelHostTab as _registerSidePanelHostTab } from "@/services/pageAction/serviceWorker-sidePanel"
 import { isSidePanelSupported } from "@/services/sidePanelSupport"
 
 // Mock dependencies
@@ -24,10 +28,16 @@ vi.mock("@/services/serviceWorkerData", () => ({
   },
 }))
 
+vi.mock("@/services/pageAction/serviceWorker-sidePanel", () => ({
+  registerSidePanelTab: vi.fn(),
+  registerSidePanelHostTab: vi.fn(),
+}))
+
 vi.mock("@/services/chrome", () => ({
   openSidePanel: vi.fn(),
   closeSidePanel: vi.fn(),
   updateSidePanelUrl: vi.fn(),
+  setSidePanelUrlDirectly: vi.fn(),
 }))
 
 vi.mock("@/services/settings/enhancedSettings", () => ({
@@ -759,6 +769,171 @@ describe("helper", () => {
         expect.any(Error),
       )
 
+      consoleWarnSpy.mockRestore()
+    })
+  })
+
+  describe("sidePanelRelayFallback", () => {
+    const relaySender = (url: string) =>
+      ({
+        id: chrome.runtime.id,
+        url: chrome.runtime.getURL(url),
+      }) as chrome.runtime.MessageSender
+
+    beforeEach(() => {
+      vi.mocked(setSidePanelUrlDirectly).mockResolvedValue(undefined)
+      vi.mocked(chrome.runtime.getURL).mockImplementation(
+        (path: string) => `chrome-extension://${chrome.runtime.id}/${path}`,
+      )
+    })
+
+    it("HSR-01: 正常系: 中継ページからの要求で URL を直接設定する", () => {
+      const result = sidePanelRelayFallback(
+        { url: "https://example.com", tabId: 1 },
+        relaySender("src/side_panel_relay.html?url=x&tabId=1"),
+      )
+
+      expect(result).toBe(false)
+      expect(setSidePanelUrlDirectly).toHaveBeenCalledWith({
+        url: "https://example.com",
+        tabId: 1,
+      })
+    })
+
+    it("HSR-02: 異常系: 中継ページ以外からの要求は無視する", () => {
+      const consoleWarnSpy = vi
+        .spyOn(console, "warn")
+        .mockImplementation(() => {})
+
+      sidePanelRelayFallback(
+        { url: "https://example.com", tabId: 1 },
+        { id: chrome.runtime.id, url: "https://evil.example.com/" },
+      )
+
+      expect(setSidePanelUrlDirectly).not.toHaveBeenCalled()
+      consoleWarnSpy.mockRestore()
+    })
+
+    it("HSR-04: 異常系: 他の拡張機能からの要求は無視する", () => {
+      const consoleWarnSpy = vi
+        .spyOn(console, "warn")
+        .mockImplementation(() => {})
+
+      sidePanelRelayFallback(
+        { url: "https://example.com", tabId: 1 },
+        {
+          id: "other-extension-id",
+          url: chrome.runtime.getURL("src/side_panel_relay.html"),
+        },
+      )
+
+      expect(setSidePanelUrlDirectly).not.toHaveBeenCalled()
+      consoleWarnSpy.mockRestore()
+    })
+
+    it.each([
+      ["src/side_panel_relay.html.evil"],
+      ["src/side_panel_relay.htmlx?url=x"],
+      ["src/other_page.html#src/side_panel_relay.html"],
+    ])(
+      "HSR-06: 異常系: 中継ページと似たパス (%s) からの要求は無視する",
+      (path) => {
+        const consoleWarnSpy = vi
+          .spyOn(console, "warn")
+          .mockImplementation(() => {})
+
+        sidePanelRelayFallback(
+          { url: "https://example.com", tabId: 1 },
+          relaySender(path),
+        )
+
+        expect(setSidePanelUrlDirectly).not.toHaveBeenCalled()
+        consoleWarnSpy.mockRestore()
+      },
+    )
+
+    it.each([[0], [-1], [1.5], [NaN]])(
+      "HSR-05: 異常系: tabId が不正 (%s) なら無視する",
+      (tabId) => {
+        const consoleWarnSpy = vi
+          .spyOn(console, "warn")
+          .mockImplementation(() => {})
+
+        sidePanelRelayFallback(
+          { url: "https://example.com", tabId },
+          relaySender("src/side_panel_relay.html"),
+        )
+
+        expect(setSidePanelUrlDirectly).not.toHaveBeenCalled()
+        consoleWarnSpy.mockRestore()
+      },
+    )
+
+    it("HSR-03: 異常系: http(s) 以外の URL は無視する", () => {
+      const consoleWarnSpy = vi
+        .spyOn(console, "warn")
+        .mockImplementation(() => {})
+
+      sidePanelRelayFallback(
+        { url: "javascript:alert(1)", tabId: 1 },
+        relaySender("src/side_panel_relay.html"),
+      )
+
+      expect(setSidePanelUrlDirectly).not.toHaveBeenCalled()
+      consoleWarnSpy.mockRestore()
+    })
+  })
+
+  describe("registerSidePanelHostTab", () => {
+    const relayUrl = (path: string) =>
+      `chrome-extension://${chrome.runtime.id}/${path}`
+
+    beforeEach(() => {
+      vi.mocked(_registerSidePanelHostTab).mockResolvedValue(undefined)
+      vi.mocked(chrome.runtime.getURL).mockImplementation(relayUrl)
+    })
+
+    it("HSH-01: 正常系: 中継ページのタブを登録してから応答する", async () => {
+      const response = vi.fn()
+
+      const result = registerSidePanelHostTab(
+        undefined,
+        {
+          id: chrome.runtime.id,
+          url: relayUrl("src/side_panel_relay.html?url=x&tabId=1"),
+          tab: { id: 77 } as chrome.tabs.Tab,
+        },
+        response,
+      )
+
+      expect(result).toBe(true)
+      expect(_registerSidePanelHostTab).toHaveBeenCalledWith(77)
+      await vi.waitFor(() => expect(response).toHaveBeenCalledWith(true))
+    })
+
+    it.each([
+      [
+        "他のページ",
+        {
+          id: chrome.runtime.id,
+          url: "https://evil.example.com/",
+          tab: { id: 77 } as chrome.tabs.Tab,
+        },
+      ],
+      [
+        "タブが無い",
+        { id: chrome.runtime.id, url: relayUrl("src/side_panel_relay.html") },
+      ],
+    ])("HSH-02: 異常系: 送信元が不正 (%s) なら登録しない", (_label, sender) => {
+      const consoleWarnSpy = vi
+        .spyOn(console, "warn")
+        .mockImplementation(() => {})
+      const response = vi.fn()
+
+      registerSidePanelHostTab(undefined, sender, response)
+
+      expect(_registerSidePanelHostTab).not.toHaveBeenCalled()
+      expect(response).toHaveBeenCalledWith(false)
       consoleWarnSpy.mockRestore()
     })
   })

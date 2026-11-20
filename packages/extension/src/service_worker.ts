@@ -25,6 +25,7 @@ import * as ActionHelper from "@/action/helper"
 import * as HubServiceWorker from "@/services/hub/serviceWorker"
 import * as IconColorServiceWorker from "@/services/iconColor/serviceWorker"
 import { getSidePanelEvent } from "@/services/sidePanelSupport"
+import { initSidePanelUrlMode } from "@/services/sidePanelUrl"
 import { registerLifecycleListeners } from "@/services/lifecycle/serviceWorker"
 import { registerShortcutListeners } from "@/services/shortcut/serviceWorker"
 
@@ -32,6 +33,7 @@ import { importIf } from "@import-if"
 importIf("production", "./lib/sentry/initialize")
 
 ServiceWorkerData.init()
+initSidePanelUrlMode()
 
 // Must run synchronously: an event that wakes the service worker is lost when
 // its listener is registered after an await.
@@ -116,12 +118,15 @@ const onConnect = async function (port: chrome.runtime.Port) {
   if (port.name !== CONNECTION_APP) return
   port.onDisconnect.addListener(() => onDisconnect(port))
   const tabId = port.sender?.tab?.id
-  if (tabId) {
+  // Side panel pages have no tab.id (port.sender.origin is set instead),
+  // except for side panels hosted as tabs (e.g. Vivaldi), which are registered
+  // by the relay page. Such tabs are not added to connectedTabs so that their
+  // content scripts reconnect after navigation like other side panels.
+  if (tabId && !(await PageActionServiceWorker.isSidePanelHostTab(tabId))) {
     ServiceWorkerData.update((data) => ({
       connectedTabs: [...data.connectedTabs, tabId],
     }))
   } else {
-    // Side panel pages have no tab.id (port.sender.origin is set instead).
     await PageActionServiceWorker.handleSidePanelConnect(port)
   }
 }
@@ -135,7 +140,11 @@ const onDisconnect = async function (port: chrome.runtime.Port) {
     }
   }
   const tabId = port.sender?.tab?.id
-  if (tabId) {
+  // Await the same lookup as onConnect so that the updates of connectedTabs
+  // are applied in the order of the events. Otherwise a disconnect during the
+  // first lookup after the service worker wakes up could be applied before
+  // the connect, leaving a stale tab ID in connectedTabs.
+  if (tabId && !(await PageActionServiceWorker.isSidePanelHostTab(tabId))) {
     ServiceWorkerData.update((data) => ({
       connectedTabs: data.connectedTabs.filter((id) => id !== tabId),
     }))
@@ -195,6 +204,10 @@ const commandFuncs = {
   },
   [ServiceWorkerCommand.closeSidePanel]: ActionHelper.closeSidePanel,
   [ServiceWorkerCommand.navigateSidePanel]: ActionHelper.navigateSidePanel,
+  [ServiceWorkerCommand.sidePanelRelayFallback]:
+    ActionHelper.sidePanelRelayFallback,
+  [ServiceWorkerCommand.registerSidePanelHostTab]:
+    ActionHelper.registerSidePanelHostTab,
   [ServiceWorkerCommand.execApi]: ActionHelper.execApi,
 
   [ServiceWorkerCommand.openOption]: (): boolean => {
@@ -595,6 +608,7 @@ chrome.tabs.onZoomChange.addListener(({ tabId, newZoomFactor }) => {
 chrome.tabs.onRemoved.addListener((tabId) => {
   ActionHelper.sidePanelClosed(tabId)
   updateActiveTabId()
+  PageActionServiceWorker.unregisterSidePanelHostTab(tabId)
 })
 getSidePanelEvent("onClosed")?.addListener(({ tabId }) =>
   ActionHelper.sidePanelClosed(tabId),
@@ -604,6 +618,8 @@ getSidePanelEvent("onClosed")?.addListener(({ tabId }) =>
 export const testExports = {
   commandFuncs,
   updateWindowSize,
+  onConnect,
+  onDisconnect,
 }
 
 self.addEventListener("error", (event) => {
