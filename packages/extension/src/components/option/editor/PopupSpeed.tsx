@@ -2,7 +2,7 @@ import { useForm, useWatch } from "react-hook-form"
 import { useEffect, useRef, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { ChevronRight } from "lucide-react"
+import { ChevronRight, Check } from "lucide-react"
 
 import {
   FormControl,
@@ -141,7 +141,7 @@ export const PopupSpeed = ({
             <div className="w-2/6">
               <FormLabel>{t("Option_popupSpeed_preset")}</FormLabel>
             </div>
-            <div className="w-4/6 flex flex-col gap-2">
+            <div className="w-4/6 flex items-stretch gap-3">
               <ToggleGroup
                 type="single"
                 variant="outline"
@@ -151,7 +151,7 @@ export const PopupSpeed = ({
                 }}
                 onMouseLeave={() => setPreviewSpeed(null)}
                 onBlur={() => setPreviewSpeed(null)}
-                className="grid grid-cols-3 gap-2"
+                className="flex flex-col w-2/5 shrink-0 gap-2 p-0.5"
               >
                 {POPUP_SPEEDS.map((speed) => (
                   <ToggleGroupItem
@@ -159,8 +159,14 @@ export const PopupSpeed = ({
                     value={speed}
                     onMouseEnter={() => setPreviewSpeed(speed)}
                     onFocus={() => setPreviewSpeed(speed)}
-                    className="data-[state=on]:border-sky-500 data-[state=on]:font-semibold"
+                    className={cn(
+                      "relative w-full h-9 shadow-xs text-xs font-mono text-gray-600 dark:text-gray-400 dark:bg-(--sc-input-bg,var(--color-gray-800))",
+                      "hover:bg-hover data-[state=on]:bg-selected data-[state=on]:hover:bg-selected",
+                    )}
                   >
+                    {currentSpeed === speed && (
+                      <Check size={16} className="absolute left-3" />
+                    )}
                     {t(`Option_popupSpeed_${speed}`)}
                   </ToggleGroupItem>
                 ))}
