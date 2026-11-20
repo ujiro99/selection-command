@@ -1,5 +1,6 @@
 import { sleep, isOverBytes } from "@/lib/utils"
 import { toUrl, needsClipboard } from "@/lib/url"
+import { getGoogleFaviconUrl, isPrivateHost } from "@/lib/favicon"
 import type { ScreenSize } from "@/services/dom"
 import type { ShowToastParam, UrlParam, WindowLayer } from "@/types"
 import {
@@ -20,6 +21,10 @@ import {
   isSidePanelSupported,
   isSidePanelCloseSupported,
 } from "@/services/sidePanelSupport"
+import {
+  toSidePanelPath,
+  markDirectUrlSupported,
+} from "@/services/sidePanelUrl"
 
 /**
  * Check if a window exists
@@ -39,73 +44,119 @@ export const windowExists = async (
   }
 }
 
+/**
+ * Replaces a favicon too large to store (e.g. a data URL) with the Google
+ * favicon service URL. Private hosts are never disclosed to the service.
+ */
 const failsafe = (url: string, favicon: string) => {
   if (isOverBytes(favicon, 1000)) {
+    if (isPrivateHost(url)) {
+      throw new Error(`favicon too large: ${url}`)
+    }
     console.warn("favicon failsafe", url)
-    return `https://www.google.com/s2/favicons?sz=64&domain_url=${url}`
+    return getGoogleFaviconUrl(url)
   }
   return favicon
 }
 
+/** Max time to wait for the page to finish loading. */
+const FETCH_ICON_LOAD_TIMEOUT_MS = 5000
+/**
+ * Max time to wait for `favIconUrl` after the page has finished loading.
+ * Chrome downloads the favicon only after the load completes and reports
+ * `favIconUrl` in a separate `onUpdated` event once the download finishes,
+ * so a large or uncached favicon can arrive hundreds of milliseconds later.
+ */
+const FETCH_ICON_FAVICON_WAIT_MS = 3000
+
 /**
  * Get favicon url from url.
+ * Opens the url in a minimized window and reads the favicon reported by the
+ * browser. Falls back to the Google favicon service when the browser does not
+ * report a favicon in time, unless the url points at a private host.
  *
  * @param {string} url
  * @returns {Promise<string>} favicon url
+ * @throws When no favicon is reported for a private host.
  */
 export const fetchIconUrl = async (url: string): Promise<string> => {
-  const p = new Promise<string>((resolve, reject) => {
-    const timeoutId = setTimeout(async () => {
-      if (w?.id) {
-        await closeWindow(w.id, "fetchIconUrl timeout")
-      }
-      chrome.tabs.onUpdated.removeListener(onUpdated)
-      console.warn("timeout", url)
-      reject("timeout")
-    }, 5000)
+  let tabId: number | undefined
+  let latestFavIconUrl: string | undefined
+  let loadTimer: ReturnType<typeof setTimeout> | undefined
+  let faviconTimer: ReturnType<typeof setTimeout> | undefined
+  let settle: () => void = () => {}
+  const settled = new Promise<void>((resolve) => {
+    settle = resolve
+  })
 
-    const onUpdated = async (
-      tabId: number,
-      changeInfo: chrome.tabs.OnUpdatedInfo,
-      tab: chrome.tabs.Tab,
-    ) => {
-      if (w == null) {
-        // illigal state
-        chrome.tabs.onUpdated.removeListener(onUpdated)
-        return
-      }
-      if (tabId === w.tabs?.[0].id && changeInfo.status === "complete") {
-        clearTimeout(timeoutId)
-        chrome.tabs.onUpdated.removeListener(onUpdated)
-        if (tab.favIconUrl) {
-          resolve(failsafe(url, tab.favIconUrl))
-        } else {
-          // retry
-          await sleep(100)
-          const t = await chrome.tabs.get(tabId)
-          if (t.favIconUrl) {
-            resolve(failsafe(url, t.favIconUrl))
-          } else {
-            // failed...
-            console.warn(tab)
-            reject()
-          }
-        }
-        if (w?.id) {
-          await closeWindow(w.id, "fetchIconUrl close window")
-        }
-      }
+  const handleTab = (tab: chrome.tabs.Tab) => {
+    if (tab.favIconUrl) latestFavIconUrl = tab.favIconUrl
+    if (tab.status !== "complete") return
+    if (latestFavIconUrl) {
+      settle()
+    } else if (faviconTimer == null) {
+      // The favicon is reported after the load completes; keep waiting.
+      clearTimeout(loadTimer)
+      faviconTimer = setTimeout(settle, FETCH_ICON_FAVICON_WAIT_MS)
     }
-    chrome.tabs.onUpdated.addListener(onUpdated)
-  })
-  const w = await chrome.windows.create({
-    url: toUrl({
-      searchUrl: url,
-      selectionText: "test",
-    }),
-    state: "minimized",
-  })
-  return p
+  }
+
+  const onUpdated = (
+    id: number,
+    changeInfo: chrome.tabs.OnUpdatedInfo,
+    tab: chrome.tabs.Tab,
+  ) => {
+    // Events that arrive before the window is created are ignored here and
+    // caught up by reading the tab state right after creation.
+    if (tabId == null || id !== tabId) return
+    // A navigation (e.g. a client-side redirect) invalidates the favicon of
+    // the previous page; the tab snapshot below restores it if still valid.
+    if (changeInfo.url != null) latestFavIconUrl = undefined
+    handleTab(tab)
+  }
+
+  chrome.tabs.onUpdated.addListener(onUpdated)
+  let windowId: number | undefined
+  try {
+    loadTimer = setTimeout(() => {
+      console.warn("fetchIconUrl timeout", url)
+      settle()
+    }, FETCH_ICON_LOAD_TIMEOUT_MS)
+    const w = await chrome.windows.create({
+      url: toUrl({
+        searchUrl: url,
+        selectionText: "test",
+      }),
+      state: "minimized",
+    })
+    windowId = w?.id
+    tabId = w?.tabs?.[0]?.id
+    if (tabId == null) {
+      settle()
+    } else {
+      handleTab(await chrome.tabs.get(tabId))
+    }
+    await settled
+  } catch (e) {
+    console.warn("fetchIconUrl failed", url, e)
+  } finally {
+    clearTimeout(loadTimer)
+    clearTimeout(faviconTimer)
+    chrome.tabs.onUpdated.removeListener(onUpdated)
+    if (windowId != null) {
+      await closeWindow(windowId, "fetchIconUrl close window")
+    }
+  }
+
+  if (latestFavIconUrl) {
+    return failsafe(url, latestFavIconUrl)
+  }
+  if (isPrivateHost(url)) {
+    // Do not disclose private host names to the external favicon service.
+    throw new Error(`favicon not reported: ${url}`)
+  }
+  console.warn("favicon not reported, use fallback", url)
+  return getGoogleFaviconUrl(url)
 }
 
 export type OpenPopupProps = {
@@ -659,7 +710,7 @@ export const openSidePanel = async (
   // Do not await here because sidePanel.open() must be executed within a user gesture.
   chrome.sidePanel.setOptions({
     tabId,
-    path: toUrl(url),
+    path: toSidePanelPath(toUrl(url), tabId),
     enabled: true,
   })
 
@@ -723,7 +774,7 @@ export const updateSidePanelUrl = async (
     // Update the side panel URL
     await chrome.sidePanel.setOptions({
       tabId: tabId,
-      path: url,
+      path: toSidePanelPath(url, tabId),
       enabled: true,
     })
     // console.debug("[updateSidePanelUrl] Updated:", { tabId, url })
@@ -731,6 +782,39 @@ export const updateSidePanelUrl = async (
     console.error("[updateSidePanelUrl] Failed:", error)
     throw error
   }
+}
+
+export type SidePanelRelayFallbackProps = {
+  url: string
+  tabId: number
+}
+
+/**
+ * Show the URL in the side panel by setting it as `path` directly.
+ * Called by the relay page when the browser does not allow it to navigate to
+ * a web URL (e.g. Chrome). Such browsers accept a web URL as `path`, so the
+ * relay page is skipped from now on.
+ * @param {SidePanelRelayFallbackProps} param - The target URL and tab ID.
+ * @returns {Promise<void>} A promise that resolves when the URL is set.
+ */
+export const setSidePanelUrlDirectly = async (
+  param: SidePanelRelayFallbackProps,
+): Promise<void> => {
+  const { url, tabId } = param
+
+  if (!isSidePanelSupported()) {
+    throw new Error("Side panel API is not supported in this browser")
+  }
+
+  await chrome.sidePanel.setOptions({
+    tabId,
+    path: url,
+    enabled: true,
+  })
+  // Remember the direct mode only after setOptions succeeds, so that a failure
+  // does not lock later calls into the direct mode. The storage write happens
+  // after the page is set, so it does not delay showing the page.
+  await markDirectUrlSupported()
 }
 
 /** Test-only exports. Do not use in production code. */

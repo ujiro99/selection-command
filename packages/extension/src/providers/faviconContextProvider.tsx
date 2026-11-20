@@ -41,21 +41,27 @@ export const FaviconContextProvider = ({
     clearTimeout(fetchIconTO.current)
     fetchIconTO.current = window.setTimeout(async () => {
       if (isEmpty(iconUrlSrc)) return
+      // A newer source may start fetching while this one is still in flight.
+      // Results and cleanup of a stale fetch must not clobber the newer one.
+      const isCurrent = () => srcRef.current === iconUrlSrc
       try {
         setIsLoading(true)
         const iconUrl = await fetchIconUrl(iconUrlSrc)
-        if (srcRef.current != iconUrlSrc) throw new Error("Icon url mismatch")
+        if (!isCurrent()) return
         setIconUrl(iconUrl)
         dispatch(FaviconEvent.SUCCESS, { faviconUrl: iconUrl })
       } catch (e: any) {
+        if (!isCurrent()) return
         dispatch(FaviconEvent.FAIL, {
           isLoading: false,
           error: e,
         })
       } finally {
-        fetchIconTO.current = 0
-        srcRef.current = ""
-        setIsLoading(false)
+        if (isCurrent()) {
+          fetchIconTO.current = 0
+          srcRef.current = ""
+          setIsLoading(false)
+        }
       }
     }, 500)
 
