@@ -30,25 +30,16 @@ describe("fetchIconUrl", () => {
         listener = l
       },
     )
-    vi.stubGlobal("chrome", {
-      ...chrome,
-      tabs: {
-        ...chrome.tabs,
-        get: vi.fn().mockResolvedValue(tab({ status: "loading" })),
-      },
-      windows: {
-        ...chrome.windows,
-        create: vi
-          .fn()
-          .mockResolvedValue({ id: WINDOW_ID, tabs: [{ id: TAB_ID }] }),
-        remove: vi.fn().mockResolvedValue(undefined),
-      },
-    })
+    vi.mocked(chrome.tabs.get).mockResolvedValue(tab({ status: "loading" }))
+    vi.mocked(chrome.windows.create).mockResolvedValue({
+      id: WINDOW_ID,
+      tabs: [{ id: TAB_ID }],
+    } as chrome.windows.Window)
+    vi.mocked(chrome.windows.remove).mockResolvedValue(undefined)
   })
 
   afterEach(() => {
     vi.useRealTimers()
-    vi.unstubAllGlobals()
   })
 
   it("FI-01: 正常系: 読み込み完了時に favIconUrl があればそれを返す", async () => {
