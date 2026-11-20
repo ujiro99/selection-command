@@ -140,7 +140,11 @@ const onDisconnect = async function (port: chrome.runtime.Port) {
     }
   }
   const tabId = port.sender?.tab?.id
-  if (tabId) {
+  // Await the same lookup as onConnect so that the updates of connectedTabs
+  // are applied in the order of the events. Otherwise a disconnect during the
+  // first lookup after the service worker wakes up could be applied before
+  // the connect, leaving a stale tab ID in connectedTabs.
+  if (tabId && !(await PageActionServiceWorker.isSidePanelHostTab(tabId))) {
     ServiceWorkerData.update((data) => ({
       connectedTabs: data.connectedTabs.filter((id) => id !== tabId),
     }))
@@ -614,6 +618,8 @@ getSidePanelEvent("onClosed")?.addListener(({ tabId }) =>
 export const testExports = {
   commandFuncs,
   updateWindowSize,
+  onConnect,
+  onDisconnect,
 }
 
 self.addEventListener("error", (event) => {
