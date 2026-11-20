@@ -227,9 +227,6 @@
   "Option_popupSpeed_instant": {
     "message": "Instantané"
   },
-  "Option_popupSpeed_previewHint": {
-    "message": "Survolez un bouton pour l'aperçu"
-  },
   "Option_popupSpeed_delayIgnored": {
     "message": "Fixé à 0 ms pour cette méthode de démarrage."
   },

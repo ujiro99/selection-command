@@ -227,9 +227,6 @@
   "Option_popupSpeed_instant": {
     "message": "瞬時"
   },
-  "Option_popupSpeed_previewHint": {
-    "message": "ボタンにカーソルを合わせるとプレビュー"
-  },
   "Option_popupSpeed_delayIgnored": {
     "message": "この起動方法では 0 ms に固定されます。"
   },

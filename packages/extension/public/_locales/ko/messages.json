@@ -227,9 +227,6 @@
   "Option_popupSpeed_instant": {
     "message": "즉시"
   },
-  "Option_popupSpeed_previewHint": {
-    "message": "버튼에 마우스를 올려 미리보기"
-  },
   "Option_popupSpeed_delayIgnored": {
     "message": "이 실행 방법에서는 0 ms로 고정됩니다."
   },

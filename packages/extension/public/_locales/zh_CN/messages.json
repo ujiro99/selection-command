@@ -227,9 +227,6 @@
   "Option_popupSpeed_instant": {
     "message": "即时"
   },
-  "Option_popupSpeed_previewHint": {
-    "message": "悬停在按钮上进行预览"
-  },
   "Option_popupSpeed_delayIgnored": {
     "message": "此启动方式下固定为 0 ms。"
   },

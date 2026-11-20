@@ -230,9 +230,6 @@
   "Option_popupSpeed_instant": {
     "message": "Instant"
   },
-  "Option_popupSpeed_previewHint": {
-    "message": "Hover a button to preview"
-  },
   "Option_popupSpeed_delayIgnored": {
     "message": "Fixed to 0 ms for this startup method."
   },

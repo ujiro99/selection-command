@@ -227,9 +227,6 @@
   "Option_popupSpeed_instant": {
     "message": "Мгновенная"
   },
-  "Option_popupSpeed_previewHint": {
-    "message": "Наведите на кнопку для предпросмотра"
-  },
   "Option_popupSpeed_delayIgnored": {
     "message": "Для этого способа запуска фиксировано 0 мс."
   },

@@ -227,9 +227,6 @@
   "Option_popupSpeed_instant": {
     "message": "Istantaneo"
   },
-  "Option_popupSpeed_previewHint": {
-    "message": "Passa il mouse su un pulsante per l'anteprima"
-  },
   "Option_popupSpeed_delayIgnored": {
     "message": "Fisso a 0 ms con questo metodo di avvio."
   },

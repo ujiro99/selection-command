@@ -141,7 +141,7 @@ export const PopupSpeed = ({
             <div className="w-2/6">
               <FormLabel>{t("Option_popupSpeed_preset")}</FormLabel>
             </div>
-            <div className="w-4/6 flex items-stretch gap-3">
+            <div className="w-4/6 flex items-stretch gap-6">
               <ToggleGroup
                 type="single"
                 variant="outline"
@@ -173,9 +173,13 @@ export const PopupSpeed = ({
               </ToggleGroup>
               <PopupSpeedPreview
                 values={
+                  // Preview the hovered preset, otherwise the current values.
                   previewSpeed != null
                     ? getPresetValues(previewSpeed, startupMethod)
-                    : null
+                    : {
+                        popupDelay: delayIgnored ? 0 : popupDelay,
+                        popupDuration,
+                      }
                 }
               />
             </div>

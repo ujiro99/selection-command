@@ -4,32 +4,35 @@ import { MousePointer2 } from "lucide-react"
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion"
 import type { PopupSpeedValues } from "@/services/option/popupSpeed"
 import { cn } from "@/lib/utils"
-import { t } from "@/services/i18n"
 
 import css from "./PopupSpeedPreview.module.css"
 
-// Time the menu stays visible after the animation completes.
-const HOLD_MS = 900
-// Time the selection stays cleared between loops.
-const GAP_MS = 400
+// The time one preview is shown scales with the speed, so a faster speed
+// shows more popups per unit of time:
+//   preview time = (delay + duration) * PREVIEW_SCALE + PREVIEW_BASE_MS
+const PREVIEW_SCALE = 3
+const PREVIEW_BASE_MS = 300
+// Constant interval between previews (the selection stays cleared).
+const GAP_MS = 500
 
 type Props = {
-  // Values to preview. null shows the idle (static) state.
-  values: PopupSpeedValues | null
+  values: PopupSpeedValues
 }
+
+const toMs = (value: number) => (Number.isFinite(value) ? value : 0)
 
 /**
  * A pure HTML + CSS mock of "select text -> menu appears" used to preview
- * the menu display speed. While values are given, it loops the animation.
+ * the menu display speed. It loops the animation with the given values.
  */
 export const PopupSpeedPreview = ({ values }: Props) => {
   const prefersReducedMotion = usePrefersReducedMotion()
   const [cycle, setCycle] = useState(0)
   const [selected, setSelected] = useState(true)
 
-  const playing = values != null && !prefersReducedMotion
-  const delay = values?.popupDelay ?? 0
-  const duration = values?.popupDuration ?? 0
+  const playing = !prefersReducedMotion
+  const delay = toMs(values.popupDelay)
+  const duration = toMs(values.popupDuration)
 
   useEffect(() => {
     if (!playing) {
@@ -47,7 +50,7 @@ export const PopupSpeedPreview = ({ values }: Props) => {
           setSelected(false)
           timer = window.setTimeout(start, GAP_MS)
         },
-        delay + duration + HOLD_MS,
+        (delay + duration) * PREVIEW_SCALE + PREVIEW_BASE_MS,
       )
     }
     start()
@@ -94,11 +97,6 @@ export const PopupSpeedPreview = ({ values }: Props) => {
         </span>{" "}
         sit amet.
       </p>
-      {!playing && (
-        <span className="absolute inset-x-2 bottom-1.5 text-[10px] leading-tight text-muted-foreground">
-          {t("Option_popupSpeed_previewHint")}
-        </span>
-      )}
     </div>
   )
 }
