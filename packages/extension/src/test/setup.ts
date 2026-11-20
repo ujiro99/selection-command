@@ -317,6 +317,7 @@ global.chrome = {
     id: "test-extension-id",
   },
   tabs: {
+    get: vi.fn(),
     query: vi.fn(),
     sendMessage: vi.fn(),
     create: vi.fn(),
@@ -351,6 +352,8 @@ global.chrome = {
     getUILanguage: vi.fn(() => "en"),
   },
   windows: {
+    create: vi.fn(),
+    remove: vi.fn(),
     onBoundsChanged: {
       addListener: vi.fn(),
       removeListener: vi.fn(),

@@ -1721,3 +1721,143 @@ describe("Keep Open", () => {
     errorSpy.mockRestore()
   })
 })
+
+describe("Port connections: side panel host tabs", () => {
+  type Updater = (data: { connectedTabs: number[] }) => {
+    connectedTabs: number[]
+  }
+
+  // Load service_worker with a controllable ServiceWorkerData mock and
+  // configure the auto-mocked page action module it uses.
+  const setup = async (isSidePanelHostTab: (tabId: number) => unknown) => {
+    const update = vi.fn().mockResolvedValue(true)
+    vi.doMock("@/services/serviceWorkerData", () => ({
+      ServiceWorkerData: {
+        init: vi.fn(),
+        ready: vi.fn().mockResolvedValue(undefined),
+        get: vi.fn(() => ({ connectedTabs: [] })),
+        update,
+        set: vi.fn(),
+      },
+    }))
+
+    vi.resetModules()
+    const { testExports } = await import("../service_worker")
+    const PageAction = await import("@/services/pageAction/serviceWorker")
+    vi.mocked(PageAction.isSidePanelHostTab).mockImplementation(
+      isSidePanelHostTab as (tabId: number) => Promise<boolean>,
+    )
+    const handleSidePanelConnect = vi
+      .mocked(PageAction.handleSidePanelConnect)
+      .mockResolvedValue(undefined)
+    const { CONNECTION_APP } = await import("@/services/ipc")
+    const createPort = (tabId?: number) =>
+      ({
+        name: CONNECTION_APP,
+        sender: {
+          tab: tabId != null ? { id: tabId } : undefined,
+          origin: "https://example.com",
+        },
+        onDisconnect: { addListener: vi.fn() },
+      }) as unknown as chrome.runtime.Port
+
+    // Apply the recorded connectedTabs updates in the order they were made.
+    const applyUpdates = (initial: number[]) =>
+      update.mock.calls.reduce(
+        (data, [updater]) => (updater as Updater)(data),
+        { connectedTabs: initial },
+      ).connectedTabs
+
+    return {
+      onConnect: testExports.onConnect,
+      onDisconnect: testExports.onDisconnect,
+      createPort,
+      update,
+      handleSidePanelConnect,
+      applyUpdates,
+    }
+  }
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  afterEach(() => {
+    vi.doUnmock("@/services/serviceWorkerData")
+  })
+
+  it("SWC-01: 正常系: 通常のタブの接続は connectedTabs に追加する", async () => {
+    const {
+      onConnect,
+      createPort,
+      update,
+      handleSidePanelConnect,
+      applyUpdates,
+    } = await setup(async () => false)
+
+    await onConnect(createPort(10))
+
+    expect(update).toHaveBeenCalledTimes(1)
+    expect(applyUpdates([])).toEqual([10])
+    expect(handleSidePanelConnect).not.toHaveBeenCalled()
+  })
+
+  it("SWC-02: 正常系: サイドパネルのタブ（Vivaldi）の接続はサイドパネルとして扱い、connectedTabs に追加しない", async () => {
+    const { onConnect, createPort, update, handleSidePanelConnect } =
+      await setup(async () => true)
+    const port = createPort(20)
+
+    await onConnect(port)
+
+    expect(handleSidePanelConnect).toHaveBeenCalledWith(port)
+    expect(update).not.toHaveBeenCalled()
+  })
+
+  it("SWC-03: 正常系: タブの無い接続（Chrome のサイドパネル）はサイドパネルとして扱う", async () => {
+    const { onConnect, createPort, update, handleSidePanelConnect } =
+      await setup(async () => false)
+    const port = createPort()
+
+    await onConnect(port)
+
+    expect(handleSidePanelConnect).toHaveBeenCalledWith(port)
+    expect(update).not.toHaveBeenCalled()
+  })
+
+  it("SWC-04: 正常系: 通常のタブの切断は connectedTabs から削除する", async () => {
+    const { onDisconnect, createPort, applyUpdates } = await setup(
+      async () => false,
+    )
+
+    await onDisconnect(createPort(10))
+
+    expect(applyUpdates([10, 11])).toEqual([11])
+  })
+
+  it("SWC-05: 正常系: サイドパネルのタブの切断では connectedTabs を更新しない", async () => {
+    const { onDisconnect, createPort, update } = await setup(async () => true)
+
+    await onDisconnect(createPort(20))
+
+    expect(update).not.toHaveBeenCalled()
+  })
+
+  it("SWC-06: 境界値: 初回の判定中に接続と切断が続いても、イベントの順に connectedTabs を更新する", async () => {
+    // Emulate the first lookup after the service worker wakes up, which
+    // resolves only after the storage is read.
+    let resolveLoad!: () => void
+    const loading = new Promise<void>((resolve) => {
+      resolveLoad = resolve
+    })
+    const { onConnect, onDisconnect, createPort, update, applyUpdates } =
+      await setup(() => loading.then(() => false))
+
+    const connected = onConnect(createPort(10))
+    const disconnected = onDisconnect(createPort(10))
+    resolveLoad()
+    await Promise.all([connected, disconnected])
+
+    expect(update).toHaveBeenCalledTimes(2)
+    expect(applyUpdates([])).toEqual([])
+  })
+})
