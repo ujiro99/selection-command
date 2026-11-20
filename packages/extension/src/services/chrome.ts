@@ -91,12 +91,15 @@ export const fetchIconUrl = async (url: string): Promise<string> => {
 
   const onUpdated = (
     id: number,
-    _changeInfo: chrome.tabs.OnUpdatedInfo,
+    changeInfo: chrome.tabs.OnUpdatedInfo,
     tab: chrome.tabs.Tab,
   ) => {
     // Events that arrive before the window is created are ignored here and
     // caught up by reading the tab state right after creation.
     if (tabId == null || id !== tabId) return
+    // A navigation (e.g. a client-side redirect) invalidates the favicon of
+    // the previous page; the tab snapshot below restores it if still valid.
+    if (changeInfo.url != null) latestFavIconUrl = undefined
     handleTab(tab)
   }
 

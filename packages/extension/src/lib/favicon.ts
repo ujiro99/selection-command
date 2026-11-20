@@ -44,7 +44,9 @@ const BARE_IPV6 = /^[0-9a-f]*(?::[0-9a-f]*){2,}$/i
 export function getGoogleFaviconUrl(url: string): string {
   let target = url
   try {
-    target = new URL(url).origin
+    const { origin } = new URL(url)
+    // Opaque origins (e.g. data:, about:) serialize as "null".
+    if (origin !== "null") target = origin
   } catch {
     // Not an absolute URL; pass it through as is.
   }

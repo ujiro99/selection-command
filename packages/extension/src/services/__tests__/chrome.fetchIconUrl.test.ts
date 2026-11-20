@@ -151,6 +151,29 @@ describe("fetchIconUrl", () => {
     expect(chrome.windows.remove).not.toHaveBeenCalled()
   })
 
+  it("FI-10: 正常系: リダイレクト前のページの favIconUrl は使わずに遷移先の favIconUrl を待つ", async () => {
+    const p = fetchIconUrl(SEARCH_URL)
+    await vi.advanceTimersByTimeAsync(0)
+
+    emit(
+      { favIconUrl: "https://example.com/old.ico" },
+      tab({ status: "loading", favIconUrl: "https://example.com/old.ico" }),
+    )
+    // Client-side redirect to another page.
+    emit(
+      { status: "loading", url: "https://example.org/" },
+      tab({ status: "loading" }),
+    )
+    emit({ status: "complete" }, tab({ status: "complete" }))
+    await vi.advanceTimersByTimeAsync(200)
+    emit(
+      { favIconUrl: "https://example.org/new.ico" },
+      tab({ status: "complete", favIconUrl: "https://example.org/new.ico" }),
+    )
+
+    await expect(p).resolves.toBe("https://example.org/new.ico")
+  })
+
   it("FI-09: 境界値: 長すぎる favIconUrl（data URL 等）は Google のサービスに置き換える", async () => {
     const longUrl = "data:image/png;base64," + "A".repeat(2000)
     const p = fetchIconUrl(SEARCH_URL)

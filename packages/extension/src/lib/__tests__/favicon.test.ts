@@ -437,4 +437,10 @@ describe("getGoogleFaviconUrl", () => {
       "https://www.google.com/s2/favicons?sz=64&domain_url=example.com%2F%3Fq%3D%25s",
     )
   })
+
+  it("GF-03: 異常系: オリジンが null になる URL はそのままエンコードして渡す", () => {
+    expect(getGoogleFaviconUrl("data:text/plain,a")).toBe(
+      "https://www.google.com/s2/favicons?sz=64&domain_url=data%3Atext%2Fplain%2Ca",
+    )
+  })
 })
