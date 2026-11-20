@@ -198,4 +198,19 @@ describe("fetchIconUrl", () => {
 
     await expect(p).resolves.toBe(FALLBACK_URL)
   })
+
+  it("FI-13: 境界値: プライベートなホストで favIconUrl が長すぎれば Google のサービスに置き換えずエラーにする", async () => {
+    const longUrl = "data:image/png;base64," + "A".repeat(2000)
+    const p = fetchIconUrl("https://wiki.corp.local/search?q=%s")
+    const assertion = expect(p).rejects.toThrow()
+    await vi.advanceTimersByTimeAsync(0)
+
+    emit(
+      { status: "complete" },
+      tab({ status: "complete", favIconUrl: longUrl }),
+    )
+
+    await assertion
+    expect(chrome.windows.remove).toHaveBeenCalledWith(WINDOW_ID)
+  })
 })

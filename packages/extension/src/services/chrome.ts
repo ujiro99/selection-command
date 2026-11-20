@@ -44,8 +44,15 @@ export const windowExists = async (
   }
 }
 
+/**
+ * Replaces a favicon too large to store (e.g. a data URL) with the Google
+ * favicon service URL. Private hosts are never disclosed to the service.
+ */
 const failsafe = (url: string, favicon: string) => {
   if (isOverBytes(favicon, 1000)) {
+    if (isPrivateHost(url)) {
+      throw new Error(`favicon too large: ${url}`)
+    }
     console.warn("favicon failsafe", url)
     return getGoogleFaviconUrl(url)
   }
