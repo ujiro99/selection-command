@@ -28,7 +28,7 @@ import {
   isOnboardingPage,
 } from "@/components/onboarding/onboardingEvents"
 
-export const isTargetEvent = (e: MouseEvent): boolean => {
+const isTargetEvent = (e: MouseEvent): boolean => {
   return (
     e.button === MOUSE.LEFT &&
     !isPopup(e.target as Element) &&
@@ -364,4 +364,9 @@ function useDetectClickHold(
         preventLinkClick: detectHoldLink,
       }
     : {}
+}
+
+/** Test-only exports. Do not use in production code. */
+export const __test = {
+  isTargetEvent,
 }

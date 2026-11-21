@@ -1,6 +1,8 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest"
 import { POPUP_DISABLED_ATTR } from "@/const"
-import { isTargetEvent } from "../useDetectLinkCommand"
+import { __test } from "../useDetectLinkCommand"
+
+const { isTargetEvent } = __test
 
 const createEvent = (target: Element): MouseEvent => {
   const e = new MouseEvent("mousedown", { button: 0, bubbles: true })
