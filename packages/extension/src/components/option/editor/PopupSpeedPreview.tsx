@@ -7,11 +7,9 @@ import { cn } from "@/lib/utils"
 
 import css from "./PopupSpeedPreview.module.css"
 
-// The time one preview is shown scales with the speed, so a faster speed
-// shows more popups per unit of time:
-//   preview time = (delay + duration) * PREVIEW_SCALE + PREVIEW_BASE_MS
-const PREVIEW_SCALE = 3
-const PREVIEW_BASE_MS = 300
+// The menu is held for a constant time after it has fully appeared:
+//   preview time = delay + duration + HOLD_MS
+const HOLD_MS = 500
 // Constant interval between previews (the selection stays cleared).
 const GAP_MS = 500
 
@@ -80,7 +78,7 @@ export const PopupSpeedPreview = ({ values }: Props) => {
           setSelected(false)
           timer = window.setTimeout(start, GAP_MS)
         },
-        (delay + duration) * PREVIEW_SCALE + PREVIEW_BASE_MS,
+        delay + duration + HOLD_MS,
       )
     }
     start()
