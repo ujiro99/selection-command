@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react"
 import { CSSTransition } from "react-transition-group"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm, useWatch } from "react-hook-form"
+import { useForm, useWatch, type Control } from "react-hook-form"
 import {
   MessageSquareMore,
   SquareTerminal,
@@ -19,7 +19,11 @@ import { SelectField } from "@/components/option/field/SelectField"
 import { SwitchField } from "@/components/option/field/SwitchField"
 import { getDragOpenModes } from "@/components/option/field/openModes"
 import { PopupPlacement } from "@/components/option/editor/PopupPlacement"
-import { PopupAnimation } from "@/components/option/editor/PopupAnimation"
+import { PopupSpeed } from "@/components/option/editor/PopupSpeed"
+import {
+  toPopupSpeedValues,
+  type PopupSpeedValues,
+} from "@/services/option/popupSpeed"
 import { CommandList } from "@/components/option/editor/CommandList"
 import {
   PageRuleList,
@@ -50,8 +54,6 @@ import { Settings } from "@/services/settings/settings"
 import { isSidePanelSupported } from "@/services/sidePanelSupport"
 import DefaultSettings, {
   emptySettings,
-  POPUP_DELAY_DEFAULT,
-  POPUP_DULATION_DEFAULT,
 } from "@/services/option/defaultSettings"
 
 import {
@@ -130,6 +132,32 @@ const formSchema = z
 
 type FormValues = z.infer<typeof formSchema>
 export type SettingsFormType = Omit<UserSettings, "settingVersion">
+
+type PopupSpeedFieldProps = {
+  control: Control<FormValues>
+  onSubmit: (data: PopupSpeedValues) => void
+  startupMethod: STARTUP_METHOD
+}
+
+/**
+ * Watches the user styles so the speed editor follows values updated
+ * outside of it (e.g. when settings are loaded), without re-rendering the
+ * whole settings form on every style edit.
+ */
+function PopupSpeedField({
+  control,
+  onSubmit,
+  startupMethod,
+}: PopupSpeedFieldProps) {
+  const userStyles = useWatch({ control, name: "userStyles" })
+  return (
+    <PopupSpeed
+      onSubmit={onSubmit}
+      defaultValues={toPopupSpeedValues(userStyles)}
+      startupMethod={startupMethod}
+    />
+  )
+}
 
 export function SettingForm({ className }: { className?: string }) {
   const [isSaving, setIsSaving] = useState(false)
@@ -286,10 +314,7 @@ export function SettingForm({ className }: { className?: string }) {
     setValue("popupPlacement", popupPlacement)
   }
 
-  const handlePopupAnimationSubmit = async (data: {
-    popupDelay: number
-    popupDuration: number
-  }) => {
+  const handlePopupSpeedSubmit = async (data: PopupSpeedValues) => {
     const userStyles = getValues("userStyles")
     const updatedStyles = userStyles.filter(
       (style) =>
@@ -301,29 +326,6 @@ export function SettingForm({ className }: { className?: string }) {
       { name: STYLE_VARIABLE.POPUP_DURATION, value: data.popupDuration },
     )
     setValue("userStyles", updatedStyles)
-  }
-
-  const getAnimationDefaultValues = () => {
-    const userStyles = getValues("userStyles") || []
-    let popupDelay = userStyles.find(
-      (s) => s.name === STYLE_VARIABLE.POPUP_DELAY,
-    )?.value
-    if (popupDelay == null) popupDelay = POPUP_DELAY_DEFAULT
-
-    let popupDuration = userStyles.find(
-      (s) => s.name === STYLE_VARIABLE.POPUP_DURATION,
-    )?.value
-    if (popupDuration == null) popupDuration = POPUP_DULATION_DEFAULT
-    return {
-      popupDelay:
-        typeof popupDelay === "number"
-          ? popupDelay
-          : parseInt(String(popupDelay)),
-      popupDuration:
-        typeof popupDuration === "number"
-          ? popupDuration
-          : parseInt(String(popupDuration)),
-    }
   }
 
   // Set default value for startupMethod.
@@ -339,23 +341,6 @@ export function SettingForm({ className }: { className?: string }) {
         setValue("startupMethod.leftClickHoldParam", 200)
       }
     }
-
-    let newDelay
-    if (
-      startupMethod === STARTUP_METHOD.KEYBOARD ||
-      startupMethod === STARTUP_METHOD.LEFT_CLICK_HOLD
-    ) {
-      newDelay = 0
-    } else {
-      newDelay = POPUP_DELAY_DEFAULT
-    }
-    const userStyles = getValues("userStyles").filter(
-      (s) => s.name !== STYLE_VARIABLE.POPUP_DELAY,
-    )
-    setValue("userStyles", [
-      ...userStyles,
-      { name: STYLE_VARIABLE.POPUP_DELAY, value: newDelay },
-    ])
   }, [startupMethod, setValue, getValues])
 
   // Set default value for linkCommand.startupMethod.
@@ -501,9 +486,10 @@ export function SettingForm({ className }: { className?: string }) {
 
           {startupMethod !== STARTUP_METHOD.CONTEXT_MENU && (
             <>
-              <PopupAnimation
-                onSubmit={handlePopupAnimationSubmit}
-                defaultValues={getAnimationDefaultValues()}
+              <PopupSpeedField
+                control={form.control}
+                onSubmit={handlePopupSpeedSubmit}
+                startupMethod={startupMethod}
               />
 
               <SwitchField

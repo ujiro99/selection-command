@@ -215,8 +215,23 @@
   "Option_inheritPopupPlacement": {
     "message": "Inherit Menu Display Position from global settings"
   },
-  "Option_popupAnimation": {
-    "message": "Menu Display Animation"
+  "Option_popupSpeed": {
+    "message": "Menu Display Speed"
+  },
+  "Option_popupSpeed_preset": {
+    "message": "Speed Preset"
+  },
+  "Option_popupSpeed_standard": {
+    "message": "Standard"
+  },
+  "Option_popupSpeed_fast": {
+    "message": "Fast"
+  },
+  "Option_popupSpeed_instant": {
+    "message": "Instant"
+  },
+  "Option_popupSpeed_delayIgnored": {
+    "message": "Fixed to 0 ms for this startup method."
   },
   "Option_popupAutoCloseDelay": {
     "message": "Popup Auto-Close Delay"

@@ -212,8 +212,23 @@
   "Option_inheritPopupPlacement": {
     "message": "वैश्विक सेटिंग्स से मेनू प्लेसमेंट प्राप्त करें"
   },
-  "Option_popupAnimation": {
-    "message": "मेनू प्रदर्शन एनिमेशन"
+  "Option_popupSpeed": {
+    "message": "मेनू प्रदर्शन गति"
+  },
+  "Option_popupSpeed_preset": {
+    "message": "गति प्रीसेट"
+  },
+  "Option_popupSpeed_standard": {
+    "message": "मानक"
+  },
+  "Option_popupSpeed_fast": {
+    "message": "तेज़"
+  },
+  "Option_popupSpeed_instant": {
+    "message": "तत्काल"
+  },
+  "Option_popupSpeed_delayIgnored": {
+    "message": "इस स्टार्टअप विधि में 0 ms पर स्थिर है।"
   },
   "Option_popupAutoCloseDelay": {
     "message": "पॉपअप ऑटो-क्लोज़ विलंब"

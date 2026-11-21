@@ -212,8 +212,23 @@
   "Option_inheritPopupPlacement": {
     "message": "Hériter de la Position d'Affichage du Menu depuis les paramètres globaux"
   },
-  "Option_popupAnimation": {
-    "message": "Animation d'Affichage du Menu"
+  "Option_popupSpeed": {
+    "message": "Vitesse d'Affichage du Menu"
+  },
+  "Option_popupSpeed_preset": {
+    "message": "Préréglage de vitesse"
+  },
+  "Option_popupSpeed_standard": {
+    "message": "Standard"
+  },
+  "Option_popupSpeed_fast": {
+    "message": "Rapide"
+  },
+  "Option_popupSpeed_instant": {
+    "message": "Instantané"
+  },
+  "Option_popupSpeed_delayIgnored": {
+    "message": "Fixé à 0 ms pour cette méthode de démarrage."
   },
   "Option_popupAutoCloseDelay": {
     "message": "Délai de Fermeture Automatique du Popup"
