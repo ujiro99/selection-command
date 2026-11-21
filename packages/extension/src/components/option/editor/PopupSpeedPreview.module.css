@@ -27,3 +27,35 @@
     transform: scale(1);
   }
 }
+
+/*
+ * Progress bar fill. The delay segment fills over the delay, then the
+ * duration segment fills over the duration, so the bar tracks the menu's
+ * enter animation in real time. clip-path is used instead of scaleX so the
+ * hatching pattern is revealed rather than squashed.
+ */
+.progressDelay,
+.progressDuration {
+  animation-name: popupSpeedPreviewProgress;
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+}
+
+.progressDelay {
+  animation-duration: var(--preview-delay, 250ms);
+}
+
+.progressDuration {
+  animation-duration: var(--preview-duration, 150ms);
+  animation-delay: var(--preview-delay, 250ms);
+}
+
+@keyframes popupSpeedPreviewProgress {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}

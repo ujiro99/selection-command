@@ -160,7 +160,7 @@ export const PopupSpeed = ({
                     onMouseEnter={() => setPreviewSpeed(speed)}
                     onFocus={() => setPreviewSpeed(speed)}
                     className={cn(
-                      "relative w-full h-9 shadow-xs text-xs font-mono text-gray-600 dark:text-gray-400 dark:bg-(--sc-input-bg,var(--color-gray-800))",
+                      "relative w-full h-10 shadow-xs text-xs font-mono text-gray-600 dark:text-gray-400 dark:bg-(--sc-input-bg,var(--color-gray-800))",
                       "hover:bg-hover data-[state=on]:bg-selected data-[state=on]:hover:bg-selected",
                     )}
                   >
