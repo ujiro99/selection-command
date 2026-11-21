@@ -11,6 +11,7 @@ import {
   getInputSelectionEndPoint,
   getEditableSelectionEndPoint,
   isEditable,
+  isSelectionInDisabledArea,
 } from "@/services/dom"
 import { Point } from "@/types"
 
@@ -55,6 +56,13 @@ export const SelectAnchor = forwardRef<HTMLDivElement>((_props, ref) => {
   const setAnchor = useCallback(
     (p: Point) => {
       clearTimeout(delayTO as number)
+      if (isSelectionInDisabledArea()) {
+        // The page opted out of the popup for this area.
+        // Also drop the previous anchor so a stale menu does not remain.
+        setPoint(null)
+        setTarget(null)
+        return
+      }
       setPoint(p)
       const s = document.getSelection()
       if (s && s.rangeCount > 0) {
