@@ -5,6 +5,10 @@ import { SelectAnchor } from "../SelectAnchor"
 // Mock hooks
 const mockSetTarget = vi.fn()
 const mockSelectionText = { current: "" }
+const mockStartupMethod = { current: "textSelection" }
+const mockDetectHold = { current: false }
+// Stable like the real hook state, so the hold effect does not loop.
+const mockHoldPosition = { x: 0, y: 0 }
 
 vi.mock("@/hooks/useSelectContext", () => ({
   useSelectContext: () => ({
@@ -17,7 +21,7 @@ vi.mock("@/hooks/useSettings", () => ({
   useUserSettings: () => ({
     userSettings: {
       startupMethod: {
-        method: "textSelection",
+        method: mockStartupMethod.current,
         leftClickHoldParam: 200,
       },
     },
@@ -28,9 +32,9 @@ vi.mock("@/hooks/useSettings", () => ({
 
 vi.mock("@/hooks/useLeftClickHold", () => ({
   useLeftClickHold: () => ({
-    detectHold: false,
+    detectHold: mockDetectHold.current,
     detectHoldLink: false,
-    position: { x: 0, y: 0 },
+    position: mockHoldPosition,
     progress: 0,
     linkElement: null,
   }),
@@ -55,6 +59,7 @@ const mockIsInputOrTextarea = vi.fn(
   ): _target is HTMLInputElement | HTMLTextAreaElement => false,
 )
 const mockIsEditable = vi.fn((_e: unknown): boolean => false)
+const mockIsSelectionInDisabledArea = vi.fn((): boolean => false)
 
 vi.mock("@/services/dom", () => ({
   getSelectionText: () => mockGetSelectionText(),
@@ -63,6 +68,7 @@ vi.mock("@/services/dom", () => ({
     mockGetInputSelectionEndPoint(el),
   getEditableSelectionEndPoint: () => mockGetEditableSelectionEndPoint(),
   isEditable: (e: unknown) => mockIsEditable(e),
+  isSelectionInDisabledArea: () => mockIsSelectionInDisabledArea(),
 }))
 
 describe("SelectAnchor", () => {
@@ -74,6 +80,9 @@ describe("SelectAnchor", () => {
     mockIsEditable.mockReturnValue(false)
     mockGetInputSelectionEndPoint.mockReturnValue(null)
     mockGetEditableSelectionEndPoint.mockReturnValue(null)
+    mockIsSelectionInDisabledArea.mockReturnValue(false)
+    mockStartupMethod.current = "textSelection"
+    mockDetectHold.current = false
   })
 
   afterEach(() => {
@@ -215,5 +224,180 @@ describe("SelectAnchor", () => {
     const { container } = render(<SelectAnchor />)
     // When no selection has been made, the component returns null
     expect(container.innerHTML).toBe("")
+  })
+
+  it("SA-07: double click on a selection shows the anchor", () => {
+    mockGetSelectionText.mockReturnValue("hello")
+    const { container } = render(<SelectAnchor />)
+
+    act(() => {
+      document.dispatchEvent(
+        new MouseEvent("dblclick", { button: 0, bubbles: true }),
+      )
+    })
+
+    expect(container.innerHTML).not.toBe("")
+  })
+
+  it("SA-08: selection inside a disabled area does not show the anchor", () => {
+    mockGetSelectionText.mockReturnValue("hello")
+    mockIsSelectionInDisabledArea.mockReturnValue(true)
+    const { container } = render(<SelectAnchor />)
+
+    act(() => {
+      document.dispatchEvent(
+        new MouseEvent("dblclick", { button: 0, bubbles: true }),
+      )
+    })
+
+    expect(container.innerHTML).toBe("")
+  })
+
+  it("SA-09: selecting inside a disabled area removes an existing anchor", () => {
+    mockGetSelectionText.mockReturnValue("hello")
+    const { container } = render(<SelectAnchor />)
+
+    act(() => {
+      document.dispatchEvent(
+        new MouseEvent("dblclick", { button: 0, bubbles: true }),
+      )
+    })
+    expect(container.innerHTML).not.toBe("")
+
+    mockIsSelectionInDisabledArea.mockReturnValue(true)
+    act(() => {
+      document.dispatchEvent(
+        new MouseEvent("dblclick", { button: 0, bubbles: true }),
+      )
+    })
+    expect(container.innerHTML).toBe("")
+  })
+
+  it("SA-10: context menu method keeps the anchor inside a disabled area", () => {
+    // The anchor places the results of commands run from the context menu.
+    mockStartupMethod.current = "contextMenu"
+    mockGetSelectionText.mockReturnValue("hello")
+    mockIsSelectionInDisabledArea.mockReturnValue(true)
+    const { container } = render(<SelectAnchor />)
+
+    act(() => {
+      document.dispatchEvent(
+        new MouseEvent("dblclick", { button: 0, bubbles: true }),
+      )
+    })
+
+    expect(container.innerHTML).not.toBe("")
+  })
+
+  const dispatchSelectionChange = () => {
+    act(() => {
+      document.dispatchEvent(new Event("selectionchange"))
+    })
+  }
+
+  it("SA-11: selection moved into a disabled area without mouse events removes the anchor", () => {
+    // Anchor set by a selection outside the disabled area.
+    mockGetSelectionText.mockReturnValue("outside")
+    const { container } = render(<SelectAnchor />)
+    act(() => {
+      document.dispatchEvent(
+        new MouseEvent("dblclick", { button: 0, bubbles: true }),
+      )
+    })
+    expect(container.innerHTML).not.toBe("")
+
+    // The page stops the mouse events in the area; only the selection changes.
+    mockGetSelectionText.mockReturnValue("inside")
+    mockIsSelectionInDisabledArea.mockReturnValue(true)
+    dispatchSelectionChange()
+
+    expect(container.innerHTML).toBe("")
+  })
+
+  it("SA-12: selection change outside a disabled area keeps the anchor", () => {
+    mockGetSelectionText.mockReturnValue("outside")
+    const { container } = render(<SelectAnchor />)
+    act(() => {
+      document.dispatchEvent(
+        new MouseEvent("dblclick", { button: 0, bubbles: true }),
+      )
+    })
+
+    mockGetSelectionText.mockReturnValue("outside 2")
+    dispatchSelectionChange()
+
+    expect(container.innerHTML).not.toBe("")
+  })
+
+  it("SA-13: context menu method keeps the anchor when the selection moves into a disabled area", () => {
+    mockStartupMethod.current = "contextMenu"
+    mockGetSelectionText.mockReturnValue("outside")
+    const { container } = render(<SelectAnchor />)
+    act(() => {
+      document.dispatchEvent(
+        new MouseEvent("dblclick", { button: 0, bubbles: true }),
+      )
+    })
+
+    mockGetSelectionText.mockReturnValue("inside")
+    mockIsSelectionInDisabledArea.mockReturnValue(true)
+    dispatchSelectionChange()
+
+    expect(container.innerHTML).not.toBe("")
+  })
+
+  it("SA-14: the same text selected again inside a disabled area removes the anchor", () => {
+    // selectionText does not change, so only selectionchange can notice it.
+    mockSelectionText.current = "demo"
+    mockGetSelectionText.mockReturnValue("demo")
+    const { container } = render(<SelectAnchor />)
+    act(() => {
+      document.dispatchEvent(
+        new MouseEvent("dblclick", { button: 0, bubbles: true }),
+      )
+    })
+    expect(container.innerHTML).not.toBe("")
+
+    mockIsSelectionInDisabledArea.mockReturnValue(true)
+    dispatchSelectionChange()
+
+    expect(container.innerHTML).toBe("")
+  })
+
+  it("SA-15: a click hold does not swallow mouseup when the selection is in a disabled area", () => {
+    mockStartupMethod.current = "leftClickHold"
+    mockDetectHold.current = true
+    mockGetSelectionText.mockReturnValue("inside")
+    mockIsSelectionInDisabledArea.mockReturnValue(true)
+    render(<SelectAnchor />)
+
+    const e = new MouseEvent("mouseup", {
+      button: 0,
+      bubbles: true,
+      cancelable: true,
+    })
+    act(() => {
+      document.dispatchEvent(e)
+    })
+
+    expect(e.defaultPrevented).toBe(false)
+  })
+
+  it("SA-16: a click hold swallows mouseup outside a disabled area", () => {
+    mockStartupMethod.current = "leftClickHold"
+    mockDetectHold.current = true
+    mockGetSelectionText.mockReturnValue("outside")
+    render(<SelectAnchor />)
+
+    const e = new MouseEvent("mouseup", {
+      button: 0,
+      bubbles: true,
+      cancelable: true,
+    })
+    act(() => {
+      document.dispatchEvent(e)
+    })
+
+    expect(e.defaultPrevented).toBe(true)
   })
 })

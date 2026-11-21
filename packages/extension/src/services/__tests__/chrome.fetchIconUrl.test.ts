@@ -7,6 +7,12 @@ type OnUpdatedListener = (
   tab: chrome.tabs.Tab,
 ) => void
 
+// Pin the promise-based overloads so mockResolvedValue accepts the results.
+type GetTab = (tabId: number) => Promise<chrome.tabs.Tab>
+type CreateWindow = (
+  createData?: chrome.windows.CreateData,
+) => Promise<chrome.windows.Window>
+
 const TAB_ID = 30
 const WINDOW_ID = 3
 const SEARCH_URL = "https://example.com/search?q=%s"
@@ -30,8 +36,8 @@ describe("fetchIconUrl", () => {
         listener = l
       },
     )
-    vi.mocked(chrome.tabs.get).mockResolvedValue(tab({ status: "loading" }))
-    vi.mocked(chrome.windows.create).mockResolvedValue({
+    vi.mocked(chrome.tabs.get as GetTab).mockResolvedValue(tab({ status: "loading" }))
+    vi.mocked(chrome.windows.create as CreateWindow).mockResolvedValue({
       id: WINDOW_ID,
       tabs: [{ id: TAB_ID }],
     } as chrome.windows.Window)
@@ -77,7 +83,7 @@ describe("fetchIconUrl", () => {
   })
 
   it("FI-03: 正常系: ウィンドウ作成前に読み込みが完了していても取得できる", async () => {
-    vi.mocked(chrome.tabs.get).mockResolvedValue(
+    vi.mocked(chrome.tabs.get as GetTab).mockResolvedValue(
       tab({ status: "complete", favIconUrl: "https://example.com/b.ico" }),
     )
 
