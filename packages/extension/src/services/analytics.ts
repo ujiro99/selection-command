@@ -77,6 +77,8 @@ export const ANALYTICS_EVENTS = {
   ONBOARDING_PAGE_LOADED: "onboarding_page_loaded",
   ONBOARDING_RENDER_ERROR: "onboarding_render_error",
   INSTALL_INIT_ERROR: "install_init_error",
+  // The Hub's What's New page opened after an update (#563).
+  WHATS_NEW_TAB_OPENED: "whats_new_tab_opened",
   // No "uninstall": the service worker is gone by then, so the Hub sends it
   // from the uninstall URL instead (selection-command-hub#275).
 } as const
