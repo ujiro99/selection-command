@@ -58,6 +58,12 @@ export const ANALYTICS_EVENTS = {
   ONBOARDING_COMMAND_EXECUTE: "onboarding_command_execute",
   ONBOARDING_VALUE_REACHED: "onboarding_value_reached",
   ONBOARDING_COMPLETE: "onboarding_complete",
+  // Funnel checkpoints between onboarding_start and the first text
+  // selection, separating users who leave during the welcome overlay from
+  // those who leave on the step itself, and those who never touch the
+  // sample text from those who try and fail to select it (#573).
+  ONBOARDING_WELCOME_DONE: "onboarding_welcome_done",
+  ONBOARDING_TARGET_INTERACT: "onboarding_target_interact",
   // Diagnostics for the menu's icon color lookup in the service worker, which
   // the menu waits for before it renders (#482). Sent only when the lookup
   // fails or is slow, at most once per page, to keep the volume low.
@@ -71,6 +77,8 @@ export const ANALYTICS_EVENTS = {
   ONBOARDING_PAGE_LOADED: "onboarding_page_loaded",
   ONBOARDING_RENDER_ERROR: "onboarding_render_error",
   INSTALL_INIT_ERROR: "install_init_error",
+  // The Hub's What's New page opened after an update (#563).
+  WHATS_NEW_TAB_OPENED: "whats_new_tab_opened",
   // No "uninstall": the service worker is gone by then, so the Hub sends it
   // from the uninstall URL instead (selection-command-hub#275).
 } as const

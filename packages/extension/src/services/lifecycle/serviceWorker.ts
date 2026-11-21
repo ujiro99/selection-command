@@ -11,6 +11,7 @@ import {
 } from "@/services/analytics"
 import { getInstallEnvironmentParams } from "@/services/installEnvironment"
 import { ensureOnboardingAssignment } from "@/services/experiments"
+import { openWhatsNewTab } from "@/services/whatsNew"
 import {
   checkAndPerformDailyBackup,
   checkAndPerformWeeklyBackup,
@@ -127,6 +128,10 @@ const onInstalled = async (details: chrome.runtime.InstalledDetails) => {
       } catch (error) {
         console.error("Failed to save settings of the existing install:", error)
       }
+      // Tell the user what changed in this version. Not awaited, so a slow
+      // tab creation (e.g. no window yet) never delays the context menu
+      // setup below. Never rejects.
+      void openWhatsNewTab(details.previousVersion)
     }
 
     stage = "context_menu"

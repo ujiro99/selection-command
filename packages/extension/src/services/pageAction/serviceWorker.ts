@@ -781,4 +781,6 @@ export {
   handleSidePanelConnect,
   handleSidePanelOpened,
   registerSidePanelTab,
+  isSidePanelHostTab,
+  unregisterSidePanelHostTab,
 } from "./serviceWorker-sidePanel"

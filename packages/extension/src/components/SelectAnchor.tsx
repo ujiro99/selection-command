@@ -11,6 +11,7 @@ import {
   getInputSelectionEndPoint,
   getEditableSelectionEndPoint,
   isEditable,
+  isSelectionInDisabledArea,
 } from "@/services/dom"
 import { Point } from "@/types"
 
@@ -52,10 +53,19 @@ export const SelectAnchor = forwardRef<HTMLDivElement>((_props, ref) => {
   // 5. double click   | show      | show(move)           |
   // 6. tripple click  | show      | show(move)           |
 
+  // Whether the page opted out of the popup for the current selection.
+  // The context menu method shows no popup menu, so it keeps the anchor to
+  // place results.
+  const isAnchorSuppressed = useCallback(
+    () => method !== STARTUP_METHOD.CONTEXT_MENU && isSelectionInDisabledArea(),
+    [method],
+  )
+
   const setAnchor = useCallback(
     (p: Point) => {
       clearTimeout(delayTO as number)
-      setPoint(p)
+      // Always keep the target: commands run from the context menu or
+      // shortcuts still use it, even where the popup is disabled.
       const s = document.getSelection()
       if (s && s.rangeCount > 0) {
         setTarget(s.getRangeAt(0).startContainer.parentElement as Element)
@@ -64,8 +74,10 @@ export const SelectAnchor = forwardRef<HTMLDivElement>((_props, ref) => {
       } else {
         setTarget(null)
       }
+      // Drop the previous anchor too, so a stale menu does not remain.
+      setPoint(isAnchorSuppressed() ? null : p)
     },
-    [delayTO, setPoint, setTarget],
+    [delayTO, isAnchorSuppressed, setPoint, setTarget],
   )
 
   const releaseAnchor = useCallback(
@@ -100,7 +112,8 @@ export const SelectAnchor = forwardRef<HTMLDivElement>((_props, ref) => {
       if (isDragging) {
         onDrag(e)
       }
-      if (detectHold) {
+      // Swallow the mouseup only when the held popup is actually shown.
+      if (detectHold && !isAnchorSuppressed()) {
         e.preventDefault()
         e.stopPropagation()
       }
@@ -141,7 +154,15 @@ export const SelectAnchor = forwardRef<HTMLDivElement>((_props, ref) => {
       document.removeEventListener("click", onClick)
       document.removeEventListener("dblclick", onDouble)
     }
-  }, [isMouseDown, isDragging, detectHold, selected, releaseAnchor, setAnchor])
+  }, [
+    isMouseDown,
+    isDragging,
+    detectHold,
+    selected,
+    releaseAnchor,
+    setAnchor,
+    isAnchorSuppressed,
+  ])
 
   useEffect(() => {
     const onMouseMove = (e: MouseEvent) => {
@@ -213,6 +234,24 @@ export const SelectAnchor = forwardRef<HTMLDivElement>((_props, ref) => {
       document.removeEventListener("keyup", onKeyUp)
     }
   }, [point, selectionText, setAnchor, releaseAnchor])
+
+  useEffect(() => {
+    // The selection can move into a disabled area without the mouse events
+    // that call setAnchor, e.g. when the page stops their propagation or the
+    // selection is extended with the keyboard. Drop the stale anchor then.
+    // Listen to selectionchange directly: selectionText does not change when
+    // the same text is selected again inside the disabled area.
+    const onSelectionChange = () => {
+      if (!getSelectionText()) return
+      if (isAnchorSuppressed()) {
+        setPoint(null)
+      }
+    }
+    document.addEventListener("selectionchange", onSelectionChange)
+    return () => {
+      document.removeEventListener("selectionchange", onSelectionChange)
+    }
+  }, [isAnchorSuppressed])
 
   useEffect(() => {
     if (detectHold) {

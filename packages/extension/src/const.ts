@@ -2,6 +2,13 @@ import { OPEN_MODE } from "@shared"
 export { OPEN_MODE, PAGE_ACTION_OPEN_MODE, SEARCH_OPEN_MODE } from "@shared"
 
 export const APP_ID = "selection-command"
+
+/**
+ * Attribute that web pages can put on an element to suppress the popup menu
+ * for selections made inside it, and the link preview for links and buttons
+ * inside it (e.g. the interactive demo on the Hub LP).
+ */
+export const POPUP_DISABLED_ATTR = "data-selection-command-disabled"
 export const VERSION = (
   typeof __APP_VERSION__ !== "undefined" ? __APP_VERSION__ : "0.0.0"
 ) as string

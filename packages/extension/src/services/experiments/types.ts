@@ -3,14 +3,17 @@
  * Each letter names one UI pattern and keeps meaning that pattern across
  * experiments, so a GA4 `variant` value never means two different patterns.
  * Retired letters are never reused: "A" was the original INTRO flow, "B" was
- * onboarding_v2's treatment, and "D" was onboarding_v4's treatment (C
- * without the step rail and with the welcome glow as the page background).
+ * onboarding_v2's treatment, "D" was onboarding_v4's treatment (C without
+ * the step rail and with the welcome glow as the page background), and "E"
+ * was onboarding_v5's treatment (D with the step rail restored).
  *
- * Live letters: "C" is the welcome-overlay flow, "E" is D with the step rail
- * restored. Which letter is the control is decided per experiment:
- * onboarding_v5 compares C (control) with E.
+ * Live letters: "C" is the welcome-overlay flow, "F" is E with C's welcome
+ * timing, a white sample card on the glow, and a double-click hint on
+ * Step 1. Which letter is
+ * the control is decided per experiment: onboarding_v6 compares C (control)
+ * with F.
  */
-export type ExperimentVariant = "C" | "E"
+export type ExperimentVariant = "C" | "F"
 
 /** Remote configuration of a single experiment, served by the hub. */
 export type ExperimentConfig = {

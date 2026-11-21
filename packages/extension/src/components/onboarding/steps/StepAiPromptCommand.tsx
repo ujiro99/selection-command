@@ -204,6 +204,9 @@ export function StepAiPromptCommand({ onboarding }: Props) {
               background={onboarding.ui.background}
               selected={!isExplain}
               calloutDelay={phaseDelays.targetTextCallout}
+              onInteract={() =>
+                onboarding.recordTargetInteract(OnboardingStep.AI_PROMPT)
+              }
             />
           </OnboardingFadeIn>
 

@@ -8,10 +8,14 @@ import {
   handleSidePanelConnect,
   handleSidePanelOpened,
   registerSidePanelTab,
+  registerSidePanelHostTab,
+  unregisterSidePanelHostTab,
+  isSidePanelHostTab,
   resetSidePanelState,
 } from "../serviceWorker-sidePanel"
 
 import { IpcNoReplyError, PortReply } from "@/services/ipc"
+import { SESSION_STORAGE_KEY } from "@/services/storage"
 
 // Setup test environment (applies vi.mock calls from serviceWorker-setup.ts)
 setupServiceWorkerTestEnvironment()
@@ -67,6 +71,51 @@ const createPendingAction = () => ({
 // -------------------------------------------------------------------------
 // Tests
 // -------------------------------------------------------------------------
+
+describe("serviceWorker.ts - Side Panel Host Tabs", () => {
+  const HOST_TABS_KEY = SESSION_STORAGE_KEY.SIDE_PANEL_HOST_TABS
+
+  it("SPH-01: 正常系: 登録したタブはサイドパネルのタブと判定され、session storage に保存される", async () => {
+    mockStorage.get.mockResolvedValue([])
+
+    await registerSidePanelHostTab(100)
+
+    expect(await isSidePanelHostTab(100)).toBe(true)
+    expect(await isSidePanelHostTab(101)).toBe(false)
+    expect(mockStorage.set).toHaveBeenCalledWith(HOST_TABS_KEY, [100])
+  })
+
+  it("SPH-02: 正常系: Service Worker 再起動後も session storage から読み込む", async () => {
+    mockStorage.get.mockResolvedValue([200])
+
+    expect(await isSidePanelHostTab(200)).toBe(true)
+  })
+
+  it("SPH-03: 正常系: 登録を解除したタブはサイドパネルのタブと判定されない", async () => {
+    mockStorage.get.mockResolvedValue([300, 301])
+
+    await unregisterSidePanelHostTab(300)
+
+    expect(await isSidePanelHostTab(300)).toBe(false)
+    expect(await isSidePanelHostTab(301)).toBe(true)
+    expect(mockStorage.set).toHaveBeenLastCalledWith(HOST_TABS_KEY, [301])
+  })
+
+  it("SPH-04: 正常系: 未登録のタブの解除では保存しない", async () => {
+    mockStorage.get.mockResolvedValue([])
+    mockStorage.set.mockClear()
+
+    await unregisterSidePanelHostTab(999)
+
+    expect(mockStorage.set).not.toHaveBeenCalled()
+  })
+
+  it("SPH-05: 異常系: 読み込みに失敗しても未登録として扱う", async () => {
+    mockStorage.get.mockRejectedValue(new Error("failed"))
+
+    expect(await isSidePanelHostTab(100)).toBe(false)
+  })
+})
 
 describe("serviceWorker.ts - Side Panel Connection", () => {
   describe("handleSidePanelConnect()", () => {

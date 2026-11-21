@@ -2,6 +2,12 @@ import type { ExperimentVariant } from "@/services/experiments"
 
 export type OnboardingBackground = "vignette" | "glow"
 
+// How the sample text card asks to be selected. "drag" selects the whole
+// sentence; "doubleClick" asks for a double-click on any word,
+// Chrome's native word selection, so the gesture is the same one users go on
+// to use on real pages.
+export type OnboardingSelectGesture = "drag" | "doubleClick"
+
 // Timing and spacing of the welcome overlay (see OnboardingWelcome). Delays
 // are in milliseconds from mount; class names are full Tailwind literals so
 // they survive class scanning.
@@ -29,6 +35,9 @@ export type OnboardingVariantUi = {
   // step (see OnboardingGlow).
   background: OnboardingBackground
   welcome: OnboardingWelcomeUi
+  // Gesture the Step 1 (search) card asks for. Step 2 (AI prompt) always
+  // asks for a drag, since a single word makes no sense as a prompt.
+  searchSelectGesture: OnboardingSelectGesture
 }
 
 // Variant C's welcome overlay, unchanged so the control arm stays as shipped.
@@ -43,35 +52,24 @@ export const DEFAULT_WELCOME_UI: OnboardingWelcomeUi = {
   logoClassName: "-mt-10",
 }
 
-// Variant E staggers the welcome more slowly and centers its glow where the
-// layout's glow sits, so the handoff to the first step lines up. The
-// duration is extended by the same 600ms the last fade-in was pushed back,
-// keeping the 800ms hold after everything has appeared that variant C has.
-const VARIANT_E_WELCOME_UI: OnboardingWelcomeUi = {
-  durationMs: 2800,
-  glowDelay: 300,
-  glowCenter: "50% 48%",
-  logoDelay: 600,
-  messageDelay: 900,
-  introductionDelay: 1200,
-  gapClassName: "gap-12",
-  logoClassName: "-mt-20",
-}
-
 const DEFAULT_UI: OnboardingVariantUi = {
   background: "vignette",
   welcome: DEFAULT_WELCOME_UI,
+  searchSelectGesture: "drag",
 }
 
-// Variant E is variant C with the welcome glow carried over as the page
-// background and a slower welcome. It is onboarding_v4's variant D with the
-// step rail restored, since dropping the rail coincided with more users
-// leaving before their first text selection.
-const VARIANT_E_UI: OnboardingVariantUi = {
+// Variant F keeps onboarding_v5's variant E look (the welcome glow carried
+// over as the page background, with the step rail), but goes back to
+// variant C's welcome timing: E's slower welcome coincided with more users
+// leaving before their first selection without ever pressing Skip (#573).
+// Only the glow's center moves, to where the layout's glow sits, so the
+// handoff to the first step lines up. Step 1 asks for a double-click.
+const VARIANT_F_UI: OnboardingVariantUi = {
   background: "glow",
-  welcome: VARIANT_E_WELCOME_UI,
+  welcome: { ...DEFAULT_WELCOME_UI, glowCenter: "50% 48%" },
+  searchSelectGesture: "doubleClick",
 }
 
 export const getVariantUi = (
   variant: ExperimentVariant,
-): OnboardingVariantUi => (variant === "E" ? VARIANT_E_UI : DEFAULT_UI)
+): OnboardingVariantUi => (variant === "F" ? VARIANT_F_UI : DEFAULT_UI)

@@ -212,8 +212,23 @@
   "Option_inheritPopupPlacement": {
     "message": "Heredar Posición de Visualización del Menú desde la configuración global"
   },
-  "Option_popupAnimation": {
-    "message": "Animación de Visualización del Menú"
+  "Option_popupSpeed": {
+    "message": "Velocidad de Visualización del Menú"
+  },
+  "Option_popupSpeed_preset": {
+    "message": "Preajuste de velocidad"
+  },
+  "Option_popupSpeed_standard": {
+    "message": "Estándar"
+  },
+  "Option_popupSpeed_fast": {
+    "message": "Rápido"
+  },
+  "Option_popupSpeed_instant": {
+    "message": "Instantáneo"
+  },
+  "Option_popupSpeed_delayIgnored": {
+    "message": "Fijado en 0 ms con este método de inicio."
   },
   "Option_popupAutoCloseDelay": {
     "message": "Retardo de Cierre Automático de Popup"
@@ -1513,8 +1528,14 @@
   "onboarding_step1TargetText": {
     "message": "Una extensión que te permite buscar el texto seleccionado con un solo clic."
   },
+  "onboarding_step1TargetWord": {
+    "message": "extensión"
+  },
   "onboarding_selectHint": {
     "message": "Arrastra para seleccionar el texto de abajo"
+  },
+  "onboarding_doubleClickHint": {
+    "message": "Haz doble clic en cualquier palabra"
   },
   "onboarding_railSelect": {
     "message": "Seleccionar"

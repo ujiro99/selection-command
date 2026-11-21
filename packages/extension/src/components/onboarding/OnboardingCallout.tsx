@@ -65,15 +65,22 @@ export function OnboardingCallout({
           sideOffset={10}
           className={cn(contentClassName, "shadow-none")}
         >
-          <div className="animate-onboarding-float motion-reduce:animate-none max-w-64 rounded-md bg-gray-800 dark:bg-sky-50 px-3 py-2 shadow-xl">
-            <div className="text-sm text-white dark:text-gray-900 whitespace-pre-wrap">
-              {children}
+          {/* Float the bubble and the arrow as one layer. Animating them
+              separately rasterizes each at its own sub-pixel offset, which
+              opens a hairline gap between them mid-animation. The wrapper's
+              transform also makes it the arrow's containing block, and it
+              matches the content box, so the arrow stays where Radix puts it. */}
+          <div className="animate-onboarding-float motion-reduce:animate-none">
+            <div className="max-w-64 rounded-md bg-gray-800 dark:bg-sky-50 px-3 py-2 shadow-xl">
+              <div className="text-sm text-white dark:text-gray-900 whitespace-pre-wrap">
+                {children}
+              </div>
             </div>
+            <PopoverArrow
+              className="fill-gray-800 dark:fill-sky-50"
+              height={6}
+            />
           </div>
-          <PopoverArrow
-            className="fill-gray-800 dark:fill-gray-100 animate-onboarding-float motion-reduce:animate-none shadow-xl"
-            height={6}
-          />
         </PopoverContent>
       )}
     </Popover>

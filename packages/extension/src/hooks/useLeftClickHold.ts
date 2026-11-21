@@ -2,7 +2,11 @@ import { useState, useEffect, useRef } from "react"
 import { MOUSE } from "@/const"
 
 import { isPopup } from "@/lib/utils"
-import { findAnchorElement, findClickableElement } from "@/services/dom"
+import {
+  findAnchorElement,
+  findClickableElement,
+  isInDisabledArea,
+} from "@/services/dom"
 import type { Point } from "@/types"
 
 const isTargetEvent = (e: MouseEvent): boolean => {
@@ -39,6 +43,9 @@ export function useLeftClickHold(props: useLeftClickHoldParam) {
     const handleMouseDown = (event: MouseEvent) => {
       if (!isTargetEvent(event)) return
       if (detectHold) release()
+      // The page opted out of the popups for this area. Checked after the
+      // release above, so a click here still closes a previously held popup.
+      if (isInDisabledArea(event.target as Node)) return
 
       // Set initial state
       setProgress(0)
