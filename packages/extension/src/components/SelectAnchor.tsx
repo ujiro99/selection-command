@@ -223,6 +223,17 @@ export const SelectAnchor = forwardRef<HTMLDivElement>((_props, ref) => {
   }, [point, selectionText, setAnchor, releaseAnchor])
 
   useEffect(() => {
+    // The selection can move into a disabled area without the mouse events
+    // that call setAnchor, e.g. when the page stops their propagation or the
+    // selection is extended with the keyboard. Drop the stale anchor then.
+    if (!selectionText) return
+    if (method === STARTUP_METHOD.CONTEXT_MENU) return
+    if (isSelectionInDisabledArea()) {
+      setPoint(null)
+    }
+  }, [selectionText, method])
+
+  useEffect(() => {
     if (detectHold) {
       setAnchor(position)
     }
