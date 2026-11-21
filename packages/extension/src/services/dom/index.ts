@@ -6,7 +6,7 @@ import {
   findUrlsInText,
   toLinkUrl,
 } from "@/lib/urlExtractor"
-import { APP_ID, PAGE_HTML_MAX_CHARS } from "@/const"
+import { APP_ID, PAGE_HTML_MAX_CHARS, POPUP_DISABLED_ATTR } from "@/const"
 
 export function linksInSelection(): string[] {
   const selection = document.getSelection()
@@ -106,6 +106,30 @@ export type ScreenSize = {
   height: number
   left: number
   top: number
+}
+
+/**
+ * Whether the node is inside an element marked with POPUP_DISABLED_ATTR,
+ * where the extension must not show its popups.
+ */
+export const isInDisabledArea = (node: Node | null): boolean => {
+  const elm = node instanceof Element ? node : node?.parentElement
+  return elm?.closest(`[${POPUP_DISABLED_ATTR}]`) != null
+}
+
+/**
+ * Whether the current selection is inside an element marked with
+ * POPUP_DISABLED_ATTR, where the popup menu must not be shown.
+ * A selection counts when either of its ends lies in such an element.
+ */
+export function isSelectionInDisabledArea(): boolean {
+  const active = document.activeElement
+  if (isInputOrTextarea(active)) {
+    return isInDisabledArea(active)
+  }
+  const s = document.getSelection()
+  if (s == null || s.rangeCount === 0) return false
+  return isInDisabledArea(s.anchorNode) || isInDisabledArea(s.focusNode)
 }
 
 /**

@@ -18,6 +18,7 @@ import { isLinkCommand } from "@/lib/commandGuards"
 import {
   isClickableElement,
   findAnchorElement,
+  isInDisabledArea,
   ScreenSize,
 } from "@/services/dom"
 import { getScreenSize } from "@/services/screen"
@@ -31,6 +32,7 @@ const isTargetEvent = (e: MouseEvent): boolean => {
   return (
     e.button === MOUSE.LEFT &&
     !isPopup(e.target as Element) &&
+    !isInDisabledArea(e.target as Node) &&
     (findAnchorElement(e) != null || isClickableElement(e.target as Element))
   )
 }
@@ -362,4 +364,9 @@ function useDetectClickHold(
         preventLinkClick: detectHoldLink,
       }
     : {}
+}
+
+/** Test-only exports. Do not use in production code. */
+export const __test = {
+  isTargetEvent,
 }
