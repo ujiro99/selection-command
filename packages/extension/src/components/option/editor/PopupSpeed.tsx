@@ -165,7 +165,7 @@ export const PopupSpeed = ({
                     )}
                   >
                     {currentSpeed === speed && (
-                      <Check size={16} className="absolute left-3" />
+                      <Check size={16} className="absolute left-4" />
                     )}
                     {t(`Option_popupSpeed_${speed}`)}
                   </ToggleGroupItem>
@@ -177,9 +177,9 @@ export const PopupSpeed = ({
                   previewSpeed != null
                     ? getPresetValues(previewSpeed, startupMethod)
                     : {
-                        popupDelay: delayIgnored ? 0 : popupDelay,
-                        popupDuration,
-                      }
+                      popupDelay: delayIgnored ? 0 : popupDelay,
+                      popupDuration,
+                    }
                 }
               />
             </div>
