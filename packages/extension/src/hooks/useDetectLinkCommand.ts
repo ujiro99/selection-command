@@ -18,6 +18,7 @@ import { isLinkCommand } from "@/lib/commandGuards"
 import {
   isClickableElement,
   findAnchorElement,
+  isInDisabledArea,
   ScreenSize,
 } from "@/services/dom"
 import { getScreenSize } from "@/services/screen"
@@ -27,10 +28,11 @@ import {
   isOnboardingPage,
 } from "@/components/onboarding/onboardingEvents"
 
-const isTargetEvent = (e: MouseEvent): boolean => {
+export const isTargetEvent = (e: MouseEvent): boolean => {
   return (
     e.button === MOUSE.LEFT &&
     !isPopup(e.target as Element) &&
+    !isInDisabledArea(e.target as Node) &&
     (findAnchorElement(e) != null || isClickableElement(e.target as Element))
   )
 }

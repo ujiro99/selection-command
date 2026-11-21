@@ -108,7 +108,11 @@ export type ScreenSize = {
   top: number
 }
 
-const isInDisabledArea = (node: Node | null): boolean => {
+/**
+ * Whether the node is inside an element marked with POPUP_DISABLED_ATTR,
+ * where the extension must not show its popups.
+ */
+export const isInDisabledArea = (node: Node | null): boolean => {
   const elm = node instanceof Element ? node : node?.parentElement
   return elm?.closest(`[${POPUP_DISABLED_ATTR}]`) != null
 }

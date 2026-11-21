@@ -2,11 +2,19 @@ import { useState, useEffect, useRef } from "react"
 import { MOUSE } from "@/const"
 
 import { isPopup } from "@/lib/utils"
-import { findAnchorElement, findClickableElement } from "@/services/dom"
+import {
+  findAnchorElement,
+  findClickableElement,
+  isInDisabledArea,
+} from "@/services/dom"
 import type { Point } from "@/types"
 
 const isTargetEvent = (e: MouseEvent): boolean => {
-  return e.button === MOUSE.LEFT && !isPopup(e.target as Element)
+  return (
+    e.button === MOUSE.LEFT &&
+    !isPopup(e.target as Element) &&
+    !isInDisabledArea(e.target as Node)
+  )
 }
 
 const findTarget = (e: MouseEvent): Element | null => {
