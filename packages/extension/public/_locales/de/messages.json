@@ -1528,8 +1528,14 @@
   "onboarding_step1TargetText": {
     "message": "Eine Erweiterung, mit der du markierten Text mit einem Klick durchsuchen kannst."
   },
+  "onboarding_step1TargetWord": {
+    "message": "Erweiterung"
+  },
   "onboarding_selectHint": {
     "message": "Text unten durch Ziehen markieren"
+  },
+  "onboarding_doubleClickHint": {
+    "message": "Doppelklicke auf ein beliebiges Wort"
   },
   "onboarding_railSelect": {
     "message": "Auswählen"

@@ -250,6 +250,11 @@ export function StepSearchCommand({ onboarding }: Props) {
               background={onboarding.ui.background}
               selected={!isExplain}
               calloutDelay={phaseDelays.targetTextCallout}
+              gesture={onboarding.ui.searchSelectGesture}
+              targetWord={t("onboarding_step1TargetWord")}
+              onInteract={() =>
+                onboarding.recordTargetInteract(OnboardingStep.SEARCH)
+              }
             />
           </OnboardingFadeIn>
           <OnboardingCallout

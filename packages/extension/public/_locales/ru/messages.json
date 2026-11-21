@@ -1528,8 +1528,14 @@
   "onboarding_step1TargetText": {
     "message": "Расширение, позволяющее искать выделенный текст одним щелчком."
   },
+  "onboarding_step1TargetWord": {
+    "message": "Расширение"
+  },
   "onboarding_selectHint": {
     "message": "Перетащите, чтобы выделить текст ниже"
+  },
+  "onboarding_doubleClickHint": {
+    "message": "Дважды щёлкните любое слово"
   },
   "onboarding_railSelect": {
     "message": "Выделение"

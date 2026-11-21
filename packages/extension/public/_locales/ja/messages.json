@@ -1525,8 +1525,14 @@
   "onboarding_step1TargetText": {
     "message": "選択テキストをワンクリックで検索できる拡張機能"
   },
+  "onboarding_step1TargetWord": {
+    "message": "テキスト"
+  },
   "onboarding_selectHint": {
     "message": "下のテキストをドラッグして選択"
+  },
+  "onboarding_doubleClickHint": {
+    "message": "どれかの単語をダブルクリック"
   },
   "onboarding_railSelect": {
     "message": "選択"

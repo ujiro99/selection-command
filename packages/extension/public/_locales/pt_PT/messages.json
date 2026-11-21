@@ -1531,8 +1531,14 @@
   "onboarding_step1TargetText": {
     "message": "Uma extensão que permite pesquisar o texto selecionado com um único clique."
   },
+  "onboarding_step1TargetWord": {
+    "message": "extensão"
+  },
   "onboarding_selectHint": {
     "message": "Arraste para selecionar o texto abaixo"
+  },
+  "onboarding_doubleClickHint": {
+    "message": "Faça duplo clique em qualquer palavra"
   },
   "onboarding_railSelect": {
     "message": "Selecionar"

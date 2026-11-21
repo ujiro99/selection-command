@@ -7,7 +7,7 @@ import {
 } from "@/services/experiments"
 import type { ExperimentVariant } from "@/services/experiments"
 
-// development or e2e build-only escape hatch (`?variant=E`), mirroring
+// development or e2e build-only escape hatch (`?variant=F`), mirroring
 // useOnboardingState's `?step=/?phase=` override so screenshot and manual QA
 // tooling can land on either arm of the experiment on demand.
 function readVariantOverride(): ExperimentVariant | null {

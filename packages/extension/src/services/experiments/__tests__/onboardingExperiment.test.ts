@@ -45,10 +45,10 @@ describe("ensureOnboardingAssignment", () => {
 
     const assignment = await ensureOnboardingAssignment()
 
-    expect(assignment.variant).toBe("E")
+    expect(assignment.variant).toBe("F")
     expect(assignment.configSource).toBe("remote")
-    expect(getOnboardingVariantSync()).toBe("E")
-    expect((await readStored())[ONBOARDING_EXPERIMENT_ID].variant).toBe("E")
+    expect(getOnboardingVariantSync()).toBe("F")
+    expect((await readStored())[ONBOARDING_EXPERIMENT_ID].variant).toBe("F")
   })
 
   it("assigns the control (variant C) when the draw lands above the allocation", async () => {
@@ -80,7 +80,7 @@ describe("ensureOnboardingAssignment", () => {
 
     const assignment = await ensureOnboardingAssignment()
 
-    expect(assignment.variant).toBe("E")
+    expect(assignment.variant).toBe("F")
     expect(assignment.configSource).toBe("fallback")
   })
 
@@ -123,6 +123,6 @@ describe("ensureOnboardingAssignment", () => {
 
     const stored = await readStored()
     expect(stored.other_experiment.variant).toBe("C")
-    expect(stored[ONBOARDING_EXPERIMENT_ID].variant).toBe("E")
+    expect(stored[ONBOARDING_EXPERIMENT_ID].variant).toBe("F")
   })
 })

@@ -1531,8 +1531,14 @@
   "onboarding_step1TargetText": {
     "message": "Ekstensi yang memungkinkan Anda mencari teks yang dipilih hanya dengan satu klik."
   },
+  "onboarding_step1TargetWord": {
+    "message": "Ekstensi"
+  },
   "onboarding_selectHint": {
     "message": "Seret untuk memilih teks di bawah"
+  },
+  "onboarding_doubleClickHint": {
+    "message": "Klik dua kali kata mana saja"
   },
   "onboarding_railSelect": {
     "message": "Pilih"

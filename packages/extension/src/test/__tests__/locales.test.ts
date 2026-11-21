@@ -55,4 +55,17 @@ describe("_locales messages.json", () => {
       )
     }
   })
+
+  it("LC-04: onboarding_step1TargetWord should be part of onboarding_step1TargetText in every locale", () => {
+    // Otherwise the onboarding card silently falls back to the drag hint
+    // in that locale (see splitTargetWord), changing the experiment's arm.
+    type Message = { message: string }
+    for (const locale of locales) {
+      const messages = loadMessages(locale)
+      const text = (messages.onboarding_step1TargetText as Message).message
+      const word = (messages.onboarding_step1TargetWord as Message).message
+      expect(word, `[${locale}] empty target word`).not.toBe("")
+      expect(text, `[${locale}] target word not in target text`).toContain(word)
+    }
+  })
 })

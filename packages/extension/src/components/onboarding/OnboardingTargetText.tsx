@@ -1,17 +1,21 @@
 import { useRef, useState } from "react"
-import { TextCursor } from "lucide-react"
+import { MousePointerClick, TextCursor } from "lucide-react"
 import { t } from "@/services/i18n"
 import { cn, isEmpty } from "@/lib/utils"
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion"
 import { useSelectContext } from "@/hooks/useSelectContext"
 import { useSelectionDemo } from "./useSelectionDemo"
 import { OnboardingCallout } from "./OnboardingCallout"
-import type { OnboardingBackground } from "./onboardingVariantUi"
+import { splitTargetWord } from "./textUtils"
+import type {
+  OnboardingBackground,
+  OnboardingSelectGesture,
+} from "./onboardingVariantUi"
 
 type Props = {
   text: string
   // The page background behind the card; on the "glow" background the card
-  // is solid white so it stands out from the blue glow.
+  // is solid white with a soft shadow so it stands out from the blue glow.
   background: OnboardingBackground
   // True once the user has actually selected the text (any later phase),
   // rendering it as a static, already-selected highlight instead.
@@ -20,19 +24,36 @@ type Props = {
   // than hardcoded so callers manage it alongside their other phase-based
   // delays (see each step's `delays` object).
   calloutDelay?: number
+  // Gesture to ask for. "doubleClick" needs `targetWord` to be part of
+  // `text`; it is where the double-click is demonstrated, but the hint asks
+  // for any word, since any selection moves the step on.
+  gesture?: OnboardingSelectGesture
+  targetWord?: string
+  // Called on every press on the card, before any selection happens, so
+  // callers can tell "never touched the card" apart from "tried to select
+  // and failed".
+  onInteract?: () => void
 }
 
-// The sample text card shown on Steps 1-2. Demonstrates the "drag to
-// select" gesture on a loop via useSelectionDemo(), and points an
-// OnboardingCallout at the card while nothing is selected - matching every
-// other "do this next" hint in the onboarding flow (see OnboardingCallout)
-// so first-time users recognize this as something to select rather than
-// something to read.
+// Animated text cursor shared by the drag and double-click demos; the
+// drop shadow keeps it visible over both the card and the highlight.
+const DEMO_CURSOR_CLASS =
+  "text-slate-900 dark:text-slate-100 opacity-0 filter-[drop-shadow(0_0_2px_#fff)_drop-shadow(0_1px_3px_rgba(15,23,42,.35))]"
+
+// The sample text card shown on Steps 1-2. Demonstrates the requested
+// gesture on a loop - a drag across the whole text via useSelectionDemo(),
+// or a double-click on one of its words - and points an OnboardingCallout at
+// the card while nothing is selected, matching every other "do this next"
+// hint in the onboarding flow (see OnboardingCallout) so first-time users
+// recognize this as something to select rather than something to read.
 export function OnboardingTargetText({
   text,
   background,
   selected,
   calloutDelay,
+  gesture = "drag",
+  targetWord,
+  onInteract,
 }: Props) {
   const prefersReducedMotion = usePrefersReducedMotion()
   const { selectionText } = useSelectContext()
@@ -46,43 +67,74 @@ export function OnboardingTargetText({
   const showSelectHint = isEmpty(selectionText)
   const runDemo = !prefersReducedMotion && showSelectHint
 
-  useSelectionDemo(textRef, cursorRef, runDemo)
+  const parts =
+    gesture === "doubleClick" ? splitTargetWord(text, targetWord) : null
+  const isDoubleClick = parts != null
+
+  useSelectionDemo(textRef, cursorRef, runDemo && !isDoubleClick)
 
   return (
     <div className="flex flex-col items-center gap-2.5">
       <div
         ref={setCardElm}
+        onPointerDown={onInteract}
+        data-testid="onboarding-target-card"
         className={cn(
           "relative max-w-[560px] rounded-lg border px-[26px] py-5 text-left text-base leading-[1.9] text-slate-800 dark:text-slate-200 select-text",
           "border-slate-200 dark:border-slate-800",
-          background === "glow" ? "bg-white dark:bg-gray-800" : "bg-muted/80",
+          background === "glow"
+            ? "bg-white dark:bg-gray-800 shadow-lg shadow-sky-950/[0.06]"
+            : "bg-muted/80",
           !selected &&
-          !runDemo &&
-          "[--onboarding-ring-color:rgba(8,47,73,0.16)] animate-onboarding-ring motion-reduce:animate-none",
+            !runDemo &&
+            "[--onboarding-ring-color:rgba(8,47,73,0.16)] animate-onboarding-ring motion-reduce:animate-none",
         )}
       >
-        <span
-          ref={textRef}
-          className={cn(
-            "[box-decoration-break:clone] p-1",
-            // `runDemo` is already false when prefers-reduced-motion is on
-            // (see usePrefersReducedMotion() above), so no motion-reduce:
-            // variant is needed here.
-            runDemo &&
-            "animate-onboarding-highlight rounded-sm dark:[--onboarding-highlight-color:var(--color-sky-800)]",
-          )}
-        >
-          {text}
-        </span>
-
-        {runDemo && (
-          <span
-            ref={cursorRef}
-            aria-hidden
-            className="pointer-events-none absolute top-0 left-0 select-none text-slate-900 dark:text-slate-100 opacity-0 filter-[drop-shadow(0_0_2px_#fff)_drop-shadow(0_1px_3px_rgba(15,23,42,.35))]"
-          >
-            <TextCursor className="size-[18px]" strokeWidth={2} />
+        {isDoubleClick ? (
+          <span className="p-1">
+            {parts.before}
+            <span
+              data-testid="onboarding-target-word"
+              className={cn(
+                "relative rounded-sm",
+                runDemo &&
+                  "animate-onboarding-dblclick-word dark:[--onboarding-highlight-color:var(--color-sky-800)]",
+              )}
+            >
+              {parts.word}
+              {runDemo && <DoubleClickDemo />}
+            </span>
+            {parts.after}
           </span>
+        ) : (
+          <>
+            <span
+              ref={textRef}
+              className={cn(
+                "[box-decoration-break:clone] p-1",
+                // `runDemo` is already false when prefers-reduced-motion is
+                // on (see usePrefersReducedMotion() above), so no
+                // motion-reduce: variant is needed here.
+                runDemo &&
+                  "animate-onboarding-highlight rounded-sm dark:[--onboarding-highlight-color:var(--color-sky-800)]",
+              )}
+            >
+              {text}
+            </span>
+
+            {runDemo && (
+              <span
+                ref={cursorRef}
+                aria-hidden
+                className={cn(
+                  "pointer-events-none absolute top-0 left-0 select-none",
+                  DEMO_CURSOR_CLASS,
+                )}
+              >
+                <TextCursor className="size-[18px]" strokeWidth={2} />
+              </span>
+            )}
+          </>
         )}
       </div>
 
@@ -92,10 +144,40 @@ export function OnboardingTargetText({
         openDelay={calloutDelay}
       >
         <span className="inline-flex items-center gap-1.5">
-          <TextCursor className="size-3.5" strokeWidth={2} />
-          {t("onboarding_selectHint")}
+          {isDoubleClick ? (
+            <MousePointerClick className="size-3.5" strokeWidth={2} />
+          ) : (
+            <TextCursor className="size-3.5" strokeWidth={2} />
+          )}
+          {isDoubleClick
+            ? t("onboarding_doubleClickHint")
+            : t("onboarding_selectHint")}
         </span>
       </OnboardingCallout>
     </div>
+  )
+}
+
+// Loops "the cursor moves onto the word, clicks twice, the word highlights"
+// over the demo word. Anchored to the word's center by its positioned
+// parent, so it needs no measuring; the three CSS animations share one
+// duration (see global.css) so they stay in step. Holds no text and ignores
+// the pointer, so it never takes part in the user's own selection.
+function DoubleClickDemo() {
+  return (
+    <span
+      aria-hidden
+      className="pointer-events-none absolute top-1/2 left-1/2 select-none"
+    >
+      <span className="absolute -top-3 -left-3 size-6 rounded-full bg-sky-600/50 dark:bg-sky-400/50 opacity-0 animate-onboarding-dblclick-ripple" />
+      <span
+        className={cn(
+          "absolute -top-[9px] -left-[9px] animate-onboarding-dblclick-cursor",
+          DEMO_CURSOR_CLASS,
+        )}
+      >
+        <TextCursor className="size-[18px]" strokeWidth={2} />
+      </span>
+    </span>
   )
 }

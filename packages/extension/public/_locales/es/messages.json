@@ -1528,8 +1528,14 @@
   "onboarding_step1TargetText": {
     "message": "Una extensión que te permite buscar el texto seleccionado con un solo clic."
   },
+  "onboarding_step1TargetWord": {
+    "message": "extensión"
+  },
   "onboarding_selectHint": {
     "message": "Arrastra para seleccionar el texto de abajo"
+  },
+  "onboarding_doubleClickHint": {
+    "message": "Haz doble clic en cualquier palabra"
   },
   "onboarding_railSelect": {
     "message": "Seleccionar"

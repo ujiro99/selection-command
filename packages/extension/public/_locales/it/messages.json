@@ -1528,8 +1528,14 @@
   "onboarding_step1TargetText": {
     "message": "Un'estensione che ti permette di cercare il testo selezionato con un solo clic."
   },
+  "onboarding_step1TargetWord": {
+    "message": "testo"
+  },
   "onboarding_selectHint": {
     "message": "Trascina per selezionare il testo qui sotto"
+  },
+  "onboarding_doubleClickHint": {
+    "message": "Fai doppio clic su una parola qualsiasi"
   },
   "onboarding_railSelect": {
     "message": "Seleziona"

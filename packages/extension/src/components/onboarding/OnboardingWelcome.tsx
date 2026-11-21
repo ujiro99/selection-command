@@ -8,6 +8,7 @@ import {
   type OnboardingWelcomeUi,
 } from "./onboardingVariantUi"
 import { useLogoUrl } from "./onboardingLogo"
+import type { WelcomeDoneTrigger } from "./useOnboardingState"
 
 /** How long variant C's overlay stays up before advancing on its own. */
 export const WELCOME_DURATION_MS = DEFAULT_WELCOME_UI.durationMs
@@ -16,7 +17,9 @@ export const WELCOME_DURATION_MS = DEFAULT_WELCOME_UI.durationMs
 const EXIT_DURATION_MS = 320
 
 type Props = {
-  onDone: () => void
+  // Called once the exit animation has finished, with whether the overlay
+  // advanced on its own timer or was clicked away.
+  onDone: (trigger: WelcomeDoneTrigger) => void
   // Per-variant timing and spacing; defaults to variant C's.
   ui?: OnboardingWelcomeUi
 }
@@ -43,17 +46,17 @@ export function OnboardingWelcome({ onDone, ui = DEFAULT_WELCOME_UI }: Props) {
     onDoneRef.current = onDone
   }, [onDone])
 
-  const finish = useCallback(() => {
+  const finish = useCallback((trigger: WelcomeDoneTrigger) => {
     if (finishedRef.current) return
     finishedRef.current = true
     setExiting(true)
     timersRef.current.push(
-      setTimeout(() => onDoneRef.current(), EXIT_DURATION_MS),
+      setTimeout(() => onDoneRef.current(trigger), EXIT_DURATION_MS),
     )
   }, [])
 
   useEffect(() => {
-    timersRef.current.push(setTimeout(finish, ui.durationMs))
+    timersRef.current.push(setTimeout(() => finish("auto"), ui.durationMs))
     return () => {
       timersRef.current.forEach(clearTimeout)
       timersRef.current = []
@@ -64,7 +67,7 @@ export function OnboardingWelcome({ onDone, ui = DEFAULT_WELCOME_UI }: Props) {
     <button
       type="button"
       autoFocus
-      onClick={finish}
+      onClick={() => finish("click")}
       aria-label={t("onboarding_welcomeContinue")}
       data-testid="onboarding-welcome"
       className={clsx(

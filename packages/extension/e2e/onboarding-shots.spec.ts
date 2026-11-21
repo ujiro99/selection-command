@@ -63,15 +63,16 @@ const SHOTS: Shot[] = [
   { name: "10-complete", step: "COMPLETE" },
 ]
 
-// Variant E (welcome glow as the page background, slower welcome) changes
-// how the welcome overlay and the steps after it look, so it gets its own
-// copy of each of those shots for side-by-side review against variant C.
-const VARIANT_E_SHOTS: Shot[] = [
-  { name: "00e-welcome-variant-e", variant: "E" },
+// Variant F (welcome glow as the page background, double-click hint on
+// Step 1) changes how the welcome overlay and the steps after it look, so
+// it gets its own copy of each of those shots for side-by-side review
+// against variant C.
+const VARIANT_F_SHOTS: Shot[] = [
+  { name: "00f-welcome-variant-f", variant: "F" },
   ...SHOTS.filter((shot) => shot.step).map((shot): Shot => ({
     ...shot,
-    name: `${shot.name}-variant-e`,
-    variant: "E",
+    name: `${shot.name}-variant-f`,
+    variant: "F",
   })),
 ]
 
@@ -109,7 +110,7 @@ test.describe("onboarding screenshots (design review)", () => {
         )
         fs.mkdirSync(outDir, { recursive: true })
 
-        for (const shot of [...SHOTS, ...VARIANT_E_SHOTS]) {
+        for (const shot of [...SHOTS, ...VARIANT_F_SHOTS]) {
           const params = new URLSearchParams()
           if (shot.step) params.set("step", shot.step)
           if (shot.phase) params.set("phase", shot.phase)
