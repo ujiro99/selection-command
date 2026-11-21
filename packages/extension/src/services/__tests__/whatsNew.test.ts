@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { NEW_HUB_URL, VERSION } from "@/const"
 import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
 import {
@@ -43,6 +43,10 @@ describe("openWhatsNewTab", () => {
   beforeEach(() => {
     vi.mocked(chrome.tabs.create).mockReset()
     vi.mocked(sendEvent).mockReset()
+  })
+
+  afterEach(() => {
+    vi.restoreAllMocks()
   })
 
   it("WN-05: バージョンが変わっていれば現バージョンのページを開いて記録する", async () => {

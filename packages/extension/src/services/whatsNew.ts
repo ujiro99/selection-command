@@ -23,8 +23,9 @@ export const getWhatsNewUrl = (version: string): string => {
 /**
  * Whether an update from `previousVersion` to `currentVersion` should show
  * the What's New page. Every version change counts, patch releases
- * included; reloading the same version (e.g. an unpacked build during
- * development) does not.
+ * included, and so does a downgrade (e.g. a rollback on the store), which
+ * still lands on the installed version's notes. Reloading the same version
+ * (e.g. an unpacked build during development) does not.
  */
 export const shouldShowWhatsNew = (
   previousVersion: string | undefined,
