@@ -1,11 +1,12 @@
 import { describe, it, expect } from "vitest"
-import { STARTUP_METHOD } from "@/const"
+import { STARTUP_METHOD, STYLE_VARIABLE } from "@/const"
 import {
   POPUP_SPEED,
   detectPopupSpeed,
+  getEffectivePopupSpeedValues,
   getPresetValues,
-  getValuesOnStartupMethodChange,
   isPopupDelayIgnored,
+  toPopupSpeedValues,
 } from "../popupSpeed"
 
 describe("isPopupDelayIgnored", () => {
@@ -21,26 +22,42 @@ describe("isPopupDelayIgnored", () => {
 })
 
 describe("getPresetValues", () => {
-  it("PS-03: 正常系: テキスト選択起動ではプリセット値をそのまま返す", () => {
-    const method = STARTUP_METHOD.TEXT_SELECTION
-    expect(getPresetValues(POPUP_SPEED.STANDARD, method)).toEqual({
+  it("PS-03: 正常系: プリセット値を返す", () => {
+    expect(getPresetValues(POPUP_SPEED.STANDARD)).toEqual({
       popupDelay: 250,
       popupDuration: 150,
     })
-    expect(getPresetValues(POPUP_SPEED.FAST, method)).toEqual({
+    expect(getPresetValues(POPUP_SPEED.FAST)).toEqual({
       popupDelay: 100,
       popupDuration: 80,
     })
-    expect(getPresetValues(POPUP_SPEED.INSTANT, method)).toEqual({
+    expect(getPresetValues(POPUP_SPEED.INSTANT)).toEqual({
       popupDelay: 0,
       popupDuration: 0,
     })
   })
+})
 
-  it("PS-04: 正常系: キーボード起動では delay を 0 にする", () => {
+describe("getEffectivePopupSpeedValues", () => {
+  it("PS-04: 正常系: キーボード・長押し起動では delay を 0 にする", () => {
+    const values = { popupDelay: 500, popupDuration: 300 }
     expect(
-      getPresetValues(POPUP_SPEED.STANDARD, STARTUP_METHOD.KEYBOARD),
-    ).toEqual({ popupDelay: 0, popupDuration: 150 })
+      getEffectivePopupSpeedValues(values, STARTUP_METHOD.KEYBOARD),
+    ).toEqual({ popupDelay: 0, popupDuration: 300 })
+    expect(
+      getEffectivePopupSpeedValues(values, STARTUP_METHOD.LEFT_CLICK_HOLD),
+    ).toEqual({ popupDelay: 0, popupDuration: 300 })
+    // The given values are not modified.
+    expect(values).toEqual({ popupDelay: 500, popupDuration: 300 })
+  })
+
+  it("PS-07: 正常系: delay が有効な起動方法では値をそのまま返す", () => {
+    expect(
+      getEffectivePopupSpeedValues(
+        { popupDelay: 500, popupDuration: 300 },
+        STARTUP_METHOD.TEXT_SELECTION,
+      ),
+    ).toEqual({ popupDelay: 500, popupDuration: 300 })
   })
 })
 
@@ -67,48 +84,44 @@ describe("detectPopupSpeed", () => {
         STARTUP_METHOD.TEXT_SELECTION,
       ),
     ).toBeNull()
-    // The delay must be 0 for keyboard startup.
+    expect(
+      detectPopupSpeed(
+        { popupDelay: 0, popupDuration: 120 },
+        STARTUP_METHOD.KEYBOARD,
+      ),
+    ).toBeNull()
+  })
+
+  it("PS-08: 正常系: delay が無視される起動方法では duration だけで判定する", () => {
     expect(
       detectPopupSpeed(
         { popupDelay: 250, popupDuration: 150 },
         STARTUP_METHOD.KEYBOARD,
       ),
-    ).toBeNull()
+    ).toBe(POPUP_SPEED.STANDARD)
+    expect(
+      detectPopupSpeed(
+        { popupDelay: 500, popupDuration: 80 },
+        STARTUP_METHOD.LEFT_CLICK_HOLD,
+      ),
+    ).toBe(POPUP_SPEED.FAST)
   })
 })
 
-describe("getValuesOnStartupMethodChange", () => {
-  it("PS-07: 正常系: プリセット選択中は切替先の起動方法の同じプリセットを適用する", () => {
+describe("toPopupSpeedValues", () => {
+  it("PS-10: 正常系: userStyles から delay / duration を数値で読み取る", () => {
     expect(
-      getValuesOnStartupMethodChange(
-        { popupDelay: 100, popupDuration: 80 },
-        STARTUP_METHOD.TEXT_SELECTION,
-        STARTUP_METHOD.KEYBOARD,
-      ),
-    ).toEqual({ popupDelay: 0, popupDuration: 80 })
-    expect(
-      getValuesOnStartupMethodChange(
-        { popupDelay: 0, popupDuration: 80 },
-        STARTUP_METHOD.KEYBOARD,
-        STARTUP_METHOD.TEXT_SELECTION,
-      ),
-    ).toEqual({ popupDelay: 100, popupDuration: 80 })
+      toPopupSpeedValues([
+        { name: STYLE_VARIABLE.POPUP_DELAY, value: "120" },
+        { name: STYLE_VARIABLE.POPUP_DURATION, value: 90 as unknown as string },
+      ]),
+    ).toEqual({ popupDelay: 120, popupDuration: 90 })
   })
 
-  it("PS-08: 正常系: カスタム値では duration を維持し delay を既定値にする", () => {
-    expect(
-      getValuesOnStartupMethodChange(
-        { popupDelay: 0, popupDuration: 300 },
-        STARTUP_METHOD.KEYBOARD,
-        STARTUP_METHOD.TEXT_SELECTION,
-      ),
-    ).toEqual({ popupDelay: 250, popupDuration: 300 })
-    expect(
-      getValuesOnStartupMethodChange(
-        { popupDelay: 500, popupDuration: 300 },
-        STARTUP_METHOD.TEXT_SELECTION,
-        STARTUP_METHOD.LEFT_CLICK_HOLD,
-      ),
-    ).toEqual({ popupDelay: 0, popupDuration: 300 })
+  it("PS-11: 境界値: 未設定の場合は既定値を返す", () => {
+    expect(toPopupSpeedValues(undefined)).toEqual({
+      popupDelay: 250,
+      popupDuration: 150,
+    })
   })
 })

@@ -11,14 +11,13 @@ import { popupContext } from "@/hooks/usePopupContext"
 import { useThemeContext } from "@/hooks/useTheme"
 import { useZoomCompensation } from "@/hooks/usePageZoom"
 import { isMac, onHover, cn } from "@/lib/utils"
-import {
-  findUserStyleValue,
-  usesIconColor,
-  toCssVariables,
-} from "@/services/option/userStyles"
+import { usesIconColor, toCssVariables } from "@/services/option/userStyles"
 import { t } from "@/services/i18n"
-import { isPopupDelayIgnored } from "@/services/option/popupSpeed"
-import { STYLE_VARIABLE, EXIT_DURATION, SIDE, ALIGN } from "@/const"
+import {
+  getEffectivePopupSpeedValues,
+  toPopupSpeedValues,
+} from "@/services/option/popupSpeed"
+import { EXIT_DURATION, SIDE, ALIGN } from "@/const"
 
 import css from "./Popup.module.css"
 import zc from "./zoomCompensation.module.css"
@@ -75,22 +74,12 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
         }, EXIT_DURATION)
       } else {
         // Enter transition
-        const styles = userSettings?.userStyles
-        const durationValue = findUserStyleValue(
-          styles,
-          STYLE_VARIABLE.POPUP_DURATION,
-        )
-        const delayValue = findUserStyleValue(
-          styles,
-          STYLE_VARIABLE.POPUP_DELAY,
-        )
-        const duration = durationValue != null ? parseInt(durationValue) : 150
         // The delay has no effect when the menu is opened explicitly.
-        const delay = isPopupDelayIgnored(userSettings?.startupMethod?.method)
-          ? 0
-          : delayValue != null
-            ? parseInt(delayValue)
-            : 250
+        const { popupDelay: delay, popupDuration: duration } =
+          getEffectivePopupSpeedValues(
+            toPopupSpeedValues(userSettings?.userStyles),
+            userSettings?.startupMethod?.method,
+          )
         setInTransition(true)
         transitionTimer = setTimeout(() => {
           setInTransition(false)

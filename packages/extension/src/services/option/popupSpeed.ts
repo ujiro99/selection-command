@@ -1,8 +1,10 @@
-import { STARTUP_METHOD } from "@/const"
+import { STARTUP_METHOD, STYLE_VARIABLE } from "@/const"
 import {
   POPUP_DELAY_DEFAULT,
   POPUP_DULATION_DEFAULT,
 } from "@/services/option/defaultSettings"
+import { findUserStyleValue } from "@/services/option/userStyles"
+import type { StyleVariable } from "@/types"
 
 export enum POPUP_SPEED {
   STANDARD = "standard",
@@ -29,7 +31,10 @@ export const POPUP_SPEEDS = Object.values(POPUP_SPEED)
 /**
  * Whether the popup delay has no effect for the startup method.
  * The menu is opened by an explicit user action (key press / click hold),
- * so the delay is always fixed to 0.
+ * so the delay is treated as 0 at runtime.
+ *
+ * The stored delay is never rewritten for this: it is kept as configured, and
+ * only the effective values (see getEffectivePopupSpeedValues) ignore it.
  */
 export function isPopupDelayIgnored(method?: STARTUP_METHOD): boolean {
   return (
@@ -38,47 +43,58 @@ export function isPopupDelayIgnored(method?: STARTUP_METHOD): boolean {
   )
 }
 
-/** Returns the delay / duration values of a preset for the startup method. */
-export function getPresetValues(
-  speed: POPUP_SPEED,
+/**
+ * Returns the values actually used to show the menu for the startup method:
+ * the delay becomes 0 when it has no effect.
+ */
+export function getEffectivePopupSpeedValues(
+  values: PopupSpeedValues,
   method?: STARTUP_METHOD,
 ): PopupSpeedValues {
-  const preset = PRESETS[speed]
-  return isPopupDelayIgnored(method) ? { ...preset, popupDelay: 0 } : preset
+  return isPopupDelayIgnored(method)
+    ? { ...values, popupDelay: 0 }
+    : { ...values }
+}
+
+/** Returns the delay / duration values of a preset. */
+export function getPresetValues(speed: POPUP_SPEED): PopupSpeedValues {
+  // Always return a copy so callers cannot mutate the shared preset table.
+  return { ...PRESETS[speed] }
 }
 
 /**
- * Finds the preset matching the values for the startup method.
- * Returns null when the values are customized.
+ * Finds the preset whose effective values match the values for the startup
+ * method. Returns null when the values are customized.
  */
 export function detectPopupSpeed(
   values: PopupSpeedValues,
   method?: STARTUP_METHOD,
 ): POPUP_SPEED | null {
+  const current = getEffectivePopupSpeedValues(values, method)
   const found = POPUP_SPEEDS.find((speed) => {
-    const preset = getPresetValues(speed, method)
+    const preset = getEffectivePopupSpeedValues(getPresetValues(speed), method)
     return (
-      preset.popupDelay === values.popupDelay &&
-      preset.popupDuration === values.popupDuration
+      preset.popupDelay === current.popupDelay &&
+      preset.popupDuration === current.popupDuration
     )
   })
   return found ?? null
 }
 
-/**
- * Computes the values to apply when the startup method changes.
- * A preset is kept as the same preset for the new method. Custom values keep
- * their duration, and the delay is reset to the default of the new method.
- */
-export function getValuesOnStartupMethodChange(
-  values: PopupSpeedValues,
-  prevMethod: STARTUP_METHOD | undefined,
-  nextMethod: STARTUP_METHOD,
+/** Reads the delay / duration values from the user styles. */
+export function toPopupSpeedValues(
+  userStyles: StyleVariable[] | undefined,
 ): PopupSpeedValues {
-  const speed = detectPopupSpeed(values, prevMethod)
-  if (speed != null) return getPresetValues(speed, nextMethod)
+  const toNumber = (name: STYLE_VARIABLE, fallback: number): number => {
+    const value: unknown = findUserStyleValue(userStyles, name)
+    if (value == null) return fallback
+    return typeof value === "number" ? value : parseInt(String(value))
+  }
   return {
-    popupDelay: isPopupDelayIgnored(nextMethod) ? 0 : POPUP_DELAY_DEFAULT,
-    popupDuration: values.popupDuration,
+    popupDelay: toNumber(STYLE_VARIABLE.POPUP_DELAY, POPUP_DELAY_DEFAULT),
+    popupDuration: toNumber(
+      STYLE_VARIABLE.POPUP_DURATION,
+      POPUP_DULATION_DEFAULT,
+    ),
   }
 }

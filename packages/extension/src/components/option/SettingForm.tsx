@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react"
 import { CSSTransition } from "react-transition-group"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm, useWatch } from "react-hook-form"
+import { useForm, useWatch, type Control } from "react-hook-form"
 import {
   MessageSquareMore,
   SquareTerminal,
@@ -21,7 +21,7 @@ import { getDragOpenModes } from "@/components/option/field/openModes"
 import { PopupPlacement } from "@/components/option/editor/PopupPlacement"
 import { PopupSpeed } from "@/components/option/editor/PopupSpeed"
 import {
-  getValuesOnStartupMethodChange,
+  toPopupSpeedValues,
   type PopupSpeedValues,
 } from "@/services/option/popupSpeed"
 import { CommandList } from "@/components/option/editor/CommandList"
@@ -54,8 +54,6 @@ import { Settings } from "@/services/settings/settings"
 import { isSidePanelSupported } from "@/services/sidePanelSupport"
 import DefaultSettings, {
   emptySettings,
-  POPUP_DELAY_DEFAULT,
-  POPUP_DULATION_DEFAULT,
 } from "@/services/option/defaultSettings"
 
 import {
@@ -135,11 +133,36 @@ const formSchema = z
 type FormValues = z.infer<typeof formSchema>
 export type SettingsFormType = Omit<UserSettings, "settingVersion">
 
+type PopupSpeedFieldProps = {
+  control: Control<FormValues>
+  onSubmit: (data: PopupSpeedValues) => void
+  startupMethod: STARTUP_METHOD
+}
+
+/**
+ * Watches the user styles so the speed editor follows values updated
+ * outside of it (e.g. when settings are loaded), without re-rendering the
+ * whole settings form on every style edit.
+ */
+function PopupSpeedField({
+  control,
+  onSubmit,
+  startupMethod,
+}: PopupSpeedFieldProps) {
+  const userStyles = useWatch({ control, name: "userStyles" })
+  return (
+    <PopupSpeed
+      onSubmit={onSubmit}
+      defaultValues={toPopupSpeedValues(userStyles)}
+      startupMethod={startupMethod}
+    />
+  )
+}
+
 export function SettingForm({ className }: { className?: string }) {
   const [isSaving, setIsSaving] = useState(false)
   const saveToRef = useRef<number>()
   const isLoadingRef = useRef<boolean>()
-  const prevStartupMethodRef = useRef<STARTUP_METHOD>()
   const loadingRef = useRef<HTMLDivElement>(null)
   const os = isMac() ? "mac" : "windows"
 
@@ -305,29 +328,6 @@ export function SettingForm({ className }: { className?: string }) {
     setValue("userStyles", updatedStyles)
   }
 
-  const getPopupSpeedValues = (): PopupSpeedValues => {
-    const userStyles = getValues("userStyles") || []
-    let popupDelay = userStyles.find(
-      (s) => s.name === STYLE_VARIABLE.POPUP_DELAY,
-    )?.value
-    if (popupDelay == null) popupDelay = POPUP_DELAY_DEFAULT
-
-    let popupDuration = userStyles.find(
-      (s) => s.name === STYLE_VARIABLE.POPUP_DURATION,
-    )?.value
-    if (popupDuration == null) popupDuration = POPUP_DULATION_DEFAULT
-    return {
-      popupDelay:
-        typeof popupDelay === "number"
-          ? popupDelay
-          : parseInt(String(popupDelay)),
-      popupDuration:
-        typeof popupDuration === "number"
-          ? popupDuration
-          : parseInt(String(popupDuration)),
-    }
-  }
-
   // Set default value for startupMethod.
   useEffect(() => {
     if (startupMethod === STARTUP_METHOD.KEYBOARD) {
@@ -341,19 +341,6 @@ export function SettingForm({ className }: { className?: string }) {
         setValue("startupMethod.leftClickHoldParam", 200)
       }
     }
-
-    // Re-apply the menu display speed for the new startup method.
-    // Skip while loading: the stored values are already consistent with it.
-    const prevMethod = prevStartupMethodRef.current
-    prevStartupMethodRef.current = startupMethod
-    if (isLoadingRef.current || prevMethod === startupMethod) return
-    handlePopupSpeedSubmit(
-      getValuesOnStartupMethodChange(
-        getPopupSpeedValues(),
-        prevMethod,
-        startupMethod,
-      ),
-    )
   }, [startupMethod, setValue, getValues])
 
   // Set default value for linkCommand.startupMethod.
@@ -499,9 +486,9 @@ export function SettingForm({ className }: { className?: string }) {
 
           {startupMethod !== STARTUP_METHOD.CONTEXT_MENU && (
             <>
-              <PopupSpeed
+              <PopupSpeedField
+                control={form.control}
                 onSubmit={handlePopupSpeedSubmit}
-                defaultValues={getPopupSpeedValues()}
                 startupMethod={startupMethod}
               />
 

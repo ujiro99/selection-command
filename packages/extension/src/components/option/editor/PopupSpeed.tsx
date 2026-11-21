@@ -25,6 +25,7 @@ import {
   POPUP_SPEED,
   POPUP_SPEEDS,
   detectPopupSpeed,
+  getEffectivePopupSpeedValues,
   getPresetValues,
   isPopupDelayIgnored,
   type PopupSpeedValues,
@@ -73,7 +74,9 @@ export const PopupSpeed = ({
         values: true,
       },
       callback: ({ values }) => {
-        if (onSubmit && values) {
+        // Skip invalid values (e.g. an empty input gives NaN) so they are
+        // neither saved nor fed back as new default values.
+        if (onSubmit && values && speedSchema.safeParse(values).success) {
           onSubmit(values as PopupSpeedValues)
         }
       },
@@ -88,8 +91,8 @@ export const PopupSpeed = ({
   useEffect(() => {
     const previousValues = previousDefaultValuesRef.current
     const hasDefaultValuesChanged =
-      previousValues.popupDelay !== defaultValues.popupDelay ||
-      previousValues.popupDuration !== defaultValues.popupDuration
+      !Object.is(previousValues.popupDelay, defaultValues.popupDelay) ||
+      !Object.is(previousValues.popupDuration, defaultValues.popupDuration)
 
     if (hasDefaultValuesChanged) {
       reset(defaultValues)
@@ -108,9 +111,10 @@ export const PopupSpeed = ({
   const delayIgnored = isPopupDelayIgnored(startupMethod)
 
   const applyPreset = (speed: POPUP_SPEED) => {
-    const values = getPresetValues(speed, startupMethod)
+    const values = getPresetValues(speed)
     const opts = { shouldValidate: true, shouldDirty: true }
-    setValue("popupDelay", values.popupDelay, opts)
+    // Keep the stored delay when it has no effect for the startup method.
+    if (!delayIgnored) setValue("popupDelay", values.popupDelay, opts)
     setValue("popupDuration", values.popupDuration, opts)
   }
 
@@ -172,15 +176,13 @@ export const PopupSpeed = ({
                 ))}
               </ToggleGroup>
               <PopupSpeedPreview
-                values={
+                values={getEffectivePopupSpeedValues(
                   // Preview the hovered preset, otherwise the current values.
                   previewSpeed != null
-                    ? getPresetValues(previewSpeed, startupMethod)
-                    : {
-                      popupDelay: delayIgnored ? 0 : popupDelay,
-                      popupDuration,
-                    }
-                }
+                    ? getPresetValues(previewSpeed)
+                    : { popupDelay, popupDuration },
+                  startupMethod,
+                )}
               />
             </div>
           </FormItem>
