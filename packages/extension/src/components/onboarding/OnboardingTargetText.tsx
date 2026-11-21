@@ -16,7 +16,7 @@ type Props = {
   text: string
   // The page background behind the card; on the "glow" background the card
   // is solid white with a soft shadow so it stands out from the blue glow.
-  background?: OnboardingBackground
+  background: OnboardingBackground
   // True once the user has actually selected the text (any later phase),
   // rendering it as a static, already-selected highlight instead.
   selected: boolean
@@ -35,6 +35,11 @@ type Props = {
   onInteract?: () => void
 }
 
+// Animated text cursor shared by the drag and double-click demos; the
+// drop shadow keeps it visible over both the card and the highlight.
+const DEMO_CURSOR_CLASS =
+  "text-slate-900 dark:text-slate-100 opacity-0 filter-[drop-shadow(0_0_2px_#fff)_drop-shadow(0_1px_3px_rgba(15,23,42,.35))]"
+
 // The sample text card shown on Steps 1-2. Demonstrates the requested
 // gesture on a loop - a drag across the whole text via useSelectionDemo(),
 // or a double-click on one of its words - and points an OnboardingCallout at
@@ -43,7 +48,7 @@ type Props = {
 // recognize this as something to select rather than something to read.
 export function OnboardingTargetText({
   text,
-  background = "vignette",
+  background,
   selected,
   calloutDelay,
   gesture = "drag",
@@ -121,7 +126,10 @@ export function OnboardingTargetText({
               <span
                 ref={cursorRef}
                 aria-hidden
-                className="pointer-events-none absolute top-0 left-0 select-none text-slate-900 dark:text-slate-100 opacity-0 filter-[drop-shadow(0_0_2px_#fff)_drop-shadow(0_1px_3px_rgba(15,23,42,.35))]"
+                className={cn(
+                  "pointer-events-none absolute top-0 left-0 select-none",
+                  DEMO_CURSOR_CLASS,
+                )}
               >
                 <TextCursor className="size-[18px]" strokeWidth={2} />
               </span>
@@ -162,7 +170,12 @@ function DoubleClickDemo() {
       className="pointer-events-none absolute top-1/2 left-1/2 select-none"
     >
       <span className="absolute -top-3 -left-3 size-6 rounded-full bg-sky-600/50 dark:bg-sky-400/50 opacity-0 animate-onboarding-dblclick-ripple" />
-      <span className="absolute -top-[9px] -left-[9px] text-slate-900 dark:text-slate-100 opacity-0 animate-onboarding-dblclick-cursor filter-[drop-shadow(0_0_2px_#fff)_drop-shadow(0_1px_3px_rgba(15,23,42,.35))]">
+      <span
+        className={cn(
+          "absolute -top-[9px] -left-[9px] animate-onboarding-dblclick-cursor",
+          DEMO_CURSOR_CLASS,
+        )}
+      >
         <TextCursor className="size-[18px]" strokeWidth={2} />
       </span>
     </span>

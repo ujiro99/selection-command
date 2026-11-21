@@ -8,7 +8,8 @@
  * was onboarding_v5's treatment (D with the step rail restored).
  *
  * Live letters: "C" is the welcome-overlay flow, "F" is E with C's welcome
- * timing and sample card, and a double-click hint on Step 1. Which letter is
+ * timing, a white sample card on the glow, and a double-click hint on
+ * Step 1. Which letter is
  * the control is decided per experiment: onboarding_v6 compares C (control)
  * with F.
  */

@@ -136,8 +136,12 @@ export function useOnboardingState(variant: ExperimentVariant) {
   }, [])
 
   // Records the first press on a step's sample text card, whether or not it
-  // goes on to produce a selection. No-ops on later presses in that step.
+  // goes on to produce a selection. No-ops on later presses in that step,
+  // and once the step already has a selection (e.g. a drag that started
+  // outside the card, or a press while the popup menu is open), so the event
+  // only ever marks a press that came before the first selection.
   const recordTargetInteract = useCallback((forStep: OnboardingStep) => {
+    if (seenSelectionStepsRef.current.has(forStep)) return
     if (seenInteractStepsRef.current.has(forStep)) return
     seenInteractStepsRef.current.add(forStep)
     sendOnboardingEvent(ANALYTICS_EVENTS.ONBOARDING_TARGET_INTERACT, {

@@ -21,7 +21,7 @@ describe("OnboardingWelcome", () => {
     })
   }
 
-  it("advances on its own after the welcome duration plus its exit animation", async () => {
+  it("OW-01: advances on its own after the welcome duration plus its exit animation", async () => {
     const onDone = vi.fn()
     render(<OnboardingWelcome onDone={onDone} />)
 
@@ -33,9 +33,11 @@ describe("OnboardingWelcome", () => {
     expect(onDone).toHaveBeenCalledWith("auto")
   })
 
-  it("uses the per-variant duration when one is given", async () => {
+  it("OW-02: uses the per-variant duration when one is given", async () => {
     const onDone = vi.fn()
-    const ui = getVariantUi("F").welcome
+    // A duration distinct from the default, so the test fails if `ui` is
+    // ignored (every live variant currently shares variant C's timing).
+    const ui = { ...getVariantUi("F").welcome, durationMs: WELCOME_MS + 1000 }
     render(<OnboardingWelcome onDone={onDone} ui={ui} />)
 
     await advance(ui.durationMs - 1)
@@ -45,7 +47,7 @@ describe("OnboardingWelcome", () => {
     expect(onDone).toHaveBeenCalledTimes(1)
   })
 
-  it("advances immediately when clicked, without waiting out the timer", async () => {
+  it("OW-03: advances immediately when clicked, without waiting out the timer", async () => {
     const onDone = vi.fn()
     render(<OnboardingWelcome onDone={onDone} />)
 
@@ -62,7 +64,7 @@ describe("OnboardingWelcome", () => {
     expect(onDone).toHaveBeenCalledTimes(1)
   })
 
-  it("keeps the pending auto-advance running across parent re-renders", async () => {
+  it("OW-04: keeps the pending auto-advance running across parent re-renders", async () => {
     // Callers pass an inline callback, so the overlay must not restart its
     // timer every time the parent re-renders - it would never advance.
     const onDone = vi.fn()
@@ -75,7 +77,7 @@ describe("OnboardingWelcome", () => {
     expect(onDone).toHaveBeenCalledTimes(1)
   })
 
-  it("does not call back after unmounting", async () => {
+  it("OW-05: does not call back after unmounting", async () => {
     const onDone = vi.fn()
     const { unmount } = render(<OnboardingWelcome onDone={onDone} />)
 

@@ -1557,14 +1557,16 @@
     "description": "Onboarding Step1 sample text the user is asked to select to trigger the real popup menu."
   },
   "onboarding_step1TargetWord": {
-    "message": "extension"
+    "message": "extension",
+    "description": "One word of onboarding_step1TargetText, copied exactly, where Step1's double-click demo is shown. Must appear verbatim in that text, or the card falls back to the drag hint."
   },
   "onboarding_selectHint": {
     "message": "Drag to select the text below",
     "description": "Onboarding Step1/2 caption instructing the user to drag-select the sample text, shown above the target text card during the selection demo."
   },
   "onboarding_doubleClickHint": {
-    "message": "Double-click any word"
+    "message": "Double-click any word",
+    "description": "Onboarding Step1 caption asking the user to double-click a word of the sample text, shown above the target text card instead of onboarding_selectHint in the double-click variant."
   },
   "onboarding_railSelect": {
     "message": "Select",
