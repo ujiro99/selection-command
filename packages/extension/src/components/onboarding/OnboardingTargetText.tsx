@@ -7,10 +7,16 @@ import { useSelectContext } from "@/hooks/useSelectContext"
 import { useSelectionDemo } from "./useSelectionDemo"
 import { OnboardingCallout } from "./OnboardingCallout"
 import { splitTargetWord } from "./textUtils"
-import type { OnboardingSelectGesture } from "./onboardingVariantUi"
+import type {
+  OnboardingBackground,
+  OnboardingSelectGesture,
+} from "./onboardingVariantUi"
 
 type Props = {
   text: string
+  // The page background behind the card; on the "glow" background the card
+  // is solid white with a soft shadow so it stands out from the blue glow.
+  background?: OnboardingBackground
   // True once the user has actually selected the text (any later phase),
   // rendering it as a static, already-selected highlight instead.
   selected: boolean
@@ -19,7 +25,8 @@ type Props = {
   // delays (see each step's `delays` object).
   calloutDelay?: number
   // Gesture to ask for. "doubleClick" needs `targetWord` to be part of
-  // `text`; it is the word that gets marked and demonstrated.
+  // `text`; it is where the double-click is demonstrated, but the hint asks
+  // for any word, since any selection moves the step on.
   gesture?: OnboardingSelectGesture
   targetWord?: string
   // Called on every press on the card, before any selection happens, so
@@ -30,12 +37,13 @@ type Props = {
 
 // The sample text card shown on Steps 1-2. Demonstrates the requested
 // gesture on a loop - a drag across the whole text via useSelectionDemo(),
-// or a double-click on one marked word - and points an OnboardingCallout at
+// or a double-click on one of its words - and points an OnboardingCallout at
 // the card while nothing is selected, matching every other "do this next"
 // hint in the onboarding flow (see OnboardingCallout) so first-time users
 // recognize this as something to select rather than something to read.
 export function OnboardingTargetText({
   text,
+  background = "vignette",
   selected,
   calloutDelay,
   gesture = "drag",
@@ -68,7 +76,10 @@ export function OnboardingTargetText({
         data-testid="onboarding-target-card"
         className={cn(
           "relative max-w-[560px] rounded-lg border px-[26px] py-5 text-left text-base leading-[1.9] text-slate-800 dark:text-slate-200 select-text",
-          "border-slate-200 dark:border-slate-800 bg-muted/80",
+          "border-slate-200 dark:border-slate-800",
+          background === "glow"
+            ? "bg-white dark:bg-gray-800 shadow-lg shadow-sky-950/[0.06]"
+            : "bg-muted/80",
           !selected &&
             !runDemo &&
             "[--onboarding-ring-color:rgba(8,47,73,0.16)] animate-onboarding-ring motion-reduce:animate-none",
@@ -80,7 +91,7 @@ export function OnboardingTargetText({
             <span
               data-testid="onboarding-target-word"
               className={cn(
-                "relative rounded-sm underline decoration-sky-700/60 decoration-2 underline-offset-4 dark:decoration-sky-400/70",
+                "relative rounded-sm",
                 runDemo &&
                   "animate-onboarding-dblclick-word dark:[--onboarding-highlight-color:var(--color-sky-800)]",
               )}
@@ -140,7 +151,7 @@ export function OnboardingTargetText({
 }
 
 // Loops "the cursor moves onto the word, clicks twice, the word highlights"
-// over the marked word. Anchored to the word's center by its positioned
+// over the demo word. Anchored to the word's center by its positioned
 // parent, so it needs no measuring; the three CSS animations share one
 // duration (see global.css) so they stay in step. Holds no text and ignores
 // the pointer, so it never takes part in the user's own selection.

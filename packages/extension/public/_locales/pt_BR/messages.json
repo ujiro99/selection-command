@@ -1538,7 +1538,7 @@
     "message": "Arraste para selecionar o texto abaixo"
   },
   "onboarding_doubleClickHint": {
-    "message": "Clique duas vezes na palavra sublinhada"
+    "message": "Clique duas vezes em qualquer palavra"
   },
   "onboarding_railSelect": {
     "message": "Selecionar"

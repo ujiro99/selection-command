@@ -1535,7 +1535,7 @@
     "message": "Text unten durch Ziehen markieren"
   },
   "onboarding_doubleClickHint": {
-    "message": "Unterstrichenes Wort doppelklicken"
+    "message": "Doppelklicke auf ein beliebiges Wort"
   },
   "onboarding_railSelect": {
     "message": "Auswählen"

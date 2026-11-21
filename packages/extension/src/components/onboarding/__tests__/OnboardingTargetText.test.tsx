@@ -52,7 +52,7 @@ describe("OnboardingTargetText", () => {
     expect(screen.queryByTestId("onboarding-target-word")).toBeNull()
   })
 
-  it("marks the target word and asks for a double-click", () => {
+  it("demonstrates on the target word and asks for a double-click", () => {
     render(
       <OnboardingTargetText
         text={TEXT}
@@ -86,6 +86,24 @@ describe("OnboardingTargetText", () => {
       "onboarding_selectHint",
     )
     expect(screen.queryByTestId("onboarding-target-word")).toBeNull()
+  })
+
+  it("uses a white card on the glow background and a muted one otherwise", () => {
+    const { rerender } = render(
+      <OnboardingTargetText text={TEXT} selected={false} background="glow" />,
+    )
+    const card = screen.getByTestId("onboarding-target-card")
+    expect(card.className).toContain("bg-white")
+
+    rerender(
+      <OnboardingTargetText
+        text={TEXT}
+        selected={false}
+        background="vignette"
+      />,
+    )
+    expect(card.className).toContain("bg-muted/80")
+    expect(card.className).not.toContain("bg-white")
   })
 
   it("reports presses on the card", () => {

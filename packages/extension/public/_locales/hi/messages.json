@@ -1535,7 +1535,7 @@
     "message": "नीचे दिए गए टेक्स्ट को खींचकर चुनें"
   },
   "onboarding_doubleClickHint": {
-    "message": "रेखांकित शब्द पर डबल-क्लिक करें"
+    "message": "किसी भी शब्द पर डबल-क्लिक करें"
   },
   "onboarding_railSelect": {
     "message": "चयन"

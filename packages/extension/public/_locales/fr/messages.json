@@ -1535,7 +1535,7 @@
     "message": "Faites glisser pour sélectionner le texte ci-dessous"
   },
   "onboarding_doubleClickHint": {
-    "message": "Double-cliquez sur le mot souligné"
+    "message": "Double-cliquez sur n'importe quel mot"
   },
   "onboarding_railSelect": {
     "message": "Sélection"

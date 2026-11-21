@@ -1535,7 +1535,7 @@
     "message": "아래 텍스트를 드래그하여 선택하세요"
   },
   "onboarding_doubleClickHint": {
-    "message": "밑줄 친 단어를 더블클릭하세요"
+    "message": "아무 단어나 더블클릭하세요"
   },
   "onboarding_railSelect": {
     "message": "선택"

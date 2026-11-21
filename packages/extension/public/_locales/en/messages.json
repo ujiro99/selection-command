@@ -1564,7 +1564,7 @@
     "description": "Onboarding Step1/2 caption instructing the user to drag-select the sample text, shown above the target text card during the selection demo."
   },
   "onboarding_doubleClickHint": {
-    "message": "Double-click the underlined word"
+    "message": "Double-click any word"
   },
   "onboarding_railSelect": {
     "message": "Select",

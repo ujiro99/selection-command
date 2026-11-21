@@ -1535,7 +1535,7 @@
     "message": "拖动以选择下方文本"
   },
   "onboarding_doubleClickHint": {
-    "message": "双击带下划线的词语"
+    "message": "双击任意词语"
   },
   "onboarding_railSelect": {
     "message": "选择"

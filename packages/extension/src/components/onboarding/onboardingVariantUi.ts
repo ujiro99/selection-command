@@ -3,7 +3,7 @@ import type { ExperimentVariant } from "@/services/experiments"
 export type OnboardingBackground = "vignette" | "glow"
 
 // How the sample text card asks to be selected. "drag" selects the whole
-// sentence; "doubleClick" marks one word in it and asks for a double-click,
+// sentence; "doubleClick" asks for a double-click on any word,
 // Chrome's native word selection, so the gesture is the same one users go on
 // to use on real pages.
 export type OnboardingSelectGesture = "drag" | "doubleClick"

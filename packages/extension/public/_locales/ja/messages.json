@@ -1532,7 +1532,7 @@
     "message": "下のテキストをドラッグして選択"
   },
   "onboarding_doubleClickHint": {
-    "message": "下線の単語をダブルクリック"
+    "message": "どれかの単語をダブルクリック"
   },
   "onboarding_railSelect": {
     "message": "選択"
