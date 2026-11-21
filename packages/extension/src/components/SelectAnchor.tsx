@@ -56,14 +56,8 @@ export const SelectAnchor = forwardRef<HTMLDivElement>((_props, ref) => {
   const setAnchor = useCallback(
     (p: Point) => {
       clearTimeout(delayTO as number)
-      if (isSelectionInDisabledArea()) {
-        // The page opted out of the popup for this area.
-        // Also drop the previous anchor so a stale menu does not remain.
-        setPoint(null)
-        setTarget(null)
-        return
-      }
-      setPoint(p)
+      // Always keep the target: commands run from the context menu or
+      // shortcuts still use it, even where the popup is disabled.
       const s = document.getSelection()
       if (s && s.rangeCount > 0) {
         setTarget(s.getRangeAt(0).startContainer.parentElement as Element)
@@ -72,8 +66,14 @@ export const SelectAnchor = forwardRef<HTMLDivElement>((_props, ref) => {
       } else {
         setTarget(null)
       }
+      // The page opted out of the popup for this area. Drop the previous
+      // anchor too, so a stale menu does not remain. The context menu
+      // method shows no popup menu, so it keeps the anchor to place results.
+      const disabled =
+        method !== STARTUP_METHOD.CONTEXT_MENU && isSelectionInDisabledArea()
+      setPoint(disabled ? null : p)
     },
-    [delayTO, setPoint, setTarget],
+    [delayTO, method, setPoint, setTarget],
   )
 
   const releaseAnchor = useCallback(

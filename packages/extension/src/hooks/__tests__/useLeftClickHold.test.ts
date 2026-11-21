@@ -50,4 +50,21 @@ describe("useLeftClickHold", () => {
     })
     expect(result.current.detectHold).toBe(false)
   })
+
+  it("LCH-03: a click inside a disabled area releases a previous hold", () => {
+    const { result } = renderHook(() =>
+      useLeftClickHold({ enable: true, holdDuration: HOLD_DURATION }),
+    )
+    mouseDown(document.getElementById("outside")!)
+    act(() => {
+      vi.advanceTimersByTime(HOLD_DURATION)
+    })
+    expect(result.current.detectHold).toBe(true)
+
+    mouseDown(document.getElementById("inside")!)
+    act(() => {
+      vi.advanceTimersByTime(HOLD_DURATION)
+    })
+    expect(result.current.detectHold).toBe(false)
+  })
 })

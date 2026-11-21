@@ -10,11 +10,7 @@ import {
 import type { Point } from "@/types"
 
 const isTargetEvent = (e: MouseEvent): boolean => {
-  return (
-    e.button === MOUSE.LEFT &&
-    !isPopup(e.target as Element) &&
-    !isInDisabledArea(e.target as Node)
-  )
+  return e.button === MOUSE.LEFT && !isPopup(e.target as Element)
 }
 
 const findTarget = (e: MouseEvent): Element | null => {
@@ -47,6 +43,9 @@ export function useLeftClickHold(props: useLeftClickHoldParam) {
     const handleMouseDown = (event: MouseEvent) => {
       if (!isTargetEvent(event)) return
       if (detectHold) release()
+      // The page opted out of the popups for this area. Checked after the
+      // release above, so a click here still closes a previously held popup.
+      if (isInDisabledArea(event.target as Node)) return
 
       // Set initial state
       setProgress(0)

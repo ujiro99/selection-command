@@ -5,7 +5,8 @@ export const APP_ID = "selection-command"
 
 /**
  * Attribute that web pages can put on an element to suppress the popup menu
- * for selections made inside it (e.g. the interactive demo on the Hub LP).
+ * for selections made inside it, and the link preview for links and buttons
+ * inside it (e.g. the interactive demo on the Hub LP).
  */
 export const POPUP_DISABLED_ATTR = "data-selection-command-disabled"
 export const VERSION = (
