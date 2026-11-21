@@ -30,11 +30,12 @@ describe("OnboardingWelcome", () => {
 
     await advance(1 + EXIT_MS)
     expect(onDone).toHaveBeenCalledTimes(1)
+    expect(onDone).toHaveBeenCalledWith("auto")
   })
 
   it("uses the per-variant duration when one is given", async () => {
     const onDone = vi.fn()
-    const ui = getVariantUi("E").welcome
+    const ui = getVariantUi("F").welcome
     render(<OnboardingWelcome onDone={onDone} ui={ui} />)
 
     await advance(ui.durationMs - 1)
@@ -54,6 +55,7 @@ describe("OnboardingWelcome", () => {
     await advance(EXIT_MS)
 
     expect(onDone).toHaveBeenCalledTimes(1)
+    expect(onDone).toHaveBeenCalledWith("click")
 
     // The pending auto-advance timer must not fire a second time.
     await advance(WELCOME_MS + EXIT_MS)

@@ -1556,9 +1556,15 @@
     "message": "An extension that lets you search selected text in a single click.",
     "description": "Onboarding Step1 sample text the user is asked to select to trigger the real popup menu."
   },
+  "onboarding_step1TargetWord": {
+    "message": "extension"
+  },
   "onboarding_selectHint": {
     "message": "Drag to select the text below",
     "description": "Onboarding Step1/2 caption instructing the user to drag-select the sample text, shown above the target text card during the selection demo."
+  },
+  "onboarding_doubleClickHint": {
+    "message": "Double-click the underlined word"
   },
   "onboarding_railSelect": {
     "message": "Select",

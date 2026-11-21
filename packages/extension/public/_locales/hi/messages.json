@@ -1528,8 +1528,14 @@
   "onboarding_step1TargetText": {
     "message": "एक एक्सटेंशन जिससे आप चुने हुए टेक्स्ट को एक क्लिक में सर्च कर सकते हैं।"
   },
+  "onboarding_step1TargetWord": {
+    "message": "एक्सटेंशन"
+  },
   "onboarding_selectHint": {
     "message": "नीचे दिए गए टेक्स्ट को खींचकर चुनें"
+  },
+  "onboarding_doubleClickHint": {
+    "message": "रेखांकित शब्द पर डबल-क्लिक करें"
   },
   "onboarding_railSelect": {
     "message": "चयन"

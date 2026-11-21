@@ -247,9 +247,13 @@ export function StepSearchCommand({ onboarding }: Props) {
           <OnboardingFadeIn key={"target-text"} delay={phaseDelays.targetText}>
             <OnboardingTargetText
               text={t("onboarding_step1TargetText")}
-              background={onboarding.ui.background}
               selected={!isExplain}
               calloutDelay={phaseDelays.targetTextCallout}
+              gesture={onboarding.ui.searchSelectGesture}
+              targetWord={t("onboarding_step1TargetWord")}
+              onInteract={() =>
+                onboarding.recordTargetInteract(OnboardingStep.SEARCH)
+              }
             />
           </OnboardingFadeIn>
           <OnboardingCallout

@@ -1531,8 +1531,14 @@
   "onboarding_step1TargetText": {
     "message": "Sambungan yang membolehkan anda mencari teks yang dipilih hanya dengan satu klik."
   },
+  "onboarding_step1TargetWord": {
+    "message": "Sambungan"
+  },
   "onboarding_selectHint": {
     "message": "Seret untuk pilih teks di bawah"
+  },
+  "onboarding_doubleClickHint": {
+    "message": "Klik dua kali perkataan bergaris bawah"
   },
   "onboarding_railSelect": {
     "message": "Pilih"

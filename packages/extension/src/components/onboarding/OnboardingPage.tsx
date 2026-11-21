@@ -4,6 +4,7 @@ import { SelectAnchor } from "@/components/SelectAnchor"
 import { Popup } from "@/components/Popup"
 import { LinkSelector } from "@/components/LinkSelector"
 import { useOnboardingState } from "./useOnboardingState"
+import type { WelcomeDoneTrigger } from "./useOnboardingState"
 import { useOnboardingVariant } from "./useOnboardingVariant"
 import { useTheme, themeContext } from "@/hooks/useTheme"
 import { OnboardingLayout } from "./OnboardingLayout"
@@ -46,8 +47,14 @@ function OnboardingFlow({ variant }: { variant: ExperimentVariant }) {
   // unmounted meanwhile, so its own entrance animations start only once the
   // greeting is out of the way.
   const isWelcome = onboarding.phase === StepPhase.WELCOME
-  const { setPhase } = onboarding
-  const goToExplain = useCallback(() => setPhase(StepPhase.EXPLAIN), [setPhase])
+  const { setPhase, recordWelcomeDone } = onboarding
+  const goToExplain = useCallback(
+    (trigger: WelcomeDoneTrigger) => {
+      recordWelcomeDone(trigger)
+      setPhase(StepPhase.EXPLAIN)
+    },
+    [setPhase, recordWelcomeDone],
+  )
 
   return (
     <SelectContextProvider>

@@ -1528,8 +1528,14 @@
   "onboarding_step1TargetText": {
     "message": "一款可以一键搜索所选文本的扩展程序"
   },
+  "onboarding_step1TargetWord": {
+    "message": "文本"
+  },
   "onboarding_selectHint": {
     "message": "拖动以选择下方文本"
+  },
+  "onboarding_doubleClickHint": {
+    "message": "双击带下划线的词语"
   },
   "onboarding_railSelect": {
     "message": "选择"

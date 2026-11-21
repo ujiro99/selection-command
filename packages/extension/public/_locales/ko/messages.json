@@ -1528,8 +1528,14 @@
   "onboarding_step1TargetText": {
     "message": "선택한 텍스트를 클릭 한 번으로 검색할 수 있는 확장 프로그램"
   },
+  "onboarding_step1TargetWord": {
+    "message": "확장"
+  },
   "onboarding_selectHint": {
     "message": "아래 텍스트를 드래그하여 선택하세요"
+  },
+  "onboarding_doubleClickHint": {
+    "message": "밑줄 친 단어를 더블클릭하세요"
   },
   "onboarding_railSelect": {
     "message": "선택"

@@ -12,6 +12,9 @@ import { getVariantUi } from "./onboardingVariantUi"
 
 export type UseOnboardingState = ReturnType<typeof useOnboardingState>
 
+// How the welcome overlay was dismissed: on its own timer, or by a click.
+export type WelcomeDoneTrigger = "auto" | "click"
+
 // development or e2e build-only escape hatch (`?step=SEARCH&phase=value_shown`) so
 // screenshot/manual-QA tooling can land directly on any step/phase without
 // driving the whole real flow.
@@ -54,6 +57,8 @@ export function useOnboardingState(variant: ExperimentVariant) {
   const startedAtRef = useRef<number>(Date.now())
   const seenValueStepsRef = useRef<Set<OnboardingStep>>(new Set())
   const seenSelectionStepsRef = useRef<Set<OnboardingStep>>(new Set())
+  const seenInteractStepsRef = useRef<Set<OnboardingStep>>(new Set())
+  const welcomeDoneRef = useRef(false)
   const finishedRef = useRef(false)
   const hasEventSendRef = useRef(false)
   const phaseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -121,6 +126,25 @@ export function useOnboardingState(variant: ExperimentVariant) {
     })
   }, [])
 
+  // Records the welcome overlay handing off to the first step, i.e. the user
+  // stayed long enough to actually see Step 1. `trigger` tells an
+  // auto-advance apart from a click that skipped the rest of the greeting.
+  const recordWelcomeDone = useCallback((trigger: WelcomeDoneTrigger) => {
+    if (welcomeDoneRef.current) return
+    welcomeDoneRef.current = true
+    sendOnboardingEvent(ANALYTICS_EVENTS.ONBOARDING_WELCOME_DONE, { trigger })
+  }, [])
+
+  // Records the first press on a step's sample text card, whether or not it
+  // goes on to produce a selection. No-ops on later presses in that step.
+  const recordTargetInteract = useCallback((forStep: OnboardingStep) => {
+    if (seenInteractStepsRef.current.has(forStep)) return
+    seenInteractStepsRef.current.add(forStep)
+    sendOnboardingEvent(ANALYTICS_EVENTS.ONBOARDING_TARGET_INTERACT, {
+      step: forStep,
+    })
+  }, [])
+
   const recordCommandExecuted = useCallback(
     (forStep: OnboardingStep, commandType: string) => {
       sendOnboardingEvent(ANALYTICS_EVENTS.ONBOARDING_COMMAND_EXECUTE, {
@@ -170,6 +194,8 @@ export function useOnboardingState(variant: ExperimentVariant) {
     goToStep,
     skip,
     complete,
+    recordWelcomeDone,
+    recordTargetInteract,
     recordFirstSelection,
     recordCommandExecuted,
   }
