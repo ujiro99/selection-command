@@ -1,0 +1,143 @@
+import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
+
+/**
+ * Resolves the value passed to chrome.sidePanel.setOptions({ path }) when a
+ * web page should be shown in the side panel.
+ *
+ * The `path` option is documented as a resource inside the extension package,
+ * but browsers differ in how they treat an absolute URL:
+ * - Chrome resolves it as a URL, so passing "https://..." shows the web page.
+ *   However, Chrome blocks a side panel extension page from navigating itself
+ *   to a web URL.
+ * - Vivaldi appends it to the extension origin
+ *   ("chrome-extension://<id>/https://..."), which results in
+ *   ERR_FILE_NOT_FOUND. On the other hand, navigation from an extension page
+ *   to a web URL is allowed there.
+ *
+ * To support both, the side panel first opens a relay page bundled with the
+ * extension (see side_panel_relay.ts). The relay page navigates to the target
+ * URL when it can, and otherwise asks the service worker to set the URL as
+ * `path` directly. Once the direct mode is detected, it is cached so later
+ * calls skip the relay page. The cache is keyed by the user agent, so it is
+ * detected again after the browser is updated, in case the behavior changes.
+ * Note that Chrome's user agent only contains the major version, so it is
+ * detected again only on major updates.
+ *
+ * Assumption: a browser whose side panel is not a tab is assumed to accept a
+ * web URL as `path` like Chrome. This is verified only on Chrome and Vivaldi;
+ * other Chromium-based browsers (e.g. Edge, Brave, Opera) are not verified.
+ */
+
+/** Path of the relay page inside the extension package. */
+export const SIDE_PANEL_RELAY_PATH = "src/side_panel_relay.html"
+
+/** Query parameter names used by the relay page. */
+export const RELAY_PARAM = {
+  URL: "url",
+  TAB_ID: "tabId",
+} as const
+
+/**
+ * Whether the browser accepts a web URL as `path` directly.
+ * Kept in memory because setOptions must be called synchronously to keep the
+ * user gesture for chrome.sidePanel.open().
+ *
+ * Known limitation: initSidePanelUrlMode() loads the cached result
+ * asynchronously, so a side panel opened right after the service worker wakes
+ * up may still go through the relay page even in direct mode. It still shows
+ * the page via the fallback, at the cost of an extra load. This is accepted
+ * because awaiting the storage would break the user gesture.
+ */
+let directUrlSupported = false
+
+/**
+ * Load the cached detection result. Call once when the service worker starts.
+ * The result is ignored when it was detected on a different browser version.
+ */
+export const initSidePanelUrlMode = async (): Promise<void> => {
+  try {
+    // The user agent at the time the direct mode was detected.
+    const detectedUserAgent = await Storage.get<string | undefined>(
+      LOCAL_STORAGE_KEY.SIDE_PANEL_DIRECT_URL,
+    )
+    // Do not overwrite a result detected while the storage was being read.
+    directUrlSupported =
+      directUrlSupported ||
+      (!!detectedUserAgent && detectedUserAgent === navigator.userAgent)
+  } catch (e) {
+    console.warn("Failed to load side panel URL mode:", e)
+  }
+}
+
+/**
+ * Remember that the browser accepts a web URL as `path` directly.
+ */
+export const markDirectUrlSupported = async (): Promise<void> => {
+  if (directUrlSupported) return
+  directUrlSupported = true
+  try {
+    await Storage.set(
+      LOCAL_STORAGE_KEY.SIDE_PANEL_DIRECT_URL,
+      navigator.userAgent,
+    )
+  } catch (e) {
+    console.warn("Failed to save side panel URL mode:", e)
+  }
+}
+
+/**
+ * Build the relay page path that navigates to the given URL.
+ * @param {string} url - The web URL to show in the side panel.
+ * @param {number} tabId - The tab the side panel belongs to.
+ * @returns {string} The relay page path with query parameters.
+ */
+export const buildRelayPath = (url: string, tabId: number): string => {
+  const params = new URLSearchParams({
+    [RELAY_PARAM.URL]: url,
+    [RELAY_PARAM.TAB_ID]: String(tabId),
+  })
+  return `${SIDE_PANEL_RELAY_PATH}?${params.toString()}`
+}
+
+/**
+ * Get the value to pass as `path` to chrome.sidePanel.setOptions.
+ * @param {string} url - The web URL to show in the side panel.
+ * @param {number} tabId - The tab the side panel belongs to.
+ * @returns {string} The URL itself in direct mode or when it is not a web
+ * URL, otherwise the relay path.
+ */
+export const toSidePanelPath = (url: string, tabId: number): string => {
+  if (directUrlSupported || !isRelayableUrl(url)) return url
+  return buildRelayPath(url, tabId)
+}
+
+/**
+ * Check whether the value is a valid tab ID.
+ * @param {unknown} tabId - The value to check.
+ * @returns {boolean} True if the value is a positive integer.
+ */
+export const isValidTabId = (tabId: unknown): tabId is number =>
+  Number.isInteger(tabId) && (tabId as number) > 0
+
+/**
+ * Check whether the URL can be shown in the side panel via the relay page.
+ * Only http(s) URLs are accepted to avoid navigating to arbitrary schemes.
+ * @param {string | null} url - The URL to check.
+ * @returns {boolean} True if the URL is an http(s) URL.
+ */
+export const isRelayableUrl = (url: string | null): url is string => {
+  if (!url) return false
+  try {
+    const { protocol } = new URL(url)
+    return protocol === "http:" || protocol === "https:"
+  } catch {
+    return false
+  }
+}
+
+/** Test-only exports. Do not use in production code. */
+export const __test = {
+  reset: () => {
+    directUrlSupported = false
+  },
+}
