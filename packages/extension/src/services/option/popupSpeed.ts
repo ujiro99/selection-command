@@ -3,7 +3,6 @@ import {
   POPUP_DELAY_DEFAULT,
   POPUP_DULATION_DEFAULT,
 } from "@/services/option/defaultSettings"
-import { findUserStyleValue } from "@/services/option/userStyles"
 import type { StyleVariable } from "@/types"
 
 export enum POPUP_SPEED {
@@ -81,12 +80,17 @@ export function detectPopupSpeed(
   return found ?? null
 }
 
-/** Reads the delay / duration values from the user styles. */
+/**
+ * Reads the delay / duration values from the user styles.
+ * Accepts numeric values as well, since the settings form holds them as numbers.
+ */
 export function toPopupSpeedValues(
-  userStyles: StyleVariable[] | undefined,
+  userStyles:
+    | Array<Omit<StyleVariable, "value"> & { value: string | number }>
+    | undefined,
 ): PopupSpeedValues {
   const toNumber = (name: STYLE_VARIABLE, fallback: number): number => {
-    const value: unknown = findUserStyleValue(userStyles, name)
+    const value: unknown = userStyles?.find((s) => s.name === name)?.value
     if (value == null) return fallback
     return typeof value === "number" ? value : parseInt(String(value))
   }
