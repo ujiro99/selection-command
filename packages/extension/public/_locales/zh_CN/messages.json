@@ -284,6 +284,9 @@
   "Option_searchUrl_desc": {
     "message": "将`%s`替换为选中的文本。"
   },
+  "Option_urlPlaceholders_tooltip": {
+    "message": "可用的占位符:\n%s : 选中的文本\n%pageUrl : 当前页面的 URL\n* 两者都会进行 URL 编码。"
+  },
   "Option_iconUrl": {
     "message": "图标URL"
   },

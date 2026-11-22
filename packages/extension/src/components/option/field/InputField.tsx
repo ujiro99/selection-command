@@ -19,6 +19,8 @@ type InputFieldType = {
   description?: string
   inputDescription?: string
   tooltip?: string
+  /** Test id for the tooltip's info icon. */
+  tooltipTestId?: string
   previewUrl?: string
 }
 
@@ -33,6 +35,7 @@ export const InputField = ({
   description,
   inputDescription,
   tooltip,
+  tooltipTestId,
   previewUrl,
 }: InputFieldType) => {
   const hasPreview = !isEmpty(previewUrl)
@@ -48,7 +51,7 @@ export const InputField = ({
               <FormLabel>
                 <span>{formLabel}</span>
               </FormLabel>
-              {tooltip && <InfoTooltip text={tooltip} />}
+              {tooltip && <InfoTooltip text={tooltip} testId={tooltipTestId} />}
             </div>
             {description && <FormDescription>{description}</FormDescription>}
           </div>

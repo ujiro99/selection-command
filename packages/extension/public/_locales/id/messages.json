@@ -284,6 +284,9 @@
   "Option_searchUrl_desc": {
     "message": "Ganti `%s` dengan teks yang dipilih."
   },
+  "Option_urlPlaceholders_tooltip": {
+    "message": "Placeholder yang tersedia:\n%s : Teks yang dipilih\n%pageUrl : URL halaman saat ini\n* Keduanya di-encode sebagai URL."
+  },
   "Option_iconUrl": {
     "message": "URL Ikon"
   },

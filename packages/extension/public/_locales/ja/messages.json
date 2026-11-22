@@ -284,6 +284,9 @@
   "Option_searchUrl_desc": {
     "message": "`%s`を選択テキストに置き換えて表示します。"
   },
+  "Option_urlPlaceholders_tooltip": {
+    "message": "使用可能なプレースホルダー:\n%s : 選択テキスト\n%pageUrl : 表示中のページのURL\n※ いずれもURLエンコードされます。"
+  },
   "Option_iconUrl": {
     "message": "アイコンURL"
   },

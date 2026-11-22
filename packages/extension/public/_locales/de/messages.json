@@ -284,6 +284,9 @@
   "Option_searchUrl_desc": {
     "message": "Ersetzen Sie `%s` durch den ausgewählten Text."
   },
+  "Option_urlPlaceholders_tooltip": {
+    "message": "Verfügbare Platzhalter:\n%s : Ausgewählter Text\n%pageUrl : URL der aktuellen Seite\n* Beide werden URL-kodiert."
+  },
   "Option_iconUrl": {
     "message": "Symbol-URL"
   },
