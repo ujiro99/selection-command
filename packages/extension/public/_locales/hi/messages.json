@@ -284,6 +284,9 @@
   "Option_searchUrl_desc": {
     "message": "चयनित टेक्स्ट के साथ `%s` को प्रतिस्थापित करता है।"
   },
+  "Option_urlPlaceholders_tooltip": {
+    "message": "उपलब्ध प्लेसहोल्डर:\n%s : चयनित टेक्स्ट\n%pageUrl : वर्तमान पृष्ठ का URL\n* दोनों URL-एन्कोड किए जाते हैं।"
+  },
   "Option_iconUrl": {
     "message": "आइकन URL"
   },

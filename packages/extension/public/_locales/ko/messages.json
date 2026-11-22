@@ -284,6 +284,9 @@
   "Option_searchUrl_desc": {
     "message": "`%s`를 선택한 텍스트로 대체합니다."
   },
+  "Option_urlPlaceholders_tooltip": {
+    "message": "사용 가능한 플레이스홀더:\n%s : 선택한 텍스트\n%pageUrl : 현재 페이지의 URL\n* 모두 URL 인코딩됩니다."
+  },
   "Option_iconUrl": {
     "message": "아이콘 URL"
   },

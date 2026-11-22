@@ -42,6 +42,7 @@ import { Form } from "@/components/ui/form"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { InputField } from "@/components/option/field/InputField"
+import { InfoTooltip } from "@/components/option/field/InfoTooltip"
 import { IconField } from "@/components/option/field/IconField"
 import { SelectField } from "@/components/option/field/SelectField"
 import { TextareaField } from "@/components/option/field/TextareaField"
@@ -618,7 +619,15 @@ const CommandEditDialogInner = ({
                     render={({ field }) => (
                       <FormItem className="flex items-center gap-1">
                         <div className="w-2/6">
-                          <FormLabel>{t("searchUrl")}</FormLabel>
+                          <div className="flex items-center gap-1 mr-1">
+                            <FormLabel>
+                              <span>{t("searchUrl")}</span>
+                            </FormLabel>
+                            <InfoTooltip
+                              text={t("urlPlaceholders_tooltip")}
+                              testId="search-url-placeholders-tooltip"
+                            />
+                          </div>
                           <FormDescription>
                             {openMode === OPEN_MODE.API
                               ? t("searchUrl_desc_api")

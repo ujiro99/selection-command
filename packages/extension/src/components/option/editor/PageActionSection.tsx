@@ -122,6 +122,8 @@ export const PageActionSection = ({
         control={form.control}
         name="pageActionOption.startUrl"
         formLabel={t("startUrl")}
+        tooltip={t("urlPlaceholders_tooltip")}
+        tooltipTestId="start-url-placeholders-tooltip"
         inputProps={{
           type: "string",
           ...register("pageActionOption.startUrl", {}),

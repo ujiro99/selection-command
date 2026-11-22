@@ -284,6 +284,9 @@
   "Option_searchUrl_desc": {
     "message": "Remplacer `%s` par le texte sélectionné."
   },
+  "Option_urlPlaceholders_tooltip": {
+    "message": "Espaces réservés disponibles :\n%s : Texte sélectionné\n%pageUrl : URL de la page actuelle\n* Les deux sont encodés en URL."
+  },
   "Option_iconUrl": {
     "message": "URL de l'Icône"
   },

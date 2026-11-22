@@ -287,6 +287,9 @@
   "Option_searchUrl_desc": {
     "message": "Replace `%s` with the selected text."
   },
+  "Option_urlPlaceholders_tooltip": {
+    "message": "Available placeholders:\n%s : Selected text\n%pageUrl : URL of the current page\n* Both are URL-encoded."
+  },
   "Option_iconUrl": {
     "message": "Icon URL"
   },

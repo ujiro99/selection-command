@@ -284,6 +284,9 @@
   "Option_searchUrl_desc": {
     "message": "Заменяет `%s` на выбранный текст."
   },
+  "Option_urlPlaceholders_tooltip": {
+    "message": "Доступные заполнители:\n%s : Выделенный текст\n%pageUrl : URL текущей страницы\n* Оба значения кодируются для URL."
+  },
   "Option_iconUrl": {
     "message": "URL иконки"
   },
