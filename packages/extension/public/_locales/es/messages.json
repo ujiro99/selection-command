@@ -1592,10 +1592,25 @@
     "message": "Vista previa"
   },
   "onboarding_step3Callout": {
-    "message": "Haz Shift+clic en este enlace para previsualizarlo."
+    "message": "Haz $key$+clic en este enlace para previsualizarlo.",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "Shift"
+      }
+    }
+  },
+  "onboarding_step3Callout_hold": {
+    "message": "Mantén pulsado este enlace para previsualizarlo."
+  },
+  "onboarding_step3Callout_drag": {
+    "message": "Arrastra un poco este enlace para previsualizarlo."
   },
   "onboarding_clickKeycap": {
     "message": "Clic"
+  },
+  "onboarding_holdKeycap": {
+    "message": "Mantener pulsado"
   },
   "onboarding_step3ReturnHint": {
     "message": "Vuelve a esta pestaña y la ventana se cerrará automáticamente."

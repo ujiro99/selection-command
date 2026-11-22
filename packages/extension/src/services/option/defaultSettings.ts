@@ -55,7 +55,9 @@ export const emptySettings: SettingsType = {
     showIndicator: true,
     sidePanelAutoHide: false,
     startupMethod: {
-      method: LINK_COMMAND_STARTUP_METHOD.KEYBOARD,
+      // Long press works without the keyboard (#542). Existing users keep
+      // their saved method; this only applies to new installs.
+      method: LINK_COMMAND_STARTUP_METHOD.LEFT_CLICK_HOLD,
       keyboardParam: KEYBOARD.SHIFT,
       threshold: 150,
       leftClickHoldParam: 200,
@@ -103,7 +105,9 @@ export default {
     showIndicator: true,
     sidePanelAutoHide: false,
     startupMethod: {
-      method: LINK_COMMAND_STARTUP_METHOD.KEYBOARD,
+      // Long press works without the keyboard (#542). Existing users keep
+      // their saved method; this only applies to new installs.
+      method: LINK_COMMAND_STARTUP_METHOD.LEFT_CLICK_HOLD,
       keyboardParam: KEYBOARD.SHIFT,
       threshold: 150,
       leftClickHoldParam: 200,

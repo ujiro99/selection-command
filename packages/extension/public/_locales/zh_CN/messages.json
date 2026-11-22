@@ -1592,10 +1592,25 @@
     "message": "预览"
   },
   "onboarding_step3Callout": {
-    "message": "按住 Shift 并点击此链接即可预览。"
+    "message": "按住 $key$ 并点击此链接即可预览。",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "Shift"
+      }
+    }
+  },
+  "onboarding_step3Callout_hold": {
+    "message": "长按此链接即可预览。"
+  },
+  "onboarding_step3Callout_drag": {
+    "message": "稍微拖动此链接即可预览。"
   },
   "onboarding_clickKeycap": {
     "message": "点击"
+  },
+  "onboarding_holdKeycap": {
+    "message": "长按"
   },
   "onboarding_step3ReturnHint": {
     "message": "切回此标签页，窗口会自动关闭。"

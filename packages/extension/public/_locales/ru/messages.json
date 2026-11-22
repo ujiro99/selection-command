@@ -1592,10 +1592,25 @@
     "message": "Просмотр"
   },
   "onboarding_step3Callout": {
-    "message": "Нажмите Shift и щёлкните по этой ссылке, чтобы увидеть предпросмотр."
+    "message": "Нажмите $key$ и щёлкните по этой ссылке, чтобы увидеть предпросмотр.",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "Shift"
+      }
+    }
+  },
+  "onboarding_step3Callout_hold": {
+    "message": "Нажмите и удерживайте эту ссылку, чтобы увидеть предпросмотр."
+  },
+  "onboarding_step3Callout_drag": {
+    "message": "Немного перетащите эту ссылку, чтобы увидеть предпросмотр."
   },
   "onboarding_clickKeycap": {
     "message": "Клик"
+  },
+  "onboarding_holdKeycap": {
+    "message": "Удерживать"
   },
   "onboarding_step3ReturnHint": {
     "message": "Вернитесь на эту вкладку, и окно автоматически закроется."
