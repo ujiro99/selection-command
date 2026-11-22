@@ -1,0 +1,21 @@
+name: PR Title
+
+# Release notes (git-cliff and the Hub's What's New draft) are sorted by the
+# Conventional Commits type in PR titles, so check the title of every PR.
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  check:
+    # Release branches (dev-x.y.z) only bundle other PRs and are skipped by
+    # the release notes, so their titles are not checked.
+    if: ${{ !startsWith(github.head_ref, 'dev-') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

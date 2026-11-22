@@ -12,6 +12,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: "true"
+          # Full history and tags are needed to generate the release notes.
+          fetch-depth: 0
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -33,6 +35,34 @@ jobs:
         run: |
           mkdir -p packages/extension/build
           yarn workspace @selection-command/extension zip
+      - name: Generate release notes
+        uses: orhun/git-cliff-action@v4
+        with:
+          config: cliff.toml
+          # Changes since the previous tag that reach extension users.
+          args: >-
+            --latest --strip header
+            --include-path "packages/extension/**"
+            --include-path "packages/shared/**"
+        env:
+          OUTPUT: RELEASE_NOTES.md
+          # Used by git-cliff to look up the pull request of each commit.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: ncipollo/release-action@v1
         with:
           artifacts: "packages/extension/build/*.zip"
+          bodyFile: RELEASE_NOTES.md
+      # Ask selection-command-hub to open a draft PR of the What's New page.
+      - name: Notify Hub of the release
+        if: startsWith(github.ref_name, 'v')
+        env:
+          GH_TOKEN: ${{ secrets.HUB_DISPATCH_TOKEN }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::warning::HUB_DISPATCH_TOKEN is not set; skipped notifying the Hub."
+            exit 0
+          fi
+          gh api repos/ujiro99/selection-command-hub/dispatches \
+            -f event_type=extension-released \
+            -f "client_payload[version]=${TAG#v}"
