@@ -36,19 +36,18 @@ function railBeat(phase: StepPhase): 0 | 2 {
 const KEYCAP_CLASS =
   "inline-flex min-h-8 items-center gap-1.5 rounded-lg border border-b-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-gray-900 px-2.5 text-xs font-bold tracking-wide text-slate-700 dark:text-slate-300"
 
-// Display name of the modifier key. On Mac, CTRL also matches the Command
-// key (see checkValidKey in useDetectLinkCommand), so it is shown as such.
+// Display name of the modifier key, using the same labels as the options
+// page (e.g. "Command(⌘)" for CTRL on Mac, where it also matches Command).
 function keyLabel(key: string | undefined): string {
   switch (key) {
     case KEYBOARD.CTRL:
-      return isMac() ? "Ctrl / ⌘" : "Ctrl"
     case KEYBOARD.ALT:
-      return isMac() ? "Option" : "Alt"
-    case KEYBOARD.META:
-      return isMac() ? "⌘" : "Win"
     case KEYBOARD.SHIFT:
+      return t(`Option_keyboardParam_${key}_${isMac() ? "mac" : "windows"}`)
+    case KEYBOARD.META:
+      return isMac() ? "Command(⌘)" : "Meta"
     default:
-      return "Shift"
+      return t(`Option_keyboardParam_${KEYBOARD.SHIFT}_windows`)
   }
 }
 

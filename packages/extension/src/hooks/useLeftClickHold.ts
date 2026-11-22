@@ -5,6 +5,7 @@ import { isPopup } from "@/lib/utils"
 import {
   findAnchorElement,
   findClickableElement,
+  findPressedAnchorElement,
   isInDisabledArea,
 } from "@/services/dom"
 import type { Point } from "@/types"
@@ -14,8 +15,9 @@ const isTargetEvent = (e: MouseEvent): boolean => {
 }
 
 const findTarget = (e: MouseEvent, anchorOnly: boolean): Element | null => {
+  if (anchorOnly) return findPressedAnchorElement(e) ?? null
   const anchor = findAnchorElement(e)
-  if (anchor != null || anchorOnly) return anchor ?? null
+  if (anchor != null) return anchor
   return findClickableElement(e.target as Element)
 }
 
@@ -66,7 +68,7 @@ export function useLeftClickHold(props: useLeftClickHoldParam) {
       // The page opted out of the popups for this area. Checked after the
       // release above, so a click here still closes a previously held popup.
       if (isInDisabledArea(event.target as Node)) return
-      if (anchorOnly && findAnchorElement(event) == null) return
+      if (anchorOnly && findPressedAnchorElement(event) == null) return
 
       // Set initial state
       startRef.current = { x: event.clientX, y: event.clientY }
@@ -122,15 +124,17 @@ export function useLeftClickHold(props: useLeftClickHoldParam) {
     window.addEventListener("mousedown", handleMouseDown)
     window.addEventListener("mouseup", handleMouseUp)
     if (cancelOnMove) {
-      window.addEventListener("mousemove", handleMouseMove)
+      // Listen in the capture phase, so a page that stops the propagation of
+      // these events cannot keep the hold from being cancelled.
+      window.addEventListener("mousemove", handleMouseMove, true)
       // A native drag stops mousemove/mouseup events reaching the window.
-      window.addEventListener("dragstart", cancelPending)
+      window.addEventListener("dragstart", cancelPending, true)
     }
     return () => {
       window.removeEventListener("mousedown", handleMouseDown)
       window.removeEventListener("mouseup", handleMouseUp)
-      window.removeEventListener("mousemove", handleMouseMove)
-      window.removeEventListener("dragstart", cancelPending)
+      window.removeEventListener("mousemove", handleMouseMove, true)
+      window.removeEventListener("dragstart", cancelPending, true)
     }
   }, [
     enable,

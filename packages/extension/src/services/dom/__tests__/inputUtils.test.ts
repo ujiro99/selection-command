@@ -246,7 +246,8 @@ describe("clearInput", () => {
 
   it("removes emptied list items", () => {
     const div = document.createElement("div")
-    div.innerHTML = "<p>intro</p><ul><li><p>one</p></li><li><p>two</p></li></ul>"
+    div.innerHTML =
+      "<p>intro</p><ul><li><p>one</p></li><li><p>two</p></li></ul>"
     document.body.appendChild(div)
 
     clearInput(div)

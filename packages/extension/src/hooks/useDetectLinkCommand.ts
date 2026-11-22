@@ -18,6 +18,7 @@ import { isLinkCommand } from "@/lib/commandGuards"
 import {
   isClickableElement,
   findAnchorElement,
+  findPressedAnchorElement,
   isInDisabledArea,
   ScreenSize,
 } from "@/services/dom"
@@ -346,7 +347,7 @@ function useDetectClickHold(
     const handleMouseDown = (e: MouseEvent) => {
       if (!isTargetEvent(e)) return
       // Matches anchorOnly above: no progress indicator on buttons.
-      if (findAnchorElement(e) == null) return
+      if (findPressedAnchorElement(e) == null) return
       detectLinkRef.current = true
     }
     const handleMouseUp = () => {

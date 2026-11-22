@@ -38,9 +38,11 @@ describe("GestureHint", () => {
 
     expect(chrome.i18n.getMessage).toHaveBeenCalledWith(
       "onboarding_step3Callout",
-      ["Alt"],
+      ["Option_keyboardParam_Alt_windows"],
     )
-    expect(screen.getByText("Alt")).toBeInTheDocument()
+    expect(
+      screen.getByText("Option_keyboardParam_Alt_windows"),
+    ).toBeInTheDocument()
     expect(screen.getByText("onboarding_clickKeycap")).toBeInTheDocument()
   })
 
