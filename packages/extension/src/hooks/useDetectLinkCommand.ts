@@ -314,6 +314,11 @@ function useDetectClickHold(
   const { detectHoldLink, position, progress, linkElement } = useLeftClickHold({
     enable: clickHoldEnabled && !forceClear,
     holdDuration: duration,
+    // Long press is the default for new installs (#542), so keep it from
+    // firing while dragging a link, or on buttons where it would re-click
+    // them in the preview window.
+    cancelOnMove: true,
+    anchorOnly: true,
   })
 
   const clear = () => {
@@ -340,6 +345,8 @@ function useDetectClickHold(
     if (!clickHoldEnabled) return
     const handleMouseDown = (e: MouseEvent) => {
       if (!isTargetEvent(e)) return
+      // Matches anchorOnly above: no progress indicator on buttons.
+      if (findAnchorElement(e) == null) return
       detectLinkRef.current = true
     }
     const handleMouseUp = () => {

@@ -8,7 +8,13 @@ import DefaultSettings, {
   COMMAND_SEARCH_ID,
 } from "../../option/defaultSettings"
 import { ensureIconsCached } from "../../iconCache"
-import { OPTION_FOLDER, VERSION, OPEN_MODE } from "@/const"
+import {
+  OPTION_FOLDER,
+  VERSION,
+  OPEN_MODE,
+  LINK_COMMAND_STARTUP_METHOD,
+  KEYBOARD,
+} from "@/const"
 import type { Command, SettingsType, Star } from "@/types"
 import * as utils from "@/lib/utils"
 import { isLinkCommand } from "@/lib/commandGuards"
@@ -506,6 +512,28 @@ describe("Settings", () => {
       expect(mockStorage.set).toHaveBeenCalledWith(
         STORAGE_KEY.USER,
         expect.objectContaining({ followBrowserZoom: true }),
+      )
+    })
+
+    it("ST-35-a: should keep starting Link Preview with Shift+click for the existing install that has no saved settings", async () => {
+      mockStorage.has.mockResolvedValue(false)
+      // Storage.get falls back to the defaults for new installs (long press).
+      mockStorage.get.mockImplementation(async (key) =>
+        key === STORAGE_KEY.USER ? structuredClone(DefaultSettings) : {},
+      )
+
+      await Settings.saveForExistingInstall()
+
+      expect(mockStorage.set).toHaveBeenCalledWith(
+        STORAGE_KEY.USER,
+        expect.objectContaining({
+          linkCommand: expect.objectContaining({
+            startupMethod: expect.objectContaining({
+              method: LINK_COMMAND_STARTUP_METHOD.KEYBOARD,
+              keyboardParam: KEYBOARD.SHIFT,
+            }),
+          }),
+        }),
       )
     })
 

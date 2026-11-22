@@ -59,7 +59,7 @@ type GestureHintProps = {
 
 // Callout content telling the user how to start Link Preview, following the
 // startup method in the user's settings (long press by default, #542).
-export function GestureHint({ method, keyboardParam }: GestureHintProps) {
+function GestureHint({ method, keyboardParam }: GestureHintProps) {
   if (method === LINK_COMMAND_STARTUP_METHOD.KEYBOARD) {
     const label = keyLabel(keyboardParam)
     return (
@@ -108,10 +108,15 @@ export function GestureHint({ method, keyboardParam }: GestureHintProps) {
 // gesture is a long press or a click, not a text selection.
 export function StepLinkPreview({ onboarding }: Props) {
   const { phase, setPhase } = onboarding
-  const { userSettings } = useUserSettings()
+  const { userSettings, loading: settingsLoading } = useUserSettings()
   const startupMethod =
     userSettings.linkCommand?.startupMethod ??
     DefaultSettings.linkCommand.startupMethod
+  // Hold the callout until the settings are loaded, so it never shows the
+  // default gesture to a user who set another one. A later refetch keeps the
+  // loaded settings, so it does not hide the callout again.
+  const settingsReady =
+    !settingsLoading || userSettings.linkCommand?.startupMethod != null
   const [linkElm, setLinkElm] = useState<HTMLElement | null>(null)
   const [returnCalloutElm, setReturnCalloutElm] = useState<Element | null>(null)
 
@@ -279,7 +284,7 @@ export function StepLinkPreview({ onboarding }: Props) {
 
           <OnboardingCallout
             targetElm={linkElm}
-            open={linkElm != null}
+            open={linkElm != null && settingsReady}
             openDelay={phaseDelays.callout}
             contentClassName="duration-300 select-none"
           >
@@ -322,4 +327,9 @@ export function StepLinkPreview({ onboarding }: Props) {
       )}
     </div>
   )
+}
+
+/** Test-only exports. Do not use in production code. */
+export const __test = {
+  GestureHint,
 }

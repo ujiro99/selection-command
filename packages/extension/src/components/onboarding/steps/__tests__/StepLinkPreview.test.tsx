@@ -1,8 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { render, screen } from "@testing-library/react"
-import { GestureHint } from "../StepLinkPreview"
+import { __test } from "../StepLinkPreview"
 import { KEYBOARD, LINK_COMMAND_STARTUP_METHOD } from "@/const"
 import DefaultSettings from "@/services/option/defaultSettings"
+
+const { GestureHint } = __test
 
 vi.mock("@/lib/utils", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/lib/utils")>()),
