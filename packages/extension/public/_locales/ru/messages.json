@@ -1609,9 +1609,6 @@
   "onboarding_clickKeycap": {
     "message": "Клик"
   },
-  "onboarding_holdKeycap": {
-    "message": "Удерживать"
-  },
   "onboarding_step3ReturnHint": {
     "message": "Вернитесь на эту вкладку, и окно автоматически закроется."
   },

@@ -23,7 +23,6 @@ describe("GestureHint", () => {
     )
 
     expect(screen.getByText("onboarding_step3Callout_hold")).toBeInTheDocument()
-    expect(screen.getByText("onboarding_holdKeycap")).toBeInTheDocument()
     expect(screen.queryByText("onboarding_clickKeycap")).toBeNull()
   })
 
@@ -52,9 +51,7 @@ describe("GestureHint", () => {
     )
 
     expect(screen.getByText("onboarding_step3Callout_drag")).toBeInTheDocument()
-    expect(
-      screen.getByText("Option_linkCommandStartupMethod_drag"),
-    ).toBeInTheDocument()
+    expect(screen.queryByText("onboarding_clickKeycap")).toBeNull()
   })
 
   it("LP-04: 正常系: 新規インストールのデフォルトは長押しで起動する", () => {

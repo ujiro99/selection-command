@@ -84,21 +84,17 @@ export function GestureHint({ method, keyboardParam }: GestureHintProps) {
     )
   }
 
+  // No keycap here: its label would only repeat the gesture already named in
+  // the callout text, so only an icon is shown with the text.
   const isDrag = method === LINK_COMMAND_STARTUP_METHOD.DRAG
+  const Icon = isDrag ? Move : Hand
   return (
-    <div className="flex flex-col items-center gap-2 pb-1">
-      {isDrag
-        ? t("onboarding_step3Callout_drag")
-        : t("onboarding_step3Callout_hold")}
-      <span className={KEYCAP_CLASS}>
-        {isDrag ? (
-          <Move className="size-4" strokeWidth={2} />
-        ) : (
-          <Hand className="size-4" strokeWidth={2} />
-        )}
+    <div className="flex flex-col items-center gap-1.5 pb-0.5">
+      <Icon className="size-5 shrink-0" strokeWidth={2} aria-hidden="true" />
+      <span className="text-balance">
         {isDrag
-          ? t("Option_linkCommandStartupMethod_drag")
-          : t("onboarding_holdKeycap")}
+          ? t("onboarding_step3Callout_drag")
+          : t("onboarding_step3Callout_hold")}
       </span>
     </div>
   )

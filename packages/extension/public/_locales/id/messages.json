@@ -1612,9 +1612,6 @@
   "onboarding_clickKeycap": {
     "message": "Klik"
   },
-  "onboarding_holdKeycap": {
-    "message": "Tekan dan tahan"
-  },
   "onboarding_step3ReturnHint": {
     "message": "Kembali ke tab ini dan jendela akan tertutup secara otomatis."
   },

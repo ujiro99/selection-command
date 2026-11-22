@@ -1612,9 +1612,6 @@
   "onboarding_clickKeycap": {
     "message": "Clique"
   },
-  "onboarding_holdKeycap": {
-    "message": "Clicar e segurar"
-  },
   "onboarding_step3ReturnHint": {
     "message": "Volte para esta aba e a janela se fecha automaticamente."
   },

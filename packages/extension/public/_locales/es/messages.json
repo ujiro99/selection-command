@@ -1609,9 +1609,6 @@
   "onboarding_clickKeycap": {
     "message": "Clic"
   },
-  "onboarding_holdKeycap": {
-    "message": "Mantener pulsado"
-  },
   "onboarding_step3ReturnHint": {
     "message": "Vuelve a esta pestaña y la ventana se cerrará automáticamente."
   },

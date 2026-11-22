@@ -1662,10 +1662,6 @@
     "message": "Click",
     "description": "Keycap-style label paired with a mouse-click icon in Onboarding Step3's Shift+Click callout."
   },
-  "onboarding_holdKeycap": {
-    "message": "Press and hold",
-    "description": "Keycap-style label under the Onboarding Step3 callout for the long-press gesture."
-  },
   "onboarding_step3ReturnHint": {
     "message": "Switch back to this tab and the window closes automatically.",
     "description": "Onboarding Step3 hint shown while waiting for the user to return from the link preview's popup/tab."

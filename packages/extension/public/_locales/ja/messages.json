@@ -1598,16 +1598,13 @@
     }
   },
   "onboarding_step3Callout_hold": {
-    "message": "このリンクを長押しすると、プレビューできます。"
+    "message": "長押しでプレビューできます。"
   },
   "onboarding_step3Callout_drag": {
-    "message": "このリンクを少しドラッグすると、プレビューできます。"
+    "message": "少しドラッグするとプレビューできます。"
   },
   "onboarding_clickKeycap": {
     "message": "クリック"
-  },
-  "onboarding_holdKeycap": {
-    "message": "長押し"
   },
   "onboarding_step3ReturnHint": {
     "message": "もとの画面を選択すると、ウィンドウが自動的に消えます"

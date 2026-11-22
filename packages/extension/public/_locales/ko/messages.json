@@ -1609,9 +1609,6 @@
   "onboarding_clickKeycap": {
     "message": "클릭"
   },
-  "onboarding_holdKeycap": {
-    "message": "길게 누르기"
-  },
   "onboarding_step3ReturnHint": {
     "message": "이 탭으로 돌아오면 창이 자동으로 닫힙니다."
   },

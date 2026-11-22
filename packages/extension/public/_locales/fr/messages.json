@@ -1609,9 +1609,6 @@
   "onboarding_clickKeycap": {
     "message": "Clic"
   },
-  "onboarding_holdKeycap": {
-    "message": "Maintenir le clic"
-  },
   "onboarding_step3ReturnHint": {
     "message": "Revenez à cet onglet et la fenêtre se fermera automatiquement."
   },

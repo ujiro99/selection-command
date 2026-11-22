@@ -1609,9 +1609,6 @@
   "onboarding_clickKeycap": {
     "message": "点击"
   },
-  "onboarding_holdKeycap": {
-    "message": "长按"
-  },
   "onboarding_step3ReturnHint": {
     "message": "切回此标签页，窗口会自动关闭。"
   },

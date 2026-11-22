@@ -1609,9 +1609,6 @@
   "onboarding_clickKeycap": {
     "message": "Klick"
   },
-  "onboarding_holdKeycap": {
-    "message": "Gedrückt halten"
-  },
   "onboarding_step3ReturnHint": {
     "message": "Wechsle zurück zu diesem Tab, dann schließt sich das Fenster automatisch."
   },

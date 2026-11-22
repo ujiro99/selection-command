@@ -1609,9 +1609,6 @@
   "onboarding_clickKeycap": {
     "message": "क्लिक"
   },
-  "onboarding_holdKeycap": {
-    "message": "दबाकर रखें"
-  },
   "onboarding_step3ReturnHint": {
     "message": "इस टैब पर वापस आएं और विंडो अपने आप बंद हो जाएगी।"
   },
