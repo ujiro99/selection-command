@@ -100,7 +100,12 @@ export function PopupControls(): JSX.Element {
           className={cn(buttonClass, keepOpen && "text-foreground")}
           onClick={onClickKeepOpen}
         >
-          <Pin className={cn("size-4", keepOpen && "fill-current")} />
+          <Pin
+            className={cn(
+              "size-4 transition-transform duration-100",
+              keepOpen ? "rotate-0 fill-current" : "rotate-45",
+            )}
+          />
           Keep
         </Button>
         <Button
