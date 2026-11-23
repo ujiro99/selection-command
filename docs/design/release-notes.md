@@ -51,6 +51,8 @@
   - 1 つの PR に複数のコミットがあれば、同じ PR 番号が複数行に付く
   - API 呼び出しは 1 リリースあたりコミット数ぶん（数十回）で、`GITHUB_TOKEN` の上限内に収まる
 - ローカルでの確認（前回のタグ以降の未リリース分を `RELEASE_NOTES.md` に出力して表示する。ファイルは git 管理外）
+  - 前提: `gh` が認証済みであること（未認証だと PR リンクが付かず SHA のまま）。範囲がずれないよう、事前に `git fetch --tags` でタグを最新にする
+  - git-cliff のバージョンは `package.json` の `release-notes` と `release.yml` の `version` で揃える
 
 ```bash
 yarn release-notes

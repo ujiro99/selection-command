@@ -2,7 +2,7 @@
 # This hook never blocks the commit.
 if ! npx --no -- commitlint --edit "$1"; then
   echo ""
-  echo "warning: the commit message does not follow Conventional Commits."
+  echo "warning: the commit message did not pass the Conventional Commits check (see above)."
   echo "         e.g. 'feat(extension): add ...', 'fix: ...'"
   echo "         See https://www.conventionalcommits.org/"
 fi

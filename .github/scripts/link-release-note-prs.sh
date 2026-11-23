@@ -17,13 +17,20 @@ repo="$2"
 tmp_file="$(mktemp)"
 
 # Look up the feature PR of a commit. The release branch PRs (dev-*) also
-# contain every commit, so they are ignored.
+# contain every commit, so they are ignored. A commit belongs to a few PRs at
+# most, so the first page (30 PRs) of the API is enough.
+# API errors go to stderr so that the cause shows up in the workflow log.
 find_pr() {
-  local full_sha
+  local full_sha result
   full_sha="$(git rev-parse --verify --quiet "$1^{commit}")" || return 0
-  gh api "repos/${repo}/commits/${full_sha}/pulls" \
-    --jq '[.[] | select(.merged_at != null and (.head.ref | startswith("dev-") | not))] | sort_by(.merged_at) | first | .number // empty' \
-    2>/dev/null || true
+  # On an HTTP error gh prints the error body to stdout, so accept only a number.
+  if result="$(gh api "repos/${repo}/commits/${full_sha}/pulls" \
+    --jq '[.[] | select(.merged_at != null and (.head.ref | startswith("dev-") | not))] | sort_by(.merged_at) | first | .number // empty')" &&
+    [[ "$result" =~ ^[0-9]+$ ]]; then
+    echo "$result"
+  elif [ -n "$result" ]; then
+    echo "Failed to look up the PR of $1: $result" >&2
+  fi
 }
 
 missing=0
