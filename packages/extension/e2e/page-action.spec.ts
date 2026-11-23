@@ -53,6 +53,37 @@ async function openRecorder(
   return { optionsPage, recorderPage, completeButton }
 }
 
+/**
+ * Waits until the target element becomes visible on an Amazon page.
+ * Amazon occasionally shows a "Continue shopping" bot-check interstitial
+ * instead of the requested page. Clicking through it lands on the top page,
+ * so navigate back to the originally requested URL afterwards.
+ */
+async function waitPastAmazonInterstitial(
+  page: Page,
+  target: Locator,
+  timeout: number = 10_000,
+  maxAttempts: number = 3,
+): Promise<void> {
+  const name = "Continue shopping"
+  const continueButton = page
+    .getByRole("button", { name })
+    .or(page.getByRole("link", { name }))
+    .first()
+  for (let i = 0; i < maxAttempts; i++) {
+    await target
+      .or(continueButton)
+      .first()
+      .waitFor({ state: "visible", timeout })
+    if (await target.first().isVisible()) return
+    const requestedUrl = page.url()
+    await continueButton.click()
+    await page.waitForLoadState("domcontentloaded")
+    await page.goto(requestedUrl, { waitUntil: "domcontentloaded" })
+  }
+  await target.waitFor({ state: "visible", timeout })
+}
+
 async function runActionCommand(
   context: BrowserContext,
   page: Page,
@@ -281,21 +312,31 @@ test.describe("PageAction Commands", () => {
     await page.goto("https://www.amazon.com/")
     await page.waitForLoadState("domcontentloaded")
 
-    // Click the first category link.
-    await page.locator(".a-list-item .a-link-normal").first().click()
+    // Search via the search box. The top page layout changes frequently
+    // (e.g. seasonal sales), and opening the search URL directly is
+    // rejected as bot traffic, so go through the search box instead.
+    const searchBox = page.locator("#twotabsearchtextbox")
+    await waitPastAmazonInterstitial(page, searchBox)
+    await searchBox.fill("laptop")
+    await searchBox.press("Enter")
     await page.waitForLoadState("domcontentloaded")
 
-    // Click the first product link to navigate to a product page
-    await page.locator(".s-main-slot .a-link-normal").first().click()
+    // Click the first product link in the search results
+    const productLink = page
+      .locator("[data-component-type='s-search-result'] a[href*='/dp/']")
+      .first()
+    await productLink.waitFor({ state: "visible", timeout: 10_000 })
+    await productLink.click()
     await page.waitForLoadState("domcontentloaded")
+
+    const title = page.locator("#title")
+    await waitPastAmazonInterstitial(page, title)
 
     // Get product id
     // Product ID is the segment after "/dp/" and before the next "/" -> B0DZZWMB2L
     // - Example: https://www.amazon.com/ASUS-ROG-Strix-Gaming-Laptop/dp/B0DZZWMB2L/
     const productId = page.url().split("/dp/")[1].split("/")[0]
 
-    const title = page.locator("#title")
-    await title.waitFor({ state: "visible", timeout: 5000 })
     await page.waitForTimeout(200)
     await title.click({ clickCount: 3 })
     const menubar = page.locator(`[data-testid="${TEST_IDS.menuBar}"]`)
