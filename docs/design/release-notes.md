@@ -50,11 +50,10 @@
   - 機能 PR → `dev-*` をマージコミットで取り込む運用のため、git-cliff 単体では PR 番号を取得できない。`dev-*` の PR は除外し、機能 PR を採用する
   - 1 つの PR に複数のコミットがあれば、同じ PR 番号が複数行に付く
   - API 呼び出しは 1 リリースあたりコミット数ぶん（数十回）で、`GITHUB_TOKEN` の上限内に収まる
-- ローカルでの確認
+- ローカルでの確認（前回のタグ以降の未リリース分を `RELEASE_NOTES.md` に出力して表示する。ファイルは git 管理外）
 
 ```bash
-npx git-cliff --latest --include-path "packages/extension/**" --include-path "packages/shared/**" -o notes.md
-bash .github/scripts/link-release-note-prs.sh notes.md ujiro99/selection-command
+yarn release-notes
 ```
 
 ## 4. Hub のアップデート情報ドラフト

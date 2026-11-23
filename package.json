@@ -22,6 +22,7 @@
     "tsc": "yarn workspaces run tsc -b",
     "clean": "yarn workspaces run clean && rm -rf node_modules",
     "pretty-quick": "pretty-quick",
+    "release-notes": "npx -y git-cliff@2.14.2 --unreleased --strip header --include-path 'packages/extension/**' --include-path 'packages/shared/**' -o RELEASE_NOTES.md && bash .github/scripts/link-release-note-prs.sh RELEASE_NOTES.md ujiro99/selection-command && cat RELEASE_NOTES.md",
     "prepare": "husky"
   },
   "devDependencies": {

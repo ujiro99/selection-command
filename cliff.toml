@@ -1,8 +1,7 @@
 # git-cliff configuration for the GitHub Release body.
 # https://git-cliff.org/docs/configuration
-# Used by .github/workflows/release.yml; preview locally with:
-#   npx git-cliff --latest --include-path "packages/extension/**" --include-path "packages/shared/**" -o notes.md
-#   bash .github/scripts/link-release-note-prs.sh notes.md ujiro99/selection-command
+# Used by .github/workflows/release.yml; preview the unreleased notes with:
+#   yarn release-notes
 
 [changelog]
 header = ""
@@ -20,7 +19,7 @@ body = """
 - {{ commit.message | split(pat="\n") | first | trim }} ({{ commit.id | truncate(length=7, end="") }})
 {% endfor %}
 {% endfor %}
-{% if previous.version -%}
+{% if version and previous.version -%}
 **Full Changelog**: https://github.com/ujiro99/selection-command/compare/{{ previous.version }}...{{ version }}
 {% endif -%}
 """
