@@ -26,8 +26,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 /**
- * One Chrome Web Store image (1280x800) in one language.
- * Open with a 1280x800 viewport and take a screenshot.
+ * One Chrome Web Store image at its native dimensions.
+ * Open with the matching viewport and take a screenshot.
  */
 export default async function StoreImageSlidePage({ params }: Props) {
   const { lang, slide } = await params
