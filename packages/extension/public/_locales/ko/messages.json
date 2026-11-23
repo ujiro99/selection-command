@@ -1592,7 +1592,19 @@
     "message": "미리보기"
   },
   "onboarding_step3Callout": {
-    "message": "이 링크를 Shift+클릭하면 미리보기를 볼 수 있습니다."
+    "message": "이 링크를 $key$+클릭하면 미리보기를 볼 수 있습니다.",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "Shift"
+      }
+    }
+  },
+  "onboarding_step3Callout_hold": {
+    "message": "이 링크를 길게 누르면 미리보기를 볼 수 있습니다."
+  },
+  "onboarding_step3Callout_drag": {
+    "message": "이 링크를 살짝 드래그하면 미리보기를 볼 수 있습니다."
   },
   "onboarding_clickKeycap": {
     "message": "클릭"

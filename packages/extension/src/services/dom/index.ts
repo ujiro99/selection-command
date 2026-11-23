@@ -219,6 +219,22 @@ export function findAnchorElement(e: MouseEvent): Element | undefined {
 }
 
 /**
+ * Find the link pressed by the mouse event, ignoring a link when the pressed
+ * element belongs to another clickable element such as a button. A button
+ * laid over a link (e.g. a card whose whole area is a link) is found by
+ * `findAnchorElement` through `elementsFromPoint`, so it is excluded here.
+ * @param {MouseEvent} e The mouse event.
+ * @returns {Element} The anchor element.
+ */
+export function findPressedAnchorElement(e: MouseEvent): Element | undefined {
+  const clickable = findClickableElement(e.target as Element)
+  if (clickable != null && clickable.tagName.toLowerCase() !== "a") {
+    return undefined
+  }
+  return findAnchorElement(e)
+}
+
+/**
  * Check if the element is an anchor element, or contained.
  *
  * @param {Point} p The point to start searching.

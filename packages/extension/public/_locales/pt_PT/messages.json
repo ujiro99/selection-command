@@ -1595,7 +1595,19 @@
     "message": "Pré-visualização"
   },
   "onboarding_step3Callout": {
-    "message": "Shift+clique neste link para pré-visualizá-lo."
+    "message": "$key$+clique neste link para pré-visualizá-lo.",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "Shift"
+      }
+    }
+  },
+  "onboarding_step3Callout_hold": {
+    "message": "Clique e mantenha premido neste link para pré-visualizá-lo."
+  },
+  "onboarding_step3Callout_drag": {
+    "message": "Arraste um pouco este link para pré-visualizá-lo."
   },
   "onboarding_clickKeycap": {
     "message": "Clique"

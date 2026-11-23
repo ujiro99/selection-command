@@ -1592,7 +1592,19 @@
     "message": "Anteprima"
   },
   "onboarding_step3Callout": {
-    "message": "Fai Shift+clic su questo link per visualizzarne l'anteprima."
+    "message": "Fai $key$+clic su questo link per visualizzarne l'anteprima.",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "Shift"
+      }
+    }
+  },
+  "onboarding_step3Callout_hold": {
+    "message": "Tieni premuto su questo link per visualizzarne l'anteprima."
+  },
+  "onboarding_step3Callout_drag": {
+    "message": "Trascina leggermente questo link per visualizzarne l'anteprima."
   },
   "onboarding_clickKeycap": {
     "message": "Clic"

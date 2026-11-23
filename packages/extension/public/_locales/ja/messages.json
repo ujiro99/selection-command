@@ -1589,7 +1589,19 @@
     "message": "プレビュー"
   },
   "onboarding_step3Callout": {
-    "message": "このリンクをShift+クリックすると、プレビューできます。"
+    "message": "このリンクを$key$+クリックすると、プレビューできます。",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "Shift"
+      }
+    }
+  },
+  "onboarding_step3Callout_hold": {
+    "message": "長押しでプレビューできます。"
+  },
+  "onboarding_step3Callout_drag": {
+    "message": "少しドラッグするとプレビューできます。"
   },
   "onboarding_clickKeycap": {
     "message": "クリック"

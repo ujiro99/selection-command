@@ -1592,7 +1592,19 @@
     "message": "पूर्वावलोकन"
   },
   "onboarding_step3Callout": {
-    "message": "इस लिंक पर Shift दबाकर क्लिक करें और उसका पूर्वावलोकन देखें।"
+    "message": "इस लिंक पर $key$ दबाकर क्लिक करें और उसका पूर्वावलोकन देखें।",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "Shift"
+      }
+    }
+  },
+  "onboarding_step3Callout_hold": {
+    "message": "इस लिंक को दबाकर रखें और उसका पूर्वावलोकन देखें।"
+  },
+  "onboarding_step3Callout_drag": {
+    "message": "इस लिंक को थोड़ा ड्रैग करें और उसका पूर्वावलोकन देखें।"
   },
   "onboarding_clickKeycap": {
     "message": "क्लिक"

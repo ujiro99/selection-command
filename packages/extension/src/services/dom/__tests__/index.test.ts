@@ -9,6 +9,7 @@ import {
   isEditable,
   isSelectionInDisabledArea,
   urlsInSelection,
+  findPressedAnchorElement,
 } from "../index"
 
 describe("getSelectionText", () => {
@@ -596,5 +597,51 @@ describe("isSelectionInDisabledArea", () => {
     input.focus()
     input.setSelectionRange(0, 5)
     expect(isSelectionInDisabledArea()).toBe(false)
+  })
+})
+
+describe("findPressedAnchorElement", () => {
+  // The anchor that elementsFromPoint reports under the pointer.
+  let anchorAtPoint: Element | undefined
+
+  beforeEach(() => {
+    anchorAtPoint = undefined
+    document.elementsFromPoint = () => (anchorAtPoint ? [anchorAtPoint] : [])
+    document.body.innerHTML = `
+      <div id="card">
+        <a id="card-link" href="https://example.com/card">card</a>
+        <button id="like"><span id="like-icon">like</span></button>
+        <p id="text">text</p>
+      </div>
+      <a id="link" href="https://example.com"><span id="link-text">link</span></a>
+    `
+  })
+
+  afterEach(() => {
+    document.body.innerHTML = ""
+  })
+
+  const pressOn = (id: string): MouseEvent => {
+    const e = new MouseEvent("mousedown", { clientX: 10, clientY: 10 })
+    Object.defineProperty(e, "target", { value: document.getElementById(id) })
+    return e
+  }
+
+  it("FPA-01: returns the link pressed on its child element", () => {
+    expect(findPressedAnchorElement(pressOn("link-text"))?.id).toBe("link")
+  })
+
+  it("FPA-02: returns the link under the pointer when a plain element is pressed", () => {
+    anchorAtPoint = document.getElementById("card-link")!
+    expect(findPressedAnchorElement(pressOn("text"))?.id).toBe("card-link")
+  })
+
+  it("FPA-03: ignores the link under the pointer when a button over it is pressed", () => {
+    anchorAtPoint = document.getElementById("card-link")!
+    expect(findPressedAnchorElement(pressOn("like-icon"))).toBeUndefined()
+  })
+
+  it("FPA-04: returns undefined when no link is pressed", () => {
+    expect(findPressedAnchorElement(pressOn("text"))).toBeUndefined()
   })
 })

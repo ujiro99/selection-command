@@ -1641,8 +1641,22 @@
     "description": "Onboarding progress rail label for Step3's result beat (previewing a link)."
   },
   "onboarding_step3Callout": {
-    "message": "Shift+click this link to preview it.",
-    "description": "Onboarding Step3 callout/speech-bubble text pointing at the sample link, prompting the user to Shift+click it to trigger Link Preview."
+    "message": "$key$+click this link to preview it.",
+    "description": "Onboarding Step3 callout text pointing at the sample link when Link Preview starts with click + key. $key$ is the key name (e.g. Shift).",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "Shift"
+      }
+    }
+  },
+  "onboarding_step3Callout_hold": {
+    "message": "Press and hold this link to preview it.",
+    "description": "Onboarding Step3 callout text pointing at the sample link when Link Preview starts with a left-click long press."
+  },
+  "onboarding_step3Callout_drag": {
+    "message": "Drag this link a little to preview it.",
+    "description": "Onboarding Step3 callout text pointing at the sample link when Link Preview starts with a drag."
   },
   "onboarding_clickKeycap": {
     "message": "Click",

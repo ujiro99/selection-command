@@ -5,6 +5,7 @@ import { isPopup } from "@/lib/utils"
 import {
   findAnchorElement,
   findClickableElement,
+  findPressedAnchorElement,
   isInDisabledArea,
 } from "@/services/dom"
 import type { Point } from "@/types"
@@ -13,18 +14,37 @@ const isTargetEvent = (e: MouseEvent): boolean => {
   return e.button === MOUSE.LEFT && !isPopup(e.target as Element)
 }
 
-const findTarget = (e: MouseEvent): Element | null => {
+const findTarget = (e: MouseEvent, anchorOnly: boolean): Element | null => {
+  if (anchorOnly) return findPressedAnchorElement(e) ?? null
   const anchor = findAnchorElement(e)
   if (anchor != null) return anchor
   return findClickableElement(e.target as Element)
 }
 
+// Distance in pixels the pointer may move before a hold is cancelled.
+const MOVE_TOLERANCE = 5
+
 type useLeftClickHoldParam = {
   enable: boolean
   holdDuration: number
+  /**
+   * Cancel the hold when the pointer moves or a native drag starts, so that
+   * dragging a link (e.g. to the bookmarks bar) does not count as a hold.
+   */
+  cancelOnMove?: boolean
+  /**
+   * Only start a hold on links. Buttons and other clickable elements are
+   * ignored, so a long press on them never triggers an action.
+   */
+  anchorOnly?: boolean
 }
 export function useLeftClickHold(props: useLeftClickHoldParam) {
-  const { enable, holdDuration } = props
+  const {
+    enable,
+    holdDuration,
+    cancelOnMove = false,
+    anchorOnly = false,
+  } = props
   const [detectHold, setDetectHold] = useState(false)
   const [detectHoldLink, setDetectHoldLink] = useState(false)
   const [progress, setProgress] = useState(0)
@@ -32,6 +52,8 @@ export function useLeftClickHold(props: useLeftClickHoldParam) {
   const [linkElm, setLinkElm] = useState<Element | null>(null)
   const timeoutRef = useRef<ReturnType<typeof setTimeout>>()
   const intervalRef = useRef<ReturnType<typeof setInterval>>()
+  // Where the pending hold started; null when no hold is pending.
+  const startRef = useRef<Point | null>(null)
 
   useEffect(() => {
     release()
@@ -46,14 +68,19 @@ export function useLeftClickHold(props: useLeftClickHoldParam) {
       // The page opted out of the popups for this area. Checked after the
       // release above, so a click here still closes a previously held popup.
       if (isInDisabledArea(event.target as Node)) return
+      if (anchorOnly && findPressedAnchorElement(event) == null) return
 
       // Set initial state
+      startRef.current = { x: event.clientX, y: event.clientY }
       setProgress(0)
       setPosition({ x: event.clientX, y: event.clientY })
 
       // Start count of hold.
       timeoutRef.current = setTimeout(() => {
-        const el = findTarget(event)
+        // The hold is detected; clear the start point so that moving the
+        // pointer or dragging afterwards no longer cancels it.
+        startRef.current = null
+        const el = findTarget(event, anchorOnly)
         setDetectHold(true)
         setDetectHoldLink(el != null)
         setLinkElm(el as Element)
@@ -74,19 +101,47 @@ export function useLeftClickHold(props: useLeftClickHoldParam) {
     }
 
     const handleMouseUp = () => {
+      startRef.current = null
       clearTimeout(timeoutRef.current)
       clearInterval(intervalRef.current)
     }
 
+    // Stop the pending hold without touching a hold already detected.
+    const cancelPending = () => {
+      if (startRef.current == null) return
+      startRef.current = null
+      clearTimeout(timeoutRef.current)
+      clearInterval(intervalRef.current)
+      setProgress(0)
+    }
+
+    const handleMouseMove = (event: MouseEvent) => {
+      const start = startRef.current
+      if (start == null) return
+      const dx = event.clientX - start.x
+      const dy = event.clientY - start.y
+      if (Math.hypot(dx, dy) > MOVE_TOLERANCE) cancelPending()
+    }
+
     window.addEventListener("mousedown", handleMouseDown)
     window.addEventListener("mouseup", handleMouseUp)
+    if (cancelOnMove) {
+      // Listen in the capture phase, so a page that stops the propagation of
+      // these events cannot keep the hold from being cancelled.
+      window.addEventListener("mousemove", handleMouseMove, true)
+      // A native drag stops mousemove/mouseup events reaching the window.
+      window.addEventListener("dragstart", cancelPending, true)
+    }
     return () => {
       window.removeEventListener("mousedown", handleMouseDown)
       window.removeEventListener("mouseup", handleMouseUp)
+      window.removeEventListener("mousemove", handleMouseMove, true)
+      window.removeEventListener("dragstart", cancelPending, true)
     }
-  }, [enable, holdDuration, detectHold, timeoutRef, props])
+  }, [enable, holdDuration, cancelOnMove, anchorOnly, detectHold, timeoutRef])
 
   const release = () => {
+    startRef.current = null
     setDetectHold(false)
     setDetectHoldLink(false)
     setPosition({ x: 0, y: 0 })

@@ -67,4 +67,124 @@ describe("useLeftClickHold", () => {
     })
     expect(result.current.detectHold).toBe(false)
   })
+
+  describe("cancelOnMove / anchorOnly", () => {
+    beforeEach(() => {
+      document.body.innerHTML = `
+        <a id="link" href="https://example.com">link</a>
+        <button id="button">button</button>
+      `
+    })
+
+    const mouseDownAt = (target: Element, x = 10, y = 10) => {
+      act(() => {
+        target.dispatchEvent(
+          new MouseEvent("mousedown", {
+            button: 0,
+            bubbles: true,
+            clientX: x,
+            clientY: y,
+          }),
+        )
+      })
+    }
+
+    const mouseMoveTo = (x: number, y: number) => {
+      act(() => {
+        window.dispatchEvent(
+          new MouseEvent("mousemove", { clientX: x, clientY: y }),
+        )
+      })
+    }
+
+    const advanceHold = () => {
+      act(() => {
+        vi.advanceTimersByTime(HOLD_DURATION)
+      })
+    }
+
+    const render = (cancelOnMove: boolean, anchorOnly = false) =>
+      renderHook(() =>
+        useLeftClickHold({
+          enable: true,
+          holdDuration: HOLD_DURATION,
+          cancelOnMove,
+          anchorOnly,
+        }),
+      )
+
+    it("LCH-04: cancels the hold when the pointer moves beyond the tolerance", () => {
+      const { result } = render(true)
+      mouseDownAt(document.getElementById("link")!)
+      mouseMoveTo(30, 10)
+      advanceHold()
+      expect(result.current.detectHold).toBe(false)
+      expect(result.current.detectHoldLink).toBe(false)
+      expect(result.current.progress).toBe(0)
+    })
+
+    it("LCH-05: keeps the hold when the pointer moves within the tolerance", () => {
+      const { result } = render(true)
+      mouseDownAt(document.getElementById("link")!)
+      mouseMoveTo(13, 12)
+      advanceHold()
+      expect(result.current.detectHoldLink).toBe(true)
+    })
+
+    it("LCH-06: cancels the hold when a native drag starts", () => {
+      const { result } = render(true)
+      mouseDownAt(document.getElementById("link")!)
+      act(() => {
+        window.dispatchEvent(new Event("dragstart"))
+      })
+      advanceHold()
+      expect(result.current.detectHold).toBe(false)
+    })
+
+    it("LCH-07: ignores moves when cancelOnMove is off", () => {
+      const { result } = render(false)
+      mouseDownAt(document.getElementById("link")!)
+      mouseMoveTo(100, 100)
+      advanceHold()
+      expect(result.current.detectHoldLink).toBe(true)
+    })
+
+    it("LCH-08: anchorOnly ignores a hold on a button", () => {
+      const { result } = render(true, true)
+      mouseDownAt(document.getElementById("button")!)
+      advanceHold()
+      expect(result.current.detectHold).toBe(false)
+      expect(result.current.detectHoldLink).toBe(false)
+    })
+
+    it("LCH-09: anchorOnly still detects a hold on a link", () => {
+      const { result } = render(true, true)
+      mouseDownAt(document.getElementById("link")!)
+      advanceHold()
+      expect(result.current.detectHoldLink).toBe(true)
+      expect(result.current.linkElement?.id).toBe("link")
+    })
+
+    it("LCH-10: without anchorOnly a hold on a button is detected", () => {
+      const { result } = render(true)
+      mouseDownAt(document.getElementById("button")!)
+      advanceHold()
+      expect(result.current.detectHoldLink).toBe(true)
+    })
+
+    it("LCH-11: keeps a detected hold when the pointer moves afterwards", () => {
+      const { result } = render(true, true)
+      mouseDownAt(document.getElementById("link")!)
+      advanceHold()
+      expect(result.current.detectHoldLink).toBe(true)
+
+      mouseMoveTo(100, 100)
+      act(() => {
+        window.dispatchEvent(new Event("dragstart"))
+      })
+      expect(result.current.detectHold).toBe(true)
+      expect(result.current.detectHoldLink).toBe(true)
+      expect(result.current.linkElement?.id).toBe("link")
+    })
+  })
 })
