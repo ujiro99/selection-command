@@ -113,7 +113,7 @@ test.describe("Link Preview", () => {
 
     const currentSettings = await getUserSettings()
     const holdDuration =
-      currentSettings.linkCommand?.startupMethod?.leftClickHoldParam ?? 200
+      currentSettings.linkCommand?.startupMethod?.leftClickHoldParam ?? 300
 
     await setUserSettings({
       linkCommand: {

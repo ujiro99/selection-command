@@ -60,7 +60,7 @@ export const emptySettings: SettingsType = {
       method: LINK_COMMAND_STARTUP_METHOD.LEFT_CLICK_HOLD,
       keyboardParam: KEYBOARD.SHIFT,
       threshold: 150,
-      leftClickHoldParam: 200,
+      leftClickHoldParam: 300,
     },
   },
   userStyles: [],
@@ -110,7 +110,7 @@ export default {
       method: LINK_COMMAND_STARTUP_METHOD.LEFT_CLICK_HOLD,
       keyboardParam: KEYBOARD.SHIFT,
       threshold: 150,
-      leftClickHoldParam: 200,
+      leftClickHoldParam: 300,
     },
   },
   folders: [

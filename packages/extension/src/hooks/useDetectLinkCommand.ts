@@ -307,7 +307,7 @@ function useDetectClickHold(
     settings.linkCommand?.startupMethod?.method ===
       LINK_COMMAND_STARTUP_METHOD.LEFT_CLICK_HOLD
   const duration =
-    settings.linkCommand?.startupMethod?.leftClickHoldParam ?? 200
+    settings.linkCommand?.startupMethod?.leftClickHoldParam ?? 300
   const detectLinkRef = useRef(false)
   const [forceClear, setForceClear] = useState(false)
   const playProgress = 40 // percentage to start progress.
