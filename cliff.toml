@@ -1,11 +1,8 @@
 # git-cliff configuration for the GitHub Release body.
 # https://git-cliff.org/docs/configuration
 # Used by .github/workflows/release.yml; preview locally with:
-#   npx git-cliff --latest --include-path "packages/extension/**" --include-path "packages/shared/**"
-
-[remote.github]
-owner = "ujiro99"
-repo = "selection-command"
+#   npx git-cliff --latest --include-path "packages/extension/**" --include-path "packages/shared/**" -o notes.md
+#   bash .github/scripts/link-release-note-prs.sh notes.md ujiro99/selection-command
 
 [changelog]
 header = ""
@@ -19,12 +16,12 @@ body = """
 
 ### {{ group | striptags | trim | upper_first }}
 {% for commit in commits -%}
-- {{ commit.message | split(pat="\n") | first | trim }}\
-  {% if commit.remote.pr_number %} ([#{{ commit.remote.pr_number }}](https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}/pull/{{ commit.remote.pr_number }})){% else %} ({{ commit.id | truncate(length=7, end="") }}){% endif %}
+{# The trailing SHA is replaced with the PR link by .github/scripts/link-release-note-prs.sh. -#}
+- {{ commit.message | split(pat="\n") | first | trim }} ({{ commit.id | truncate(length=7, end="") }})
 {% endfor %}
 {% endfor %}
 {% if previous.version -%}
-**Full Changelog**: https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}/compare/{{ previous.version }}...{{ version }}
+**Full Changelog**: https://github.com/ujiro99/selection-command/compare/{{ previous.version }}...{{ version }}
 {% endif -%}
 """
 trim = true
@@ -42,6 +39,8 @@ sort_commits = "oldest"
 commit_parsers = [
   { message = "^Merge ", skip = true },
   { message = "^chore\\(release\\)", skip = true },
+  # Review follow-ups inside a PR are not user-facing changes.
+  { message = "^[a-z]+(\\([^)]*\\))?!?: address .*review", skip = true },
   { message = "^feat", group = "<!-- 0 -->Features" },
   { message = "^fix", group = "<!-- 1 -->Bug Fixes" },
   { message = "^perf", group = "<!-- 2 -->Performance" },

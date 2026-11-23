@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - "*"
+      - "v*"
 jobs:
   main:
     runs-on: ubuntu-latest
@@ -37,6 +37,8 @@ jobs:
           yarn workspace @selection-command/extension zip
       - name: Generate release notes
         uses: orhun/git-cliff-action@v4
+        # Release notes are optional; never block publishing the zip.
+        continue-on-error: true
         with:
           config: cliff.toml
           # Changes since the previous tag that reach extension users.
@@ -46,8 +48,19 @@ jobs:
             --include-path "packages/shared/**"
         env:
           OUTPUT: RELEASE_NOTES.md
-          # Used by git-cliff to look up the pull request of each commit.
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Link release notes to pull requests
+        if: hashFiles('RELEASE_NOTES.md') != ''
+        # Optional as well; the notes keep commit SHAs on failure.
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: bash .github/scripts/link-release-note-prs.sh RELEASE_NOTES.md "${{ github.repository }}"
+      - name: Fall back to an empty release body
+        run: |
+          if [ ! -f RELEASE_NOTES.md ]; then
+            echo "::warning::Release notes were not generated; publishing with an empty body."
+            : > RELEASE_NOTES.md
+          fi
       - uses: ncipollo/release-action@v1
         with:
           artifacts: "packages/extension/build/*.zip"

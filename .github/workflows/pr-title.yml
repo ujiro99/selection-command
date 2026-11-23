@@ -1,7 +1,7 @@
 name: PR Title
 
-# Release notes (git-cliff and the Hub's What's New draft) are sorted by the
-# Conventional Commits type in PR titles, so check the title of every PR.
+# The Hub's What's New draft is sorted by the Conventional Commits type in PR
+# titles, so check the title of every PR. (git-cliff uses commit messages.)
 on:
   pull_request:
     types: [opened, edited, reopened, synchronize]

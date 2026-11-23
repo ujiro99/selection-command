@@ -42,11 +42,19 @@
 | `revert`   | Reverts     |
 
 - 上記以外の種別、マージコミット、`chore(release)`、規約に沿わないコミットは載せない
-- 各行に PR 番号（取得できない場合は短縮 SHA）を付ける
+- PR 内のレビュー対応コミット（件名が `<種別>(<スコープ>): address ... review ...` の形）は載せない
+- タグ名が `v` で始まらない push ではワークフロー自体が動かない
+- ノート生成に失敗しても Release は作成する（本文は空になり、警告を出す）。PR リンクの付与に失敗した場合は短縮 SHA のまま公開する
+- 各行に、そのコミットを取り込んだ PR へのリンクを付ける（取得できない場合は短縮 SHA）
+  - git-cliff は各行を短縮 SHA で出力し、`.github/scripts/link-release-note-prs.sh` が GitHub API（`/commits/<sha>/pulls`）で PR を調べて置き換える
+  - 機能 PR → `dev-*` をマージコミットで取り込む運用のため、git-cliff 単体では PR 番号を取得できない。`dev-*` の PR は除外し、機能 PR を採用する
+  - 1 つの PR に複数のコミットがあれば、同じ PR 番号が複数行に付く
+  - API 呼び出しは 1 リリースあたりコミット数ぶん（数十回）で、`GITHUB_TOKEN` の上限内に収まる
 - ローカルでの確認
 
 ```bash
-npx git-cliff --latest --include-path "packages/extension/**" --include-path "packages/shared/**"
+npx git-cliff --latest --include-path "packages/extension/**" --include-path "packages/shared/**" -o notes.md
+bash .github/scripts/link-release-note-prs.sh notes.md ujiro99/selection-command
 ```
 
 ## 4. Hub のアップデート情報ドラフト
