@@ -40,6 +40,8 @@ jobs:
         # Release notes are optional; never block publishing the zip.
         continue-on-error: true
         with:
+          # Keep in sync with the "release-notes" script in package.json.
+          version: v2.14.2
           config: cliff.toml
           # Changes since the previous tag that reach extension users.
           args: >-
@@ -54,7 +56,8 @@ jobs:
         continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: bash .github/scripts/link-release-note-prs.sh RELEASE_NOTES.md "${{ github.repository }}"
+          REPO: ${{ github.repository }}
+        run: bash .github/scripts/link-release-note-prs.sh RELEASE_NOTES.md "$REPO"
       - name: Fall back to an empty release body
         run: |
           if [ ! -f RELEASE_NOTES.md ]; then
@@ -67,7 +70,9 @@ jobs:
           bodyFile: RELEASE_NOTES.md
       # Ask selection-command-hub to open a draft PR of the What's New page.
       - name: Notify Hub of the release
-        if: startsWith(github.ref_name, 'v')
+        # The release is already published; report a failure (e.g. an expired
+        # token) as a failed step without failing the workflow.
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.HUB_DISPATCH_TOKEN }}
           TAG: ${{ github.ref_name }}

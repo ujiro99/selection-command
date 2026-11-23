@@ -26,6 +26,7 @@ find_pr() {
     2>/dev/null || true
 }
 
+missing=0
 line_pattern='^(- .*) \(([0-9a-f]{7,40})\)$'
 
 while IFS= read -r line || [ -n "$line" ]; do
@@ -35,9 +36,16 @@ while IFS= read -r line || [ -n "$line" ]; do
     pr="$(find_pr "$sha")"
     if [ -n "$pr" ]; then
       line="${text} ([#${pr}](https://github.com/${repo}/pull/${pr}))"
+    else
+      missing=$((missing + 1))
     fi
   fi
   printf '%s\n' "$line" >>"$tmp_file"
 done <"$notes_file"
 
 mv "$tmp_file" "$notes_file"
+
+# Lookups fail silently (e.g. rate limits), so report how many lines kept SHAs.
+if [ "$missing" -gt 0 ]; then
+  echo "::warning::${missing} release note line(s) kept the commit SHA; their PR was not found."
+fi

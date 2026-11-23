@@ -39,7 +39,7 @@ commit_parsers = [
   { message = "^Merge ", skip = true },
   { message = "^chore\\(release\\)", skip = true },
   # Review follow-ups inside a PR are not user-facing changes.
-  { message = "^[a-z]+(\\([^)]*\\))?!?: address .*review", skip = true },
+  { message = "^[a-z]+(\\([^)]*\\))?!?: [Aa]ddress .*review( |$)", skip = true },
   { message = "^feat", group = "<!-- 0 -->Features" },
   { message = "^fix", group = "<!-- 1 -->Bug Fixes" },
   { message = "^perf", group = "<!-- 2 -->Performance" },
