@@ -385,6 +385,7 @@ describe("Service Worker Migration", () => {
 
     vi.doMock("@/services/storage", () => ({
       Storage: {
+        addListener: vi.fn(),
         get: vi.fn(),
       },
       SESSION_STORAGE_KEY: {},
@@ -619,6 +620,7 @@ describe("Popup Auto-Close Delay", () => {
     const mockStorageSet = vi.fn().mockResolvedValue(undefined)
     vi.doMock("@/services/storage", () => ({
       Storage: {
+        addListener: vi.fn(),
         set: mockStorageSet,
       },
       SESSION_STORAGE_KEY: {},
@@ -681,6 +683,7 @@ describe("Popup Auto-Close Delay", () => {
     const mockStorageSet = vi.fn().mockResolvedValue(undefined)
     vi.doMock("@/services/storage", () => ({
       Storage: {
+        addListener: vi.fn(),
         set: mockStorageSet,
       },
       SESSION_STORAGE_KEY: {},
@@ -746,6 +749,7 @@ describe("Popup Auto-Close Delay", () => {
     const mockStorageSet = vi.fn().mockResolvedValue(undefined)
     vi.doMock("@/services/storage", () => ({
       Storage: {
+        addListener: vi.fn(),
         set: mockStorageSet,
       },
       SESSION_STORAGE_KEY: {},

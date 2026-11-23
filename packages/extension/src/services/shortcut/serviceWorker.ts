@@ -9,7 +9,9 @@ import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
 import { getCenteredOffsetInCurrentWindow } from "@/services/screen"
 import { resolvePopupSize } from "@/services/option/defaultSettings"
 import { Settings } from "@/services/settings/settings"
-import { Storage, STORAGE_KEY } from "@/services/storage"
+import { Storage } from "@/services/storage"
+// Imported from const, as some tests replace the storage module.
+import { STORAGE_KEY } from "@/services/storage/const"
 import {
   usesSidePanel,
   preOpenSidePanel,
@@ -164,6 +166,8 @@ async function handleShortcutCommand(
       )
     }
 
+    // The content script responds true when it accepts the command.
+    executed = ret === true
     if (!enableSendTab || ret instanceof Error) {
       // Execute command directly in the service worker.
       // There is no selection position here, so center the popup in the
@@ -179,8 +183,9 @@ async function handleShortcutCommand(
         selectionFromClipboard,
         pageUrl: tab?.url ?? "",
       })
+      // The pre-open timeout closes the side panel if it is not requested.
+      executed = true
     }
-    executed = true
     sendEvent(
       ANALYTICS_EVENTS.SHORTCUT,
       {

@@ -9,8 +9,14 @@ export function useContextMenu() {
   useEffect(() => {
     return Ipc.addListener(TabCommand.executeAction, ((
       param: executeActionProps,
+      _sender,
+      response,
     ) => {
       setAction(param)
+      // Tell the sender that the command is accepted. Otherwise it cannot
+      // tell this from a tab without the content script, which also
+      // resolves to undefined.
+      response(true)
       return false
     }) as IpcCallback)
   }, [])

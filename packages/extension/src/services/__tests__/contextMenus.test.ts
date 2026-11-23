@@ -668,6 +668,36 @@ describe("Context Menu Multi-level Hierarchy", () => {
       global.chrome.sidePanel = original
     })
 
+    it("CM-19: should close the pre-opened side panel when the tab does not accept the command", async () => {
+      const original = global.chrome.sidePanel
+      const close = vi.fn().mockResolvedValue(undefined)
+      const setOptions = vi.fn().mockResolvedValue(undefined)
+      global.chrome.sidePanel = {
+        open: vi.fn().mockResolvedValue(undefined),
+        close,
+        setOptions,
+      } as any
+      // The tab without the content script resolves to undefined.
+      global.chrome.tabs = {
+        sendMessage: vi.fn().mockResolvedValue(undefined),
+      } as any
+      const command = {
+        ...createCommand("cmd-sp", "Side panel", "folder1"),
+        openMode: OPEN_MODE.SIDE_PANEL,
+      }
+      ContextMenu.commandIdObj = { "sidePanel:cmd-sp": command }
+      const info = { menuItemId: "sidePanel:cmd-sp" } as any
+      const tab = { id: 123 } as any
+
+      ContextMenu.preOpenSidePanel(info, tab)
+      await ContextMenu.onClicked(info, tab)
+
+      await vi.waitFor(() => {
+        expect(close).toHaveBeenCalledWith({ tabId: 123 })
+      })
+      global.chrome.sidePanel = original
+    })
+
     it("CM-16: should not send executeAction when command is not found", async () => {
       const mockSendMessage = vi.fn().mockResolvedValue("success")
       global.chrome.tabs = {

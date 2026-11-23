@@ -11,7 +11,11 @@ import {
 
 const { resetPreOpenedSidePanels, PRE_OPEN_TIMEOUT_MS } = __test
 import { closeSidePanel } from "@/services/chrome"
-import { isSidePanelSupported } from "@/services/sidePanelSupport"
+import {
+  isSidePanelSupported,
+  getSidePanelEvent,
+} from "@/services/sidePanelSupport"
+import { ServiceWorkerData } from "@/services/serviceWorkerData"
 import { SIDE_PANEL_RELAY_PATH } from "@/services/sidePanelUrl"
 
 vi.mock("@/services/chrome", () => ({
@@ -20,6 +24,13 @@ vi.mock("@/services/chrome", () => ({
 
 vi.mock("@/services/sidePanelSupport", () => ({
   isSidePanelSupported: vi.fn(() => true),
+  getSidePanelEvent: vi.fn(() => undefined),
+}))
+
+vi.mock("@/services/serviceWorkerData", () => ({
+  ServiceWorkerData: {
+    get: vi.fn(() => ({ sidePanelTabs: [] })),
+  },
 }))
 
 const createCommand = (props: Partial<Command>): Command =>
@@ -131,7 +142,7 @@ describe("sidePanelPreOpen", () => {
 
       vi.advanceTimersByTime(PRE_OPEN_TIMEOUT_MS)
 
-      expect(closeSidePanel).toHaveBeenCalledWith(1)
+      expect(closeSidePanel).toHaveBeenCalledWith(1, expect.any(Function))
       expect(consumePreOpenedSidePanel(1)).toBe(false)
       warnSpy.mockRestore()
     })
@@ -156,7 +167,7 @@ describe("sidePanelPreOpen", () => {
 
       cancelPreOpenedSidePanel(1)
 
-      expect(closeSidePanel).toHaveBeenCalledWith(1)
+      expect(closeSidePanel).toHaveBeenCalledWith(1, expect.any(Function))
       expect(consumePreOpenedSidePanel(1)).toBe(false)
     })
 
@@ -168,6 +179,73 @@ describe("sidePanelPreOpen", () => {
       cancelPreOpenedSidePanel(2)
 
       expect(closeSidePanel).not.toHaveBeenCalled()
+    })
+  })
+  describe("already open side panel", () => {
+    const setOpenTabs = (tabIds: number[]) => {
+      vi.mocked(getSidePanelEvent).mockReturnValue({} as never)
+      vi.mocked(ServiceWorkerData.get).mockReturnValue({
+        sidePanelTabs: tabIds.map((tabId) => ({ tabId, isLinkCommand: false })),
+      } as never)
+    }
+
+    afterEach(() => {
+      vi.mocked(getSidePanelEvent).mockReturnValue(undefined)
+      vi.mocked(ServiceWorkerData.get).mockReturnValue({
+        sidePanelTabs: [],
+      } as never)
+    })
+
+    it("SPO-AO-01: 正常系: 開いているサイドパネルは置き換えず、キャンセルしても閉じない", () => {
+      setOpenTabs([1])
+
+      preOpenSidePanel(1)
+
+      expect(chrome.sidePanel.setOptions).not.toHaveBeenCalled()
+      expect(chrome.sidePanel.open).not.toHaveBeenCalled()
+
+      cancelPreOpenedSidePanel(1)
+      expect(closeSidePanel).not.toHaveBeenCalled()
+    })
+
+    it("SPO-AO-02: 正常系: 開いているサイドパネルでもページの設定だけを行わせる", () => {
+      setOpenTabs([1])
+
+      preOpenSidePanel(1)
+
+      expect(consumePreOpenedSidePanel(1)).toBe(true)
+    })
+
+    it("SPO-AO-03: 正常系: onClosed 非対応時は開閉状態を信用せず事前オープンする", () => {
+      setOpenTabs([1])
+      vi.mocked(getSidePanelEvent).mockReturnValue(undefined)
+
+      preOpenSidePanel(1)
+
+      expect(chrome.sidePanel.open).toHaveBeenCalledWith({ tabId: 1 })
+    })
+  })
+
+  describe("delayed close", () => {
+    it("SPO-DC-01: 正常系: 閉じている間に再度開かれたら無効化しない", () => {
+      preOpenSidePanel(1)
+      cancelPreOpenedSidePanel(1)
+      const shouldDisable = vi.mocked(closeSidePanel).mock.calls[0][1]!
+
+      expect(shouldDisable()).toBe(true)
+
+      // The side panel is requested again before the close finishes.
+      consumePreOpenedSidePanel(1)
+      expect(shouldDisable()).toBe(false)
+    })
+
+    it("SPO-DC-02: 正常系: 閉じている間に再度事前オープンされたら無効化しない", () => {
+      preOpenSidePanel(1)
+      cancelPreOpenedSidePanel(1)
+      const shouldDisable = vi.mocked(closeSidePanel).mock.calls[0][1]!
+
+      preOpenSidePanel(1)
+      expect(shouldDisable()).toBe(false)
     })
   })
 })

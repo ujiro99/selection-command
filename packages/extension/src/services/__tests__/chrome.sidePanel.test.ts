@@ -92,6 +92,15 @@ describe("chrome.ts side panel functions", () => {
   })
 
   describe("closeSidePanel", () => {
+    it("CSP-CL-04: 正常系: アニメーション後に shouldDisable が false なら無効化しない", async () => {
+      const promise = closeSidePanel(1, () => false)
+      await vi.advanceTimersByTimeAsync(1000)
+      await promise
+
+      expect(sidePanel.close).toHaveBeenCalledWith({ tabId: 1 })
+      expect(sidePanel.setOptions).not.toHaveBeenCalled()
+    })
+
     it("CSP-CL-01: 正常系: close 後にアニメーションを待って無効化する", async () => {
       const promise = closeSidePanel(1)
       await vi.advanceTimersByTimeAsync(0)

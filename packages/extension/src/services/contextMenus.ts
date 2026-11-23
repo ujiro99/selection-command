@@ -241,8 +241,9 @@ export const ContextMenu = {
       const res = await Ipc.sendTab(tab.id, TabCommand.executeAction, {
         command,
       })
-      if (res instanceof Error) {
-        // The command does not run, so do not leave a blank side panel.
+      if (res !== true) {
+        // The command does not run (e.g. the tab has no content script), so
+        // do not leave a blank side panel.
         cancelPreOpenedSidePanel(tab.id)
       }
       if (res) console.debug(res)

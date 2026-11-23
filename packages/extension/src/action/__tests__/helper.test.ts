@@ -52,6 +52,7 @@ vi.mock("@/services/settings/enhancedSettings", () => ({
 
 vi.mock("@/services/sidePanelSupport", () => ({
   isSidePanelSupported: vi.fn(() => true),
+  getSidePanelEvent: vi.fn(() => undefined),
 }))
 
 vi.mock("@/services/commandMetrics", () => ({
