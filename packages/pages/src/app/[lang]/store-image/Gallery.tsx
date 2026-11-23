@@ -6,21 +6,19 @@ import { toPng } from "html-to-image"
 import type { LanguageType } from "@/features/locale"
 
 import { getStoreText } from "./_components/i18n"
-import { SLIDES } from "./_slides"
+import { getSlideSize, SLIDES } from "./_slides"
 import css from "./gallery.module.css"
 
-const WIDTH = 1280
-const HEIGHT = 800
 
 /** Render one slide element to PNG and download it. */
-async function exportSlide(root: HTMLElement, fileName: string) {
+async function exportSlide(root: HTMLElement, fileName: string, size: { width: number; height: number }) {
   const node = root.querySelector<HTMLElement>("[data-store-slide]")
-  if (!node) return
+  if (!node) throw new Error("Store image element not found")
   // The node is cloned for rendering, so the preview's scale-down
   // transform on its parent does not apply.
   const dataUrl = await toPng(node, {
-    width: WIDTH,
-    height: HEIGHT,
+    width: size.width,
+    height: size.height,
     pixelRatio: 1,
     cacheBust: true,
   })
@@ -31,14 +29,15 @@ async function exportSlide(root: HTMLElement, fileName: string) {
 }
 
 /**
- * All store images of one language at 50%, with PNG export buttons. Files
- * are named with the language code first, such as ja_01_hero.png.
+ * Store images at 50%, with PNG export buttons. Localized screenshots use
+ * a language prefix; shared promotional tiles do not.
  */
 export function Gallery({ lang }: { lang: LanguageType }): JSX.Element {
   const refs = useRef<Record<string, HTMLDivElement | null>>({})
   const [busy, setBusy] = useState(false)
   const entries = Object.entries(SLIDES)
-  const fileNameOf = (key: string) => `${lang}_${SLIDES[key].fileName}`
+  const fileNameOf = (key: string) =>
+    SLIDES[key].shared ? SLIDES[key].fileName : `${lang}_${SLIDES[key].fileName}`
 
   // Rendered once per language, so toggling `busy` does not re-render the
   // slides (and re-run every Fit measurement)
@@ -62,7 +61,7 @@ export function Gallery({ lang }: { lang: LanguageType }): JSX.Element {
         if (!root) continue
         // Keep exporting the other slides when one fails
         try {
-          await exportSlide(root, fileNameOf(key))
+          await exportSlide(root, fileNameOf(key), getSlideSize(key))
         } catch (e) {
           console.error(`Failed to export ${fileNameOf(key)}`, e)
           failed.push(fileNameOf(key))
@@ -90,11 +89,13 @@ export function Gallery({ lang }: { lang: LanguageType }): JSX.Element {
         </button>
       </div>
       <ol className={css.list}>
-        {entries.map(([key, { title }]) => (
-          <li key={key}>
+        {entries.map(([key, { title }]) => {
+          const { width, height } = getSlideSize(key)
+          return (
+          <li key={key} style={{ width: Math.max(350, width / 2) }}>
             <div className={css.caption}>
               <a href={`/${lang}/store-image/${key}`}>
-                {key}. {title}
+                {title} ({width} × {height})
               </a>
               <button
                 type="button"
@@ -105,9 +106,10 @@ export function Gallery({ lang }: { lang: LanguageType }): JSX.Element {
                 Export {fileNameOf(key)}
               </button>
             </div>
-            <div className={css.frame}>
+            <div className={css.frame} style={{ width: width / 2, height: height / 2 }}>
               <div
                 className={css.scaled}
+                style={{ width, height }}
                 ref={(el) => {
                   refs.current[key] = el
                 }}
@@ -116,7 +118,8 @@ export function Gallery({ lang }: { lang: LanguageType }): JSX.Element {
               </div>
             </div>
           </li>
-        ))}
+          )
+        })}
       </ol>
     </main>
   )
