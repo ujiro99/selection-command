@@ -67,6 +67,21 @@ describe("chrome.ts side panel functions", () => {
       })
     })
 
+    it("CSP-OP-04: 正常系: 事前オープン済みなら setOptions だけを呼び出す", async () => {
+      const result = await openSidePanel(
+        { url: "https://example.com", tabId: 1 },
+        true,
+      )
+
+      expect(sidePanel.setOptions).toHaveBeenCalledWith({
+        tabId: 1,
+        path: buildRelayPath("https://example.com", 1),
+        enabled: true,
+      })
+      expect(sidePanel.open).not.toHaveBeenCalled()
+      expect(result).toEqual({ tabId: 1 })
+    })
+
     it("CSP-OP-02: 異常系: API 非対応時は reject し API を呼び出さない", async () => {
       setSidePanel(undefined)
 

@@ -688,10 +688,14 @@ export type UpdateSidePanelUrlProps = {
 /**
  * Open a side panel with the specified URL (service worker context only)
  * @param {OpenSidePanelProps} param - Parameters for opening the side panel
+ * @param {boolean} alreadyOpened - True if the side panel was already opened
+ * for the tab (see services/sidePanelPreOpen.ts). Then only the page is set,
+ * because open() fails without the user gesture.
  * @returns {Promise<OpenResult>} Result containing tab ID and clipboard text
  */
 export const openSidePanel = async (
   param: OpenSidePanelProps,
+  alreadyOpened = false,
 ): Promise<{ tabId: number | undefined }> => {
   const { url, tabId } = param
 
@@ -706,13 +710,20 @@ export const openSidePanel = async (
     }
   }
 
-  // Set the side panel options for the tab
-  // Do not await here because sidePanel.open() must be executed within a user gesture.
-  chrome.sidePanel.setOptions({
+  const options = {
     tabId,
     path: toSidePanelPath(toUrl(url), tabId),
     enabled: true,
-  })
+  }
+
+  if (alreadyOpened) {
+    await chrome.sidePanel.setOptions(options)
+    return { tabId }
+  }
+
+  // Set the side panel options for the tab
+  // Do not await here because sidePanel.open() must be executed within a user gesture.
+  chrome.sidePanel.setOptions(options)
 
   // Open the side panel
   try {

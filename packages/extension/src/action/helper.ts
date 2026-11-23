@@ -26,6 +26,7 @@ import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { Ipc, TabCommand, NavigateSidePanelProps } from "@/services/ipc"
 import { ServiceWorkerData } from "@/services/serviceWorkerData"
 import { isSidePanelSupported } from "@/services/sidePanelSupport"
+import { consumePreOpenedSidePanel } from "@/services/sidePanelPreOpen"
 import {
   SIDE_PANEL_RELAY_PATH,
   isRelayableUrl,
@@ -145,10 +146,16 @@ export const openSidePanel = (
   }
 
   const open = (tabId: number) => {
-    _openSidePanel({
-      ...param,
-      tabId,
-    })
+    // The side panel may have been opened by the service worker before the
+    // command ran, when the command started from the browser UI.
+    const preOpened = consumePreOpenedSidePanel(tabId)
+    _openSidePanel(
+      {
+        ...param,
+        tabId,
+      },
+      preOpened,
+    )
       .then(() => {
         incrementCommandExecutionCount(tabId)
       })

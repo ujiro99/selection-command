@@ -566,6 +566,8 @@ if (isDebug) {
 // syncCommandIdObj catches its own errors, so this promise never rejects.
 const commandIdObjReady = ContextMenu.syncCommandIdObj()
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
+  // Must run before any await to keep the user gesture.
+  ContextMenu.preOpenSidePanel(info, tab)
   await commandIdObjReady
   await ContextMenu.onClicked(info, tab)
 })
