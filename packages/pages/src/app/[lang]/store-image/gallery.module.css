@@ -29,8 +29,9 @@
 }
 
 .list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, 640px);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
   gap: 32px;
   margin: 0;
   padding: 0;
@@ -42,6 +43,8 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 8px;
+  gap: 12px;
+  flex-wrap: wrap;
   font-weight: 600;
 }
 
@@ -49,17 +52,13 @@
   text-decoration: underline;
 }
 
-/* 1280x800 slide shown at 50%: the Chrome Web Store preview size */
+/* Each image is shown at 50% of its own export dimensions. */
 .frame {
-  width: 640px;
-  height: 400px;
   overflow: hidden;
-  border: 1px solid var(--color-border);
+  outline: 1px solid var(--color-border);
 }
 
 .scaled {
-  width: 1280px;
-  height: 800px;
   transform: scale(0.5);
   transform-origin: 0 0;
 }
