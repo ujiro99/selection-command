@@ -58,6 +58,31 @@ describe("GestureHint", () => {
     expect(screen.queryByText("onboarding_clickKeycap")).toBeNull()
   })
 
+  it("LP-02-a: 正常系: キー未設定では Shift のラベルとアイコンを表示する", () => {
+    const { container } = render(
+      <GestureHint
+        method={LINK_COMMAND_STARTUP_METHOD.KEYBOARD}
+        keyboardParam={undefined}
+      />,
+    )
+
+    expect(
+      screen.getByText("Option_keyboardParam_Shift_windows"),
+    ).toBeInTheDocument()
+    expect(container.querySelector(".lucide-arrow-big-up")).not.toBeNull()
+  })
+
+  it("LP-02-b: 正常系: Shift 以外のキーでは Shift のアイコンを表示しない", () => {
+    const { container } = render(
+      <GestureHint
+        method={LINK_COMMAND_STARTUP_METHOD.KEYBOARD}
+        keyboardParam={KEYBOARD.ALT}
+      />,
+    )
+
+    expect(container.querySelector(".lucide-arrow-big-up")).toBeNull()
+  })
+
   it("LP-04: 正常系: 新規インストールのデフォルトは長押しで起動する", () => {
     expect(DefaultSettings.linkCommand.startupMethod.method).toBe(
       LINK_COMMAND_STARTUP_METHOD.LEFT_CLICK_HOLD,

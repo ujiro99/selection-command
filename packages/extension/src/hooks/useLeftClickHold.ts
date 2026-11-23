@@ -77,6 +77,8 @@ export function useLeftClickHold(props: useLeftClickHoldParam) {
 
       // Start count of hold.
       timeoutRef.current = setTimeout(() => {
+        // The hold is detected; clear the start point so that moving the
+        // pointer or dragging afterwards no longer cancels it.
         startRef.current = null
         const el = findTarget(event, anchorOnly)
         setDetectHold(true)
@@ -136,15 +138,7 @@ export function useLeftClickHold(props: useLeftClickHoldParam) {
       window.removeEventListener("mousemove", handleMouseMove, true)
       window.removeEventListener("dragstart", cancelPending, true)
     }
-  }, [
-    enable,
-    holdDuration,
-    cancelOnMove,
-    anchorOnly,
-    detectHold,
-    timeoutRef,
-    props,
-  ])
+  }, [enable, holdDuration, cancelOnMove, anchorOnly, detectHold, timeoutRef])
 
   const release = () => {
     startRef.current = null

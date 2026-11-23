@@ -171,5 +171,20 @@ describe("useLeftClickHold", () => {
       advanceHold()
       expect(result.current.detectHoldLink).toBe(true)
     })
+
+    it("LCH-11: keeps a detected hold when the pointer moves afterwards", () => {
+      const { result } = render(true, true)
+      mouseDownAt(document.getElementById("link")!)
+      advanceHold()
+      expect(result.current.detectHoldLink).toBe(true)
+
+      mouseMoveTo(100, 100)
+      act(() => {
+        window.dispatchEvent(new Event("dragstart"))
+      })
+      expect(result.current.detectHold).toBe(true)
+      expect(result.current.detectHoldLink).toBe(true)
+      expect(result.current.linkElement?.id).toBe("link")
+    })
   })
 })

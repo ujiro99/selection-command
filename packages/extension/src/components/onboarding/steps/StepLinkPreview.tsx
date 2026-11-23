@@ -66,7 +66,8 @@ function GestureHint({ method, keyboardParam }: GestureHintProps) {
         {t("onboarding_step3Callout", [label])}
         <div className="flex items-center gap-2">
           <span className={KEYCAP_CLASS}>
-            {keyboardParam === KEYBOARD.SHIFT && (
+            {/* keyLabel falls back to Shift, so show its icon in that case too */}
+            {(keyboardParam ?? KEYBOARD.SHIFT) === KEYBOARD.SHIFT && (
               <ArrowBigUp className="size-4" strokeWidth={2} />
             )}
             {label}
