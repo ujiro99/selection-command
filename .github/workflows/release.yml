@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - "*"
+      - "v*"
 jobs:
   main:
     runs-on: ubuntu-latest
@@ -12,6 +12,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: "true"
+          # Full history and tags are needed to generate the release notes.
+          fetch-depth: 0
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -33,6 +35,52 @@ jobs:
         run: |
           mkdir -p packages/extension/build
           yarn workspace @selection-command/extension zip
+      - name: Generate release notes
+        uses: orhun/git-cliff-action@v4
+        # Release notes are optional; never block publishing the zip.
+        continue-on-error: true
+        with:
+          # Keep in sync with the "release-notes" script in package.json.
+          version: v2.14.2
+          config: cliff.toml
+          # Changes since the previous tag that reach extension users.
+          args: >-
+            --latest --strip header
+            --include-path "packages/extension/**"
+            --include-path "packages/shared/**"
+        env:
+          OUTPUT: RELEASE_NOTES.md
+      - name: Link release notes to pull requests
+        if: hashFiles('RELEASE_NOTES.md') != ''
+        # Optional as well; the notes keep commit SHAs on failure.
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: bash .github/scripts/link-release-note-prs.sh RELEASE_NOTES.md "$REPO"
+      - name: Fall back to an empty release body
+        run: |
+          if [ ! -f RELEASE_NOTES.md ]; then
+            echo "::warning::Release notes were not generated; publishing with an empty body."
+            : > RELEASE_NOTES.md
+          fi
       - uses: ncipollo/release-action@v1
         with:
           artifacts: "packages/extension/build/*.zip"
+          bodyFile: RELEASE_NOTES.md
+      # Ask selection-command-hub to open a draft PR of the What's New page.
+      - name: Notify Hub of the release
+        # The release is already published; report a failure (e.g. an expired
+        # token) as a failed step without failing the workflow.
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.HUB_DISPATCH_TOKEN }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::warning::HUB_DISPATCH_TOKEN is not set; skipped notifying the Hub."
+            exit 0
+          fi
+          gh api repos/ujiro99/selection-command-hub/dispatches \
+            -f event_type=extension-released \
+            -f "client_payload[version]=${TAG#v}"

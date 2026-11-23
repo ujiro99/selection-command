@@ -1,0 +1,49 @@
+# git-cliff configuration for the GitHub Release body.
+# https://git-cliff.org/docs/configuration
+# Used by .github/workflows/release.yml; preview the unreleased notes with:
+#   yarn release-notes
+
+[changelog]
+header = ""
+body = """
+{% if version -%}
+## {{ version }} ({{ timestamp | date(format="%Y-%m-%d") }})
+{% else -%}
+## Unreleased
+{% endif -%}
+{% for group, commits in commits | group_by(attribute="group") %}
+
+### {{ group | striptags | trim | upper_first }}
+{% for commit in commits -%}
+{# The trailing SHA is replaced with the PR link by .github/scripts/link-release-note-prs.sh. -#}
+- {{ commit.message | split(pat="\n") | first | trim }} ({{ commit.id | truncate(length=7, end="") }})
+{% endfor %}
+{% endfor %}
+{% if version and previous.version -%}
+**Full Changelog**: https://github.com/ujiro99/selection-command/compare/{{ previous.version }}...{{ version }}
+{% endif -%}
+"""
+trim = true
+footer = ""
+
+[git]
+conventional_commits = true
+# Keep non-conforming commits out of the notes instead of failing.
+filter_unconventional = true
+split_commits = false
+protect_breaking_commits = true
+filter_commits = false
+tag_pattern = "v[0-9].*"
+sort_commits = "oldest"
+commit_parsers = [
+  { message = "^Merge ", skip = true },
+  { message = "^chore\\(release\\)", skip = true },
+  # Review follow-ups inside a PR are not user-facing changes.
+  { message = "^[a-z]+(\\([^)]*\\))?!?: [Aa]ddress .*review( |$)", skip = true },
+  { message = "^feat", group = "<!-- 0 -->Features" },
+  { message = "^fix", group = "<!-- 1 -->Bug Fixes" },
+  { message = "^perf", group = "<!-- 2 -->Performance" },
+  { message = "^refactor", group = "<!-- 3 -->Refactoring" },
+  { message = "^revert", group = "<!-- 4 -->Reverts" },
+  { message = ".*", skip = true },
+]
