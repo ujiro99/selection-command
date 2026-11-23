@@ -1,6 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
-import { ContextMenu, toMenuId } from "../contextMenus"
+import { ContextMenu, __test } from "../contextMenus"
+
+const { toMenuId } = __test
 import { OPEN_MODE, OPTION_FOLDER, ROOT_FOLDER } from "@/const"
 import type { Command, CommandFolder } from "@/types"
 

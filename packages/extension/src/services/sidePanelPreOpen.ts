@@ -24,7 +24,7 @@ import { SIDE_PANEL_RELAY_PATH } from "@/services/sidePanelUrl"
  * After that, the panel is closed so a blank panel is not left open when
  * the command fails or is skipped.
  */
-export const PRE_OPEN_TIMEOUT_MS = 10000
+const PRE_OPEN_TIMEOUT_MS = 10000
 
 /**
  * Blank page shown until the target page is set. The relay page does
@@ -67,20 +67,22 @@ export const preOpenSidePanel = (tabId: number): void => {
     .catch((e) => console.warn("Failed to set the side panel options:", e))
 
   clearPreOpened(tabId)
-  preOpenedTabs.set(
-    tabId,
-    setTimeout(() => {
-      // The command did not request the side panel in time.
-      if (preOpenedTabs.delete(tabId)) {
-        console.warn("Close the pre-opened side panel:", tabId)
-        closeSidePanel(tabId)
-      }
-    }, PRE_OPEN_TIMEOUT_MS),
-  )
+  const timer = setTimeout(() => {
+    // The command did not request the side panel in time.
+    if (preOpenedTabs.delete(tabId)) {
+      console.warn("Close the pre-opened side panel:", tabId)
+      closeSidePanel(tabId)
+    }
+  }, PRE_OPEN_TIMEOUT_MS)
+  preOpenedTabs.set(tabId, timer)
 
   chrome.sidePanel.open({ tabId }).catch((e) => {
     console.error("Failed to pre-open the side panel:", e)
-    clearPreOpened(tabId)
+    // Clear only the state of this call. A later pre-open of the same tab
+    // may have replaced it before this rejection arrived.
+    if (preOpenedTabs.get(tabId) === timer) {
+      clearPreOpened(tabId)
+    }
   })
 }
 
@@ -112,8 +114,14 @@ const clearPreOpened = (tabId: number): boolean => {
   return true
 }
 
-/** Reset internal state — for testing only. */
-export const resetPreOpenedSidePanels = (): void => {
+/** Reset internal state. */
+const resetPreOpenedSidePanels = (): void => {
   preOpenedTabs.forEach((timer) => clearTimeout(timer))
   preOpenedTabs.clear()
+}
+
+/** Test-only exports. Do not use in production code. */
+export const __test = {
+  resetPreOpenedSidePanels,
+  PRE_OPEN_TIMEOUT_MS,
 }

@@ -20,7 +20,7 @@ import { registerSidePanelHostTab as _registerSidePanelHostTab } from "@/service
 import { isSidePanelSupported } from "@/services/sidePanelSupport"
 import {
   preOpenSidePanel,
-  resetPreOpenedSidePanels,
+  __test as sidePanelPreOpenTest,
 } from "@/services/sidePanelPreOpen"
 
 // Mock dependencies
@@ -62,7 +62,7 @@ describe("helper", () => {
   beforeEach(() => {
     vi.clearAllMocks()
     vi.mocked(ServiceWorkerData.ready).mockResolvedValue(undefined)
-    resetPreOpenedSidePanels()
+    sidePanelPreOpenTest.resetPreOpenedSidePanels()
   })
 
   describe("navigateSidePanel", () => {

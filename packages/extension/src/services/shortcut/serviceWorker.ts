@@ -9,6 +9,7 @@ import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
 import { getCenteredOffsetInCurrentWindow } from "@/services/screen"
 import { resolvePopupSize } from "@/services/option/defaultSettings"
 import { Settings } from "@/services/settings/settings"
+import { Storage, STORAGE_KEY } from "@/services/storage"
 import {
   usesSidePanel,
   preOpenSidePanel,
@@ -28,7 +29,9 @@ let sidePanelShortcutIds = new Set<string>()
  */
 const syncSidePanelShortcutIds = async (): Promise<void> => {
   try {
-    const settings = await enhancedSettings.get()
+    // Read fresh settings: the cache of the shortcuts is invalidated after a
+    // debounce, so it may still hold the old value when this runs.
+    const settings = await enhancedSettings.get({ forceFresh: true })
     const ids = new Set<string>()
     for (const shortcut of settings.shortcuts?.shortcuts ?? []) {
       const command = settings.commands.find((c) => c.id === shortcut.commandId)
@@ -65,7 +68,7 @@ const onCommand = async (
 ): Promise<void> => {
   // Must run before any await to keep the user gesture.
   let preOpenedTabId = preOpenSidePanelForShortcut(commandName, tab)
-  if (!sidePanelShortcutIdsLoaded) {
+  if (preOpenedTabId == null && !sidePanelShortcutIdsLoaded) {
     // The shortcut woke up the service worker, so the IDs are not loaded yet.
     // The user gesture may be lost after the await, but try it anyway.
     await sidePanelShortcutIdsReady
@@ -206,6 +209,11 @@ export const registerShortcutListeners = (): void => {
     sidePanelShortcutIdsLoaded = true
   })
   Settings.addChangedListener(() => {
+    syncSidePanelShortcutIds()
+  })
+  // The shortcuts are stored separately, and the listener above is not
+  // called when only the shortcuts change.
+  Storage.addListener(STORAGE_KEY.SHORTCUTS, () => {
     syncSidePanelShortcutIds()
   })
 

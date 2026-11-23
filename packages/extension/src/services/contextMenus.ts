@@ -46,7 +46,7 @@ const SIDE_PANEL_MENU_PREFIX = "sidePanel:"
  * @param {Command} command - The command shown in the menu.
  * @returns {string} The menu ID.
  */
-export const toMenuId = (command: Command): string =>
+const toMenuId = (command: Command): string =>
   usesSidePanel(command) ? `${SIDE_PANEL_MENU_PREFIX}${command.id}` : command.id
 
 const isSidePanelMenuId = (menuItemId: string | number): boolean =>
@@ -248,4 +248,9 @@ export const ContextMenu = {
       if (res) console.debug(res)
     }
   },
+}
+
+/** Test-only exports. Do not use in production code. */
+export const __test = {
+  toMenuId,
 }
