@@ -4,6 +4,8 @@ import { usePopupContext } from "@/hooks/usePopupContext"
 import { Tooltip } from "../Tooltip"
 import { RefreshCw, Check, AlertCircle } from "lucide-react"
 import { ResultPopup } from "@/components/result/ResultPopup"
+import { HoverCardPanel } from "@/components/hoverCard/HoverCardPanel"
+import { useHoverCard } from "@/hooks/useHoverCard"
 import { useSelectContext } from "@/hooks/useSelectContext"
 import { useCommandExecutor } from "@/hooks/useCommandExecutor"
 import { getCommandEnabled } from "@/lib/commandEnabled"
@@ -28,7 +30,8 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
     useCommandExecutor()
   const onlyIcon = props.onlyIcon
   const { iconUrl, title, preserveOriginalColor } = props.command
-  const { isPreview, inTransition, inOnboarding } = usePopupContext()
+  const { isPreview, inTransition, inOnboarding, clearHover } =
+    usePopupContext()
   const { selectionText, target } = useSelectContext()
   // Searching URLs in a large selection is costly, so the result is kept
   // while the command and the selection are unchanged.
@@ -41,9 +44,15 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
   const message = onlyIcon
     ? itemState.message || [title, detail].filter(Boolean).join("\n")
     : (detail ?? "")
+  const hoverCard = useHoverCard({ command: props.command, selectionText })
 
   function handleClick(e: React.MouseEvent) {
     if (isPreview) {
+      return
+    }
+    if (hoverCard.enabled) {
+      hoverCard.onClick()
+      e.stopPropagation()
       return
     }
     if (props.menuRef.current == null) {
@@ -94,6 +103,7 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
         ref={buttonRef}
         onClick={handleClick}
         disabled={!enabled}
+        {...(isPreview ? {} : hoverCard.triggerProps)}
       >
         <ImageWithState
           state={itemState.state}
@@ -106,7 +116,8 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
       <Tooltip
         text={message}
         positionElm={buttonRef.current}
-        disabled={isEmpty(message)}
+        // The hover card replaces the tooltip while it is shown.
+        disabled={isEmpty(message) || hoverCard.open}
         // Show beside a vertical item so as not to cover the adjacent items.
         side={onlyIcon ? undefined : SIDE.right}
       />
@@ -117,6 +128,19 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
       >
         {result}
       </ResultPopup>
+      {hoverCard.enabled && (
+        <HoverCardPanel
+          open={hoverCard.open}
+          state={hoverCard.state}
+          anchorRef={buttonRef}
+          cardProps={hoverCard.cardProps}
+          onKeep={() => {
+            hoverCard.keep(buttonRef.current)
+            // The card under the pointer closes without a mouseleave.
+            clearHover?.()
+          }}
+        />
+      )}
     </>
   )
 }

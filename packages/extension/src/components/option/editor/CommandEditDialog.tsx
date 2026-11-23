@@ -98,7 +98,11 @@ const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
 import { SEARCH_OPEN_MODE } from "@shared/constants/open-mode"
 
-import { commandSchema, CommandSchemaType } from "@/types/schema"
+import {
+  commandSchema,
+  CommandSchemaType,
+  HOVER_CARD_DEFAULT_ICON_URL,
+} from "@/types/schema"
 import type {
   SelectionCommand,
   CommandFolder,
@@ -246,6 +250,17 @@ const getDefault = (
       iconUrl:
         "https://cdn0.iconfinder.com/data/icons/phosphor-light-vol-3/256/paint-brush-light-1024.png",
       openMode: OPEN_MODE.GET_TEXT_STYLES as const,
+      parentFolderId: ROOT_FOLDER,
+    }
+  }
+  if (openMode === OPEN_MODE.HOVER_CARD) {
+    return {
+      ...base,
+      ...sourceDefaults,
+      title: "Translate",
+      iconUrl: HOVER_CARD_DEFAULT_ICON_URL,
+      openMode: OPEN_MODE.HOVER_CARD as const,
+      hoverCardOption: { provider: "translate" as const },
       parentFolderId: ROOT_FOLDER,
     }
   }

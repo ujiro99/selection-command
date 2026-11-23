@@ -22,6 +22,7 @@ export enum COMMAND_TYPE {
   COPY = "copy",
   LINK_POPUP = "linkPopup",
   GET_TEXT_STYLES = "getTextStyles",
+  HOVER_CARD = "hoverCard",
   API = "api",
   OPTION = "option",
 }
@@ -40,6 +41,7 @@ export const OPEN_MODE_TYPE_MAP = {
   [OPEN_MODE.GET_TEXT_STYLES]: COMMAND_TYPE.GET_TEXT_STYLES,
   [OPEN_MODE.OPTION]: COMMAND_TYPE.OPTION,
   [OPEN_MODE.ADD_PAGE_RULE]: COMMAND_TYPE.OPTION,
+  [OPEN_MODE.HOVER_CARD]: COMMAND_TYPE.HOVER_CARD,
 } as const satisfies Record<OPEN_MODE, COMMAND_TYPE>
 
 // Reverse mapping: COMMAND_TYPE -> OPEN_MODE[]
@@ -57,6 +59,7 @@ export const COMMAND_TYPE_OPEN_MODES_MAP = {
   [COMMAND_TYPE.LINK_POPUP]: [OPEN_MODE.LINK_POPUP],
   [COMMAND_TYPE.COPY]: [OPEN_MODE.COPY],
   [COMMAND_TYPE.GET_TEXT_STYLES]: [OPEN_MODE.GET_TEXT_STYLES],
+  [COMMAND_TYPE.HOVER_CARD]: [OPEN_MODE.HOVER_CARD],
   [COMMAND_TYPE.OPTION]: [OPEN_MODE.OPTION, OPEN_MODE.ADD_PAGE_RULE],
 } as const
 
@@ -96,6 +99,11 @@ export const COMMAND_TYPE_METADATA = {
     titleKey: "commandType_getTextStyles_title",
     descKey: "commandType_getTextStyles_desc",
   },
+  [COMMAND_TYPE.HOVER_CARD]: {
+    iconName: "Languages",
+    titleKey: "commandType_hoverCard_title",
+    descKey: "commandType_hoverCard_desc",
+  },
   [COMMAND_TYPE.API]: {
     iconName: "Code",
     titleKey: "commandType_api_title",
@@ -125,6 +133,7 @@ export const COMMAND_TYPE_GROUPS = [
       COMMAND_TYPE.COPY,
       COMMAND_TYPE.LINK_POPUP,
       COMMAND_TYPE.GET_TEXT_STYLES,
+      COMMAND_TYPE.HOVER_CARD,
     ],
   },
   {

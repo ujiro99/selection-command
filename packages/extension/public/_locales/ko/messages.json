@@ -398,6 +398,12 @@
   "Option_commandType_getTextStyles_desc": {
     "message": "선택한 텍스트의 스타일 정보를 가져옵니다"
   },
+  "Option_commandType_hoverCard_title": {
+    "message": "호버 카드"
+  },
+  "Option_commandType_hoverCard_desc": {
+    "message": "마우스를 올리면 번역 등의 결과를 표시"
+  },
   "Option_commandType_api_title": {
     "message": "API"
   },
@@ -1611,5 +1617,38 @@
   },
   "onboarding_closeButton": {
     "message": "닫고 사용해보기"
+  },
+  "HoverCard_loading": {
+    "message": "번역 중…"
+  },
+  "HoverCard_downloading": {
+    "message": "번역 모델 다운로드 중… $percent$%",
+    "placeholders": {
+      "percent": {
+        "content": "$1",
+        "example": "42"
+      }
+    }
+  },
+  "HoverCard_needsActivation": {
+    "message": "클릭하여 번역 준비"
+  },
+  "HoverCard_unavailable": {
+    "message": "이 브라우저에서는 번역을 사용할 수 없습니다"
+  },
+  "HoverCard_unsupported": {
+    "message": "지원되지 않는 언어입니다"
+  },
+  "HoverCard_notApplicable": {
+    "message": "이미 사용 중인 언어입니다"
+  },
+  "HoverCard_failed": {
+    "message": "번역하지 못했습니다"
+  },
+  "HoverCard_keep": {
+    "message": "고정"
+  },
+  "HoverCard_empty": {
+    "message": "이 선택 항목에 표시할 결과가 없습니다"
   }
 }

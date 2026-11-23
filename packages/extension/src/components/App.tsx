@@ -11,6 +11,7 @@ import { PageActionRunner } from "@/components/pageAction/PageActionRunner"
 import { showReviewRequestToast } from "@/components/ReviewRequestToast"
 import { InvisibleItem } from "@/components/menu/InvisibleItem"
 import { CommandUpdateConfirmDialog } from "@/components/CommandUpdateConfirmDialog"
+import { HoverCardWindowSync } from "@/components/hoverCard/HoverCardWindowSync"
 import { PageActionContextProvider } from "@/providers/pageActionContextProvider"
 import { SelectContextProvider } from "@/providers/SelectContextProvider"
 import { TabContextProvider } from "@/providers/TabContextProvider"
@@ -100,6 +101,7 @@ export function App({ rootElm }: Props) {
             <PageActionRunner />
             <PageActionRecorder />
             <CommandUpdateConfirmDialog />
+            <HoverCardWindowSync />
             <Toaster cssContainer={rootElm} theme={theme} />
           </SelectContextProvider>
         </PageActionContextProvider>

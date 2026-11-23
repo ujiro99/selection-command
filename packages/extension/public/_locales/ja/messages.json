@@ -398,6 +398,12 @@
   "Option_commandType_getTextStyles_desc": {
     "message": "選択テキストのスタイル情報を取得します"
   },
+  "Option_commandType_hoverCard_title": {
+    "message": "ホバーカード"
+  },
+  "Option_commandType_hoverCard_desc": {
+    "message": "ホバーするだけで翻訳などの結果を表示"
+  },
   "Option_commandType_api_title": {
     "message": "API"
   },
@@ -1608,5 +1614,38 @@
   },
   "onboarding_closeButton": {
     "message": "閉じて使ってみる"
+  },
+  "HoverCard_loading": {
+    "message": "翻訳中…"
+  },
+  "HoverCard_downloading": {
+    "message": "翻訳モデルをダウンロード中… $percent$%",
+    "placeholders": {
+      "percent": {
+        "content": "$1",
+        "example": "42"
+      }
+    }
+  },
+  "HoverCard_needsActivation": {
+    "message": "クリックして翻訳を準備"
+  },
+  "HoverCard_unavailable": {
+    "message": "このブラウザでは翻訳を利用できません"
+  },
+  "HoverCard_unsupported": {
+    "message": "この言語には対応していません"
+  },
+  "HoverCard_notApplicable": {
+    "message": "すでにお使いの言語です"
+  },
+  "HoverCard_failed": {
+    "message": "翻訳できませんでした"
+  },
+  "HoverCard_keep": {
+    "message": "固定"
+  },
+  "HoverCard_empty": {
+    "message": "この選択範囲には表示できる結果がありません"
   }
 }
