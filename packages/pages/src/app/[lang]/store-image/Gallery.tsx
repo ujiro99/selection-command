@@ -9,9 +9,12 @@ import { getStoreText } from "./_components/i18n"
 import { getSlideSize, SLIDES } from "./_slides"
 import css from "./gallery.module.css"
 
-
 /** Render one slide element to PNG and download it. */
-async function exportSlide(root: HTMLElement, fileName: string, size: { width: number; height: number }) {
+async function exportSlide(
+  root: HTMLElement,
+  fileName: string,
+  size: { width: number; height: number },
+) {
   const node = root.querySelector<HTMLElement>("[data-store-slide]")
   if (!node) throw new Error("Store image element not found")
   // The node is cloned for rendering, so the preview's scale-down
@@ -37,7 +40,9 @@ export function Gallery({ lang }: { lang: LanguageType }): JSX.Element {
   const [busy, setBusy] = useState(false)
   const entries = Object.entries(SLIDES)
   const fileNameOf = (key: string) =>
-    SLIDES[key].shared ? SLIDES[key].fileName : `${lang}_${SLIDES[key].fileName}`
+    SLIDES[key].shared
+      ? SLIDES[key].fileName
+      : `${lang}_${SLIDES[key].fileName}`
 
   // Rendered once per language, so toggling `busy` does not re-render the
   // slides (and re-run every Fit measurement)
@@ -92,32 +97,35 @@ export function Gallery({ lang }: { lang: LanguageType }): JSX.Element {
         {entries.map(([key, { title }]) => {
           const { width, height } = getSlideSize(key)
           return (
-          <li key={key} style={{ width: Math.max(350, width / 2) }}>
-            <div className={css.caption}>
-              <a href={`/${lang}/store-image/${key}`}>
-                {title} ({width} × {height})
-              </a>
-              <button
-                type="button"
-                className={css.button}
-                disabled={busy}
-                onClick={() => run([key])}
-              >
-                Export {fileNameOf(key)}
-              </button>
-            </div>
-            <div className={css.frame} style={{ width: width / 2, height: height / 2 }}>
-              <div
-                className={css.scaled}
-                style={{ width, height }}
-                ref={(el) => {
-                  refs.current[key] = el
-                }}
-              >
-                {slides[key]}
+            <li key={key} style={{ width: Math.max(350, width / 2) }}>
+              <div className={css.caption}>
+                <a href={`/${lang}/store-image/${key}`}>
+                  {title} ({width} × {height})
+                </a>
+                <button
+                  type="button"
+                  className={css.button}
+                  disabled={busy}
+                  onClick={() => run([key])}
+                >
+                  Export {fileNameOf(key)}
+                </button>
               </div>
-            </div>
-          </li>
+              <div
+                className={css.frame}
+                style={{ width: width / 2, height: height / 2 }}
+              >
+                <div
+                  className={css.scaled}
+                  style={{ width, height }}
+                  ref={(el) => {
+                    refs.current[key] = el
+                  }}
+                >
+                  {slides[key]}
+                </div>
+              </div>
+            </li>
           )
         })}
       </ol>
