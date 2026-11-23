@@ -1,0 +1,223 @@
+/* Fixed-size, opaque artwork for Chrome Web Store PNG export. */
+.tile {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  font-family: var(--font-geist-sans), Arial, sans-serif;
+  color: #fff;
+  background: linear-gradient(130deg, #394da7 0%, #216cae 45%, #007f9b 100%);
+}
+
+.tile::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(ellipse at 100% 100%, rgb(0 195 221 / 55%), transparent 65%);
+}
+
+.small {
+  width: 440px;
+  height: 280px;
+  padding: 18px 24px;
+  align-items: center;
+}
+
+.marquee {
+  width: 1400px;
+  height: 560px;
+  padding: 54px 64px;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 650;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.brand img {
+  display: block;
+  flex: none;
+  border-radius: 16%;
+}
+
+.small .brand {
+  position: absolute;
+  bottom: 12px;
+  font-size: 15px;
+}
+
+.small .brand img {
+  width: 25px;
+  height: 25px;
+}
+
+.marquee .brand {
+  position: absolute;
+  top: 54px;
+  left: 64px;
+  gap: 16px;
+  font-size: 29px;
+}
+
+.marquee .brand img {
+  width: 64px;
+  height: 64px;
+}
+
+.copy {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.headline,
+.sub {
+  margin: 0;
+  white-space: nowrap;
+}
+
+.headline {
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 1.12;
+}
+
+.sub {
+  color: #eaf8ff;
+  font-weight: 550;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+}
+
+.small .copy {
+  text-align: center;
+}
+
+.small .headline {
+  font-size: 32px;
+}
+
+.small .sub {
+  font-size: 25px;
+}
+
+.marquee .copy {
+  gap: 20px;
+  margin-top: 80px;
+}
+
+.marquee .headline {
+  font-size: 86px;
+}
+
+.marquee .sub {
+  font-size: 56px;
+}
+
+.scene {
+  position: relative;
+  flex: none;
+}
+
+.small .scene {
+  width: 336px;
+  height: 140px;
+  margin-top: 18px;
+}
+
+.marquee .scene {
+  position: absolute;
+  width: 610px;
+  height: 294px;
+  top: 145px;
+  right: 64px;
+}
+
+.document {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 96%;
+  left: 2%;
+  bottom: 5%;
+  border-radius: 10px;
+  background: #f4f9ff;
+  box-shadow: 0 10px 30px rgb(15 39 73 / 18%);
+}
+
+.small .document {
+  height: 78px;
+  padding: 10px 15px;
+  gap: 8px;
+}
+
+.marquee .document {
+  height: 176px;
+  padding: 24px 32px;
+  gap: 18px;
+  border-radius: 22px;
+}
+
+.line {
+  display: block;
+  height: 6px;
+  min-width: 0;
+  border-radius: 999px;
+  background: #c3d5e5;
+}
+
+.document > .line {
+  width: 92%;
+}
+
+.document > .lastLine {
+  width: 77%;
+}
+
+.selectionRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.selectionRow .line {
+  flex: 1;
+}
+
+.selectionRow mark {
+  flex: none;
+  background: #a6dbff;
+  color: #12294c;
+  padding: 3px 7px;
+  font-weight: 700;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.small .selectionRow mark {
+  font-size: 18px;
+}
+
+.marquee .selectionRow {
+  gap: 18px;
+}
+
+.marquee .selectionRow mark {
+  font-size: 38px;
+  padding: 6px 12px;
+}
+
+.marquee .line {
+  height: 12px;
+}
