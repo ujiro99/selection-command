@@ -54,3 +54,6 @@ yarn-error.log*
 packages/extension/.env.development
 
 .claude/settings.local.json
+
+# Release notes preview (yarn release-notes)
+RELEASE_NOTES.md
