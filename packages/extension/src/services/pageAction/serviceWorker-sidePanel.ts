@@ -148,6 +148,68 @@ const originToTabIdQueue = new Map<string, number[]>()
 let lastOpenedTabId: number | null = null
 
 /**
+ * Tab IDs of side panels hosted as tabs (e.g. Vivaldi).
+ * Such side panels report sender.tab on connection like normal tabs, so they
+ * are registered by the relay page to be told apart. Persisted in session
+ * storage because the service worker may stop while the side panel is open.
+ */
+let sidePanelHostTabIds: Promise<Set<number>> | null = null
+
+const loadSidePanelHostTabIds = (): Promise<Set<number>> => {
+  if (!sidePanelHostTabIds) {
+    sidePanelHostTabIds = Storage.get<number[]>(
+      SESSION_STORAGE_KEY.SIDE_PANEL_HOST_TABS,
+    )
+      .then((ids) => new Set(ids ?? []))
+      .catch((e) => {
+        console.warn("Failed to load side panel host tabs:", e)
+        return new Set<number>()
+      })
+  }
+  return sidePanelHostTabIds
+}
+
+const saveSidePanelHostTabIds = async (ids: Set<number>): Promise<void> => {
+  try {
+    await Storage.set(SESSION_STORAGE_KEY.SIDE_PANEL_HOST_TABS, [...ids])
+  } catch (e) {
+    console.warn("Failed to save side panel host tabs:", e)
+  }
+}
+
+/**
+ * Register a tab that hosts a side panel.
+ * Called from the relay page before it navigates to the target URL.
+ */
+export const registerSidePanelHostTab = async (
+  tabId: number,
+): Promise<void> => {
+  const ids = await loadSidePanelHostTabIds()
+  if (ids.has(tabId)) return
+  ids.add(tabId)
+  await saveSidePanelHostTabIds(ids)
+}
+
+/**
+ * Unregister a tab that hosted a side panel. Called when the tab is removed.
+ */
+export const unregisterSidePanelHostTab = async (
+  tabId: number,
+): Promise<void> => {
+  const ids = await loadSidePanelHostTabIds()
+  if (!ids.delete(tabId)) return
+  await saveSidePanelHostTabIds(ids)
+}
+
+/**
+ * Check whether the tab hosts a side panel.
+ */
+export const isSidePanelHostTab = async (tabId: number): Promise<boolean> => {
+  const ids = await loadSidePanelHostTabIds()
+  return ids.has(tabId)
+}
+
+/**
  * Called from ActionHelper.openSidePanel when a side panel is about to open.
  * Registers the tab ID so the next port connection from this origin maps to the correct tab.
  */
@@ -168,6 +230,7 @@ export const resetSidePanelState = (): void => {
   sidePanelPorts.clear()
   originToTabIdQueue.clear()
   lastOpenedTabId = null
+  sidePanelHostTabIds = null
 }
 
 /**
@@ -219,7 +282,8 @@ const runPendingSidePanelAction = async (
  * Handle a new side panel port connection.
  * If a tabId is queued for this origin, registers the port in sidePanelPorts and
  * attaches a disconnect listener. Always runs any pending page action steps.
- * Called from service_worker.ts onConnect when port.sender.tab.id is absent.
+ * Called from service_worker.ts onConnect when port.sender.tab.id is absent,
+ * or when the tab is a registered side panel host tab (e.g. Vivaldi).
  */
 export const handleSidePanelConnect = async (
   port: chrome.runtime.Port,

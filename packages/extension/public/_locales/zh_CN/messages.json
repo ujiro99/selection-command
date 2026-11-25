@@ -212,8 +212,23 @@
   "Option_inheritPopupPlacement": {
     "message": "从全局设置获取菜单位置"
   },
-  "Option_popupAnimation": {
-    "message": "菜单显示动画"
+  "Option_popupSpeed": {
+    "message": "菜单显示速度"
+  },
+  "Option_popupSpeed_preset": {
+    "message": "速度预设"
+  },
+  "Option_popupSpeed_standard": {
+    "message": "标准"
+  },
+  "Option_popupSpeed_fast": {
+    "message": "快速"
+  },
+  "Option_popupSpeed_instant": {
+    "message": "即时"
+  },
+  "Option_popupSpeed_delayIgnored": {
+    "message": "此启动方式下固定为 0 ms。"
   },
   "Option_popupAutoCloseDelay": {
     "message": "弹出窗口自动关闭延迟"
@@ -1513,8 +1528,14 @@
   "onboarding_step1TargetText": {
     "message": "一款可以一键搜索所选文本的扩展程序"
   },
+  "onboarding_step1TargetWord": {
+    "message": "文本"
+  },
   "onboarding_selectHint": {
     "message": "拖动以选择下方文本"
+  },
+  "onboarding_doubleClickHint": {
+    "message": "双击任意词语"
   },
   "onboarding_railSelect": {
     "message": "选择"
@@ -1571,7 +1592,19 @@
     "message": "预览"
   },
   "onboarding_step3Callout": {
-    "message": "按住 Shift 并点击此链接即可预览。"
+    "message": "按住 $key$ 并点击此链接即可预览。",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "Shift"
+      }
+    }
+  },
+  "onboarding_step3Callout_hold": {
+    "message": "长按此链接即可预览。"
+  },
+  "onboarding_step3Callout_drag": {
+    "message": "稍微拖动此链接即可预览。"
   },
   "onboarding_clickKeycap": {
     "message": "点击"

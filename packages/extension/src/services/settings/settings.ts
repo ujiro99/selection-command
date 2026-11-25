@@ -10,6 +10,7 @@ import {
   OPTION_FOLDER,
   VERSION,
   LINK_COMMAND_STARTUP_METHOD,
+  KEYBOARD,
   LINK_COMMAND_ENABLED,
   SIDE,
   ALIGN,
@@ -209,11 +210,27 @@ export const Settings = {
   /**
    * Installs from before the settings were saved on install may have no
    * settings saved, and would read the defaults for new installs. Save their
-   * settings so that they keep following the browser zoom as before.
+   * settings so that they keep the behavior they had before: following the
+   * browser zoom, and starting Link Preview with Shift+click (#542).
    */
   saveForExistingInstall: async (): Promise<void> => {
     if (await Storage.has(STORAGE_KEY.USER)) return
-    await Settings.update("followBrowserZoom", () => true, true)
+    const settings = await Settings.get()
+    await Settings.set(
+      {
+        ...settings,
+        followBrowserZoom: true,
+        linkCommand: {
+          ...settings.linkCommand,
+          startupMethod: {
+            ...settings.linkCommand.startupMethod,
+            method: LINK_COMMAND_STARTUP_METHOD.KEYBOARD,
+            keyboardParam: KEYBOARD.SHIFT,
+          },
+        },
+      },
+      true,
+    )
   },
 
   reset: async () => {

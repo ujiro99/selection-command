@@ -212,8 +212,23 @@
   "Option_inheritPopupPlacement": {
     "message": "Eredita posizione menu dalle impostazioni globali"
   },
-  "Option_popupAnimation": {
-    "message": "Animazione Visualizzazione Menu"
+  "Option_popupSpeed": {
+    "message": "Velocità Visualizzazione Menu"
+  },
+  "Option_popupSpeed_preset": {
+    "message": "Preimpostazione velocità"
+  },
+  "Option_popupSpeed_standard": {
+    "message": "Standard"
+  },
+  "Option_popupSpeed_fast": {
+    "message": "Veloce"
+  },
+  "Option_popupSpeed_instant": {
+    "message": "Istantaneo"
+  },
+  "Option_popupSpeed_delayIgnored": {
+    "message": "Fisso a 0 ms con questo metodo di avvio."
   },
   "Option_popupAutoCloseDelay": {
     "message": "Ritardo Chiusura Automatica Popup"
@@ -1513,8 +1528,14 @@
   "onboarding_step1TargetText": {
     "message": "Un'estensione che ti permette di cercare il testo selezionato con un solo clic."
   },
+  "onboarding_step1TargetWord": {
+    "message": "testo"
+  },
   "onboarding_selectHint": {
     "message": "Trascina per selezionare il testo qui sotto"
+  },
+  "onboarding_doubleClickHint": {
+    "message": "Fai doppio clic su una parola qualsiasi"
   },
   "onboarding_railSelect": {
     "message": "Seleziona"
@@ -1571,7 +1592,19 @@
     "message": "Anteprima"
   },
   "onboarding_step3Callout": {
-    "message": "Fai Shift+clic su questo link per visualizzarne l'anteprima."
+    "message": "Fai $key$+clic su questo link per visualizzarne l'anteprima.",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "Shift"
+      }
+    }
+  },
+  "onboarding_step3Callout_hold": {
+    "message": "Tieni premuto su questo link per visualizzarne l'anteprima."
+  },
+  "onboarding_step3Callout_drag": {
+    "message": "Trascina leggermente questo link per visualizzarne l'anteprima."
   },
   "onboarding_clickKeycap": {
     "message": "Clic"

@@ -212,8 +212,23 @@
   "Option_inheritPopupPlacement": {
     "message": "वैश्विक सेटिंग्स से मेनू प्लेसमेंट प्राप्त करें"
   },
-  "Option_popupAnimation": {
-    "message": "मेनू प्रदर्शन एनिमेशन"
+  "Option_popupSpeed": {
+    "message": "मेनू प्रदर्शन गति"
+  },
+  "Option_popupSpeed_preset": {
+    "message": "गति प्रीसेट"
+  },
+  "Option_popupSpeed_standard": {
+    "message": "मानक"
+  },
+  "Option_popupSpeed_fast": {
+    "message": "तेज़"
+  },
+  "Option_popupSpeed_instant": {
+    "message": "तत्काल"
+  },
+  "Option_popupSpeed_delayIgnored": {
+    "message": "इस स्टार्टअप विधि में 0 ms पर स्थिर है।"
   },
   "Option_popupAutoCloseDelay": {
     "message": "पॉपअप ऑटो-क्लोज़ विलंब"
@@ -1513,8 +1528,14 @@
   "onboarding_step1TargetText": {
     "message": "एक एक्सटेंशन जिससे आप चुने हुए टेक्स्ट को एक क्लिक में सर्च कर सकते हैं।"
   },
+  "onboarding_step1TargetWord": {
+    "message": "एक्सटेंशन"
+  },
   "onboarding_selectHint": {
     "message": "नीचे दिए गए टेक्स्ट को खींचकर चुनें"
+  },
+  "onboarding_doubleClickHint": {
+    "message": "किसी भी शब्द पर डबल-क्लिक करें"
   },
   "onboarding_railSelect": {
     "message": "चयन"
@@ -1571,7 +1592,19 @@
     "message": "पूर्वावलोकन"
   },
   "onboarding_step3Callout": {
-    "message": "इस लिंक पर Shift दबाकर क्लिक करें और उसका पूर्वावलोकन देखें।"
+    "message": "इस लिंक पर $key$ दबाकर क्लिक करें और उसका पूर्वावलोकन देखें।",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "Shift"
+      }
+    }
+  },
+  "onboarding_step3Callout_hold": {
+    "message": "इस लिंक को दबाकर रखें और उसका पूर्वावलोकन देखें।"
+  },
+  "onboarding_step3Callout_drag": {
+    "message": "इस लिंक को थोड़ा ड्रैग करें और उसका पूर्वावलोकन देखें।"
   },
   "onboarding_clickKeycap": {
     "message": "क्लिक"

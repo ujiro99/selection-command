@@ -212,8 +212,23 @@
   "Option_inheritPopupPlacement": {
     "message": "전역 설정에서 메뉴 표시 위치 상속"
   },
-  "Option_popupAnimation": {
-    "message": "메뉴 표시 애니메이션"
+  "Option_popupSpeed": {
+    "message": "메뉴 표시 속도"
+  },
+  "Option_popupSpeed_preset": {
+    "message": "속도 프리셋"
+  },
+  "Option_popupSpeed_standard": {
+    "message": "표준"
+  },
+  "Option_popupSpeed_fast": {
+    "message": "빠름"
+  },
+  "Option_popupSpeed_instant": {
+    "message": "즉시"
+  },
+  "Option_popupSpeed_delayIgnored": {
+    "message": "이 실행 방법에서는 0 ms로 고정됩니다."
   },
   "Option_popupAutoCloseDelay": {
     "message": "팝업 자동 닫기 지연"
@@ -1513,8 +1528,14 @@
   "onboarding_step1TargetText": {
     "message": "선택한 텍스트를 클릭 한 번으로 검색할 수 있는 확장 프로그램"
   },
+  "onboarding_step1TargetWord": {
+    "message": "확장"
+  },
   "onboarding_selectHint": {
     "message": "아래 텍스트를 드래그하여 선택하세요"
+  },
+  "onboarding_doubleClickHint": {
+    "message": "아무 단어나 더블클릭하세요"
   },
   "onboarding_railSelect": {
     "message": "선택"
@@ -1571,7 +1592,19 @@
     "message": "미리보기"
   },
   "onboarding_step3Callout": {
-    "message": "이 링크를 Shift+클릭하면 미리보기를 볼 수 있습니다."
+    "message": "이 링크를 $key$+클릭하면 미리보기를 볼 수 있습니다.",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "Shift"
+      }
+    }
+  },
+  "onboarding_step3Callout_hold": {
+    "message": "이 링크를 길게 누르면 미리보기를 볼 수 있습니다."
+  },
+  "onboarding_step3Callout_drag": {
+    "message": "이 링크를 살짝 드래그하면 미리보기를 볼 수 있습니다."
   },
   "onboarding_clickKeycap": {
     "message": "클릭"

@@ -1,7 +1,16 @@
 import { useEffect, useState } from "react"
-import { ChevronRight, ArrowBigUp, MousePointerClick } from "lucide-react"
+import {
+  ChevronRight,
+  ArrowBigUp,
+  MousePointerClick,
+  Hand,
+  Move,
+} from "lucide-react"
 import { t } from "@/services/i18n"
-import { DRAG_OPEN_MODE } from "@/const"
+import { DRAG_OPEN_MODE, KEYBOARD, LINK_COMMAND_STARTUP_METHOD } from "@/const"
+import { useUserSettings } from "@/hooks/useSettings"
+import DefaultSettings from "@/services/option/defaultSettings"
+import { isMac } from "@/lib/utils"
 import { subscribeCommandExecuted } from "../onboardingEvents"
 import { OnboardingCallout } from "../OnboardingCallout"
 import { OnboardingFadeIn } from "../OnboardingFadeIn"
@@ -24,13 +33,90 @@ function railBeat(phase: StepPhase): 0 | 2 {
   return 0
 }
 
-// Step3: Shift+click the sample link to trigger Link Preview. Unlike
+const KEYCAP_CLASS =
+  "inline-flex min-h-8 items-center gap-1.5 rounded-lg border border-b-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-gray-900 px-2.5 text-xs font-bold tracking-wide text-slate-700 dark:text-slate-300"
+
+// Display name of the modifier key, using the same labels as the options
+// page (e.g. "Command(⌘)" for CTRL on Mac, where it also matches Command).
+function keyLabel(key: string | undefined): string {
+  switch (key) {
+    case KEYBOARD.CTRL:
+    case KEYBOARD.ALT:
+    case KEYBOARD.SHIFT:
+      return t(`Option_keyboardParam_${key}_${isMac() ? "mac" : "windows"}`)
+    case KEYBOARD.META:
+      return isMac() ? "Command(⌘)" : "Meta"
+    default:
+      return t(`Option_keyboardParam_${KEYBOARD.SHIFT}_windows`)
+  }
+}
+
+type GestureHintProps = {
+  method: LINK_COMMAND_STARTUP_METHOD
+  keyboardParam: string | undefined
+}
+
+// Callout content telling the user how to start Link Preview, following the
+// startup method in the user's settings (long press by default, #542).
+function GestureHint({ method, keyboardParam }: GestureHintProps) {
+  if (method === LINK_COMMAND_STARTUP_METHOD.KEYBOARD) {
+    const label = keyLabel(keyboardParam)
+    return (
+      <div className="flex flex-col items-center gap-2 pb-1">
+        {t("onboarding_step3Callout", [label])}
+        <div className="flex items-center gap-2">
+          <span className={KEYCAP_CLASS}>
+            {/* keyLabel falls back to Shift, so show its icon in that case too */}
+            {(keyboardParam ?? KEYBOARD.SHIFT) === KEYBOARD.SHIFT && (
+              <ArrowBigUp className="size-4" strokeWidth={2} />
+            )}
+            {label}
+          </span>
+          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+            +
+          </span>
+          <span className={KEYCAP_CLASS}>
+            <MousePointerClick className="size-4" strokeWidth={2} />
+            {t("onboarding_clickKeycap")}
+          </span>
+        </div>
+      </div>
+    )
+  }
+
+  // No keycap here: its label would only repeat the gesture already named in
+  // the callout text, so only an icon is shown with the text.
+  const isDrag = method === LINK_COMMAND_STARTUP_METHOD.DRAG
+  const Icon = isDrag ? Move : Hand
+  return (
+    <div className="flex flex-col items-center gap-1.5 pb-0.5">
+      <Icon className="size-5 shrink-0" strokeWidth={2} aria-hidden="true" />
+      <span className="text-balance">
+        {isDrag
+          ? t("onboarding_step3Callout_drag")
+          : t("onboarding_step3Callout_hold")}
+      </span>
+    </div>
+  )
+}
+
+// Step3: trigger Link Preview on the sample link with the gesture set in the
+// user's settings (long press by default). Unlike
 // Steps 1-2 this isn't triggered via text selection, so it only ever uses
 // the EXPLAIN, WAIT_RETURN and VALUE_SHOWN phases - per the design note
 // that "select" here stands in for "pick the target" even though the
-// gesture is a click, not a drag.
+// gesture is a long press or a click, not a text selection.
 export function StepLinkPreview({ onboarding }: Props) {
   const { phase, setPhase } = onboarding
+  const { userSettings, loading: settingsLoading } = useUserSettings()
+  const startupMethod =
+    userSettings.linkCommand?.startupMethod ??
+    DefaultSettings.linkCommand.startupMethod
+  // Hold the callout until the settings are loaded, so it never shows the
+  // default gesture to a user who set another one. A later refetch keeps the
+  // loaded settings, so it does not hide the callout again.
+  const settingsReady =
+    !settingsLoading || userSettings.linkCommand?.startupMethod != null
   const [linkElm, setLinkElm] = useState<HTMLElement | null>(null)
   const [returnCalloutElm, setReturnCalloutElm] = useState<Element | null>(null)
 
@@ -198,26 +284,14 @@ export function StepLinkPreview({ onboarding }: Props) {
 
           <OnboardingCallout
             targetElm={linkElm}
-            open={linkElm != null}
+            open={linkElm != null && settingsReady}
             openDelay={phaseDelays.callout}
             contentClassName="duration-300 select-none"
           >
-            <div className="flex flex-col items-center gap-2 pb-1">
-              {t("onboarding_step3Callout")}
-              <div className="flex items-center gap-2">
-                <span className="inline-flex min-h-8 items-center gap-1.5 rounded-lg border border-b-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-gray-900 px-2.5 text-xs font-bold tracking-wide text-slate-700 dark:text-slate-300">
-                  <ArrowBigUp className="size-4" strokeWidth={2} />
-                  Shift
-                </span>
-                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                  +
-                </span>
-                <span className="inline-flex min-h-8 items-center gap-1.5 rounded-lg border border-b-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-gray-900 px-2.5 text-xs font-bold tracking-wide text-slate-700 dark:text-slate-300">
-                  <MousePointerClick className="size-4" strokeWidth={2} />
-                  {t("onboarding_clickKeycap")}
-                </span>
-              </div>
-            </div>
+            <GestureHint
+              method={startupMethod.method}
+              keyboardParam={startupMethod.keyboardParam}
+            />
           </OnboardingCallout>
         </OnboardingFadeIn>
       )}
@@ -253,4 +327,9 @@ export function StepLinkPreview({ onboarding }: Props) {
       )}
     </div>
   )
+}
+
+/** Test-only exports. Do not use in production code. */
+export const __test = {
+  GestureHint,
 }

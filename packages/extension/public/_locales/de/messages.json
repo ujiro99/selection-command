@@ -212,8 +212,23 @@
   "Option_inheritPopupPlacement": {
     "message": "Menü-Anzeigeposition von globalen Einstellungen erben"
   },
-  "Option_popupAnimation": {
-    "message": "Menü-Anzeigeanimation"
+  "Option_popupSpeed": {
+    "message": "Menü-Anzeigegeschwindigkeit"
+  },
+  "Option_popupSpeed_preset": {
+    "message": "Geschwindigkeitsvoreinstellung"
+  },
+  "Option_popupSpeed_standard": {
+    "message": "Standard"
+  },
+  "Option_popupSpeed_fast": {
+    "message": "Schnell"
+  },
+  "Option_popupSpeed_instant": {
+    "message": "Sofort"
+  },
+  "Option_popupSpeed_delayIgnored": {
+    "message": "Bei dieser Startmethode fest auf 0 ms."
   },
   "Option_popupAutoCloseDelay": {
     "message": "Popup-Autoschluss-Verzögerung"
@@ -1513,8 +1528,14 @@
   "onboarding_step1TargetText": {
     "message": "Eine Erweiterung, mit der du markierten Text mit einem Klick durchsuchen kannst."
   },
+  "onboarding_step1TargetWord": {
+    "message": "Erweiterung"
+  },
   "onboarding_selectHint": {
     "message": "Text unten durch Ziehen markieren"
+  },
+  "onboarding_doubleClickHint": {
+    "message": "Doppelklicke auf ein beliebiges Wort"
   },
   "onboarding_railSelect": {
     "message": "Auswählen"
@@ -1571,7 +1592,19 @@
     "message": "Vorschau"
   },
   "onboarding_step3Callout": {
-    "message": "Klicke mit gedrückter Umschalttaste (Shift) auf diesen Link, um ihn in der Vorschau zu öffnen."
+    "message": "Klicke mit gedrückter $key$-Taste auf diesen Link, um ihn in der Vorschau zu öffnen.",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "Shift"
+      }
+    }
+  },
+  "onboarding_step3Callout_hold": {
+    "message": "Halte die Maustaste auf diesem Link gedrückt, um ihn in der Vorschau zu öffnen."
+  },
+  "onboarding_step3Callout_drag": {
+    "message": "Ziehe diesen Link ein Stück, um ihn in der Vorschau zu öffnen."
   },
   "onboarding_clickKeycap": {
     "message": "Klick"

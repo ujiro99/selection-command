@@ -81,6 +81,12 @@ type PromptRequirements = {
   useQueryUrl: boolean
 }
 
+// Actions also run in the service worker (e.g. a shortcut key on a tab without
+// the content script), where `document` and `window` do not exist. The page
+// and selection HTML can only be read in a page context.
+const canReadDom = (): boolean =>
+  typeof document !== "undefined" && typeof window !== "undefined"
+
 // Determines which optional inputs (clipboard, page/selection HTML) the
 // prompt needs, and whether the query-URL approach can be used at all.
 const analyzePromptRequirements = (
@@ -101,19 +107,29 @@ const analyzePromptRequirements = (
   // Detect HTML placeholders that require file-paste upload instead of text embedding.
   // File paste cannot be used with queryUrl mode (URL length limit), so these force
   // the DOM input path.
+  // In the service worker the HTML can't be read, so the placeholders are
+  // still detected (to keep the DOM input path and strip them from the
+  // prompt), but no HTML is attached.
+  const domAvailable = canReadDom()
   const needPageHtml = aiPromptOption.prompt.includes(
     toInsertTemplate(INSERT.PAGE_HTML),
   )
-  const pageHtml = needPageHtml ? getPageHtml() : undefined
+  const pageHtml = needPageHtml && domAvailable ? getPageHtml() : undefined
 
   // Only one HTML attachment is allowed per execution; PAGE_HTML takes
   // priority over SELECTION_HTML when the prompt contains both.
   const needSelectionHtml =
     !needPageHtml &&
     aiPromptOption.prompt.includes(toInsertTemplate(INSERT.SELECTION_HTML))
-  const selectionHtml = needSelectionHtml ? getSelectionHtml() : undefined
+  const selectionHtml =
+    needSelectionHtml && domAvailable ? getSelectionHtml() : undefined
 
   const needFilePaste = needPageHtml || needSelectionHtml
+  if (needFilePaste && !domAvailable) {
+    console.warn(
+      "[AiPrompt] HTML placeholders are ignored: the page HTML can't be read outside a page context.",
+    )
+  }
 
   // Use URL query input when the service supports it and no file-paste content
   // is needed, since HTML content can't be embedded in a URL safely.
@@ -269,6 +285,9 @@ const buildFilePasteSteps = (
   needPageHtml: boolean,
   needSelectionHtml: boolean,
 ): PageActionStep[] => {
+  if (!needPageHtml && !needSelectionHtml) return []
+  if (!canReadDom()) return []
+
   const pageTitle =
     document.title
       .replace(/[<>:"/\\|?*]/g, "")

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
-import { APP_ID } from "@/const"
+import { APP_ID, POPUP_DISABLED_ATTR } from "@/const"
 import {
   getSelectionText,
   getInputSelectionEndPoint,
@@ -7,7 +7,9 @@ import {
   getPageHtml,
   isInputOrTextarea,
   isEditable,
+  isSelectionInDisabledArea,
   urlsInSelection,
+  findPressedAnchorElement,
 } from "../index"
 
 describe("getSelectionText", () => {
@@ -523,5 +525,123 @@ describe("urlsInSelection", () => {
     textarea.setSelectionRange(0, textarea.value.length)
 
     expect(urlsInSelection(textarea.value)).toEqual(["https://example.com/a"])
+  })
+})
+
+describe("isSelectionInDisabledArea", () => {
+  afterEach(() => {
+    document.body.innerHTML = ""
+    window.getSelection()?.removeAllRanges()
+  })
+
+  const setup = () => {
+    document.body.innerHTML = `
+      <p id="outside">outside text</p>
+      <div ${POPUP_DISABLED_ATTR}>
+        <p id="inside">inside <b id="bold">bold</b> text</p>
+        <input id="input" value="input text" />
+      </div>
+      <input id="outsideInput" value="outside input" />
+    `
+  }
+
+  const select = (
+    startNode: Node,
+    startOffset: number,
+    endNode: Node,
+    endOffset: number,
+  ) => {
+    const s = window.getSelection()!
+    s.removeAllRanges()
+    s.setBaseAndExtent(startNode, startOffset, endNode, endOffset)
+  }
+
+  it("SIDA-01: returns false when nothing is selected", () => {
+    setup()
+    expect(isSelectionInDisabledArea()).toBe(false)
+  })
+
+  it("SIDA-02: returns false for a selection outside the area", () => {
+    setup()
+    const text = document.getElementById("outside")!.firstChild!
+    select(text, 0, text, 7)
+    expect(isSelectionInDisabledArea()).toBe(false)
+  })
+
+  it("SIDA-03: returns true for a selection inside the area", () => {
+    setup()
+    const text = document.getElementById("bold")!.firstChild!
+    select(text, 0, text, 4)
+    expect(isSelectionInDisabledArea()).toBe(true)
+  })
+
+  it("SIDA-04: returns true when one end of the selection is inside the area", () => {
+    setup()
+    const outside = document.getElementById("outside")!.firstChild!
+    const inside = document.getElementById("inside")!.firstChild!
+    select(outside, 0, inside, 3)
+    expect(isSelectionInDisabledArea()).toBe(true)
+  })
+
+  it("SIDA-05: returns true for a focused input inside the area", () => {
+    setup()
+    const input = document.getElementById("input") as HTMLInputElement
+    input.focus()
+    input.setSelectionRange(0, 5)
+    expect(isSelectionInDisabledArea()).toBe(true)
+  })
+
+  it("SIDA-06: returns false for a focused input outside the area", () => {
+    setup()
+    const input = document.getElementById("outsideInput") as HTMLInputElement
+    input.focus()
+    input.setSelectionRange(0, 5)
+    expect(isSelectionInDisabledArea()).toBe(false)
+  })
+})
+
+describe("findPressedAnchorElement", () => {
+  // The anchor that elementsFromPoint reports under the pointer.
+  let anchorAtPoint: Element | undefined
+
+  beforeEach(() => {
+    anchorAtPoint = undefined
+    document.elementsFromPoint = () => (anchorAtPoint ? [anchorAtPoint] : [])
+    document.body.innerHTML = `
+      <div id="card">
+        <a id="card-link" href="https://example.com/card">card</a>
+        <button id="like"><span id="like-icon">like</span></button>
+        <p id="text">text</p>
+      </div>
+      <a id="link" href="https://example.com"><span id="link-text">link</span></a>
+    `
+  })
+
+  afterEach(() => {
+    document.body.innerHTML = ""
+  })
+
+  const pressOn = (id: string): MouseEvent => {
+    const e = new MouseEvent("mousedown", { clientX: 10, clientY: 10 })
+    Object.defineProperty(e, "target", { value: document.getElementById(id) })
+    return e
+  }
+
+  it("FPA-01: returns the link pressed on its child element", () => {
+    expect(findPressedAnchorElement(pressOn("link-text"))?.id).toBe("link")
+  })
+
+  it("FPA-02: returns the link under the pointer when a plain element is pressed", () => {
+    anchorAtPoint = document.getElementById("card-link")!
+    expect(findPressedAnchorElement(pressOn("text"))?.id).toBe("card-link")
+  })
+
+  it("FPA-03: ignores the link under the pointer when a button over it is pressed", () => {
+    anchorAtPoint = document.getElementById("card-link")!
+    expect(findPressedAnchorElement(pressOn("like-icon"))).toBeUndefined()
+  })
+
+  it("FPA-04: returns undefined when no link is pressed", () => {
+    expect(findPressedAnchorElement(pressOn("text"))).toBeUndefined()
   })
 })

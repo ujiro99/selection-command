@@ -6,7 +6,7 @@ import {
   findUrlsInText,
   toLinkUrl,
 } from "@/lib/urlExtractor"
-import { APP_ID, PAGE_HTML_MAX_CHARS } from "@/const"
+import { APP_ID, PAGE_HTML_MAX_CHARS, POPUP_DISABLED_ATTR } from "@/const"
 
 export function linksInSelection(): string[] {
   const selection = document.getSelection()
@@ -109,6 +109,30 @@ export type ScreenSize = {
 }
 
 /**
+ * Whether the node is inside an element marked with POPUP_DISABLED_ATTR,
+ * where the extension must not show its popups.
+ */
+export const isInDisabledArea = (node: Node | null): boolean => {
+  const elm = node instanceof Element ? node : node?.parentElement
+  return elm?.closest(`[${POPUP_DISABLED_ATTR}]`) != null
+}
+
+/**
+ * Whether the current selection is inside an element marked with
+ * POPUP_DISABLED_ATTR, where the popup menu must not be shown.
+ * A selection counts when either of its ends lies in such an element.
+ */
+export function isSelectionInDisabledArea(): boolean {
+  const active = document.activeElement
+  if (isInputOrTextarea(active)) {
+    return isInDisabledArea(active)
+  }
+  const s = document.getSelection()
+  if (s == null || s.rangeCount === 0) return false
+  return isInDisabledArea(s.anchorNode) || isInDisabledArea(s.focusNode)
+}
+
+/**
  * Get the text of the selected range.
  * Also handles selections inside <input> and <textarea> elements,
  * which are not reflected by document.getSelection().
@@ -192,6 +216,22 @@ export function findAnchorElement(e: MouseEvent): Element | undefined {
     elm = findAnchorElementFromParent(e.target as Element)
   }
   return elm
+}
+
+/**
+ * Find the link pressed by the mouse event, ignoring a link when the pressed
+ * element belongs to another clickable element such as a button. A button
+ * laid over a link (e.g. a card whose whole area is a link) is found by
+ * `findAnchorElement` through `elementsFromPoint`, so it is excluded here.
+ * @param {MouseEvent} e The mouse event.
+ * @returns {Element} The anchor element.
+ */
+export function findPressedAnchorElement(e: MouseEvent): Element | undefined {
+  const clickable = findClickableElement(e.target as Element)
+  if (clickable != null && clickable.tagName.toLowerCase() !== "a") {
+    return undefined
+  }
+  return findAnchorElement(e)
 }
 
 /**

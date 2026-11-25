@@ -215,8 +215,23 @@
   "Option_inheritPopupPlacement": {
     "message": "Inherit Menu Display Position from global settings"
   },
-  "Option_popupAnimation": {
-    "message": "Menu Display Animation"
+  "Option_popupSpeed": {
+    "message": "Menu Display Speed"
+  },
+  "Option_popupSpeed_preset": {
+    "message": "Speed Preset"
+  },
+  "Option_popupSpeed_standard": {
+    "message": "Standard"
+  },
+  "Option_popupSpeed_fast": {
+    "message": "Fast"
+  },
+  "Option_popupSpeed_instant": {
+    "message": "Instant"
+  },
+  "Option_popupSpeed_delayIgnored": {
+    "message": "Fixed to 0 ms for this startup method."
   },
   "Option_popupAutoCloseDelay": {
     "message": "Popup Auto-Close Delay"
@@ -1541,9 +1556,17 @@
     "message": "An extension that lets you search selected text in a single click.",
     "description": "Onboarding Step1 sample text the user is asked to select to trigger the real popup menu."
   },
+  "onboarding_step1TargetWord": {
+    "message": "extension",
+    "description": "One word of onboarding_step1TargetText, copied exactly, where Step1's double-click demo is shown. Must appear verbatim in that text, or the card falls back to the drag hint."
+  },
   "onboarding_selectHint": {
     "message": "Drag to select the text below",
     "description": "Onboarding Step1/2 caption instructing the user to drag-select the sample text, shown above the target text card during the selection demo."
+  },
+  "onboarding_doubleClickHint": {
+    "message": "Double-click any word",
+    "description": "Onboarding Step1 caption asking the user to double-click a word of the sample text, shown above the target text card instead of onboarding_selectHint in the double-click variant."
   },
   "onboarding_railSelect": {
     "message": "Select",
@@ -1618,8 +1641,22 @@
     "description": "Onboarding progress rail label for Step3's result beat (previewing a link)."
   },
   "onboarding_step3Callout": {
-    "message": "Shift+click this link to preview it.",
-    "description": "Onboarding Step3 callout/speech-bubble text pointing at the sample link, prompting the user to Shift+click it to trigger Link Preview."
+    "message": "$key$+click this link to preview it.",
+    "description": "Onboarding Step3 callout text pointing at the sample link when Link Preview starts with click + key. $key$ is the key name (e.g. Shift).",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "Shift"
+      }
+    }
+  },
+  "onboarding_step3Callout_hold": {
+    "message": "Press and hold this link to preview it.",
+    "description": "Onboarding Step3 callout text pointing at the sample link when Link Preview starts with a left-click long press."
+  },
+  "onboarding_step3Callout_drag": {
+    "message": "Drag this link a little to preview it.",
+    "description": "Onboarding Step3 callout text pointing at the sample link when Link Preview starts with a drag."
   },
   "onboarding_clickKeycap": {
     "message": "Click",

@@ -212,8 +212,23 @@
   "Option_inheritPopupPlacement": {
     "message": "Наследовать позицию меню из глобальных настроек"
   },
-  "Option_popupAnimation": {
-    "message": "Анимация Отображения Меню"
+  "Option_popupSpeed": {
+    "message": "Скорость Отображения Меню"
+  },
+  "Option_popupSpeed_preset": {
+    "message": "Пресет скорости"
+  },
+  "Option_popupSpeed_standard": {
+    "message": "Стандартная"
+  },
+  "Option_popupSpeed_fast": {
+    "message": "Быстрая"
+  },
+  "Option_popupSpeed_instant": {
+    "message": "Мгновенная"
+  },
+  "Option_popupSpeed_delayIgnored": {
+    "message": "Для этого способа запуска фиксировано 0 мс."
   },
   "Option_popupAutoCloseDelay": {
     "message": "Задержка Автозакрытия Всплывающего Окна"
@@ -1513,8 +1528,14 @@
   "onboarding_step1TargetText": {
     "message": "Расширение, позволяющее искать выделенный текст одним щелчком."
   },
+  "onboarding_step1TargetWord": {
+    "message": "Расширение"
+  },
   "onboarding_selectHint": {
     "message": "Перетащите, чтобы выделить текст ниже"
+  },
+  "onboarding_doubleClickHint": {
+    "message": "Дважды щёлкните любое слово"
   },
   "onboarding_railSelect": {
     "message": "Выделение"
@@ -1571,7 +1592,19 @@
     "message": "Просмотр"
   },
   "onboarding_step3Callout": {
-    "message": "Нажмите Shift и щёлкните по этой ссылке, чтобы увидеть предпросмотр."
+    "message": "Нажмите $key$ и щёлкните по этой ссылке, чтобы увидеть предпросмотр.",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "Shift"
+      }
+    }
+  },
+  "onboarding_step3Callout_hold": {
+    "message": "Нажмите и удерживайте эту ссылку, чтобы увидеть предпросмотр."
+  },
+  "onboarding_step3Callout_drag": {
+    "message": "Немного перетащите эту ссылку, чтобы увидеть предпросмотр."
   },
   "onboarding_clickKeycap": {
     "message": "Клик"
