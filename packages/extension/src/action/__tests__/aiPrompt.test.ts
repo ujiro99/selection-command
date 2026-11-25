@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest"
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import { AiPrompt } from "../aiPrompt"
 import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
 import { findAiService } from "@/services/aiPrompt"
@@ -383,6 +383,92 @@ describe("AiPrompt.execute", () => {
         }),
       )
     })
+  })
+
+  // Shortcut keys on tabs without the content script run actions in the
+  // service worker, where `document` and `window` do not exist.
+  describe("service worker context (no DOM)", () => {
+    beforeEach(() => {
+      vi.stubGlobal("document", undefined)
+      vi.stubGlobal("window", undefined)
+    })
+
+    afterEach(() => {
+      vi.unstubAllGlobals()
+    })
+
+    const getSentPayload = () => {
+      const call = vi
+        .mocked(Ipc.send)
+        .mock.calls.find(
+          ([cmd]) => cmd === ServiceWorkerCommand.openAndRunPageAction,
+        )
+      return call?.[1] as any
+    }
+
+    it("AP-SW-01: should run the DOM input approach without touching document", async () => {
+      vi.mocked(findAiService).mockResolvedValue(makeDomService())
+
+      await AiPrompt.execute({
+        selectionText: "",
+        selectionFromClipboard: true,
+        command: {
+          ...baseCommand,
+          aiPromptOption: {
+            ...baseCommand.aiPromptOption,
+            serviceId: "gemini",
+          },
+        } as any,
+        position: { x: 100, y: 100 },
+      })
+
+      const payload = getSentPayload()
+      expect(payload).toBeDefined()
+      const types = payload.steps.map((s: any) => s.param.type)
+      expect(types).not.toContain(PAGE_ACTION_EVENT.filePaste)
+      expect(types).toContain(PAGE_ACTION_EVENT.input)
+    })
+
+    it.each([
+      ["PAGE_HTML", INSERT.PAGE_HTML],
+      ["SELECTION_HTML", INSERT.SELECTION_HTML],
+    ])(
+      "AP-SW-02: should skip the %s attachment and strip its placeholder",
+      async (_, insert) => {
+        vi.mocked(findAiService).mockResolvedValue(makeQueryService())
+
+        await AiPrompt.execute({
+          selectionText: "",
+          selectionFromClipboard: true,
+          command: {
+            ...baseCommand,
+            aiPromptOption: {
+              ...baseCommand.aiPromptOption,
+              prompt: `Summarize ${toInsertTemplate(insert)}`,
+            },
+          } as any,
+          position: { x: 100, y: 100 },
+        })
+
+        const payload = getSentPayload()
+        expect(payload).toBeDefined()
+        // HTML placeholders keep the DOM input path even with a queryUrl.
+        expect(payload.url.searchUrl).toBe("https://chatgpt.com")
+        expect(payload.pageHtml).toBeUndefined()
+        expect(payload.selectionHtml).toBeUndefined()
+
+        const steps = payload.steps
+        expect(
+          steps.filter(
+            (s: any) => s.param.type === PAGE_ACTION_EVENT.filePaste,
+          ),
+        ).toHaveLength(0)
+        const inputStep = steps.find(
+          (s: any) => s.param.type === PAGE_ACTION_EVENT.input,
+        )
+        expect(inputStep.param.value).toBe("Summarize")
+      },
+    )
   })
 
   describe("URL query input approach (with queryUrl)", () => {
