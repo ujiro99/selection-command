@@ -9,6 +9,7 @@ import { HoverArea } from "@/components/menu/HoverArea"
 import { MenuImage } from "@/components/menu/MenuImage"
 import { usePopupContext } from "@/hooks/usePopupContext"
 import { useZoomCompensation } from "@/hooks/usePageZoom"
+import { useHoverGate } from "@/hooks/useHoverGate"
 import css from "./Menu.module.css"
 import zc from "@/components/zoomCompensation.module.css"
 import type {
@@ -83,6 +84,7 @@ export const MenuFolder = (props: {
   const [hoveredFolder, setHoveredFolder] = useState("")
   const childActiveFolder = triggeredFolder || hoveredFolder
   const { inTransition } = usePopupContext()
+  const hoverGate = useHoverGate()
 
   // Resolve the effective style for this folder's content.
   // INHERIT: use parent style (isHorizontal), otherwise use folder's explicit style setting.
@@ -176,6 +178,7 @@ export const MenuFolder = (props: {
         onInteractOutside={(e) => e.preventDefault()}
         role="menu"
         {...onHover(props.onHoverContent, folder.id)}
+        {...hoverGate}
       >
         <ScrollAreaConditional
           scrollEnabled={!isHorizontalContent}

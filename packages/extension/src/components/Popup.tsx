@@ -10,6 +10,7 @@ import { useSelectContext } from "@/hooks/useSelectContext"
 import { popupContext } from "@/hooks/usePopupContext"
 import { useThemeContext } from "@/hooks/useTheme"
 import { useZoomCompensation } from "@/hooks/usePageZoom"
+import { useHoverGate } from "@/hooks/useHoverGate"
 import { isMac, onHover, cn } from "@/lib/utils"
 import { usesIconColor, toCssVariables } from "@/services/option/userStyles"
 import { t } from "@/services/i18n"
@@ -52,6 +53,7 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
     const sideOffset = isPreview ? 0 : (placement?.sideOffset ?? 0)
     const alignOffset = isPreview ? 0 : (placement?.alignOffset ?? 0)
 
+    const hoverGate = useHoverGate()
     const zoomCompensation = useZoomCompensation()
     const userStyles = {
       ...toCssVariables(userSettings?.userStyles),
@@ -142,6 +144,7 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
               )}
               style={userStyles}
               {...onHover(handleOnHover, true)}
+              {...hoverGate}
             >
               {!isContextMenu ? <Menu /> : null}
             </PopoverContent>
