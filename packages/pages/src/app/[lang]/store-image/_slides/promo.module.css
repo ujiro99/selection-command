@@ -3,8 +3,6 @@
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
   box-sizing: border-box;
   font-family: var(--font-geist-sans), Arial, sans-serif;
   color: #fff;
@@ -16,30 +14,29 @@
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: radial-gradient(ellipse at 100% 100%, rgb(0 195 221 / 55%), transparent 65%);
+  background: radial-gradient(
+    ellipse at 100% 100%,
+    rgb(0 195 221 / 55%),
+    transparent 65%
+  );
 }
 
 .small {
   width: 440px;
   height: 280px;
-  padding: 18px 24px;
-  align-items: center;
 }
 
 .marquee {
   width: 1400px;
   height: 560px;
-  padding: 54px 64px;
-  justify-content: center;
-  align-items: flex-start;
 }
 
+/* ---------- Brand ---------- */
+
 .brand {
+  position: absolute;
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-weight: 650;
-  line-height: 1.2;
   white-space: nowrap;
 }
 
@@ -49,34 +46,23 @@
   border-radius: 16%;
 }
 
-.small .brand {
-  position: absolute;
-  bottom: 12px;
-  font-size: 15px;
-}
-
-.small .brand img {
-  width: 25px;
-  height: 25px;
-}
-
 .marquee .brand {
-  position: absolute;
   top: 54px;
   left: 64px;
   gap: 16px;
-  font-size: 29px;
 }
 
 .marquee .brand img {
-  width: 64px;
-  height: 64px;
+  width: 56px;
+  height: 56px;
 }
 
+/* ---------- Copy ---------- */
+
 .copy {
+  position: absolute;
   display: flex;
   flex-direction: column;
-  gap: 5px;
 }
 
 .headline,
@@ -93,79 +79,84 @@
 
 .sub {
   color: #eaf8ff;
-  font-weight: 550;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.02em;
   line-height: 1.25;
 }
 
+/* Left-aligned with the page, as the popup opens on the right */
 .small .copy {
-  text-align: center;
+  top: 24px;
+  left: 40px;
+  gap: 4px;
 }
 
 .small .headline {
-  font-size: 32px;
+  font-size: 34px;
 }
 
+/* Lighter than the headline so the two lines read as main and sub */
 .small .sub {
   font-size: 25px;
+  font-weight: 450;
+  opacity: 0.85;
 }
 
+/* Vertically centered on the same line as the scene */
 .marquee .copy {
-  gap: 20px;
-  margin-top: 80px;
+  top: 300px;
+  left: 64px;
+  gap: 18px;
+  transform: translateY(-50%);
 }
 
 .marquee .headline {
-  font-size: 86px;
+  font-size: 76px;
 }
 
 .marquee .sub {
-  font-size: 56px;
+  font-size: 50px;
+  font-weight: 500;
 }
 
+/* ---------- Scene: page, selection, popup and cursor ---------- */
+
 .scene {
-  position: relative;
-  flex: none;
+  position: absolute;
 }
 
 .small .scene {
-  width: 336px;
-  height: 128px;
-  margin-top: 12px;
+  top: 114px;
+  left: 40px;
+  width: 360px;
+  height: 142px;
 }
 
+/* Centered on the same line as the copy */
 .marquee .scene {
-  position: absolute;
-  width: 610px;
-  height: 294px;
   top: 145px;
   right: 64px;
+  width: 680px;
+  height: 310px;
 }
 
+/* The page is turned a little, so the straight popup stands out from it */
 .document {
   position: absolute;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  box-sizing: border-box;
-  width: 96%;
-  left: 2%;
-  bottom: 5%;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transform: rotate(-2deg);
   border-radius: 10px;
   background: #f4f9ff;
   box-shadow: 0 10px 30px rgb(15 39 73 / 18%);
 }
 
 .small .document {
-  height: 78px;
-  padding: 10px 15px;
-  gap: 8px;
+  top: 30px;
 }
 
 .marquee .document {
-  height: 176px;
-  padding: 24px 32px;
-  gap: 18px;
+  top: 64px;
   border-radius: 22px;
 }
 
@@ -177,47 +168,172 @@
   background: #c3d5e5;
 }
 
-.document > .line {
-  width: 92%;
+.marquee .line {
+  height: 12px;
 }
 
-.document > .lastLine {
-  width: 77%;
+/* Text lines of the page. The first one peeks out beside the popup. */
+.document > .line {
+  position: absolute;
+  left: 6%;
+  transform: translateY(-50%);
+}
+
+.line1 {
+  top: 16%;
+  width: 88%;
+}
+
+.line2 {
+  top: 34%;
+  width: 72%;
+}
+
+.small .line2 {
+  display: none;
+}
+
+/* The popup covers the upper part of the page, so put the second line below
+   the selection */
+.marquee .line2 {
+  top: 76%;
+}
+
+.marquee .lastLine {
+  top: 90%;
+  width: 48%;
+}
+
+.small .lastLine {
+  top: 85%;
+}
+
+.lastLine {
+  width: 60%;
 }
 
 .selectionRow {
+  position: absolute;
+  top: 52%;
+  left: 6%;
+  right: 6%;
   display: flex;
   align-items: center;
+  transform: translateY(-50%);
+}
+
+.small .selectionRow {
+  top: 56%;
   gap: 8px;
-}
-
-.selectionRow .line {
-  flex: 1;
-}
-
-.selectionRow mark {
-  flex: none;
-  background: #a6dbff;
-  color: #12294c;
-  padding: 3px 7px;
-  font-weight: 700;
-  line-height: 1.3;
-  white-space: nowrap;
-}
-
-.small .selectionRow mark {
-  font-size: 18px;
 }
 
 .marquee .selectionRow {
   gap: 18px;
 }
 
-.marquee .selectionRow mark {
-  font-size: 38px;
-  padding: 6px 12px;
+.selectionRow .line {
+  flex: 1;
 }
 
-.marquee .line {
-  height: 12px;
+/* Short text before the selection, so the selection ends left of the
+   center and the popup can open to the right of it, around the cursor */
+.selectionRow .lead {
+  flex: none;
+  width: 8%;
+}
+
+.selectionRow mark {
+  flex: none;
+  background: #a6dbff;
+  color: #12294c;
+  font-weight: 700;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.small .selectionRow mark {
+  font-size: 20px;
+  padding: 2px 7px;
+  border-radius: 3px;
+}
+
+.marquee .selectionRow mark {
+  font-size: 44px;
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+
+/*
+ * Popup menu, narrower than the page and opening around the cursor.
+ * Proportions follow the real menu: square-ish slots, an icon about half the
+ * bar height, and side padding that leaves the same space around the first
+ * and last icons as above and below them. The "more" slot is narrower, as its
+ * glyph is.
+ */
+.popup {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  transform: translateX(-50%);
+  background: #fff;
+  color: #1f2937;
+}
+
+.command {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Centered on the cursor, which sits right of the page center */
+.small .popup {
+  left: 61%;
+}
+
+.marquee .popup {
+  left: 62%;
+}
+
+/* Small: 60px bar, 28px icons, 18px between icons, 16px around them */
+.small .popup {
+  height: 60px;
+  padding: 0 7px;
+  border-radius: 12px;
+}
+
+.small .command {
+  width: 46px;
+}
+
+.small .more {
+  width: 30px;
+}
+
+.small .icon {
+  width: 28px;
+  height: 28px;
+}
+
+/* Marquee: 136px bar, 60px icons, 38px between icons, 38px around them */
+.marquee .popup {
+  height: 136px;
+  padding: 0 19px;
+  border-radius: 24px;
+}
+
+.marquee .command {
+  width: 98px;
+}
+
+.marquee .more {
+  width: 64px;
+}
+
+.marquee .icon {
+  width: 60px;
+  height: 60px;
 }

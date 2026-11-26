@@ -32,15 +32,23 @@ type Variant = keyof typeof variantClass
 interface Props {
   variant?: Variant
   hub?: boolean
+  /** Use on dark or saturated backgrounds, with white text */
+  onDark?: boolean
   className?: string
 }
 
 /** The "Selection Command" wordmark with a pointer over "Command". */
-export function Logo({ variant = "default", hub = true, className }: Props) {
+export function Logo({
+  variant = "default",
+  hub = true,
+  onDark = false,
+  className,
+}: Props) {
   const classNames = [
     logoFont.className,
     css.logo,
     variantClass[variant],
+    onDark && css.onDark,
     className,
   ]
     .filter(Boolean)
