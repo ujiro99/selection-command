@@ -24,9 +24,42 @@ const COMMANDS = [Search, Languages, Sparkles, MonitorPlay] as const
  * command and carries service logos, so the tiles use this simplified one
  * styled after it.
  */
+/**
+ * Rays fanning out from a corner, as in a comic "pop", to show that the
+ * popup has just opened. The corner is at the bottom left of the view box;
+ * angles are counterclockwise from the right.
+ */
+const BURST_RAYS = [
+  { angle: 12, from: 8, to: 21 },
+  { angle: 45, from: 7, to: 27 },
+  { angle: 78, from: 8, to: 21 },
+] as const
+
+function Burst(): JSX.Element {
+  return (
+    <svg className={css.burst} viewBox="0 0 32 32" aria-hidden="true">
+      {BURST_RAYS.map(({ angle, from, to }) => {
+        const rad = (angle * Math.PI) / 180
+        const cos = Math.cos(rad)
+        const sin = Math.sin(rad)
+        return (
+          <line
+            key={angle}
+            x1={from * cos}
+            y1={32 - from * sin}
+            x2={to * cos}
+            y2={32 - to * sin}
+          />
+        )
+      })}
+    </svg>
+  )
+}
+
 function PromoPopup({ more }: { more: boolean }): JSX.Element {
   return (
     <div className={css.popup}>
+      <Burst />
       {COMMANDS.map((Icon, i) => (
         <span key={i} className={css.command}>
           <Icon className={css.icon} strokeWidth={2.1} />
