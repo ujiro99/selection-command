@@ -8,34 +8,36 @@ import {
 
 import { Logo } from "@/components/Logo"
 
-import { Cursor, storeCss } from "../_components/parts"
+import { Cursor } from "../_components/parts"
 
 import css from "./promo.module.css"
 
 /**
- * Commands shown in the tile popup, in the order of the copy
- * ("Search. Translate. AI."), with video search next to web search. Generic
- * icons instead of service logos, so the artwork needs no third-party brand
- * approval.
+ * Commands shown in the tile popup. The first three follow the copy
+ * ("Search. Translate. AI."), then video search. Generic icons instead of
+ * service logos, so the artwork needs no third-party brand approval.
  */
-const COMMANDS = [Search, MonitorPlay, Languages, Sparkles] as const
+const COMMANDS = [Search, Languages, Sparkles, MonitorPlay] as const
 
 /**
  * Popup menu drawn for the tiles. The real screenshot has no translate
  * command and carries service logos, so the tiles use this simplified one
  * styled after it.
  */
-function PromoPopup(): JSX.Element {
+function PromoPopup({ more }: { more: boolean }): JSX.Element {
   return (
-    <div className={`${css.popup} ${storeCss.shotShadow}`}>
+    <div className={css.popup}>
       {COMMANDS.map((Icon, i) => (
         <span key={i} className={css.command}>
           <Icon className={css.icon} strokeWidth={2.1} />
         </span>
       ))}
-      <span className={`${css.command} ${css.more}`}>
-        <EllipsisVertical className={css.icon} strokeWidth={2.4} />
-      </span>
+      {/* Too small to read on the small tile, so only on the marquee */}
+      {more && (
+        <span className={`${css.command} ${css.more}`}>
+          <EllipsisVertical className={css.icon} strokeWidth={2.4} />
+        </span>
+      )}
     </div>
   )
 }
@@ -79,16 +81,16 @@ function PromoTile({ marquee = false }: { marquee?: boolean }): JSX.Element {
           <div className={css.selectionRow}>
             <span className={`${css.line} ${css.lead}`} />
             <mark>selected text</mark>
-            <span className={css.line} />
+            <span className={`${css.line} ${css.trail}`} />
           </div>
           <span className={`${css.line} ${css.lastLine}`} />
         </div>
-        <PromoPopup />
-        {/* Tip at the end of the selection, as if the drag just ended, just
-            under the popup */}
+        <PromoPopup more={marquee} />
+        {/* Tip at the end of the selection, as if the drag just ended, under
+            the left part of the popup */}
         <Cursor
           scale={marquee ? 1.6 : 0.8}
-          style={marquee ? { left: 420, top: 156 } : { left: 201, top: 80 }}
+          style={marquee ? { left: 480, top: 164 } : { left: 233, top: 81 }}
         />
       </div>
     </div>

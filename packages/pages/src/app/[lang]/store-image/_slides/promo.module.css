@@ -46,8 +46,9 @@
   border-radius: 16%;
 }
 
+/* Brand and copy form one column, centered vertically on the tile */
 .marquee .brand {
-  top: 54px;
+  top: 103px;
   left: 64px;
   gap: 16px;
 }
@@ -85,7 +86,7 @@
 
 /* Left-aligned with the page, as the popup opens on the right */
 .small .copy {
-  top: 24px;
+  top: 28px;
   left: 40px;
   gap: 4px;
 }
@@ -101,12 +102,10 @@
   opacity: 0.85;
 }
 
-/* Vertically centered on the same line as the scene */
 .marquee .copy {
-  top: 300px;
+  top: 207px;
   left: 64px;
   gap: 18px;
-  transform: translateY(-50%);
 }
 
 .marquee .headline {
@@ -124,16 +123,18 @@
   position: absolute;
 }
 
+/* The bottom leaves room for the corners of the turned page, so the page
+   keeps the same 28px margin as the copy */
 .small .scene {
-  top: 114px;
+  top: 112px;
   left: 40px;
   width: 360px;
-  height: 142px;
+  height: 134px;
 }
 
-/* Centered on the same line as the copy */
+/* Centered vertically, like the brand and copy column */
 .marquee .scene {
-  top: 145px;
+  top: 125px;
   right: 64px;
   width: 680px;
   height: 310px;
@@ -147,7 +148,8 @@
   bottom: 0;
   transform: rotate(-2deg);
   border-radius: 10px;
-  background: #f4f9ff;
+  /* Tinted, so the white popup stands out where it overlaps the page */
+  background: #e6eef7;
   box-shadow: 0 10px 30px rgb(15 39 73 / 18%);
 }
 
@@ -165,7 +167,7 @@
   height: 6px;
   min-width: 0;
   border-radius: 999px;
-  background: #c3d5e5;
+  background: #b8cadc;
 }
 
 .marquee .line {
@@ -196,16 +198,16 @@
 /* The popup covers the upper part of the page, so put the second line below
    the selection */
 .marquee .line2 {
-  top: 76%;
+  top: 79%;
 }
 
 .marquee .lastLine {
-  top: 90%;
+  top: 91%;
   width: 48%;
 }
 
 .small .lastLine {
-  top: 85%;
+  top: 89%;
 }
 
 .lastLine {
@@ -223,11 +225,12 @@
 }
 
 .small .selectionRow {
-  top: 56%;
+  top: 64%;
   gap: 8px;
 }
 
 .marquee .selectionRow {
+  top: 57%;
   gap: 18px;
 }
 
@@ -239,7 +242,16 @@
    center and the popup can open to the right of it, around the cursor */
 .selectionRow .lead {
   flex: none;
-  width: 8%;
+  width: 18%;
+}
+
+/* Starts after the cursor, so the pointer does not cross the line */
+.small .trail {
+  margin-left: 20px;
+}
+
+.marquee .trail {
+  margin-left: 40px;
 }
 
 .selectionRow mark {
@@ -264,7 +276,8 @@
 }
 
 /*
- * Popup menu, narrower than the page and opening around the cursor.
+ * Popup menu, narrower than the page, sharing its right edge and opening to
+ * the right of the cursor.
  * Proportions follow the real menu: square-ish slots, an icon about half the
  * bar height, and side padding that leaves the same space around the first
  * and last icons as above and below them. The "more" slot is narrower, as its
@@ -273,12 +286,15 @@
 .popup {
   position: absolute;
   top: 0;
-  left: 50%;
+  right: 0;
   display: flex;
   align-items: center;
   box-sizing: border-box;
-  transform: translateX(-50%);
   background: #fff;
+  /* Darker and closer than the screenshot shadow, to lift it off the blue */
+  box-shadow:
+    0 14px 28px -6px rgb(10 30 70 / 0.4),
+    0 3px 8px rgb(10 30 70 / 0.2);
   color: #1f2937;
 }
 
@@ -287,15 +303,6 @@
   flex: none;
   align-items: center;
   justify-content: center;
-}
-
-/* Centered on the cursor, which sits right of the page center */
-.small .popup {
-  left: 61%;
-}
-
-.marquee .popup {
-  left: 62%;
 }
 
 /* Small: 60px bar, 28px icons, 18px between icons, 16px around them */
