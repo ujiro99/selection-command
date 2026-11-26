@@ -141,9 +141,6 @@
 /* The bottom leaves room for the corners of the turned page, so the page
    keeps the same 28px margin as the copy */
 .small .scene {
-  --cursor-left: 227px;
-  --cursor-top: 81px;
-  --popup-height: 60px;
   top: 112px;
   left: 40px;
   width: 360px;
@@ -152,9 +149,6 @@
 
 /* Centered vertically, like the brand and copy column */
 .marquee .scene {
-  --cursor-left: 475px;
-  --cursor-top: 164px;
-  --popup-height: 136px;
   top: 125px;
   right: 64px;
   width: 680px;
@@ -298,8 +292,12 @@
 }
 
 /*
- * The menu shares the right edge of the document card. The highlighted AI
- * command and its submenu show the path to the translation command.
+ * Popup menu, narrower than the page, sharing its right edge and opening to
+ * the right of the cursor.
+ * Proportions follow the real menu: square-ish slots, an icon about half the
+ * bar height, and side padding that leaves the same space around the first
+ * and last icons as above and below them. The "more" slot is narrower, as its
+ * glyph is.
  */
 .popup {
   position: absolute;
@@ -307,7 +305,6 @@
   right: 0;
   display: flex;
   align-items: center;
-  height: var(--popup-height);
   box-sizing: border-box;
   background: #fff;
   /* Darker and closer than the screenshot shadow, to lift it off the blue */
@@ -319,12 +316,12 @@
 
 .command {
   display: flex;
-  flex: 1;
+  flex: none;
   align-items: center;
   justify-content: center;
 }
 
-.aiCommand {
+.translateCommand {
   position: relative;
   align-self: stretch;
 }
@@ -336,57 +333,52 @@
   color: #254695;
 }
 
-.submenu {
+.tooltip {
+  --tooltip-anchor: 50%;
   position: absolute;
-  bottom: calc(100% + var(--submenu-gap));
+  bottom: calc(100% + var(--tooltip-gap));
   left: 50%;
-  display: flex;
-  align-items: center;
-  transform: translateX(-50%);
+  transform: translateX(calc(-1 * var(--tooltip-anchor)));
   background: #fff;
   box-shadow: 0 4px 12px rgb(10 30 70 / 0.25);
   font-weight: 600;
   white-space: nowrap;
 }
 
-.submenu::after {
+.tooltip::after {
   position: absolute;
   top: 100%;
-  left: 50%;
-  border: var(--submenu-gap) solid transparent;
+  left: var(--tooltip-anchor);
+  border: var(--tooltip-gap) solid transparent;
   border-top-color: #fff;
   content: "";
   transform: translateX(-50%);
 }
 
-.translationIcon {
-  flex: none;
-  color: #254695;
-}
-
+/* Small: 60px bar, 28px icons, 18px between icons, 16px around them */
 .small .popup {
-  --submenu-gap: 5px;
-  width: 198px;
+  --tooltip-gap: 5px;
+  height: 60px;
   padding: 0 7px;
   border-radius: 12px;
 }
 
-.small .active {
+.small .command {
   width: 46px;
+}
+
+.small .active {
+  width: 38px;
   height: 44px;
   border-radius: 8px;
 }
 
-.small .submenu {
-  gap: 6px;
+.small .tooltip {
+  /* Clear the nearby subheadline while keeping the tip on the icon. */
+  --tooltip-anchor: 38%;
   padding: 4px 9px;
   border-radius: 7px;
   font-size: 18px;
-}
-
-.small .translationIcon {
-  width: 21px;
-  height: 21px;
 }
 
 .small .icon {
@@ -394,33 +386,31 @@
   height: 28px;
 }
 
+/* Marquee: 136px bar, 60px icons, 38px between icons, 38px around them */
 .marquee .popup {
-  --submenu-gap: 10px;
-  width: 494px;
+  --tooltip-gap: 10px;
+  height: 136px;
   padding: 0 19px;
   border-radius: 24px;
 }
 
+.marquee .command {
+  width: 98px;
+}
+
 .marquee .active {
-  width: 100px;
+  width: 86px;
   height: 100px;
   border-radius: 16px;
 }
 
-.marquee .submenu {
-  gap: 12px;
+.marquee .tooltip {
   padding: 8px 18px;
   border-radius: 14px;
   font-size: 34px;
 }
 
-.marquee .translationIcon {
-  width: 40px;
-  height: 40px;
-}
-
 .marquee .more {
-  flex: none;
   width: 64px;
 }
 
@@ -429,22 +419,28 @@
   height: 60px;
 }
 
-/* Fan downward from the menu edge toward the cursor at the selection end. */
+/* Rays from the top-right corner of the popup. The svg's bottom-left corner
+   sits a little inside the popup's corner, which is rounded off. */
 .burst {
   position: absolute;
-  top: var(--popup-height);
-  left: calc(var(--cursor-left) + 3px);
-  transform: translateX(-50%);
+  overflow: visible;
   fill: none;
-  stroke: #3457a1;
-  stroke-width: 2.2;
+  stroke: #fff;
   stroke-linecap: round;
 }
 
 .small .burst {
+  top: -26px;
+  right: -26px;
   width: 28px;
+  height: 28px;
+  stroke-width: 3.2;
 }
 
 .marquee .burst {
-  width: 54px;
+  top: -66px;
+  right: -66px;
+  width: 72px;
+  height: 72px;
+  stroke-width: 2.8;
 }
