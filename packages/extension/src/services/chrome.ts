@@ -688,10 +688,14 @@ export type UpdateSidePanelUrlProps = {
 /**
  * Open a side panel with the specified URL (service worker context only)
  * @param {OpenSidePanelProps} param - Parameters for opening the side panel
+ * @param {boolean} alreadyOpened - True if the side panel was already opened
+ * for the tab (see services/sidePanelPreOpen.ts). Then only the page is set,
+ * because open() fails without the user gesture.
  * @returns {Promise<OpenResult>} Result containing tab ID and clipboard text
  */
 export const openSidePanel = async (
   param: OpenSidePanelProps,
+  alreadyOpened = false,
 ): Promise<{ tabId: number | undefined }> => {
   const { url, tabId } = param
 
@@ -706,13 +710,20 @@ export const openSidePanel = async (
     }
   }
 
-  // Set the side panel options for the tab
-  // Do not await here because sidePanel.open() must be executed within a user gesture.
-  chrome.sidePanel.setOptions({
+  const options = {
     tabId,
     path: toSidePanelPath(toUrl(url), tabId),
     enabled: true,
-  })
+  }
+
+  if (alreadyOpened) {
+    await chrome.sidePanel.setOptions(options)
+    return { tabId }
+  }
+
+  // Set the side panel options for the tab
+  // Do not await here because sidePanel.open() must be executed within a user gesture.
+  chrome.sidePanel.setOptions(options)
 
   // Open the side panel
   try {
@@ -730,9 +741,15 @@ const SIDE_PANEL_CLOSE_ANIMATION = 1000
 /**
  * Close the side panel for the specified tab
  * @param {number} tabId - The ID of the tab to close the side panel for
+ * @param {() => boolean} shouldDisable - Checked after the close animation.
+ * Return false to keep the side panel enabled, e.g. when it was opened again
+ * while closing.
  * @returns {Promise<void>} A promise that resolves when the side panel is closed
  */
-export const closeSidePanel = async (tabId: number): Promise<void> => {
+export const closeSidePanel = async (
+  tabId: number,
+  shouldDisable: () => boolean = () => true,
+): Promise<void> => {
   if (!isSidePanelSupported()) return
   // close() is detected separately because it is newer than open(). When it
   // is unavailable, setOptions({ enabled: false }) below closes the panel by
@@ -746,6 +763,7 @@ export const closeSidePanel = async (tabId: number): Promise<void> => {
     // Wait for the side panel close animation to finish before disabling it to prevent visual glitches.
     await sleep(SIDE_PANEL_CLOSE_ANIMATION)
   }
+  if (!shouldDisable()) return
   try {
     await chrome.sidePanel.setOptions({
       tabId: tabId,

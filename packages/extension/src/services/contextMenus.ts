@@ -6,6 +6,11 @@ import { capitalize } from "@/lib/utils"
 import { isSelectionCommand } from "@/lib/commandGuards"
 import { APP_ID } from "@/const"
 import {
+  usesSidePanel,
+  preOpenSidePanel,
+  cancelPreOpenedSidePanel,
+} from "@/services/sidePanelPreOpen"
+import {
   toCommandTree,
   type CommandTreeNode,
 } from "@/services/option/commandTree"
@@ -28,6 +33,24 @@ type Contexts = [
 ]
 
 const callbacks = new Map<number | string, Callback>()
+
+/**
+ * Prefix of the menu ID for a command that opens the side panel.
+ * The menu ID tells it without commandIdObj, which is restored
+ * asynchronously after the service worker wakes up by the click.
+ */
+const SIDE_PANEL_MENU_PREFIX = "sidePanel:"
+
+/**
+ * Get the context menu ID of the command.
+ * @param {Command} command - The command shown in the menu.
+ * @returns {string} The menu ID.
+ */
+const toMenuId = (command: Command): string =>
+  usesSidePanel(command) ? `${SIDE_PANEL_MENU_PREFIX}${command.id}` : command.id
+
+const isSidePanelMenuId = (menuItemId: string | number): boolean =>
+  String(menuItemId).startsWith(SIDE_PANEL_MENU_PREFIX)
 
 const createMenu = (
   options: chrome.contextMenus.CreateProperties,
@@ -144,7 +167,7 @@ export const ContextMenu = {
           title: command.title,
           parentId,
           contexts,
-          id: command.id,
+          id: toMenuId(command),
         })
         ContextMenu.commandIdObj[menuId] = command
       }
@@ -183,8 +206,24 @@ export const ContextMenu = {
       } else {
         // Add command to commandIdObj
         const command = node.content as Command
-        ContextMenu.commandIdObj[command.id] = command
+        ContextMenu.commandIdObj[toMenuId(command)] = command
       }
+    }
+  },
+
+  /**
+   * Open the side panel ahead when the clicked command uses it.
+   * Must be called synchronously in the onClicked listener, before any await,
+   * to keep the user gesture. See services/sidePanelPreOpen.ts.
+   * The menu ID is checked instead of commandIdObj, which may not be
+   * restored yet when the click wakes up the service worker.
+   */
+  preOpenSidePanel: (
+    info: chrome.contextMenus.OnClickData,
+    tab?: chrome.tabs.Tab,
+  ) => {
+    if (tab?.id != null && isSidePanelMenuId(info.menuItemId)) {
+      preOpenSidePanel(tab.id)
     }
   },
 
@@ -196,12 +235,23 @@ export const ContextMenu = {
       const command = ContextMenu.commandIdObj[info.menuItemId]
       if (!command) {
         console.warn("Command not found for menu item:", info.menuItemId)
+        cancelPreOpenedSidePanel(tab.id)
         return
       }
       const res = await Ipc.sendTab(tab.id, TabCommand.executeAction, {
         command,
       })
+      if (res !== true) {
+        // The command does not run (e.g. the tab has no content script), so
+        // do not leave a blank side panel.
+        cancelPreOpenedSidePanel(tab.id)
+      }
       if (res) console.debug(res)
     }
   },
+}
+
+/** Test-only exports. Do not use in production code. */
+export const __test = {
+  toMenuId,
 }

@@ -1,6 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
-import { ContextMenu } from "../contextMenus"
+import { ContextMenu, __test } from "../contextMenus"
+
+const { toMenuId } = __test
 import { OPEN_MODE, OPTION_FOLDER, ROOT_FOLDER } from "@/const"
 import type { Command, CommandFolder } from "@/types"
 
@@ -628,6 +630,72 @@ describe("Context Menu Multi-level Hierarchy", () => {
           },
         }),
       )
+    })
+
+    it("CM-17: should prefix the menu ID of a side panel command", () => {
+      const sidePanelCommand = {
+        ...createCommand("cmd-sp", "Side panel", "folder1"),
+        openMode: OPEN_MODE.SIDE_PANEL,
+      }
+      const popupCommand = createCommand("cmd-popup", "Popup", "folder1")
+
+      expect(toMenuId(sidePanelCommand)).toBe("sidePanel:cmd-sp")
+      expect(toMenuId(popupCommand)).toBe("cmd-popup")
+    })
+
+    it("CM-18: should pre-open the side panel only for a side panel menu ID", () => {
+      const original = global.chrome.sidePanel
+      const open = vi.fn().mockResolvedValue(undefined)
+      global.chrome.sidePanel = {
+        open,
+        setOptions: vi.fn().mockResolvedValue(undefined),
+      } as any
+
+      // Works without commandIdObj, which may not be restored yet.
+      ContextMenu.commandIdObj = {}
+      ContextMenu.preOpenSidePanel(
+        { menuItemId: "cmd-popup" } as any,
+        { id: 123 } as any,
+      )
+      expect(open).not.toHaveBeenCalled()
+
+      ContextMenu.preOpenSidePanel(
+        { menuItemId: "sidePanel:cmd-sp" } as any,
+        { id: 123 } as any,
+      )
+      expect(open).toHaveBeenCalledWith({ tabId: 123 })
+
+      global.chrome.sidePanel = original
+    })
+
+    it("CM-19: should close the pre-opened side panel when the tab does not accept the command", async () => {
+      const original = global.chrome.sidePanel
+      const close = vi.fn().mockResolvedValue(undefined)
+      const setOptions = vi.fn().mockResolvedValue(undefined)
+      global.chrome.sidePanel = {
+        open: vi.fn().mockResolvedValue(undefined),
+        close,
+        setOptions,
+      } as any
+      // The tab without the content script resolves to undefined.
+      global.chrome.tabs = {
+        sendMessage: vi.fn().mockResolvedValue(undefined),
+      } as any
+      const command = {
+        ...createCommand("cmd-sp", "Side panel", "folder1"),
+        openMode: OPEN_MODE.SIDE_PANEL,
+      }
+      ContextMenu.commandIdObj = { "sidePanel:cmd-sp": command }
+      const info = { menuItemId: "sidePanel:cmd-sp" } as any
+      const tab = { id: 123 } as any
+
+      ContextMenu.preOpenSidePanel(info, tab)
+      await ContextMenu.onClicked(info, tab)
+
+      await vi.waitFor(() => {
+        expect(close).toHaveBeenCalledWith({ tabId: 123 })
+      })
+      global.chrome.sidePanel = original
     })
 
     it("CM-16: should not send executeAction when command is not found", async () => {

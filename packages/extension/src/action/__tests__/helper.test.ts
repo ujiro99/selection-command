@@ -18,6 +18,10 @@ import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { incrementCommandExecutionCount } from "@/services/commandMetrics"
 import { registerSidePanelHostTab as _registerSidePanelHostTab } from "@/services/pageAction/serviceWorker-sidePanel"
 import { isSidePanelSupported } from "@/services/sidePanelSupport"
+import {
+  preOpenSidePanel,
+  __test as sidePanelPreOpenTest,
+} from "@/services/sidePanelPreOpen"
 
 // Mock dependencies
 vi.mock("@/services/serviceWorkerData", () => ({
@@ -48,6 +52,7 @@ vi.mock("@/services/settings/enhancedSettings", () => ({
 
 vi.mock("@/services/sidePanelSupport", () => ({
   isSidePanelSupported: vi.fn(() => true),
+  getSidePanelEvent: vi.fn(() => undefined),
 }))
 
 vi.mock("@/services/commandMetrics", () => ({
@@ -58,6 +63,7 @@ describe("helper", () => {
   beforeEach(() => {
     vi.clearAllMocks()
     vi.mocked(ServiceWorkerData.ready).mockResolvedValue(undefined)
+    sidePanelPreOpenTest.resetPreOpenedSidePanels()
   })
 
   describe("navigateSidePanel", () => {
@@ -297,7 +303,7 @@ describe("helper", () => {
 
       await new Promise((resolve) => setTimeout(resolve, 10))
 
-      expect(_openSidePanel).toHaveBeenCalledWith({ ...param, tabId })
+      expect(_openSidePanel).toHaveBeenCalledWith({ ...param, tabId }, false)
     })
 
     it("OSP-02: Should fall back to serviceWorkerData.activeTabId when sender.tab.id is null", async () => {
@@ -323,10 +329,10 @@ describe("helper", () => {
 
       await new Promise((resolve) => setTimeout(resolve, 10))
 
-      expect(_openSidePanel).toHaveBeenCalledWith({
-        ...param,
-        tabId: activeTabId,
-      })
+      expect(_openSidePanel).toHaveBeenCalledWith(
+        { ...param, tabId: activeTabId },
+        false,
+      )
       expect(response).toHaveBeenCalledWith(true)
     })
 
@@ -422,7 +428,10 @@ describe("helper", () => {
       openSidePanel(param, sender, response)
 
       // Called synchronously to keep the user gesture
-      expect(_openSidePanel).toHaveBeenCalledWith({ ...param, tabId: 123 })
+      expect(_openSidePanel).toHaveBeenCalledWith(
+        { ...param, tabId: 123 },
+        false,
+      )
       expect(ServiceWorkerData.ready).not.toHaveBeenCalled()
     })
 
@@ -461,10 +470,10 @@ describe("helper", () => {
       await vi.waitFor(() => {
         expect(response).toHaveBeenCalledWith(true)
       })
-      expect(_openSidePanel).toHaveBeenCalledWith({
-        ...param,
-        tabId: activeTabId,
-      })
+      expect(_openSidePanel).toHaveBeenCalledWith(
+        { ...param, tabId: activeTabId },
+        false,
+      )
     })
 
     it("OSP-08: Should respond false when ServiceWorkerData fails to load", async () => {
@@ -511,6 +520,29 @@ describe("helper", () => {
       expect(ServiceWorkerData.update).not.toHaveBeenCalled()
 
       consoleDebugSpy.mockRestore()
+    })
+
+    it("OSP-10: Should only set the page when the side panel was pre-opened", async () => {
+      const tabId = 123
+      const param = { url: "https://example.com", isLinkCommand: false }
+      const sender = { tab: { id: tabId } } as chrome.runtime.MessageSender
+      const response = vi.fn()
+
+      vi.mocked(_openSidePanel).mockResolvedValue({ tabId } as any)
+      vi.mocked(ServiceWorkerData.update).mockResolvedValue(true as any)
+
+      preOpenSidePanel(tabId)
+      openSidePanel(param, sender, response)
+
+      await vi.waitFor(() => {
+        expect(response).toHaveBeenCalledWith(true)
+      })
+      expect(_openSidePanel).toHaveBeenCalledWith({ ...param, tabId }, true)
+
+      // The pre-opened state is used only once.
+      vi.mocked(_openSidePanel).mockClear()
+      openSidePanel(param, sender, vi.fn())
+      expect(_openSidePanel).toHaveBeenCalledWith({ ...param, tabId }, false)
     })
   })
 
