@@ -28,7 +28,7 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
     useCommandExecutor()
   const onlyIcon = props.onlyIcon
   const { iconUrl, title, preserveOriginalColor } = props.command
-  const { isPreview, inTransition, inOnboarding } = usePopupContext()
+  const { isPreview, inOnboarding } = usePopupContext()
   const { selectionText, target } = useSelectContext()
   // Searching URLs in a large selection is costly, so the result is kept
   // while the command and the selection are unchanged.
@@ -84,8 +84,10 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
           css.button,
           {
             [css.itemHorizontal]: onlyIcon,
-            "hover:bg-accent": !inTransition,
           },
+          // Blocked while the popup or a folder around it animates, and
+          // until the pointer moves over it (see useHoverGate).
+          "hover:not-in-data-[hover-blocked]:bg-accent",
           zc.roundedSm,
         )}
         role="menuitem"
