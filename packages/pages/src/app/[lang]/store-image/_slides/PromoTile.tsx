@@ -89,7 +89,7 @@ function PromoTile({ marquee = false }: { marquee?: boolean }): JSX.Element {
         <div className={css.brand}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/store-image/icon128.png" alt="" />
-          <Logo variant="xl" hub={false} onDark />
+          <Logo variant="xl" hub={false} onDark className={css.wordmark} />
         </div>
       )}
       <div className={css.copy}>
@@ -123,7 +123,7 @@ function PromoTile({ marquee = false }: { marquee?: boolean }): JSX.Element {
             the left part of the popup */}
         <Cursor
           scale={marquee ? 1.6 : 0.8}
-          style={marquee ? { left: 480, top: 164 } : { left: 233, top: 81 }}
+          style={marquee ? { left: 475, top: 164 } : { left: 227, top: 81 }}
         />
       </div>
     </div>
