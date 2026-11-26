@@ -2,6 +2,7 @@
 
 import { useMemo, useRef, useState } from "react"
 import { toPng } from "html-to-image"
+import Link from "next/link"
 
 import type { LanguageType } from "@/features/locale"
 
@@ -99,9 +100,9 @@ export function Gallery({ lang }: { lang: LanguageType }): JSX.Element {
           return (
             <li key={key} style={{ width: Math.max(350, width / 2) }}>
               <div className={css.caption}>
-                <a href={`/${lang}/store-image/${key}`}>
+                <Link href={`/${lang}/store-image/${key}`}>
                   {title} ({width} × {height})
-                </a>
+                </Link>
                 <button
                   type="button"
                   className={css.button}

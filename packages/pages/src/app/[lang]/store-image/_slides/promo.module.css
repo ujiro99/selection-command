@@ -141,6 +141,9 @@
 /* The bottom leaves room for the corners of the turned page, so the page
    keeps the same 28px margin as the copy */
 .small .scene {
+  --cursor-left: 227px;
+  --cursor-top: 81px;
+  --popup-height: 60px;
   top: 112px;
   left: 40px;
   width: 360px;
@@ -149,6 +152,9 @@
 
 /* Centered vertically, like the brand and copy column */
 .marquee .scene {
+  --cursor-left: 475px;
+  --cursor-top: 164px;
+  --popup-height: 136px;
   top: 125px;
   right: 64px;
   width: 680px;
@@ -292,12 +298,8 @@
 }
 
 /*
- * Popup menu, narrower than the page, sharing its right edge and opening to
- * the right of the cursor.
- * Proportions follow the real menu: square-ish slots, an icon about half the
- * bar height, and side padding that leaves the same space around the first
- * and last icons as above and below them. The "more" slot is narrower, as its
- * glyph is.
+ * The menu shares the right edge of the document card. The highlighted AI
+ * command and its submenu show the path to the translation command.
  */
 .popup {
   position: absolute;
@@ -305,6 +307,7 @@
   right: 0;
   display: flex;
   align-items: center;
+  height: var(--popup-height);
   box-sizing: border-box;
   background: #fff;
   /* Darker and closer than the screenshot shadow, to lift it off the blue */
@@ -316,24 +319,74 @@
 
 .command {
   display: flex;
-  flex: none;
+  flex: 1;
   align-items: center;
   justify-content: center;
 }
 
-/* Small: 60px bar, 28px icons, 18px between icons, 16px around them */
+.aiCommand {
+  position: relative;
+  align-self: stretch;
+}
+
+.active {
+  display: grid;
+  place-items: center;
+  background: #e8f1ff;
+  color: #254695;
+}
+
+.submenu {
+  position: absolute;
+  bottom: calc(100% + var(--submenu-gap));
+  left: 50%;
+  display: flex;
+  align-items: center;
+  transform: translateX(-50%);
+  background: #fff;
+  box-shadow: 0 4px 12px rgb(10 30 70 / 0.25);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.submenu::after {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  border: var(--submenu-gap) solid transparent;
+  border-top-color: #fff;
+  content: "";
+  transform: translateX(-50%);
+}
+
+.translationIcon {
+  flex: none;
+  color: #254695;
+}
+
 .small .popup {
-  height: 60px;
+  --submenu-gap: 5px;
+  width: 198px;
   padding: 0 7px;
   border-radius: 12px;
 }
 
-.small .command {
+.small .active {
   width: 46px;
+  height: 44px;
+  border-radius: 8px;
 }
 
-.small .more {
-  width: 30px;
+.small .submenu {
+  gap: 6px;
+  padding: 4px 9px;
+  border-radius: 7px;
+  font-size: 18px;
+}
+
+.small .translationIcon {
+  width: 21px;
+  height: 21px;
 }
 
 .small .icon {
@@ -341,18 +394,33 @@
   height: 28px;
 }
 
-/* Marquee: 136px bar, 60px icons, 38px between icons, 38px around them */
 .marquee .popup {
-  height: 136px;
+  --submenu-gap: 10px;
+  width: 494px;
   padding: 0 19px;
   border-radius: 24px;
 }
 
-.marquee .command {
-  width: 98px;
+.marquee .active {
+  width: 100px;
+  height: 100px;
+  border-radius: 16px;
+}
+
+.marquee .submenu {
+  gap: 12px;
+  padding: 8px 18px;
+  border-radius: 14px;
+  font-size: 34px;
+}
+
+.marquee .translationIcon {
+  width: 40px;
+  height: 40px;
 }
 
 .marquee .more {
+  flex: none;
   width: 64px;
 }
 
@@ -361,28 +429,22 @@
   height: 60px;
 }
 
-/* Rays from the top-right corner of the popup. The svg's bottom-left corner
-   sits a little inside the popup's corner, which is rounded off. */
+/* Fan downward from the menu edge toward the cursor at the selection end. */
 .burst {
   position: absolute;
-  overflow: visible;
+  top: var(--popup-height);
+  left: calc(var(--cursor-left) + 3px);
+  transform: translateX(-50%);
   fill: none;
-  stroke: #fff;
+  stroke: #3457a1;
+  stroke-width: 2.2;
   stroke-linecap: round;
 }
 
 .small .burst {
-  top: -26px;
-  right: -26px;
   width: 28px;
-  height: 28px;
-  stroke-width: 3.2;
 }
 
 .marquee .burst {
-  top: -66px;
-  right: -66px;
-  width: 72px;
-  height: 72px;
-  stroke-width: 2.8;
+  width: 54px;
 }

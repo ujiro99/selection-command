@@ -3,9 +3,14 @@ import type { CSSProperties, ReactNode } from "react"
 
 import { Logo } from "@/components/Logo"
 
+import nextConfig from "../../../../../next.config.mjs"
+
 import { Fit } from "./Fit"
 
 import css from "./store.module.css"
+
+const STORE_IMAGE_PATH = `${nextConfig.basePath ?? ""}/store-image`
+export const STORE_ICON_SRC = `${STORE_IMAGE_PATH}/icon128.png`
 
 /** Fixed 1280x800 canvas of one store image. */
 export function Canvas({
@@ -38,7 +43,7 @@ export function Brand({ style }: { style: CSSProperties }): JSX.Element {
           exist in the static export. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/store-image/icon128.png"
+        src={STORE_ICON_SRC}
         alt=""
         width={48}
         height={48}
@@ -234,14 +239,20 @@ export function Cursor({
 
 /** Real screenshots of the extension, with their natural pixel width. */
 export const SCREENSHOTS = {
-  popupMenu: { src: "/store-image/screenshots/popup-menu.png", width: 662 },
-  settings: { src: "/store-image/screenshots/settings.png", width: 2569 },
+  popupMenu: {
+    src: `${STORE_IMAGE_PATH}/screenshots/popup-menu.png`,
+    width: 662,
+  },
+  settings: {
+    src: `${STORE_IMAGE_PATH}/screenshots/settings.png`,
+    width: 2569,
+  },
   /** English settings page, used for every language other than Japanese */
   settingsEn: {
-    src: "/store-image/screenshots/settings-en.png",
+    src: `${STORE_IMAGE_PATH}/screenshots/settings-en.png`,
     width: 2594,
   },
-  hub: { src: "/store-image/screenshots/hub.png", width: 1800 },
+  hub: { src: `${STORE_IMAGE_PATH}/screenshots/hub.png`, width: 1800 },
 } as const
 
 /**
