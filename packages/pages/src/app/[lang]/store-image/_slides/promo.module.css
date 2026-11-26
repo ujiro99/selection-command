@@ -322,6 +322,7 @@
 }
 
 .translateCommand {
+  --translate-highlight: #e8f1ff;
   position: relative;
   align-self: stretch;
 }
@@ -329,7 +330,7 @@
 .active {
   display: grid;
   place-items: center;
-  background: #e8f1ff;
+  background: var(--translate-highlight);
   color: #254695;
 }
 
@@ -339,7 +340,7 @@
   bottom: calc(100% + var(--tooltip-gap));
   left: 50%;
   transform: translateX(calc(-1 * var(--tooltip-anchor)));
-  background: #fff;
+  background: var(--translate-highlight);
   box-shadow: 0 4px 12px rgb(10 30 70 / 0.25);
   font-weight: 600;
   white-space: nowrap;
@@ -350,7 +351,7 @@
   top: 100%;
   left: var(--tooltip-anchor);
   border: var(--tooltip-gap) solid transparent;
-  border-top-color: #fff;
+  border-top-color: var(--translate-highlight);
   content: "";
   transform: translateX(-50%);
 }
