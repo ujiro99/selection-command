@@ -48,7 +48,7 @@
 
 /* Brand and copy form one column, centered vertically on the tile */
 .marquee .brand {
-  top: 80px;
+  top: 84px;
   left: 64px;
   gap: 18px;
 }
@@ -56,13 +56,6 @@
 .marquee .brand img {
   width: 64px;
   height: 64px;
-}
-
-/* Between the Logo's lg and xl sizes, so the wordmark stays an accent
-   next to the headline. The pointer is sized in em and follows. */
-.marquee .wordmark {
-  font-size: 40px;
-  line-height: 48px;
 }
 
 /* ---------- Copy ---------- */
@@ -115,7 +108,7 @@
 .marquee .copy {
   top: 180px;
   left: 64px;
-  gap: 15px;
+  gap: 18px;
 }
 
 /* Pulled left by the side bearing of the large "S" and "T", so their stems
@@ -144,9 +137,9 @@
   height: 134px;
 }
 
-/* Centered vertically, like the brand and copy column */
+/* Slightly below the vertical center of the tile */
 .marquee .scene {
-  top: 125px;
+  top: 140px;
   right: 64px;
   width: 680px;
   height: 310px;
@@ -203,7 +196,7 @@
 }
 
 .marquee .lastLine {
-  top: 85%;
+  top: 83%;
   width: 48%;
 }
 
@@ -227,7 +220,7 @@
 }
 
 .marquee .selectionRow {
-  top: 57%;
+  top: 54%;
   gap: 18px;
 }
 

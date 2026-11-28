@@ -88,7 +88,7 @@ function PromoTile({ marquee = false }: { marquee?: boolean }): JSX.Element {
         <div className={css.brand}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={STORE_ICON_SRC} alt="" />
-          <Logo variant="xl" hub={false} onDark className={css.wordmark} />
+          <Logo variant="2xl" hub={false} onDark />
         </div>
       )}
       <div className={css.copy}>
