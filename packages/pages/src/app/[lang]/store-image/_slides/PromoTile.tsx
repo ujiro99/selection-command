@@ -113,7 +113,6 @@ function PromoTile({ marquee = false }: { marquee?: boolean }): JSX.Element {
       >
         <div className={css.document}>
           <span className={`${css.line} ${css.line1}`} />
-          <span className={`${css.line} ${css.line2}`} />
           <div className={css.selectionRow}>
             <span className={`${css.line} ${css.lead}`} />
             <mark>selected text</mark>
@@ -126,7 +125,7 @@ function PromoTile({ marquee = false }: { marquee?: boolean }): JSX.Element {
             the left part of the popup */}
         <Cursor
           scale={marquee ? 1.6 : 0.8}
-          style={marquee ? { left: 475, top: 164 } : { left: 227, top: 81 }}
+          style={marquee ? { left: 489, top: 170 } : { left: 235, top: 76 }}
         />
       </div>
     </div>

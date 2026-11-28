@@ -48,21 +48,21 @@
 
 /* Brand and copy form one column, centered vertically on the tile */
 .marquee .brand {
-  top: 112px;
+  top: 80px;
   left: 64px;
-  gap: 14px;
+  gap: 18px;
 }
 
 .marquee .brand img {
-  width: 48px;
-  height: 48px;
+  width: 64px;
+  height: 64px;
 }
 
 /* Between the Logo's lg and xl sizes, so the wordmark stays an accent
    next to the headline. The pointer is sized in em and follows. */
 .marquee .wordmark {
-  font-size: 30px;
-  line-height: 38px;
+  font-size: 40px;
+  line-height: 48px;
 }
 
 /* ---------- Copy ---------- */
@@ -85,37 +85,37 @@
   line-height: 1.12;
 }
 
-/* Same treatment on both tiles; lighter than the headline so the two lines
-   read as main and sub */
+/* Same treatment on both tiles; slightly faded and lighter in weight than the
+   headline so the two lines read as main and sub */
 .sub {
-  color: #eaf8ff;
-  font-weight: 450;
+  color: #fff;
+  font-weight: 600;
   letter-spacing: -0.015em;
   line-height: 1.25;
-  opacity: 0.85;
+  opacity: 0.8;
 }
 
 /* Left-aligned with the page, as the popup opens on the right */
 .small .copy {
   top: 28px;
-  left: 40px;
-  gap: 7px;
+  left: 30px;
+  gap: 5px;
 }
 
 .small .headline {
   font-size: 34px;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
 
-/* 74% of the headline, to stay readable at half size */
+/* About 76% of the headline, to stay readable at half size */
 .small .sub {
-  font-size: 25px;
+  font-size: 26px;
 }
 
 .marquee .copy {
-  top: 204px;
+  top: 180px;
   left: 64px;
-  gap: 18px;
+  gap: 15px;
 }
 
 /* Pulled left by the side bearing of the large "S" and "T", so their stems
@@ -123,13 +123,11 @@
 .marquee .headline {
   margin-left: -0.03em;
   font-size: 76px;
-  letter-spacing: -0.035em;
 }
 
-/* Well below the headline, so the selected text in the scene does not
-   compete with it */
+/* About 80% of the headline, so it stays legible next to the large scene */
 .marquee .sub {
-  font-size: 44px;
+  font-size: 60px;
 }
 
 /* ---------- Scene: page, selection, popup and cursor ---------- */
@@ -138,11 +136,10 @@
   position: absolute;
 }
 
-/* The bottom leaves room for the corners of the turned page, so the page
-   keeps the same 28px margin as the copy */
+/* The bottom leaves room for the corners of the turned page */
 .small .scene {
   top: 112px;
-  left: 40px;
+  left: 60px;
   width: 360px;
   height: 134px;
 }
@@ -189,7 +186,7 @@
   height: 12px;
 }
 
-/* Text lines of the page. The first one peeks out beside the popup. */
+/* Text lines of the page */
 .document > .line {
   position: absolute;
   left: 6%;
@@ -197,32 +194,17 @@
 }
 
 .line1 {
-  top: 16%;
+  top: 25%;
   width: 88%;
 }
 
-.line2 {
-  top: 34%;
-  width: 72%;
-}
-
-.small .line2 {
-  display: none;
-}
-
-/* The popup covers the upper part of the page, so put the second line below
-   the selection */
-.marquee .line2 {
-  top: 79%;
+.small .lastLine {
+  top: 85%;
 }
 
 .marquee .lastLine {
-  top: 91%;
+  top: 85%;
   width: 48%;
-}
-
-.small .lastLine {
-  top: 89%;
 }
 
 .lastLine {
@@ -240,7 +222,7 @@
 }
 
 .small .selectionRow {
-  top: 64%;
+  top: 56%;
   gap: 8px;
 }
 
@@ -302,7 +284,6 @@
 .popup {
   position: absolute;
   top: 0;
-  right: 0;
   display: flex;
   align-items: center;
   box-sizing: border-box;
@@ -356,10 +337,11 @@
   transform: translateX(-50%);
 }
 
-/* Small: 60px bar, 28px icons, 18px between icons, 16px around them */
+/* Small: 58px bar, 28px icons, 18px between icons, 16px around them */
 .small .popup {
   --tooltip-gap: 5px;
-  height: 60px;
+  right: 14px;
+  height: 58px;
   padding: 0 7px;
   border-radius: 12px;
 }
@@ -369,7 +351,7 @@
 }
 
 .small .active {
-  width: 38px;
+  width: 46px;
   height: 44px;
   border-radius: 8px;
 }
@@ -387,10 +369,11 @@
   height: 28px;
 }
 
-/* Marquee: 136px bar, 60px icons, 38px between icons, 38px around them */
+/* Marquee: 120px bar, 60px icons, 38px between icons, 38px around them */
 .marquee .popup {
   --tooltip-gap: 10px;
-  height: 136px;
+  right: 50px;
+  height: 120px;
   padding: 0 19px;
   border-radius: 24px;
 }
@@ -400,7 +383,7 @@
 }
 
 .marquee .active {
-  width: 86px;
+  width: 100px;
   height: 100px;
   border-radius: 16px;
 }
