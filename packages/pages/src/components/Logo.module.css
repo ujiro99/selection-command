@@ -86,3 +86,13 @@
   width: 0.7em;
   height: 0.7em;
 }
+
+/* On dark backgrounds: a light selection, and an outlined pointer as on light
+   backgrounds. */
+.onDark .command {
+  background: rgb(255 255 255 / 0.22);
+}
+
+.onDark .pointer {
+  color: #1e293b;
+}

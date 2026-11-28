@@ -1,0 +1,423 @@
+/* Fixed-size, opaque artwork for Chrome Web Store PNG export. */
+.tile {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  box-sizing: border-box;
+  font-family: var(--font-geist-sans), Arial, sans-serif;
+  color: #fff;
+  background: linear-gradient(130deg, #394da7 0%, #216cae 45%, #007f9b 100%);
+}
+
+.tile::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(
+    ellipse at 100% 100%,
+    rgb(0 195 221 / 55%),
+    transparent 65%
+  );
+}
+
+.small {
+  width: 440px;
+  height: 280px;
+}
+
+.marquee {
+  width: 1400px;
+  height: 560px;
+}
+
+/* ---------- Brand ---------- */
+
+.brand {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.brand img {
+  display: block;
+  flex: none;
+  border-radius: 16%;
+}
+
+/* Brand and copy form one column, centered vertically on the tile */
+.marquee .brand {
+  top: 84px;
+  left: 64px;
+  gap: 18px;
+}
+
+.marquee .brand img {
+  width: 64px;
+  height: 64px;
+}
+
+/* ---------- Copy ---------- */
+
+.copy {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+}
+
+.headline,
+.sub {
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* Tracking tightens with the size: display sizes need more */
+.headline {
+  font-weight: 800;
+  line-height: 1.12;
+}
+
+/* Same treatment on both tiles; slightly faded and lighter in weight than the
+   headline so the two lines read as main and sub */
+.sub {
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+  opacity: 0.8;
+}
+
+/* Left-aligned with the page, as the popup opens on the right */
+.small .copy {
+  top: 28px;
+  left: 30px;
+  gap: 5px;
+}
+
+.small .headline {
+  font-size: 34px;
+  letter-spacing: -0.01em;
+}
+
+/* About 76% of the headline, to stay readable at half size */
+.small .sub {
+  font-size: 26px;
+}
+
+.marquee .copy {
+  top: 180px;
+  left: 64px;
+  gap: 18px;
+}
+
+/* Pulled left by the side bearing of the large "S" and "T", so their stems
+   line up with the icon and the sub copy */
+.marquee .headline {
+  margin-left: -0.03em;
+  font-size: 76px;
+}
+
+/* About 80% of the headline, so it stays legible next to the large scene */
+.marquee .sub {
+  font-size: 60px;
+}
+
+/* ---------- Scene: page, selection, popup and cursor ---------- */
+
+.scene {
+  position: absolute;
+}
+
+/* The bottom leaves room for the corners of the turned page */
+.small .scene {
+  top: 112px;
+  left: 60px;
+  width: 360px;
+  height: 134px;
+}
+
+/* Slightly below the vertical center of the tile */
+.marquee .scene {
+  top: 140px;
+  right: 64px;
+  width: 680px;
+  height: 310px;
+}
+
+/* The page is turned a little, so the straight popup stands out from it */
+.document {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transform: rotate(-2deg);
+  border-radius: 10px;
+  /* Tinted, so the white popup stands out where it overlaps the page */
+  background: #e6eef7;
+  box-shadow: 0 10px 30px rgb(15 39 73 / 18%);
+}
+
+.small .document {
+  top: 30px;
+}
+
+.marquee .document {
+  top: 64px;
+  border-radius: 22px;
+}
+
+.line {
+  display: block;
+  height: 6px;
+  min-width: 0;
+  border-radius: 999px;
+  background: #b8cadc;
+}
+
+.marquee .line {
+  height: 12px;
+}
+
+/* Text lines of the page */
+.document > .line {
+  position: absolute;
+  left: 6%;
+  transform: translateY(-50%);
+}
+
+.line1 {
+  top: 25%;
+  width: 88%;
+}
+
+.small .lastLine {
+  top: 85%;
+}
+
+.marquee .lastLine {
+  top: 83%;
+  width: 48%;
+}
+
+.lastLine {
+  width: 60%;
+}
+
+.selectionRow {
+  position: absolute;
+  top: 52%;
+  left: 6%;
+  right: 6%;
+  display: flex;
+  align-items: center;
+  transform: translateY(-50%);
+}
+
+.small .selectionRow {
+  top: 56%;
+  gap: 8px;
+}
+
+.marquee .selectionRow {
+  top: 54%;
+  gap: 18px;
+}
+
+.selectionRow .line {
+  flex: 1;
+}
+
+/* Short text before the selection, so the selection ends left of the
+   center and the popup can open to the right of it, around the cursor */
+.selectionRow .lead {
+  flex: none;
+  width: 18%;
+}
+
+/* Starts after the cursor, so the pointer does not cross the line */
+.small .trail {
+  margin-left: 20px;
+}
+
+.marquee .trail {
+  margin-left: 40px;
+}
+
+.selectionRow mark {
+  flex: none;
+  background: #a6dbff;
+  color: #12294c;
+  /* Selected body text, not a label: semi-bold rather than bold */
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.small .selectionRow mark {
+  font-size: 20px;
+  padding: 2px 7px;
+  border-radius: 3px;
+}
+
+.marquee .selectionRow mark {
+  font-size: 44px;
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+
+/*
+ * Popup menu, narrower than the page, sharing its right edge and opening to
+ * the right of the cursor.
+ * Proportions follow the real menu: square-ish slots, an icon about half the
+ * bar height, and side padding that leaves the same space around the first
+ * and last icons as above and below them. The "more" slot is narrower, as its
+ * glyph is.
+ */
+.popup {
+  position: absolute;
+  top: 0;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  background: #fff;
+  /* Darker and closer than the screenshot shadow, to lift it off the blue */
+  box-shadow:
+    0 14px 28px -6px rgb(10 30 70 / 0.4),
+    0 3px 8px rgb(10 30 70 / 0.2);
+  color: #1f2937;
+}
+
+.command {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.translateCommand {
+  --translate-highlight: #e8f1ff;
+  position: relative;
+  align-self: stretch;
+}
+
+.active {
+  display: grid;
+  place-items: center;
+  background: var(--translate-highlight);
+  color: #254695;
+}
+
+.tooltip {
+  --tooltip-anchor: 50%;
+  position: absolute;
+  bottom: calc(100% + var(--tooltip-gap));
+  left: 50%;
+  transform: translateX(calc(-1 * var(--tooltip-anchor)));
+  background: var(--translate-highlight);
+  box-shadow: 0 4px 12px rgb(10 30 70 / 0.25);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.tooltip::after {
+  position: absolute;
+  top: 100%;
+  left: var(--tooltip-anchor);
+  border: var(--tooltip-gap) solid transparent;
+  border-top-color: var(--translate-highlight);
+  content: "";
+  transform: translateX(-50%);
+}
+
+/* Small: 58px bar, 28px icons, 18px between icons, 16px around them */
+.small .popup {
+  --tooltip-gap: 5px;
+  right: 14px;
+  height: 58px;
+  padding: 0 7px;
+  border-radius: 12px;
+}
+
+.small .command {
+  width: 46px;
+}
+
+.small .active {
+  width: 46px;
+  height: 44px;
+  border-radius: 8px;
+}
+
+.small .tooltip {
+  /* Clear the nearby subheadline while keeping the tip on the icon. */
+  --tooltip-anchor: 38%;
+  padding: 4px 9px;
+  border-radius: 7px;
+  font-size: 18px;
+}
+
+.small .icon {
+  width: 28px;
+  height: 28px;
+}
+
+/* Marquee: 120px bar, 60px icons, 38px between icons, 38px around them */
+.marquee .popup {
+  --tooltip-gap: 10px;
+  right: 50px;
+  height: 120px;
+  padding: 0 19px;
+  border-radius: 24px;
+}
+
+.marquee .command {
+  width: 98px;
+}
+
+.marquee .active {
+  width: 100px;
+  height: 100px;
+  border-radius: 16px;
+}
+
+.marquee .tooltip {
+  padding: 8px 18px;
+  border-radius: 14px;
+  font-size: 34px;
+}
+
+.marquee .more {
+  width: 64px;
+}
+
+.marquee .icon {
+  width: 60px;
+  height: 60px;
+}
+
+/* Rays from the top-right corner of the popup. The svg's bottom-left corner
+   sits a little inside the popup's corner, which is rounded off. */
+.burst {
+  position: absolute;
+  overflow: visible;
+  fill: none;
+  stroke: #fff;
+  stroke-linecap: round;
+}
+
+.small .burst {
+  top: -26px;
+  right: -26px;
+  width: 28px;
+  height: 28px;
+  stroke-width: 3.2;
+}
+
+.marquee .burst {
+  top: -66px;
+  right: -66px;
+  width: 72px;
+  height: 72px;
+  stroke-width: 2.8;
+}
