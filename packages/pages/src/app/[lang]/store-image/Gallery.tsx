@@ -64,9 +64,9 @@ export function Gallery({ lang }: { lang: LanguageType }): JSX.Element {
     try {
       for (const key of keys) {
         const root = refs.current[key]
-        if (!root) continue
         // Keep exporting the other slides when one fails
         try {
+          if (!root) throw new Error("Store image container not mounted")
           await exportSlide(root, fileNameOf(key), getSlideSize(key))
         } catch (e) {
           console.error(`Failed to export ${fileNameOf(key)}`, e)
