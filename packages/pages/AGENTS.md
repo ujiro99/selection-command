@@ -60,17 +60,26 @@ This file provides guidance to AI Agent when working with code in this repositor
      最小限残っているだけで、機能的な意味は薄い
 
 4. **Chrome Web Store 用プロモーション画像の作成**
-   - `src/app/[lang]/store-image/[slide]/page.tsx`（`/ja/store-image/1` 〜 `/ja/store-image/5`）は、
-     Chrome Web Store に登録する画像（1280x800）を HTML/CSS で描画するためのページ。
-     `[lang]` は `src/features/locale` の14言語
-   - `/{lang}/store-image` は全スライドを 50%（ストアのプレビューと同じ 640x400）で並べる一覧ページ。
-     各スライドの「Export」ボタン、または「Export all」で PNG を書き出せる（html-to-image を使用。
-     開発インジケーターは写り込まない）。ファイル名は `ja_01_hero.png` のように言語コードが先頭に付く。
+   - `src/app/[lang]/store-image/[slide]/page.tsx` は、Chrome Web Store に登録する画像を
+     HTML/CSS で描画するためのページ。`[lang]` は `src/features/locale` の14言語
+     - スクリーンショット（1280x800）: `/ja/store-image/1` 〜 `/ja/store-image/5`
+     - 小プロモーションタイル（440x280）: `/ja/store-image/promo`
+     - マーキープロモーションタイル（1400x560）: `/ja/store-image/marquee`
+   - `/{lang}/store-image` は全スライドを書き出しサイズの 50%（スクリーンショットはストアのプレビューと
+     同じ 640x400）で並べる一覧ページ。各スライドの「Export」ボタン、または「Export all」で
+     PNG を書き出せる（html-to-image を使用。開発インジケーターは写り込まない）。
      右下の LocaleSelector で言語を切り替えられる
+   - 書き出しファイル名は、スクリーンショットは `ja_01_hero.png` のように言語コードが先頭に付く。
+     プロモーションタイルは全言語共通（`shared: true`）のため `promo.png` / `marquee.png` と
+     言語コードが付かず、どの言語ページから書き出しても同じファイルになる
    - スライドの中身は `src/app/[lang]/store-image/_slides/`、共通部品は `_components/parts.tsx`。
-     スライドの追加・並べ替え・書き出しファイル名は `_slides/index.ts` の `SLIDES` で管理する
+     スライドの追加・並べ替え・書き出しファイル名・書き出しサイズ（`size`、省略時は 1280x800）は
+     `_slides/index.ts` の `SLIDES` で管理する。プロモーションタイルの描画サイズは
+     `promo.module.css` の `.small` / `.marquee` でも指定しているため、変えるときは両方を揃える
    - コピーは各言語の辞書ファイル（`src/features/locale/*.ts`）の `storeImage` に書く。
-     スライドは `t`（その言語の `storeImage`）を props で受け取る
+     スライドは `t`（その言語の `storeImage`）を props で受け取る。
+     例外として、プロモーションタイル（`_slides/PromoTile.tsx`）は全言語共通の英語アートワークのため、
+     コピーを TSX に直接書く
    - コピー（バッジ・見出し・サブコピー）は `CopyBlock` に入れて flex で縦に積み、
      絶対座標で 1 行ずつ置かない。訳文の行数が変わっても余白が保たれる。
      コピーの下に UI を置くスライドは `CopyBlock` をフローに置き（`position: "relative"`）、
@@ -105,7 +114,7 @@ This file provides guidance to AI Agent when working with code in this repositor
 - `public/data/experiments.json` - Extension のABテスト配分設定
 - `src/app/[lang]/(site)/test/` - e2e テストページ本体（`page.tsx`, `QuillWrapper.tsx`）。URL は `/{lang}/test` のまま
 - `src/app/[lang]/(site)/layout.tsx` - テストページ用の Header/Footer
-- `src/app/[lang]/store-image/` - Chrome Web Store 用画像ページ（`/{lang}/store-image/1`〜`5` と一覧）
+- `src/app/[lang]/store-image/` - Chrome Web Store 用画像ページ（`/{lang}/store-image/1`〜`5`、`promo`、`marquee` と一覧）
 - `src/components/Logo.tsx` - ロゴ（selection-command-hub から移植。store-image で使用）
 - `src/app/[lang]/layout.tsx`, `src/app/layout.tsx` - App Router の必須レイアウト（言語の静的パラメータ、LanguageProvider を保持）
 - `src/features/locale/` - 14言語分の辞書ファイル（layout.tsx が
